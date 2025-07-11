@@ -49,7 +49,7 @@
         html {
             scroll-behavior: smooth;
         }
-        /* Фон с узорами в стиле Telegram */
+        /* Фон с узорами и анимацией */
         body {
             background: linear-gradient(45deg, #0088cc, #33b5e5, #6B7280, #0088cc);
             background-size: 400%;
@@ -74,11 +74,11 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        /* Отключение анимации фона на мобильных */
+        /* Анимация на мобильных */
         @media (max-width: 640px) {
             body {
-                animation: none;
-                background: linear-gradient(45deg, #0088cc, #33b5e5);
+                animation: gradient 20s ease infinite; /* Увеличенная длительность для плавности */
+                background-size: 300%; /* Меньший размер для оптимизации */
             }
             body::before {
                 background-size: 50px 50px;
@@ -87,6 +87,8 @@
         /* Тёмная тема */
         body.dark {
             background: linear-gradient(45deg, #0a3d62, #1e3a8a, #374151, #0a3d62);
+            background-size: 400%;
+            animation: gradient 15s ease infinite;
             color: #e5e7eb;
         }
         body.dark::before {
@@ -94,8 +96,8 @@
         }
         @media (max-width: 640px) {
             body.dark {
-                animation: none;
-                background: linear-gradient(45deg, #0a3d62, #1e3a8a);
+                animation: gradient 20s ease infinite;
+                background-size: 300%;
             }
             body.dark::before {
                 background-size: 50px 50px;
@@ -145,6 +147,7 @@
         #coming-soon {
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
@@ -159,6 +162,24 @@
             #coming-soon h1 {
                 font-size: 1.5rem;
             }
+        }
+        /* Анимация для кнопок Telegram */
+        .telegram-button {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @media (min-width: 640px) {
+            .telegram-button:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+        }
+        .telegram-button:active {
+            transform: scale(0.95);
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
         /* Ховер-эффект для карточек */
         .card {
@@ -191,26 +212,6 @@
             .nav-links li {
                 margin-right: 0.75rem;
             }
-        }
-        /* Анимация для кнопки "Подписаться" */
-        .telegram-button {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        @media (min-width: 640px) {
-            .telegram-button:hover {
-                transform: scale(1.05);
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            }
-        }
-        .telegram-button:active {
-            transform: scale(0.95);
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-        }
-        .telegram-button {
-            animation: pulse 2s ease-in-out infinite;
         }
         /* Стили для ссылок в блоке информации */
         .contact-link {
@@ -251,9 +252,23 @@
     </style>
 </head>
 <body class="font-sans text-gray-800">
-    <!-- Заглушка "Скоро открытие" -->
+    <!-- Заглушка "Скоро открытие" с кнопками Telegram -->
     <section id="coming-soon" class="fade-in">
         <h1>Скоро открытие!</h1>
+        <div class="flex flex-col sm:flex-row gap-4 mt-4">
+            <a href="https://t.me/MortisPlayTG" target="_blank" class="telegram-button inline-flex items-center bg-indigo-600 text-white py-2 px-3 sm:px-4 rounded-full transition-colors text-sm sm:text-base font-semibold">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.707 17.293a1 1 0 01-1.414 0L12 14.586l-3.293 2.707a1 1 0 01-1.414-1.414l4-4.586a1 1 0 011.414 0l4 4.586a1 1 0 010 1.414zM12 9.414l-4 4.586a1 1 0 01-1.414-1.414l4-4.586a1 1 0 011.414 0l4 4.586a1 1 0 01-1.414 1.414L12 9.414z"/>
+                </svg>
+                Основной канал
+            </a>
+            <a href="https://t.me/+VhpxzWl9ygYzMmFi" target="_blank" class="telegram-button inline-flex items-center bg-indigo-600 text-white py-2 px-3 sm:px-4 rounded-full transition-colors text-sm sm:text-base font-semibold">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.707 17.293a1 1 0 01-1.414 0L12 14.586l-3.293 2.707a1 1 0 01-1.414-1.414l4-4.586a1 1 0 011.414 0l4 4.586a1 1 0 010 1.414zM12 9.414l-4 4.586a1 1 0 01-1.414-1.414l4-4.586a1 1 0 011.414 0l4 4.586a1 1 0 01-1.414 1.414L12 9.414z"/>
+                </svg>
+                Частный канал (200 звёзд)
+            </a>
+        </div>
     </section>
 
     <!-- Полная версия сайта -->
@@ -475,15 +490,13 @@
 
     <!-- JavaScript для анимаций, темы, Telegram API и галереи -->
     <script>
-        // Проверка параметра dev=true
+        // Проверка параметра dev=true (для тестирования)
         const urlParams = new URLSearchParams(window.location.search);
         const isDevMode = urlParams.get('dev') === 'true';
         if (isDevMode) {
             document.getElementById('coming-soon').style.display = 'none';
             document.getElementById('full-site').style.display = 'block';
-        } else {
-            document.getElementById('coming-soon').style.display = 'flex';
-            document.getElementById('full-site').style.display = 'none';
+            loadTelegramPosts();
         }
 
         // Плавная прокрутка
@@ -655,11 +668,6 @@
                     </div>
                 `;
             }
-        }
-
-        // Загрузить посты, если показана полная версия
-        if (isDevMode) {
-            loadTelegramPosts();
         }
     </script>
 </body>
