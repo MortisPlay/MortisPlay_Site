@@ -51,7 +51,6 @@
     gtag('js', new Date());
     gtag('config', 'G-W7QBLDDSSK');
   </script>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html { scroll-behavior: smooth; }
     body {
@@ -61,6 +60,8 @@
       overflow-x: hidden;
       position: relative;
       transition: background-color 0.3s, color 0.3s;
+      margin: 0;
+      font-family: Arial, sans-serif;
     }
     body.dark {
       background: linear-gradient(45deg, #1a1a1a, #2d3748, #4a5568, #1a1a1a);
@@ -72,8 +73,24 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: -1;
-      opacity: 0.2;
+      z-index: -2;
+      display: none;
+    }
+    #toggle-animation {
+      z-index: 30;
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background-color: #4b5563;
+      color: #ffffff;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+      border: none;
+    }
+    #toggle-animation:hover {
+      background-color: #374151;
     }
     @keyframes gradient {
       0% { background-position: 0% 50%; }
@@ -124,32 +141,73 @@
       margin-top: 0.5rem;
       text-align: center;
     }
-    @media (max-width: 640px) {
-      .avatar {
-        width: 6rem;
-        height: 6rem;
+    /* Стили для заглушки без Tailwind */
+    #coming-soon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 1rem;
+      position: relative;
+      z-index: 20;
+    }
+    #coming-soon h1 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 1.5rem;
+    }
+    @media (min-width: 640px) {
+      #coming-soon h1 {
+        font-size: 2rem;
       }
-      canvas {
-        display: none; /* Отключаем тяжелую анимацию на мобильных */
+    }
+    #coming-soon p {
+      font-size: 1rem;
+      color: #ffffff;
+      margin-bottom: 1.5rem;
+      max-width: 20rem;
+    }
+    @media (min-width: 640px) {
+      #coming-soon p {
+        font-size: 1.25rem;
       }
-      h1, h2 {
-        font-size: 1.5rem;
+    }
+    #coming-soon .telegram-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      justify-content: center;
+    }
+    @media (min-width: 640px) {
+      #coming-soon .telegram-buttons {
+        flex-direction: row;
       }
-      p, a {
-        font-size: 0.9rem;
-      }
-      .container {
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
+    }
+    #coming-soon .telegram-buttons a {
+      background-color: #4b5ee0;
+      color: #ffffff;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background-color 0.2s;
+      min-width: 8rem;
+      text-align: center;
+    }
+    #coming-soon .telegram-buttons a:hover {
+      background-color: #364fc7;
     }
   </style>
 </head>
-<body class="text-gray-800 font-sans">
+<body>
   <canvas id="backgroundCanvas"></canvas>
+  <button id="toggle-animation">Выключить анимацию</button>
 
   <!-- Навигация -->
-  <nav id="nav-menu" class="fixed top-0 w-full bg-indigo-900 dark:bg-gray-900 text-white py-4 z-10" style="display: none;">
+  <nav id="nav-menu" style="display: none;" class="bg-indigo-900 dark:bg-gray-900 text-white py-4">
     <div class="container mx-auto px-4 flex justify-between items-center">
       <a href="#welcome" class="text-xl font-bold">Mortis Play</a>
       <div class="hidden md:flex space-x-4">
@@ -177,12 +235,12 @@
   </nav>
 
   <!-- Заглушка -->
-  <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in px-4">
-    <h1 class="text-2xl sm:text-4xl font-bold text-white mb-6">Mortis Play — Скоро открытие!</h1>
-    <p class="text-base sm:text-lg text-white mb-6">Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить!</p>
-    <div class="flex flex-col sm:flex-row gap-4">
-      <a href="https://t.me/MortisPlayTG" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition main-telegram">Основной канал</a>
-      <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition private-telegram">Частный канал (вход платный)</a>
+  <section id="coming-soon">
+    <h1>Mortis Play — Скоро открытие!</h1>
+    <p>Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить!</p>
+    <div class="telegram-buttons">
+      <a href="https://t.me/MortisPlayTG">Основной канал</a>
+      <a href="https://t.me/+VhpxzWl9ygYzMmFi">Частный канал (вход платный)</a>
     </div>
   </section>
 
@@ -197,7 +255,7 @@
     <!-- Информация -->
     <section id="about" class="pb-16">
       <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
-        <video autoplay loop muted playsinline class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="https://www.dropbox.com/scl/fi/88ah9ztt928j4dq0i4z8r/photo.mp4?rlkey=f7tof2pn98h3dcw928uh0jlta&st=zkt26pwc&dl=1" type="video/mp4">
+        <video autoplay loop muted playsinline loading="lazy" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" data-src="https://www.dropbox.com/scl/fi/88ah9ztt928j4dq0i4z8r/photo.mp4?rlkey=f7tof2pn98h3dcw928uh0jlta&st=zkt26pwc&dl=1" type="video/mp4">
           Твой браузер не поддерживает видео.
         </video>
         <div>
@@ -215,19 +273,19 @@
         <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-8">Мои видео</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div class="video-container">
-            <iframe id="player-1" class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/UHVmemVZq48?enablejsapi=1" allowfullscreen></iframe>
+            <div id="player-1" data-src="https://www.youtube.com/embed/UHVmemVZq48?enablejsapi=1" class="w-full aspect-video rounded shadow bg-gray-200"></div>
             <div class="play-button">
               <button data-player="player-1" class="bg-red-600 text-white py-1 px-3 rounded play-button-toggle">Смотреть</button>
             </div>
           </div>
           <div class="video-container">
-            <iframe id="player-2" class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/UdTxMBUC6Yg?enablejsapi=1" allowfullscreen></iframe>
+            <div id="player-2" data-src="https://www.youtube.com/embed/UdTxMBUC6Yg?enablejsapi=1" class="w-full aspect-video rounded shadow bg-gray-200"></div>
             <div class="play-button">
               <button data-player="player-2" class="bg-red-600 text-white py-1 px-3 rounded play-button-toggle">Смотреть</button>
             </div>
           </div>
           <div class="video-container">
-            <iframe id="player-3" class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/94F5D2DTucw?enablejsapi=1" allowfullscreen></iframe>
+            <div id="player-3" data-src="https://www.youtube.com/embed/94F5D2DTucw?enablejsapi=1" class="w-full aspect-video rounded shadow bg-gray-200"></div>
             <div class="play-button">
               <button data-player="player-3" class="bg-red-600 text-white py-1 px-3 rounded play-button-toggle">Смотреть</button>
             </div>
@@ -335,26 +393,36 @@
     const comingSoon = document.getElementById('coming-soon');
     const fullSite = document.getElementById('full-site');
     const navMenu = document.getElementById('nav-menu');
+    const canvas = document.getElementById('backgroundCanvas');
 
     if (isDev) {
+      console.log('Режим разработчика: Показываем полную версию');
       comingSoon.style.display = 'none';
       fullSite.style.display = 'block';
       navMenu.style.display = 'block';
+      canvas.style.display = 'block';
     } else {
+      console.log('Режим заглушки: Показываем только coming-soon');
       comingSoon.style.display = 'flex';
       fullSite.style.display = 'none';
       navMenu.style.display = 'none';
+      canvas.style.display = 'none';
+      console.log('Заглушка отображается:', comingSoon.style.display);
+      console.log('Стили заглушки:', getComputedStyle(comingSoon));
+      console.log('Текст и кнопки:', comingSoon.innerHTML);
     }
 
     // Бургер-меню
     document.getElementById('burger').addEventListener('click', () => {
       const menu = document.getElementById('mobile-menu');
       menu.classList.toggle('hidden');
+      console.log('Бургер-меню:', menu.classList.contains('hidden') ? 'скрыто' : 'показано');
     });
 
     // Анимация фона с плавающими смайликами
-    const canvas = document.getElementById('backgroundCanvas');
     const ctx = canvas.getContext('2d');
+    let animationEnabled = isDev;
+    let requestId = null;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -388,35 +456,69 @@
     }
 
     function init() {
-      const particleCount = window.innerWidth <= 640 ? 20 : 50; // Меньше частиц на мобильных
+      const particleCount = 20;
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle());
       }
     }
 
     function animate() {
+      if (!animationEnabled) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+      }
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(particle => {
         particle.update();
         particle.draw();
       });
-      requestAnimationFrame(animate);
+      requestId = requestAnimationFrame(animate);
     }
 
-    init();
-    animate();
+    if (isDev) {
+      init();
+      requestId = requestAnimationFrame(animate);
+    }
 
     window.addEventListener('resize', () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     });
 
-    // Плавное появление блоков
+    // Кнопка выключения анимации
+    document.getElementById('toggle-animation').addEventListener('click', () => {
+      animationEnabled = !animationEnabled;
+      console.log('Анимация:', animationEnabled ? 'включена' : 'выключена');
+      document.getElementById('toggle-animation').textContent = animationEnabled ? 'Выключить анимацию' : 'Включить анимацию';
+      if (animationEnabled && !requestId) {
+        canvas.style.display = 'block';
+        init();
+        requestId = requestAnimationFrame(animate);
+      } else if (!animationEnabled && requestId) {
+        cancelAnimationFrame(requestId);
+        requestId = null;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.style.display = 'none';
+      }
+    });
+
+    // Ленивая загрузка видеоаватарки
+    const avatarVideo = document.querySelector('.avatar');
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
+        if (entry.isIntersecting) {
+          const video = entry.target;
+          if (video.dataset.src) {
+            video.src = video.dataset.src;
+            video.removeAttribute('data-src');
+          }
+          observer.unobserve(video);
+        }
       });
     }, { threshold: 0.1 });
+    if (avatarVideo) observer.observe(avatarVideo);
+
+    // Плавное появление блоков
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
     // Темная тема по системным настройкам
@@ -430,23 +532,23 @@
     // YouTube IFrame API
     let players = {};
     function onYouTubeIframeAPIReady() {
+      if (!isDev) return;
       try {
-        players['player-1'] = new YT.Player('player-1', {
-          events: {
-            'onReady': onPlayerReady,
-            'onError': onPlayerError
-          }
-        });
-        players['player-2'] = new YT.Player('player-2', {
-          events: {
-            'onReady': onPlayerReady,
-            'onError': onPlayerError
-          }
-        });
-        players['player-3'] = new YT.Player('player-3', {
-          events: {
-            'onReady': onPlayerReady,
-            'onError': onPlayerError
+        ['player-1', 'player-2', 'player-3'].forEach(playerId => {
+          const container = document.getElementById(playerId);
+          if (container && container.dataset.src) {
+            const iframe = document.createElement('iframe');
+            iframe.id = playerId;
+            iframe.className = 'w-full aspect-video rounded shadow';
+            iframe.src = container.dataset.src;
+            iframe.setAttribute('allowfullscreen', '');
+            container.replaceWith(iframe);
+            players[playerId] = new YT.Player(playerId, {
+              events: {
+                'onReady': onPlayerReady,
+                'onError': onPlayerError
+              }
+            });
           }
         });
       } catch (e) {
@@ -484,7 +586,7 @@
     });
 
     // Google Analytics события
-    document.querySelector('.donation-link').addEventListener('click', () => {
+    document.querySelector('.donation-link')?.addEventListener('click', () => {
       gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
     });
     document.querySelectorAll('.main-telegram').forEach(link => {
@@ -502,7 +604,7 @@
         gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
       });
     });
-    document.querySelector('.youtube-link').addEventListener('click', () => {
+    document.querySelector('.youtube-link')?.addEventListener('click', () => {
       gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
     });
   </script>
