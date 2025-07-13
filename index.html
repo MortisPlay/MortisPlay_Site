@@ -1,4 +1,43 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -51,15 +90,63 @@
     nav a.active {
       @apply border-b-2 border-indigo-400;
     }
+    /* Мобильное меню */
+    #nav-menu {
+      transition: transform 0.3s ease-in-out;
+    }
+    #nav-menu.hidden {
+      transform: translateX(100%);
+    }
+    @media (max-width: 640px) {
+      #nav-menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 75%;
+        background: #4c51bf;
+        flex-direction: column;
+        padding: 2rem;
+        z-index: 30;
+      }
+      #nav-toggle {
+        display: block;
+      }
+      .avatar {
+        width: 6rem;
+        height: 6rem;
+      }
+      canvas {
+        display: none; /* Отключаем тяжелую анимацию на мобильных */
+      }
+      h1, h2 {
+        font-size: 1.5rem;
+      }
+      p, a {
+        font-size: 0.9rem;
+      }
+      .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+    @media (min-width: 641px) {
+      #nav-toggle {
+        display: none;
+      }
+      #nav-menu {
+        transform: translateX(0);
+      }
+    }
   </style>
 </head>
 <body class="text-gray-800 font-sans">
   <canvas id="backgroundCanvas"></canvas>
 
   <!-- Заглушка -->
-  <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in">
-    <h1 class="text-3xl sm:text-4xl font-bold text-white mb-6">Mortis Play — Скоро открытие!</h1>
-    <p class="text-lg text-white mb-6">Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить!</p>
+  <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in px-4">
+    <h1 class="text-2xl sm:text-4xl font-bold text-white mb-6">Mortis Play — Скоро открытие!</h1>
+    <p class="text-base sm:text-lg text-white mb-6">Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить!</p>
     <div class="flex flex-col sm:flex-row gap-4">
       <a href="https://t.me/MortisPlayTG" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Основной канал</a>
       <a href="https://t.me/+VhpxzWl9ygYzMmFi" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Частный канал (вход платный)</a>
@@ -67,11 +154,12 @@
   </section>
 
   <!-- Полная версия сайта -->
-  <div id="full-site" style="display: none;">
+  <div id="full-site">
     <!-- Навигация -->
     <nav class="bg-indigo-700 dark:bg-gray-900 text-white fixed top-0 w-full shadow z-20">
       <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-        <ul class="flex space-x-4 text-sm">
+        <button id="nav-toggle" class="text-2xl sm:hidden">☰</button>
+        <ul id="nav-menu" class="flex space-x-4 text-sm sm:flex sm:items-center hidden sm:flex-row">
           <li><a href="#about" class="hover:underline">Обо мне</a></li>
           <li><a href="#videos" class="hover:underline">Видео</a></li>
           <li><a href="#telegram" class="hover:underline">Telegram</a></li>
@@ -85,22 +173,23 @@
     <!-- Обо мне -->
     <section id="about" class="pt-24 pb-16">
       <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
-        <video autoplay loop muted playsinline class="w-40 h-40 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="https://via.placeholder.com/150.mp4" type="video/mp4">
+        <video autoplay loop muted playsinline class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="https://via.placeholder.com/150.mp4" type="video/mp4">
           Твой браузер не поддерживает видео.
         </video>
         <div>
-          <h2 class="text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Обо мне</h2>
-          <p class="text-lg text-gray-700 dark:text-gray-300">
+          <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Обо мне</h2>
+          <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
             Привет! Я Mortis Play — стример, геймер и мастер мемов. Мои стримы по Brawl Stars и другим играм собирают тысячи зрителей, а Telegram-каналы полны эпичных моментов и юмора. 
             Моя цель — создавать контент, который зажигает сердца и вызывает улыбки. Подписывайся, чтобы быть в деле!
           </p>
         </div>
       </div>
     </section>
-<!-- Видео -->
+
+    <!-- Видео -->
     <section id="videos" class="bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4">
-        <h2 class="text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-8">Мои видео</h2>
+        <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-8">Мои видео</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
           <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/VIDEO_ID_2" allowfullscreen></iframe>
@@ -115,8 +204,8 @@
     <!-- Telegram посты -->
     <section id="telegram" class="py-16">
       <div class="container mx-auto px-4">
-        <h2 class="text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-6">Мои посты в Telegram</h2>
-        <div class="grid gap-4" id="telegram-posts">
+        <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-6">Мои посты в Telegram</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="telegram-posts">
           <div class="bg-gray-100 dark:bg-gray-700 rounded p-4 shadow">
             <p class="text-gray-700 dark:text-gray-300">🔥 Новый стрим по Brawl Stars сегодня в 20:00! Готовим тактики и раздаём гемы! 💎</p>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">10.07.2025, 15:30</p>
@@ -139,8 +228,8 @@
     <!-- Проекты -->
     <section id="projects" class="bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4">
-        <h2 class="text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-6">Мои проекты</h2>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-6">Мои проекты</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow">
             <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Grok Alpha</h3>
             <p class="text-sm text-gray-600 dark:text-gray-300">Прототип сайта, созданный за один день с использованием ИИ-технологий.</p>
@@ -156,10 +245,11 @@
         </div>
       </div>
     </section>
-<!-- Контакты -->
+
+    <!-- Контакты -->
     <section id="contact" class="py-16">
       <div class="container mx-auto px-4 text-center">
-        <h2 class="text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Связь со мной</h2>
+        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Связь со мной</h2>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Хочешь предложить коллаб или просто поболтать? Пиши!</p>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Telegram: <a href="https://t.me/MortisPlayTG" class="text-indigo-600 dark:text-indigo-400 underline">@MortisPlayTG</a></p>
         <p class="text-gray-600 dark:text-gray-300">Email: <a href="mailto:mortis.play@example.com" class="text-indigo-600 dark:text-indigo-400 underline">mortis.play@example.com</a></p>
@@ -177,6 +267,9 @@
     if (new URLSearchParams(window.location.search).get('dev') === 'true') {
       document.getElementById('coming-soon').style.display = 'none';
       document.getElementById('full-site').style.display = 'block';
+    } else {
+      document.getElementById('coming-soon').style.display = 'flex';
+      document.getElementById('full-site').style.display = 'none';
     }
 
     // Анимация фона с плавающими смайликами
@@ -209,13 +302,14 @@
 
       draw() {
         ctx.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.5)';
-        ctx.font = ${this.size}px Arial;
+        ctx.font = `${this.size}px Arial`;
         ctx.fillText(this.emote, this.x, this.y);
       }
     }
 
     function init() {
-      for (let i = 0; i < 50; i++) {
+      const particleCount = window.innerWidth <= 640 ? 20 : 50; // Меньше частиц на мобильных
+      for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle());
       }
     }
@@ -257,10 +351,17 @@
       localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
     });
 
+    // Гамбургер-меню для мобильных
+    const navToggle = document.getElementById('nav-toggle');
+    const navMenu = document.getElementById('nav-menu');
+    navToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('hidden');
+    });
+
     // Подсветка активного пункта меню
     const navLinks = document.querySelectorAll('nav a');
     window.addEventListener('scroll', () => {
-let current = '';
+      let current = '';
       document.querySelectorAll('section').forEach(section => {
         const sectionTop = section.offsetTop;
         if (window.scrollY >= sectionTop - 60) {
