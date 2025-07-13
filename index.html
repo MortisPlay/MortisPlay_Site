@@ -120,12 +120,9 @@
     .video-container:hover {
       transform: scale(1.05);
     }
-    .video-container:hover .play-button {
-      opacity: 1;
-    }
     .play-button {
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      margin-top: 0.5rem;
+      text-align: center;
     }
     @media (max-width: 640px) {
       .avatar {
@@ -219,19 +216,19 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div class="video-container">
             <iframe id="player-1" class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/UHVmemVZq48?enablejsapi=1" allowfullscreen></iframe>
-            <div class="absolute inset-0 flex items-center justify-center play-button">
+            <div class="play-button">
               <button data-player="player-1" class="bg-red-600 text-white py-1 px-3 rounded play-button-toggle">Смотреть</button>
             </div>
           </div>
           <div class="video-container">
             <iframe id="player-2" class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/UdTxMBUC6Yg?enablejsapi=1" allowfullscreen></iframe>
-            <div class="absolute inset-0 flex items-center justify-center play-button">
+            <div class="play-button">
               <button data-player="player-2" class="bg-red-600 text-white py-1 px-3 rounded play-button-toggle">Смотреть</button>
             </div>
           </div>
           <div class="video-container">
             <iframe id="player-3" class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/94F5D2DTucw?enablejsapi=1" allowfullscreen></iframe>
-            <div class="absolute inset-0 flex items-center justify-center play-button">
+            <div class="play-button">
               <button data-player="player-3" class="bg-red-600 text-white py-1 px-3 rounded play-button-toggle">Смотреть</button>
             </div>
           </div>
@@ -433,16 +430,44 @@
     // YouTube IFrame API
     let players = {};
     function onYouTubeIframeAPIReady() {
-      players['player-1'] = new YT.Player('player-1', {});
-      players['player-2'] = new YT.Player('player-2', {});
-      players['player-3'] = new YT.Player('player-3', {});
+      try {
+        players['player-1'] = new YT.Player('player-1', {
+          events: {
+            'onReady': onPlayerReady,
+            'onError': onPlayerError
+          }
+        });
+        players['player-2'] = new YT.Player('player-2', {
+          events: {
+            'onReady': onPlayerReady,
+            'onError': onPlayerError
+          }
+        });
+        players['player-3'] = new YT.Player('player-3', {
+          events: {
+            'onReady': onPlayerReady,
+            'onError': onPlayerError
+          }
+        });
+      } catch (e) {
+        console.error('Ошибка инициализации YouTube плееров:', e);
+      }
     }
 
+    function onPlayerReady(event) {
+      console.log('Плеер готов:', event.target.getIframe().id);
+    }
+
+    function onPlayerError(event) {
+      console.error('Ошибка плеера:', event.target.getIframe().id, event.data);
+    }
+
+    // Обработка кнопок воспроизведения
     document.querySelectorAll('.play-button-toggle').forEach(button => {
       button.addEventListener('click', () => {
         const playerId = button.getAttribute('data-player');
         const player = players[playerId];
-        if (player) {
+        if (player && typeof player.playVideo === 'function') {
           const state = player.getPlayerState();
           if (state === YT.PlayerState.PLAYING) {
             player.pauseVideo();
@@ -452,6 +477,8 @@
             button.textContent = 'Пауза';
             gtag('event', 'play_video', { 'event_category': 'Engagement', 'event_label': playerId });
           }
+        } else {
+          console.error('Плеер не найден или не готов:', playerId);
         }
       });
     });
