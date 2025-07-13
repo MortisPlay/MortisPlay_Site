@@ -43,6 +43,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mortis Play</title>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-W7QBLDDSSK');
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html { scroll-behavior: smooth; }
@@ -143,20 +151,48 @@
 <body class="text-gray-800 font-sans">
   <canvas id="backgroundCanvas"></canvas>
 
+  <!-- Навигация -->
+  <nav id="nav-menu" class="fixed top-0 w-full bg-indigo-900 dark:bg-gray-900 text-white py-4 z-10" style="display: none;">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <a href="#welcome" class="text-xl font-bold">Mortis Play</a>
+      <div class="hidden md:flex space-x-4">
+        <a href="#welcome" class="hover:text-indigo-300">Главная</a>
+        <a href="#about" class="hover:text-indigo-300">Информация</a>
+        <a href="#videos" class="hover:text-indigo-300">Видео</a>
+        <a href="#memes" class="hover:text-indigo-300">Мемы</a>
+        <a href="#fan-memes" class="hover:text-indigo-300">Мемы от авторов</a>
+        <a href="#projects" class="hover:text-indigo-300">Проекты</a>
+        <a href="#news" class="hover:text-indigo-300">Новости</a>
+        <a href="#contact" class="hover:text-indigo-300">Контакты</a>
+      </div>
+      <button id="burger" class="md:hidden text-2xl">☰</button>
+      <div id="mobile-menu" class="hidden md:hidden flex-col absolute top-16 left-0 w-full bg-indigo-900 dark:bg-gray-900 text-white p-4">
+        <a href="#welcome" class="py-2 hover:text-indigo-300">Главная</a>
+        <a href="#about" class="py-2 hover:text-indigo-300">Информация</a>
+        <a href="#videos" class="py-2 hover:text-indigo-300">Видео</a>
+        <a href="#memes" class="py-2 hover:text-indigo-300">Мемы</a>
+        <a href="#fan-memes" class="py-2 hover:text-indigo-300">Мемы от авторов</a>
+        <a href="#projects" class="py-2 hover:text-indigo-300">Проекты</a>
+        <a href="#news" class="py-2 hover:text-indigo-300">Новости</a>
+        <a href="#contact" class="py-2 hover:text-indigo-300">Контакты</a>
+      </div>
+    </div>
+  </nav>
+
   <!-- Заглушка -->
   <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in px-4">
     <h1 class="text-2xl sm:text-4xl font-bold text-white mb-6">Mortis Play — Скоро открытие!</h1>
     <p class="text-base sm:text-lg text-white mb-6">Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить!</p>
     <div class="flex flex-col sm:flex-row gap-4">
-      <a href="https://t.me/MortisPlayTG" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Основной канал</a>
-      <a href="https://t.me/+VhpxzWl9ygYzMmFi" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Частный канал (вход платный)</a>
+      <a href="https://t.me/MortisPlayTG" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition main-telegram">Основной канал</a>
+      <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition private-telegram">Частный канал (вход платный)</a>
     </div>
   </section>
 
   <!-- Полная версия сайта -->
   <div id="full-site" style="display: none;">
     <!-- Приветствие -->
-    <section id="welcome" class="py-16 text-center fade-in">
+    <section id="welcome" class="py-16 text-center fade-in mt-16">
       <h1 class="text-2xl sm:text-4xl font-bold text-indigo-700 dark:text-indigo-300 mb-4 welcome-text">Йо, это Mortis Play! Врывайся в мой мир! 🚀</h1>
       <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mx-auto max-w-2xl">Готов к эпичным каткам, мемам и взрывному вайбу? Подписывайся на мои каналы и становись частью тусы! 😎</p>
     </section>
@@ -201,7 +237,7 @@
           </div>
         </div>
         <div class="text-center mt-6">
-          <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-full font-semibold transition">Смотреть все видео</a>
+          <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-full font-semibold transition youtube-link">Смотреть все видео</a>
         </div>
       </div>
     </section>
@@ -226,7 +262,7 @@
           <li>📌 Мемы должны быть про Brawl Stars, игры или мой контент.</li>
           <li>🚫 Никаких оскорблений, политики или 18+ контента.</li>
           <li>✍️ Укажи свой ник или имя (например, @dimap7221).</li>
-          <li>📩 Присылай мемы в Telegram (<a href="https://t.me/dimap7221" class="text-indigo-600 dark:text-indigo-400 underline">@dimap7221</a>) или на email (<a href="mailto:mortisplay@mail.ru" class="text-indigo-600 dark:text-indigo-400 underline">mortisplay@mail.ru</a>).</li>
+          <li>📩 Присылай мемы в Telegram (<a href="https://t.me/dimap7221" class="text-indigo-600 dark:text-indigo-400 underline personal-telegram">@dimap7221</a>) или на email (<a href="mailto:mortisplay@mail.ru" class="text-indigo-600 dark:text-indigo-400 underline">mortisplay@mail.ru</a>).</li>
           <li>🏆 Лучшие мемы попадут на сайт и в стримы!</li>
         </ul>
         <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Пока ждём первые шедевры! 🚀</p>
@@ -278,12 +314,12 @@
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Связь со мной</h2>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Хочешь предложить коллаб или просто поболтать? Пиши!</p>
-        <p class="text-gray-600 dark:text-gray-300 mb-2">Мой Telegram: <a href="https://t.me/dimap7221" class="text-indigo-600 dark:text-indigo-400 underline">@dimap7221</a></p>
-        <p class="text-gray-600 dark:text-gray-300 mb-2">Telegram канал: <a href="https://t.me/MortisPlayTG" class="text-indigo-600 dark:text-indigo-400 underline">@MortisPlayTG</a></p>
-        <p class="text-gray-600 dark:text-gray-300 mb-2">Частный канал: <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="text-indigo-600 dark:text-indigo-400 underline">t.me/+VhpxzWl9ygYzMmFi</a>. Мы скучаем ;(</p>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">Мой Telegram: <a href="https://t.me/dimap7221" class="text-indigo-600 dark:text-indigo-400 underline personal-telegram">@dimap7221</a></p>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">Telegram канал: <a href="https://t.me/MortisPlayTG" class="text-indigo-600 dark:text-indigo-400 underline main-telegram">@MortisPlayTG</a></p>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">Частный канал: <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="text-indigo-600 dark:text-indigo-400 underline private-telegram">t.me/+VhpxzWl9ygYzMmFi</a>. Мы скучаем ;(</p>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Email: <a href="mailto:mortisplay@mail.ru" class="text-indigo-600 dark:text-indigo-400 underline">mortisplay@mail.ru</a></p>
         <div class="mt-4">
-          <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-full font-semibold transition">Поддержать проект! 💰</a>
+          <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-full font-semibold transition donation-link">Поддержать проект! 💰</a>
         </div>
       </div>
     </section>
@@ -296,19 +332,28 @@
 
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
-    // Показ полной версии, если ?dev=true
+    // Показ полной версии и навигации, если ?dev=true
     const urlParams = new URLSearchParams(window.location.search);
     const isDev = urlParams.get('dev') === 'true';
     const comingSoon = document.getElementById('coming-soon');
     const fullSite = document.getElementById('full-site');
+    const navMenu = document.getElementById('nav-menu');
 
     if (isDev) {
       comingSoon.style.display = 'none';
       fullSite.style.display = 'block';
+      navMenu.style.display = 'block';
     } else {
       comingSoon.style.display = 'flex';
       fullSite.style.display = 'none';
+      navMenu.style.display = 'none';
     }
+
+    // Бургер-меню
+    document.getElementById('burger').addEventListener('click', () => {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    });
 
     // Анимация фона с плавающими смайликами
     const canvas = document.getElementById('backgroundCanvas');
@@ -405,9 +450,33 @@
           } else {
             player.playVideo();
             button.textContent = 'Пауза';
+            gtag('event', 'play_video', { 'event_category': 'Engagement', 'event_label': playerId });
           }
         }
       });
+    });
+
+    // Google Analytics события
+    document.querySelector('.donation-link').addEventListener('click', () => {
+      gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
+    });
+    document.querySelectorAll('.main-telegram').forEach(link => {
+      link.addEventListener('click', () => {
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'MainTelegram' });
+      });
+    });
+    document.querySelectorAll('.private-telegram').forEach(link => {
+      link.addEventListener('click', () => {
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PrivateTelegram' });
+      });
+    });
+    document.querySelectorAll('.personal-telegram').forEach(link => {
+      link.addEventListener('click', () => {
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
+      });
+    });
+    document.querySelector('.youtube-link').addEventListener('click', () => {
+      gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
     });
   </script>
 </body>
