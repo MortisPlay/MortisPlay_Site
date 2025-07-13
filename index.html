@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MortisPlay</title>
+  <title>Mortis Play</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html { scroll-behavior: smooth; }
@@ -13,43 +13,64 @@
       animation: gradient 15s ease infinite;
       overflow-x: hidden;
       position: relative;
+      transition: background-color 0.3s, color 0.3s;
     }
-    body::before {
-      content: '';
+    body.dark {
+      background: linear-gradient(45deg, #1a1a1a, #2d3748, #4a5568, #1a1a1a);
+      color: #e2e8f0;
+    }
+    canvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="10" y="30" font-size="20" fill="rgba(255,255,255,0.2)">-_-</text><text x="60" y="60" font-size="20" fill="rgba(255,255,255,0.2)">>:(</text><text x="20" y="80" font-size="20" fill="rgba(255,255,255,0.2)">>:D</text><text x="40" y="40" font-size="20" fill="rgba(255,255,255,0.2)">^_^</text></svg>');
-      background-repeat: repeat;
-      background-size: 100px 100px;
       z-index: -1;
+      opacity: 0.2;
     }
     @keyframes gradient {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    .fade-in { opacity: 0; transform: translateY(20px); transition: 0.6s ease-out; }
-    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .avatar {
+      transition: transform 0.3s ease;
+    }
+    .avatar:hover {
+      transform: scale(1.1);
+    }
+    nav a.active {
+      @apply border-b-2 border-indigo-400;
+    }
   </style>
 </head>
 <body class="text-gray-800 font-sans">
+  <canvas id="backgroundCanvas"></canvas>
+
   <!-- Заглушка -->
   <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in">
-    <h1 class="text-3xl sm:text-4xl font-bold text-white mb-6">Скоро открытие!</h1>
+    <h1 class="text-3xl sm:text-4xl font-bold text-white mb-6">Mortis Play — Скоро открытие!</h1>
+    <p class="text-lg text-white mb-6">Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить!</p>
     <div class="flex flex-col sm:flex-row gap-4">
-      <a href="https://t.me/MortisPlayTG" target="_blank" class="bg-indigo-600 text-white py-2 px-4 rounded-full font-semibold">Основной канал</a>
-      <a href="https://t.me/+VhpxzWl9ygYzMmFi" target="_blank" class="bg-indigo-600 text-white py-2 px-4 rounded-full font-semibold">Частный канал (вход платный)</a>
+      <a href="https://t.me/MortisPlayTG" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Основной канал</a>
+      <a href="https://t.me/+VhpxzWl9ygYzMmFi" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Частный канал (вход платный)</a>
     </div>
   </section>
 
-  <!-- Полная версия сайта (скрыта по умолчанию) -->
+  <!-- Полная версия сайта -->
   <div id="full-site" style="display: none;">
     <!-- Навигация -->
-    <nav class="bg-indigo-700 text-white fixed top-0 w-full shadow z-20">
-      <div class="container mx-auto px-4 py-3 flex justify-between">
+    <nav class="bg-indigo-700 dark:bg-gray-900 text-white fixed top-0 w-full shadow z-20">
+      <div class="container mx-auto px-4 py-3 flex justify-between items-center">
         <ul class="flex space-x-4 text-sm">
           <li><a href="#about" class="hover:underline">Обо мне</a></li>
           <li><a href="#videos" class="hover:underline">Видео</a></li>
@@ -57,30 +78,36 @@
           <li><a href="#projects" class="hover:underline">Проекты</a></li>
           <li><a href="#contact" class="hover:underline">Контакты</a></li>
         </ul>
-        <button id="theme-toggle">🌙</button>
+        <button id="theme-toggle" class="text-2xl">🌙</button>
       </div>
     </nav>
 
     <!-- Обо мне -->
     <section id="about" class="pt-24 pb-16">
       <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
-        <video autoplay loop muted playsinline 
-       class="w-40 h-40 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover">
-  <source src="photo_2023-11-05_19-27-38.mp4" type="video/mp4">
-  Твой браузер не поддерживает видео.
-</video>
-        <p class="text-lg text-gray-700">Привет! Я MortisPlay — создаю проекты, делаю видосы и веду Telegram-каналы. Следи за мной!</p>
+        <video autoplay loop muted playsinline class="w-40 h-40 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="https://via.placeholder.com/150.mp4" type="video/mp4">
+          Твой браузер не поддерживает видео.
+        </video>
+        <div>
+          <h2 class="text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Обо мне</h2>
+          <p class="text-lg text-gray-700 dark:text-gray-300">
+            Привет! Я Mortis Play — стример, геймер и мастер мемов. Мои стримы по Brawl Stars и другим играм собирают тысячи зрителей, а Telegram-каналы полны эпичных моментов и юмора. 
+            Моя цель — создавать контент, который зажигает сердца и вызывает улыбки. Подписывайся, чтобы быть в деле!
+          </p>
+        </div>
       </div>
     </section>
-
-    <!-- Видео -->
-    <section id="videos" class="bg-white py-16">
+<!-- Видео -->
+    <section id="videos" class="bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4">
-        <h2 class="text-2xl font-bold text-center mb-8 text-indigo-700">Видео</h2>
+        <h2 class="text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-8">Мои видео</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-          <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/VIDEO_ID_2" allowfullscreen></iframe>
-          <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/VIDEO_ID_3" allowfullscreen></iframe>
+          <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+          <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/VIDEO_ID_2" allowfullscreen></iframe>
+          <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/VIDEO_ID_3" allowfullscreen></iframe>
+        </div>
+        <div class="text-center mt-6">
+          <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-full font-semibold transition">Смотреть все видео</a>
         </div>
       </div>
     </section>
@@ -88,50 +115,127 @@
     <!-- Telegram посты -->
     <section id="telegram" class="py-16">
       <div class="container mx-auto px-4">
-        <h2 class="text-2xl font-bold text-center text-indigo-700 mb-6">Посты из Telegram</h2>
+        <h2 class="text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-6">Мои посты в Telegram</h2>
         <div class="grid gap-4" id="telegram-posts">
-          <!-- Можно вставить посты вручную -->
-          <div class="bg-gray-100 rounded p-4 shadow">Пример поста: Скоро запуск нового сайта! 🔥</div>
-          <div class="bg-gray-100 rounded p-4 shadow">Пример поста: А вот и мемы подъехали 😎</div>
+          <div class="bg-gray-100 dark:bg-gray-700 rounded p-4 shadow">
+            <p class="text-gray-700 dark:text-gray-300">🔥 Новый стрим по Brawl Stars сегодня в 20:00! Готовим тактики и раздаём гемы! 💎</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">10.07.2025, 15:30</p>
+          </div>
+          <div class="bg-gray-100 dark:bg-gray-700 rounded p-4 shadow">
+            <p class="text-gray-700 dark:text-gray-300">😎 Мем дня: Когда твой тиммейт берёт Мортиса и тащит катку! 🏆</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">11.07.2025, 12:00</p>
+          </div>
+          <div class="bg-gray-100 dark:bg-gray-700 rounded p-4 shadow">
+            <p class="text-gray-700 dark:text-gray-300">👀 Анонс: Работаю над гайдом по новому бравлеру! Скоро на канале! 🚀</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">12.07.2025, 18:45</p>
+          </div>
+        </div>
+        <div class="text-center mt-6">
+          <a href="https://t.me/MortisPlayTG" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Перейти в Telegram</a>
         </div>
       </div>
     </section>
 
     <!-- Проекты -->
-    <section id="projects" class="bg-white py-16">
+    <section id="projects" class="bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4">
-        <h2 class="text-2xl font-bold text-center text-indigo-700 mb-6">Мои проекты</h2>
+        <h2 class="text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-6">Мои проекты</h2>
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div class="bg-gray-50 rounded p-4 shadow">
-            <h3 class="font-semibold text-indigo-600">Grok Alpha</h3>
-            <p class="text-sm text-gray-600">Прототип сайта, сделанный за 1 день. Вдохновлён нейросетями.</p>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow">
+            <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Grok Alpha</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Прототип сайта, созданный за один день с использованием ИИ-технологий.</p>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow">
+            <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Brawl Stars Гайды</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Серия обучающих видео для новичков и профи в Brawl Stars.</p>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow">
+            <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Коллаборации со стримерами</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Совместные стримы и проекты с топовыми игровыми блогерами.</p>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- Контакты -->
+<!-- Контакты -->
     <section id="contact" class="py-16">
       <div class="container mx-auto px-4 text-center">
-        <h2 class="text-2xl font-bold text-indigo-700 mb-4">Контакты</h2>
-        <p class="text-gray-600 mb-2">Пиши мне в Telegram: <a href="https://t.me/MortisPlayTG" class="text-indigo-600 underline">@MortisPlayTG</a></p>
-        <p class="text-gray-600">Email: <a href="mailto:example@email.com" class="text-indigo-600 underline">example@email.com</a></p>
+        <h2 class="text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Связь со мной</h2>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">Хочешь предложить коллаб или просто поболтать? Пиши!</p>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">Telegram: <a href="https://t.me/MortisPlayTG" class="text-indigo-600 dark:text-indigo-400 underline">@MortisPlayTG</a></p>
+        <p class="text-gray-600 dark:text-gray-300">Email: <a href="mailto:mortis.play@example.com" class="text-indigo-600 dark:text-indigo-400 underline">mortis.play@example.com</a></p>
       </div>
     </section>
 
     <!-- Футер -->
-    <footer class="bg-indigo-900 text-white text-center py-4">
-      <p class="text-sm">© 2025 MortisPlay.</p>
+    <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
+      <p class="text-sm">© 2025 Mortis Play. Все права защищены.</p>
     </footer>
   </div>
 
-  <!-- Скрипты -->
   <script>
     // Показ полной версии, если ?dev=true
     if (new URLSearchParams(window.location.search).get('dev') === 'true') {
       document.getElementById('coming-soon').style.display = 'none';
       document.getElementById('full-site').style.display = 'block';
     }
+
+    // Анимация фона с плавающими смайликами
+    const canvas = document.getElementById('backgroundCanvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const emotes = [">:(", ">:D", ":)", ":/", ":P", "^_^", "-_-"];
+    const particles = [];
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 20 + 10;
+        this.speedX = Math.random() * 2 - 1;
+        this.speedY = Math.random() * 2 - 1;
+        this.emote = emotes[Math.floor(Math.random() * emotes.length)];
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      }
+
+      draw() {
+        ctx.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.5)';
+        ctx.font = ${this.size}px Arial;
+        ctx.fillText(this.emote, this.x, this.y);
+      }
+    }
+
+    function init() {
+      for (let i = 0; i < 50; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
 
     // Плавное появление блоков
     const observer = new IntersectionObserver(entries => {
@@ -142,8 +246,33 @@
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
     // Темная тема
-    document.getElementById('theme-toggle').addEventListener('click', () => {
+    const themeToggle = document.getElementById('theme-toggle');
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark');
+      themeToggle.textContent = '☀️';
+    }
+    themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('dark');
+      themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // Подсветка активного пункта меню
+    const navLinks = document.querySelectorAll('nav a');
+    window.addEventListener('scroll', () => {
+let current = '';
+      document.querySelectorAll('section').forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (window.scrollY >= sectionTop - 60) {
+          current = section.getAttribute('id');
+        }
+      });
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').slice(1) === current) {
+          link.classList.add('active');
+        }
+      });
     });
   </script>
 </body>
