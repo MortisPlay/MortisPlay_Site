@@ -105,6 +105,20 @@
       background-color: #4f46e5;
       transition: width 0.5s ease-in-out;
     }
+    .video-container {
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+    .video-container:hover {
+      transform: scale(1.05);
+    }
+    .video-container:hover .play-button {
+      opacity: 1;
+    }
+    .play-button {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
     @media (max-width: 640px) {
       .avatar {
         width: 6rem;
@@ -156,9 +170,7 @@
         <div>
           <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Информация</h2>
           <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
-            Привет! Я Mortis Play — стример, геймер и мастер мемов с душой настоящего бойца Brawl Stars! Моя история началась с любви к играм, когда я ещё пацаном гонял в аркады и мечтал стать частью игрового мира. Сегодня мои стримы собирают тысячи зрителей, которые приходят за эпичными катками, взрывным юмором и моими фирменными мемами. 
-            Я специализируюсь на Brawl Stars, но не ограничиваюсь одной игрой — от шутеров до стратегий, я всегда в деле! Мои Telegram-каналы — это место, где рождаются легендарные моменты, от раздачи гемов до безумных челленджей. 
-            Моя миссия — не просто играть, а создавать комьюнити, где каждый чувствует себя как дома. За годы стримерства я организовал десятки турниров, сотрудничал с топовыми блогерами и даже запустил свои гайды, которые помогли тысячам игроков прокачать скилл. Подписывайся, чтобы стать частью нашей тусы и зажигать вместе со мной!
+            Всем привет, с вами Mortisplay32. Настоящее имя — Дмитрий. На этом сайте ты найдёшь: любимые видео, полезную информацию, которую не расскажу нигде, мемы, воссозданные мной и другими авторами (скоро), и связь со мной. Располагайся как тебе удобно и приятного тебе времяпрепровождения на этом удивительном сайте!
           </p>
         </div>
       </div>
@@ -169,12 +181,38 @@
       <div class="container mx-auto px-4">
         <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-8">Мои видео</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/UHVmemVZq48" allowfullscreen></iframe>
-          <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/UdTxMBUC6Yg" allowfullscreen></iframe>
-          <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/94F5D2DTucw" allowfullscreen></iframe>
+          <div class="video-container">
+            <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/UHVmemVZq48" allowfullscreen></iframe>
+            <div class="absolute inset-0 flex items-center justify-center play-button">
+              <button class="bg-red-600 text-white py-1 px-3 rounded">Смотреть</button>
+            </div>
+          </div>
+          <div class="video-container">
+            <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/UdTxMBUC6Yg" allowfullscreen></iframe>
+            <div class="absolute inset-0 flex items-center justify-center play-button">
+              <button class="bg-red-600 text-white py-1 px-3 rounded">Смотреть</button>
+            </div>
+          </div>
+          <div class="video-container">
+            <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/94F5D2DTucw" allowfullscreen></iframe>
+            <div class="absolute inset-0 flex items-center justify-center play-button">
+              <button class="bg-red-600 text-white py-1 px-3 rounded">Смотреть</button>
+            </div>
+          </div>
         </div>
         <div class="text-center mt-6">
           <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-full font-semibold transition">Смотреть все видео</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Мемы (заглушка) -->
+    <section id="memes" class="bg-white dark:bg-gray-800 py-16">
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Мемы</h2>
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Идёт разработка мемов ...</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <img src="https://via.placeholder.com/300x200" alt="Мем заглушка" class="rounded shadow" loading="lazy">
         </div>
       </div>
     </section>
@@ -204,13 +242,30 @@
       </div>
     </section>
 
+    <!-- Новости -->
+    <section id="news" class="bg-white dark:bg-gray-800 py-16">
+      <div class="container mx-auto px-4">
+        <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-6">Новости</h2>
+        <div class="grid grid-cols-1 gap-6">
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center">
+            <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">За последнее время не поступило никаких свежих новостей. Мы скучаем ;(</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Контакты -->
     <section id="contact" class="py-16">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Связь со мной</h2>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Хочешь предложить коллаб или просто поболтать? Пиши!</p>
-        <p class="text-gray-600 dark:text-gray-300 mb-2">Telegram: <a href="https://t.me/MortisPlayTG" class="text-indigo-600 dark:text-indigo-400 underline">@MortisPlayTG</a></p>
-        <p class="text-gray-600 dark:text-gray-300">Email: <a href="mailto:mortisplay@mail.ru" class="text-indigo-600 dark:text-indigo-400 underline">mortisplay@mail.ru</a></p>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">Мой Telegram: <a href="https://t.me/dimap7221" class="text-indigo-600 dark:text-indigo-400 underline">@dimap7221</a></p>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">Telegram канал: <a href="https://t.me/MortisPlayTG" class="text-indigo-600 dark:text-indigo-400 underline">@MortisPlayTG</a></p>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">Частный канал: <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="text-indigo-600 dark:text-indigo-400 underline">t.me/+VhpxzWl9ygYzMmFi</a>. Мы скучаем ;(</p>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">Email: <a href="mailto:mortisplay@mail.ru" class="text-indigo-600 dark:text-indigo-400 underline">mortisplay@mail.ru</a></p>
+        <div class="mt-4">
+          <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-full font-semibold transition">Поддержать проект! 💰</a>
+        </div>
       </div>
     </section>
 
