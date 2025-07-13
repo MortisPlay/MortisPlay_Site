@@ -154,7 +154,7 @@
   </section>
 
   <!-- Полная версия сайта -->
-  <div id="full-site">
+  <div id="full-site" style="display: none;">
     <!-- Навигация -->
     <nav class="bg-indigo-700 dark:bg-gray-900 text-white fixed top-0 w-full shadow z-20">
       <div class="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -218,6 +218,10 @@
             <p class="text-gray-700 dark:text-gray-300">👀 Анонс: Работаю над гайдом по новому бравлеру! Скоро на канале! 🚀</p>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">12.07.2025, 18:45</p>
           </div>
+          <div class="bg-gray-100 dark:bg-gray-700 rounded p-4 shadow">
+            <p class="text-gray-700 dark:text-gray-300">🎮 Новый челлендж: Пройти катку без ульты! Кто со мной? 😜</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">13.07.2025, 09:00</p>
+          </div>
         </div>
         <div class="text-center mt-6">
           <a href="https://t.me/MortisPlayTG" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Перейти в Telegram</a>
@@ -259,17 +263,23 @@
     <!-- Футер -->
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
       <p class="text-sm">© 2025 Mortis Play. Все права защищены.</p>
+      <a href="?" class="text-indigo-400 underline text-sm mt-2 inline-block">Вернуться к заглушке</a>
     </footer>
   </div>
 
   <script>
     // Показ полной версии, если ?dev=true
-    if (new URLSearchParams(window.location.search).get('dev') === 'true') {
-      document.getElementById('coming-soon').style.display = 'none';
-      document.getElementById('full-site').style.display = 'block';
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDev = urlParams.get('dev') === 'true';
+    const comingSoon = document.getElementById('coming-soon');
+    const fullSite = document.getElementById('full-site');
+
+    if (isDev) {
+      comingSoon.style.display = 'none';
+      fullSite.style.display = 'block';
     } else {
-      document.getElementById('coming-soon').style.display = 'flex';
-      document.getElementById('full-site').style.display = 'none';
+      comingSoon.style.display = 'flex';
+      fullSite.style.display = 'none';
     }
 
     // Анимация фона с плавающими смайликами
