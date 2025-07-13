@@ -182,21 +182,21 @@
         <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-8">Мои видео</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div class="video-container">
-            <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/UHVmemVZq48" allowfullscreen></iframe>
+            <iframe id="player-1" class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/UHVmemVZq48?enablejsapi=1" allowfullscreen></iframe>
             <div class="absolute inset-0 flex items-center justify-center play-button">
-              <button class="bg-red-600 text-white py-1 px-3 rounded">Смотреть</button>
+              <button data-player="player-1" class="bg-red-600 text-white py-1 px-3 rounded play-button-toggle">Смотреть</button>
             </div>
           </div>
           <div class="video-container">
-            <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/UdTxMBUC6Yg" allowfullscreen></iframe>
+            <iframe id="player-2" class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/UdTxMBUC6Yg?enablejsapi=1" allowfullscreen></iframe>
             <div class="absolute inset-0 flex items-center justify-center play-button">
-              <button class="bg-red-600 text-white py-1 px-3 rounded">Смотреть</button>
+              <button data-player="player-2" class="bg-red-600 text-white py-1 px-3 rounded play-button-toggle">Смотреть</button>
             </div>
           </div>
           <div class="video-container">
-            <iframe class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/94F5D2DTucw" allowfullscreen></iframe>
+            <iframe id="player-3" class="w-full aspect-video rounded shadow" src="https://www.youtube.com/embed/94F5D2DTucw?enablejsapi=1" allowfullscreen></iframe>
             <div class="absolute inset-0 flex items-center justify-center play-button">
-              <button class="bg-red-600 text-white py-1 px-3 rounded">Смотреть</button>
+              <button data-player="player-3" class="bg-red-600 text-white py-1 px-3 rounded play-button-toggle">Смотреть</button>
             </div>
           </div>
         </div>
@@ -223,15 +223,15 @@
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Мемы от авторов</h2>
         <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Жду твои мемы! 😎 Врывайся с креативом, но следуй правилам:</p>
         <ul class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6 text-left max-w-2xl mx-auto">
-          <li>📌 Мемы должны быть про игры или мои связанные контенты.</li>
+          <li>📌 Мемы должны быть про Brawl Stars, игры или мой контент.</li>
           <li>🚫 Никаких оскорблений, политики или 18+ контента.</li>
-          <li>✍️ Укажи свой ник или имя (например, mortisplay32).</li>
-          <li>📩 Присылай мемы в Telegram канал (предложку) <a href="https://t.me/MortisPlayTG" class="text-indigo-600 dark:text-indigo-400 underline">MortisPlay</a></li>
-          <li>🏆 Лучшие мемы попадут на наш сайт и будет привручен к ним никнейм, созданный мем!</li>
+          <li>✍️ Укажи свой ник или имя (например, @dimap7221).</li>
+          <li>📩 Присылай мемы в Telegram (<a href="https://t.me/dimap7221" class="text-indigo-600 dark:text-indigo-400 underline">@dimap7221</a>) или на email (<a href="mailto:mortisplay@mail.ru" class="text-indigo-600 dark:text-indigo-400 underline">mortisplay@mail.ru</a>).</li>
+          <li>🏆 Лучшие мемы попадут на сайт и в стримы!</li>
         </ul>
         <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Пока ждём первые шедевры! 🚀</p>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <img src="https://via.placeholder.com/300x200" alt="Мем от автора" class="rounded shadow" loading="lazy">
+          <img src="https://via.placeholder.com/300x200" alt="Мем от автора заглушка" class="rounded shadow" loading="lazy">
         </div>
       </div>
     </section>
@@ -280,7 +280,7 @@
         <p class="text-gray-600 dark:text-gray-300 mb-2">Хочешь предложить коллаб или просто поболтать? Пиши!</p>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Мой Telegram: <a href="https://t.me/dimap7221" class="text-indigo-600 dark:text-indigo-400 underline">@dimap7221</a></p>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Telegram канал: <a href="https://t.me/MortisPlayTG" class="text-indigo-600 dark:text-indigo-400 underline">@MortisPlayTG</a></p>
-        <p class="text-gray-600 dark:text-gray-300 mb-2">Частный канал: <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="text-indigo-600 dark:text-indigo-400 underline">mortis32</a></p>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">Частный канал: <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="text-indigo-600 dark:text-indigo-400 underline">t.me/+VhpxzWl9ygYzMmFi</a>. Мы скучаем ;(</p>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Email: <a href="mailto:mortisplay@mail.ru" class="text-indigo-600 dark:text-indigo-400 underline">mortisplay@mail.ru</a></p>
         <div class="mt-4">
           <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-full font-semibold transition">Поддержать проект! 💰</a>
@@ -294,6 +294,7 @@
     </footer>
   </div>
 
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script>
     // Показ полной версии, если ?dev=true
     const urlParams = new URLSearchParams(window.location.search);
@@ -382,6 +383,31 @@
     }
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
       document.body.classList.toggle('dark', e.matches);
+    });
+
+    // YouTube IFrame API
+    let players = {};
+    function onYouTubeIframeAPIReady() {
+      players['player-1'] = new YT.Player('player-1', {});
+      players['player-2'] = new YT.Player('player-2', {});
+      players['player-3'] = new YT.Player('player-3', {});
+    }
+
+    document.querySelectorAll('.play-button-toggle').forEach(button => {
+      button.addEventListener('click', () => {
+        const playerId = button.getAttribute('data-player');
+        const player = players[playerId];
+        if (player) {
+          const state = player.getPlayerState();
+          if (state === YT.PlayerState.PLAYING) {
+            player.pauseVideo();
+            button.textContent = 'Смотреть';
+          } else {
+            player.playVideo();
+            button.textContent = 'Пауза';
+          }
+        }
+      });
     });
   </script>
 </body>
