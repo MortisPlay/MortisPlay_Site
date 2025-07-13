@@ -1,674 +1,150 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Скоро открытие | MortisPlay</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Плавная прокрутка */
-        html {
-            scroll-behavior: smooth;
-        }
-        /* Фон с узорами и анимацией */
-        body {
-            background: linear-gradient(45deg, #0088cc, #33b5e5, #6B7280, #0088cc);
-            background-size: 400%;
-            animation: gradient 15s ease infinite;
-            position: relative;
-            overflow-x: hidden;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="10" y="30" font-size="20" fill="rgba(255,255,255,0.2)">>:(</text><text x="60" y="60" font-size="20" fill="rgba(255,255,255,0.2)">:D</text><text x="20" y="80" font-size="20" fill="rgba(255,255,255,0.2)">:3</text><text x="40" y="40" font-size="20" fill="rgba(255,255,255,0.2)">0_0</text><text x="70" y="20" font-size="20" fill="rgba(255,255,255,0.2)">X_X</text><text x="30" y="60" font-size="20" fill="rgba(255,255,255,0.2)">^_^</text></svg>');
-            background-repeat: repeat;
-            background-size: 100px 100px;
-            z-index: -1;
-        }
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        /* Анимация на мобильных */
-        @media (max-width: 640px) {
-            body {
-                animation: gradient 20s ease infinite; /* Увеличенная длительность для плавности */
-                background-size: 300%; /* Меньший размер для оптимизации */
-            }
-            body::before {
-                background-size: 50px 50px;
-            }
-        }
-        /* Тёмная тема */
-        body.dark {
-            background: linear-gradient(45deg, #0a3d62, #1e3a8a, #374151, #0a3d62);
-            background-size: 400%;
-            animation: gradient 15s ease infinite;
-            color: #e5e7eb;
-        }
-        body.dark::before {
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="10" y="30" font-size="20" fill="rgba(255,255,255,0.3)">>:(</text><text x="60" y="60" font-size="20" fill="rgba(255,255,255,0.3)">:D</text><text x="20" y="80" font-size="20" fill="rgba(255,255,255,0.3)">:3</text><text x="40" y="40" font-size="20" fill="rgba(255,255,255,0.3)">0_0</text><text x="70" y="20" font-size="20" fill="rgba(255,255,255,0.3)">X_X</text><text x="30" y="60" font-size="20" fill="rgba(255,255,255,0.3)">^_^</text></svg>');
-        }
-        @media (max-width: 640px) {
-            body.dark {
-                animation: gradient 20s ease infinite;
-                background-size: 300%;
-            }
-            body.dark::before {
-                background-size: 50px 50px;
-            }
-        }
-        body.dark .bg-white {
-            background: #1f2937;
-        }
-        body.dark .text-gray-600 {
-            color: #d1d5db;
-        }
-        body.dark .text-indigo-700 {
-            color: #a5b4fc;
-        }
-        body.dark .bg-gray-50 {
-            background: #374151;
-        }
-        /* Анимация появления */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        /* Анимация плавающих эмодзи */
-        .floating-emoji {
-            position: absolute;
-            font-size: 1.5rem;
-            opacity: 0.3;
-            pointer-events: none;
-            animation: floatDown 5s linear forwards;
-            z-index: -1;
-        }
-        @keyframes floatDown {
-            0% { transform: translateY(-10px); opacity: 0.3; }
-            100% { transform: translateY(100vh); opacity: 0; }
-        }
-        @media (max-width: 640px) {
-            .floating-emoji {
-                font-size: 1rem;
-            }
-        }
-        /* Стили для заглушки */
-        #coming-soon {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        #coming-soon h1 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        @media (max-width: 640px) {
-            #coming-soon h1 {
-                font-size: 1.5rem;
-            }
-        }
-        /* Анимация для кнопок Telegram */
-        .telegram-button {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @media (min-width: 640px) {
-            .telegram-button:hover {
-                transform: scale(1.05);
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            }
-        }
-        .telegram-button:active {
-            transform: scale(0.95);
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        /* Ховер-эффект для карточек */
-        .card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        @media (min-width: 640px) {
-            .card:hover {
-                transform: scale(1.03);
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            }
-        }
-        /* Компактная навигация */
-        nav {
-            height: 50px;
-        }
-        .nav-links {
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-        }
-        @media (max-width: 640px) {
-            .nav-links {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                padding: 0 0.5rem;
-            }
-            .nav-links::-webkit-scrollbar {
-                display: none;
-            }
-            .nav-links li {
-                margin-right: 0.75rem;
-            }
-        }
-        /* Стили для ссылок в блоке информации */
-        .contact-link {
-            transition: color 0.2s ease, transform 0.2s ease;
-        }
-        @media (min-width: 640px) {
-            .contact-link:hover {
-                color: #4f46e5;
-                transform: translateX(4px);
-            }
-        }
-        /* Модальное окно для галереи мемов */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 50;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal img {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-        .modal.show {
-            display: flex;
-        }
-        /* Скрыть полную версию по умолчанию */
-        #full-site {
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MortisPlay</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body {
+      background: linear-gradient(45deg, #0088cc, #33b5e5, #6B7280, #0088cc);
+      background-size: 400%;
+      animation: gradient 15s ease infinite;
+      overflow-x: hidden;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="10" y="30" font-size="20" fill="rgba(255,255,255,0.2)">-_-</text><text x="60" y="60" font-size="20" fill="rgba(255,255,255,0.2)">>:(</text><text x="20" y="80" font-size="20" fill="rgba(255,255,255,0.2)">>:D</text><text x="40" y="40" font-size="20" fill="rgba(255,255,255,0.2)">^_^</text></svg>');
+      background-repeat: repeat;
+      background-size: 100px 100px;
+      z-index: -1;
+    }
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: 0.6s ease-out; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+  </style>
 </head>
-<body class="font-sans text-gray-800">
-    <!-- Заглушка "Скоро открытие" с кнопками Telegram -->
-    <section id="coming-soon" class="fade-in">
-        <h1>Скоро открытие!</h1>
-        <div class="flex flex-col sm:flex-row gap-4 mt-4">
-            <a href="https://t.me/MortisPlayTG" target="_blank" class="telegram-button inline-flex items-center bg-indigo-600 text-white py-2 px-3 sm:px-4 rounded-full transition-colors text-sm sm:text-base font-semibold">
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.707 17.293a1 1 0 01-1.414 0L12 14.586l-3.293 2.707a1 1 0 01-1.414-1.414l4-4.586a1 1 0 011.414 0l4 4.586a1 1 0 010 1.414zM12 9.414l-4 4.586a1 1 0 01-1.414-1.414l4-4.586a1 1 0 011.414 0l4 4.586a1 1 0 01-1.414 1.414L12 9.414z"/>
-                </svg>
-                Основной канал
-            </a>
-            <a href="https://t.me/+VhpxzWl9ygYzMmFi" target="_blank" class="telegram-button inline-flex items-center bg-indigo-600 text-white py-2 px-3 sm:px-4 rounded-full transition-colors text-sm sm:text-base font-semibold">
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.707 17.293a1 1 0 01-1.414 0L12 14.586l-3.293 2.707a1 1 0 01-1.414-1.414l4-4.586a1 1 0 011.414 0l4 4.586a1 1 0 010 1.414zM12 9.414l-4 4.586a1 1 0 01-1.414-1.414l4-4.586a1 1 0 011.414 0l4 4.586a1 1 0 01-1.414 1.414L12 9.414z"/>
-                </svg>
-                Частный канал (200 звёзд)
-            </a>
-        </div>
+<body class="text-gray-800 font-sans">
+  <!-- Заглушка -->
+  <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in">
+    <h1 class="text-3xl sm:text-4xl font-bold text-white mb-6">Скоро открытие!</h1>
+    <div class="flex flex-col sm:flex-row gap-4">
+      <a href="https://t.me/MortisPlayTG" target="_blank" class="bg-indigo-600 text-white py-2 px-4 rounded-full font-semibold">Основной канал</a>
+      <a href="https://t.me/+VhpxzWl9ygYzMmFi" target="_blank" class="bg-indigo-600 text-white py-2 px-4 rounded-full font-semibold">Частный канал (вход платный)</a>
+    </div>
+  </section>
+
+  <!-- Полная версия сайта (скрыта по умолчанию) -->
+  <div id="full-site" style="display: none;">
+    <!-- Навигация -->
+    <nav class="bg-indigo-700 text-white fixed top-0 w-full shadow z-20">
+      <div class="container mx-auto px-4 py-3 flex justify-between">
+        <ul class="flex space-x-4 text-sm">
+          <li><a href="#about" class="hover:underline">Обо мне</a></li>
+          <li><a href="#videos" class="hover:underline">Видео</a></li>
+          <li><a href="#telegram" class="hover:underline">Telegram</a></li>
+          <li><a href="#projects" class="hover:underline">Проекты</a></li>
+          <li><a href="#contact" class="hover:underline">Контакты</a></li>
+        </ul>
+        <button id="theme-toggle">🌙</button>
+      </div>
+    </nav>
+
+    <!-- Обо мне -->
+    <section id="about" class="pt-24 pb-16">
+      <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
+        <video autoplay loop muted playsinline 
+       class="w-40 h-40 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover">
+  <source src="photo_2023-11-05_19-27-38.mp4" type="video/mp4">
+  Твой браузер не поддерживает видео.
+</video>
+        <p class="text-lg text-gray-700">Привет! Я MortisPlay — создаю проекты, делаю видосы и веду Telegram-каналы. Следи за мной!</p>
+      </div>
     </section>
 
-    <!-- Полная версия сайта -->
-    <div id="full-site">
-        <!-- Навигация -->
-        <nav class="bg-indigo-700 text-white p-2 sm:p-3 fixed w-full top-0 z-20 shadow-lg">
-            <div class="container mx-auto flex justify-start items-center">
-                <ul class="nav-links flex space-x-2 sm:space-x-3 md:space-x-4 text-xs sm:text-sm md:text-base">
-                    <li><a href="#about" class="hover:text-indigo-200 transition-colors">Обо мне</a></li>
-                    <li><a href="#videos" class="hover:text-indigo-200 transition-colors">Видео</a></li>
-                    <li><a href="#memes" class="hover:text-indigo-200 transition-colors">Мемы</a></li>
-                    <li><a href="#telegram" class="hover:text-indigo-200 transition-colors">Telegram</a></li>
-                    <li><a href="#projects" class="hover:text-indigo-200 transition-colors">Проекты</a></li>
-                    <li><a href="#info" class="hover:text-indigo-200 transition-colors">Информация</a></li>
-                </ul>
-                <button id="theme-toggle" class="ml-2 sm:ml-3 text-base sm:text-lg md:text-xl focus:outline-none">🌙</button>
-            </div>
-        </nav>
-
-        <!-- Секция "Обо мне" -->
-        <section id="about" class="py-16 sm:py-20 mt-16 sm:mt-20">
-            <div class="container mx-auto px-4 sm:px-6">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8 text-indigo-700">Обо мне</h2>
-                <div class="flex flex-col md:flex-row items-center bg-white rounded-lg shadow-lg p-4 sm:p-6 fade-in">
-                    <div class="relative">
-                        <img src="https://via.placeholder.com/300" alt="Фото MortisPlay" class="w-40 sm:w-48 md:w-64 h-40 sm:h-48 md:h-64 rounded-full mb-4 sm:mb-6 md:mb-0 md:mr-8 object-cover border-4 border-indigo-200">
-                    </div>
-                    <div>
-                        <p class="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed">
-                            Привет! Меня зовут [Твоё имя]. Я [опиши себя: например, разработчик, блогер, любитель мемов]. 
-                            Этот сайт — моя биография, где я делюсь своими идеями, мемами, проектами и контентом из Telegram. 
-                            Погрузись в мой мир и давай создадим что-то крутое вместе!
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Секция с видео -->
-        <section id="videos" class="bg-white py-16 sm:py-20">
-            <div class="container mx-auto px-4 sm:px-6">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8 text-indigo-700">Мои любимые видео</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                    <!-- Видео 1 -->
-                    <div class="card bg-gray-50 rounded-lg overflow-hidden shadow-md fade-in">
-                        <div class="aspect-w-16 aspect-h-9">
-                            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-                                    frameborder="0" 
-                                    allowfullscreen 
-                                    loading="lazy"
-                                    class="w-full h-full"></iframe>
-                        </div>
-                        <div class="p-3 sm:p-4 text-center">
-                            <p class="text-gray-600 font-semibold text-sm sm:text-base">Классное видео #1</p>
-                            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" class="text-indigo-600 hover:underline text-sm sm:text-base">Смотреть на YouTube</a>
-                        </div>
-                    </div>
-                    <!-- Видео 2 -->
-                    <div class="card bg-gray-50 rounded-lg overflow-hidden shadow-md fade-in">
-                        <div class="aspect-w-16 aspect-h-9">
-                            <iframe src="https://www.youtube.com/embed/VIDEO_ID_2" 
-                                    frameborder="0" 
-                                    allowfullscreen 
-                                    loading="lazy"
-                                    class="w-full h-full"></iframe>
-                        </div>
-                        <div class="p-3 sm:p-4 text-center">
-                            <p class="text-gray-600 font-semibold text-sm sm:text-base">Классное видео #2</p>
-                            <a href="https://www.youtube.com/watch?v=VIDEO_ID_2" target="_blank" class="text-indigo-600 hover:underline text-sm sm:text-base">Смотреть на YouTube</a>
-                        </div>
-                    </div>
-                    <!-- Видео 3 -->
-                    <div class="card bg-gray-50 rounded-lg overflow-hidden shadow-md fade-in">
-                        <div class="aspect-w-16 aspect-h-9">
-                            <iframe src="https://www.youtube.com/embed/VIDEO_ID_3" 
-                                    frameborder="0" 
-                                    allowfullscreen 
-                                    loading="lazy"
-                                    class="w-full h-full"></iframe>
-                        </div>
-                        <div class="p-3 sm:p-4 text-center">
-                            <p class="text-gray-600 font-semibold text-sm sm:text-base">Классное видео #3</p>
-                            <a href="https://www.youtube.com/watch?v=VIDEO_ID_3" target="_blank" class="text-indigo-600 hover:underline text-sm sm:text-base">Смотреть на YouTube</a>
-                        </div>
-                    </div>
-                    <!-- Видео 4 -->
-                    <div class="card bg-gray-50 rounded-lg overflow-hidden shadow-md fade-in">
-                        <div class="aspect-w-16 aspect-h-9">
-                            <iframe src="https://www.youtube.com/embed/VIDEO_ID_4" 
-                                    frameborder="0" 
-                                    allowfullscreen 
-                                    loading="lazy"
-                                    class="w-full h-full"></iframe>
-                        </div>
-                        <div class="p-3 sm:p-4 text-center">
-                            <p class="text-gray-600 font-semibold text-sm sm:text-base">Классное видео #4</p>
-                            <a href="https://www.youtube.com/watch?v=VIDEO_ID_4" target="_blank" class="text-indigo-600 hover:underline text-sm sm:text-base">Смотреть на YouTube</a>
-                        </div>
-                    </div>
-                    <!-- Видео 5 -->
-                    <div class="card bg-gray-50 rounded-lg overflow-hidden shadow-md fade-in">
-                        <div class="aspect-w-16 aspect-h-9">
-                            <iframe src="https://www.youtube.com/embed/VIDEO_ID_5" 
-                                    frameborder="0" 
-                                    allowfullscreen 
-                                    loading="lazy"
-                                    class="w-full h-full"></iframe>
-                        </div>
-                        <div class="p-3 sm:p-4 text-center">
-                            <p class="text-gray-600 font-semibold text-sm sm:text-base">Классное видео #5</p>
-                            <a href="https://www.youtube.com/watch?v=VIDEO_ID_5" target="_blank" class="text-indigo-600 hover:underline text-sm sm:text-base">Смотреть на YouTube</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Секция с мемами -->
-        <section id="memes" class="py-16 sm:py-20 bg-white">
-            <div class="container mx-auto px-4 sm:px-6">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8 text-indigo-700">Мои мемы</h2>
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                    <img src="https://via.placeholder.com/150?text=Meme+1" alt="Мем 1" class="card cursor-pointer rounded-md shadow-md object-cover fade-in">
-                    <img src="https://via.placeholder.com/150?text=Meme+2" alt="Мем 2" class="card cursor-pointer rounded-md shadow-md object-cover fade-in">
-                    <img src="https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif" alt="GIF 1" class="card cursor-pointer rounded-md shadow-md object-cover fade-in">
-                    <img src="https://media.giphy.com/media/26uf2JHNV0Tq3gO1i/giphy.gif" alt="GIF 2" class="card cursor-pointer rounded-md shadow-md object-cover fade-in">
-                </div>
-            </div>
-        </section>
-
-        <!-- Секция Telegram -->
-        <section id="telegram" class="py-16 sm:py-20 bg-white">
-            <div class="container mx-auto px-4 sm:px-6">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8 text-indigo-700">Мои посты в Telegram</h2>
-                <div class="flex justify-center mb-4 sm:mb-6">
-                    <a href="https://t.me/MortisPlayTG" target="_blank" 
-                       class="telegram-button inline-flex items-center bg-indigo-600 text-white py-2 px-3 sm:px-4 rounded-full transition-colors text-sm sm:text-base font-semibold">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.707 17.293a1 1 0 01-1.414 0L12 14.586l-3.293 2.707a1 1 0 01-1.414-1.414l4-4.586a1 1 0 011.414 0l4 4.586a1 1 0 010 1.414zM12 9.414l-4 4.586a1 1 0 01-1.414-1.414l4-4.586a1 1 0 011.414 0l4 4.586a1 1 0 01-1.414 1.414L12 9.414z"/>
-                        </svg>
-                        Подписаться
-                    </a>
-                </div>
-                <div id="telegram-posts" class="grid grid-cols-1 gap-4 sm:gap-6">
-                    <!-- Динамические посты загружаются сюда -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Секция "Мои проекты" -->
-        <section id="projects" class="py-16 sm:py-20">
-            <div class="container mx-auto px-4 sm:px-6">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8 text-indigo-700">Мои проекты</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                    <!-- Проект 1 -->
-                    <div class="card bg-white rounded-lg shadow-md p-3 sm:p-4 fade-in">
-                        <h3 class="text-base sm:text-lg md:text-xl font-semibold text-indigo-600 mb-2">Проект #1</h3>
-                        <p class="text-gray-600 text-xs sm:text-sm md:text-base mb-4">Опиши свой проект: например, приложение, блог или хобби. Добавь детали!</p>
-                        <a href="#" class="text-indigo-600 hover:underline text-sm sm:text-base">Подробнее</a>
-                    </div>
-                    <!-- Проект 2 -->
-                    <div class="card bg-white rounded-lg shadow-md p-3 sm:p-4 fade-in">
-                        <h3 class="text-base sm:text-lg md:text-xl font-semibold text-indigo-600 mb-2">Проект #2</h3>
-                        <p class="text-gray-600 text-xs sm:text-sm md:text-base mb-4">Опиши другой проект или достижение. Это может быть что угодно крутое!</p>
-                        <a href="#" class="text-indigo-600 hover:underline text-sm sm:text-base">Подробнее</a>
-                    </div>
-                    <!-- Проект 3 -->
-                    <div class="card bg-white rounded-lg shadow-md p-3 sm:p-4 fade-in">
-                        <h3 class="text-base sm:text-lg md:text-xl font-semibold text-indigo-600 mb-2">Проект #3</h3>
-                        <p class="text-gray-600 text-xs sm:text-sm md:text-base mb-4">Ещё один проект или идея. Расскажи, что тебя вдохновляет!</p>
-                        <a href="#" class="text-indigo-600 hover:underline text-sm sm:text-base">Подробнее</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Секция "Информация" -->
-        <section id="info" class="py-16 sm:py-20 bg-white">
-            <div class="container mx-auto px-4 sm:px-6 text-center">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-indigo-700 fade-in">Информация</h2>
-                <p class="text-sm sm:text-base md:text-lg text-gray-600 mb-4 sm:mb-6 fade-in">
-                    Хочешь связаться со мной? Вот мои контакты:
-                </p>
-                <div class="max-w-lg mx-auto bg-gray-50 rounded-lg shadow-md p-4 sm:p-6 fade-in">
-                    <ul class="text-sm sm:text-base md:text-lg text-gray-600 space-y-3">
-                        <li class="flex items-center justify-center">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm-1 2l-8 5-8-5h16zM4 18V8l8 5 8-5v10H4z"/>
-                            </svg>
-                            <a href="mailto:your.email@example.com" class="contact-link text-indigo-600 hover:underline">your.email@example.com</a>
-                        </li>
-                        <li class="flex items-center justify-center">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.707 17.293a1 1 0 01-1.414 0L12 14.586l-3.293 2.707a1 1 0 01-1.414-1.414l4-4.586a1 1 0 011.414 0l4 4.586a1 1 0 010 1.414zM12 9.414l-4 4.586a1 1 0 01-1.414-1.414l4-4.586a1 1 0 011.414 0l4 4.586a1 1 0 01-1.414 1.414L12 9.414z"/>
-                            </svg>
-                            <a href="https://t.me/MortisPlayTG" target="_blank" class="contact-link text-indigo-600 hover:underline">@MortisPlayTG</a>
-                        </li>
-                        <li class="flex items-center justify-center">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M23.954 4.569a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.691 8.094 4.066 6.13 1.64 3.161a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.061a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.937 4.937 0 004.604 3.417 9.868 9.868 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63a9.936 9.936 0 002.46-2.548l-.047-.02z"/>
-                            </svg>
-                            <a href="https://x.com/yourusername" target="_blank" class="contact-link text-indigo-600 hover:underline">@yourusername</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- Модальное окно для мемов -->
-        <div id="modal" class="modal">
-            <img id="modal-image" src="" alt="Увеличенный мем">
+    <!-- Видео -->
+    <section id="videos" class="bg-white py-16">
+      <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-bold text-center mb-8 text-indigo-700">Видео</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+          <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/VIDEO_ID_2" allowfullscreen></iframe>
+          <iframe class="w-full aspect-video" src="https://www.youtube.com/embed/VIDEO_ID_3" allowfullscreen></iframe>
         </div>
+      </div>
+    </section>
 
-        <!-- Футер -->
-        <footer class="bg-indigo-900 text-white text-center p-4 sm:p-6">
-            <p class="text-xs sm:text-sm">© 2025 [Твоё имя]. Создано с ❤️ и немного магии.</p>
-        </footer>
-    </div>
+    <!-- Telegram посты -->
+    <section id="telegram" class="py-16">
+      <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-bold text-center text-indigo-700 mb-6">Посты из Telegram</h2>
+        <div class="grid gap-4" id="telegram-posts">
+          <!-- Можно вставить посты вручную -->
+          <div class="bg-gray-100 rounded p-4 shadow">Пример поста: Скоро запуск нового сайта! 🔥</div>
+          <div class="bg-gray-100 rounded p-4 shadow">Пример поста: А вот и мемы подъехали 😎</div>
+        </div>
+      </div>
+    </section>
 
-    <!-- JavaScript для анимаций, темы, Telegram API и галереи -->
-    <script>
-        // Проверка параметра dev=true (для тестирования)
-        const urlParams = new URLSearchParams(window.location.search);
-        const isDevMode = urlParams.get('dev') === 'true';
-        if (isDevMode) {
-            document.getElementById('coming-soon').style.display = 'none';
-            document.getElementById('full-site').style.display = 'block';
-            loadTelegramPosts();
-        }
+    <!-- Проекты -->
+    <section id="projects" class="bg-white py-16">
+      <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-bold text-center text-indigo-700 mb-6">Мои проекты</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-gray-50 rounded p-4 shadow">
+            <h3 class="font-semibold text-indigo-600">Grok Alpha</h3>
+            <p class="text-sm text-gray-600">Прототип сайта, сделанный за 1 день. Вдохновлён нейросетями.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        // Плавная прокрутка
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
+    <!-- Контакты -->
+    <section id="contact" class="py-16">
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-2xl font-bold text-indigo-700 mb-4">Контакты</h2>
+        <p class="text-gray-600 mb-2">Пиши мне в Telegram: <a href="https://t.me/MortisPlayTG" class="text-indigo-600 underline">@MortisPlayTG</a></p>
+        <p class="text-gray-600">Email: <a href="mailto:example@email.com" class="text-indigo-600 underline">example@email.com</a></p>
+      </div>
+    </section>
 
-        // Анимация появления секций
-        const fadeIns = document.querySelectorAll('.fade-in');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
-        fadeIns.forEach(element => observer.observe(element));
+    <!-- Футер -->
+    <footer class="bg-indigo-900 text-white text-center py-4">
+      <p class="text-sm">© 2025 MortisPlay.</p>
+    </footer>
+  </div>
 
-        // Переключение темы
-        const toggleButton = document.getElementById('theme-toggle');
-        if (toggleButton) {
-            toggleButton.addEventListener('click', () => {
-                document.body.classList.toggle('dark');
-                toggleButton.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
-            });
-        }
+  <!-- Скрипты -->
+  <script>
+    // Показ полной версии, если ?dev=true
+    if (new URLSearchParams(window.location.search).get('dev') === 'true') {
+      document.getElementById('coming-soon').style.display = 'none';
+      document.getElementById('full-site').style.display = 'block';
+    }
 
-        // Анимация плавающих эмодзи
-        function createFloatingEmoji() {
-            const emojis = ['>:(', ':D', ':3', '0_0', 'X_X', '^_^'];
-            const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-            const div = document.createElement('div');
-            div.textContent = emoji;
-            div.className = 'floating-emoji';
-            div.style.left = Math.random() * 100 + 'vw';
-            div.style.top = '-10px';
-            document.body.appendChild(div);
-            setTimeout(() => div.remove(), 5000);
-        }
-        setInterval(createFloatingEmoji, 2000);
+    // Плавное появление блоков
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-        // Модальное окно для мемов
-        const modal = document.getElementById('modal');
-        if (modal) {
-            const modalImage = document.getElementById('modal-image');
-            document.querySelectorAll('#memes img').forEach(img => {
-                img.addEventListener('click', () => {
-                    modalImage.src = img.src;
-                    modalImage.alt = img.alt;
-                    modal.classList.add('show');
-                });
-            });
-            modal.addEventListener('click', () => {
-                modal.classList.remove('show');
-            });
-        }
-
-        // Telegram API для загрузки постов
-        async function loadTelegramPosts() {
-            const postsContainer = document.getElementById('telegram-posts');
-            if (!postsContainer) return;
-
-            postsContainer.innerHTML = '<p class="text-gray-600 text-center text-sm sm:text-base">Загрузка постов...</p>';
-
-            try {
-                const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-                const apiUrl = 'https://api.telegram.org/bot8153678914:AAFPtbIydrVvHTTnlScYIqeKFG9QsoEH0SE/getUpdates?chat_id=@MortisPlayTG';
-                const response = await fetch(corsProxy + apiUrl);
-                const data = await response.json();
-                
-                console.log('API Response:', data);
-
-                if (data.ok && data.result.length > 0) {
-                    const posts = data.result
-                        .filter(update => update.channel_post)
-                        .slice(-5)
-                        .reverse();
-
-                    if (posts.length === 0) {
-                        postsContainer.innerHTML = `
-                            <div class="card bg-gray-50 rounded-lg shadow-md p-3 sm:p-4 fade-in">
-                                <p class="text-gray-600 text-xs sm:text-sm md:text-base">Пример поста #1: Делюсь своими мыслями о новых технологиях!</p>
-                                <p class="text-gray-500 text-xs mt-2">2025-07-10</p>
-                            </div>
-                            <div class="card bg-gray-50 rounded-lg shadow-md p-3 sm:p-4 fade-in">
-                                <p class="text-gray-600 text-xs sm:text-sm md:text-base">Пример поста #2: Только что закончил новый проект, скоро расскажу!</p>
-                                <p class="text-gray-500 text-xs mt-2">2025-07-09</p>
-                            </div>
-                            <div class="card bg-gray-50 rounded-lg shadow-md p-3 sm:p-4 fade-in">
-                                <p class="text-gray-600 text-xs sm:text-sm md:text-base">Пример поста #3: Люблю делиться вдохновением!</p>
-                                <p class="text-gray-500 text-xs mt-2">2025-07-08</p>
-                            </div>
-                        `;
-                        console.log('No channel posts found');
-                        return;
-                    }
-
-                    postsContainer.innerHTML = '';
-
-                    for (const post of posts) {
-                        const text = post.channel_post.text ? post.channel_post.text.slice(0, 280) + (post.channel_post.text.length > 280 ? '...' : '') : 'Без текста';
-                        const date = new Date(post.channel_post.date * 1000).toLocaleDateString('ru-RU');
-                        const photo = post.channel_post.photo ? post.channel_post.photo[post.channel_post.photo.length - 1].file_id : null;
-
-                        if (photo) {
-                            try {
-                                const fileResponse = await fetch(corsProxy + `https://api.telegram.org/bot8153678914:AAFPtbIydrVvHTTnlScYIqeKFG9QsoEH0SE/getFile?file_id=${photo}`);
-                                const fileData = await fileResponse.json();
-                                if (fileData.ok) {
-                                    const photoUrl = `https://api.telegram.org/file/bot8153678914:AAFPtbIydrVvHTTnlScYIqeKFG9QsoEH0SE/${fileData.result.file_path}`;
-                                    const postElement = document.createElement('div');
-                                    postElement.className = 'card bg-gray-50 rounded-lg shadow-md p-3 sm:p-4 fade-in';
-                                    postElement.innerHTML = `
-                                        <img src="${photoUrl}" alt="Post Image" class="w-full h-32 sm:h-48 object-cover rounded-md mb-2">
-                                        <p class="text-gray-600 text-xs sm:text-sm md:text-base">${text}</p>
-                                        <p class="text-gray-500 text-xs mt-2">${date}</p>
-                                    `;
-                                    postsContainer.appendChild(postElement);
-                                }
-                            } catch (error) {
-                                console.error('Ошибка загрузки фото:', error);
-                            }
-                        } else {
-                            const postElement = document.createElement('div');
-                            postElement.className = 'card bg-gray-50 rounded-lg shadow-md p-3 sm:p-4 fade-in';
-                            postElement.innerHTML = `
-                                <p class="text-gray-600 text-xs sm:text-sm md:text-base">${text}</p>
-                                <p class="text-gray-500 text-xs mt-2">${date}</p>
-                            `;
-                            postsContainer.appendChild(postElement);
-                        }
-                    }
-                } else {
-                    postsContainer.innerHTML = `
-                        <div class="card bg-gray-50 rounded-lg shadow-md p-3 sm:p-4 fade-in">
-                            <p class="text-gray-600 text-xs sm:text-sm md:text-base">Пример поста #1: Делюсь своими мыслями о новых технологиях!</p>
-                            <p class="text-gray-500 text-xs mt-2">2025-07-10</p>
-                        </div>
-                        <div class="card bg-gray-50 rounded-lg shadow-md p-3 sm:p-4 fade-in">
-                            <p class="text-gray-600 text-xs sm:text-sm md:text-base">Пример поста #2: Только что закончил новый проект, скоро расскажу!</p>
-                            <p class="text-gray-500 text-xs mt-2">2025-07-09</p>
-                        </div>
-                        <div class="card bg-gray-50 rounded-lg shadow-md p-3 sm:p-4 fade-in">
-                            <p class="text-gray-600 text-xs sm:text-sm md:text-base">Пример поста #3: Люблю делиться вдохновением!</p>
-                            <p class="text-gray-500 text-xs mt-2">2025-07-08</p>
-                        </div>
-                    `;
-                    console.error('API Error:', data.description || 'No description');
-                }
-            } catch (error) {
-                console.error('Ошибка загрузки постов:', error);
-                postsContainer.innerHTML = `
-                    <div class="card bg-gray-50 rounded-lg shadow-md p-3 sm:p-4 fade-in">
-                        <p class="text-gray-600 text-xs sm:text-sm md:text-base">Пример поста #1: Делюсь своими мыслями о новых технологиях!</p>
-                        <p class="text-gray-500 text-xs mt-2">2025-07-10</p>
-                    </div>
-                    <div class="card bg-gray-50 rounded-lg shadow-md p-3 sm:p-4 fade-in">
-                        <p class="text-gray-600 text-xs sm:text-sm md:text-base">Пример поста #2: Только что закончил новый проект, скоро расскажу!</p>
-                        <p class="text-gray-500 text-xs mt-2">2025-07-09</p>
-                    </div>
-                    <div class="card bg-gray-50 rounded-lg shadow-md p-3 sm:p-4 fade-in">
-                        <p class="text-gray-600 text-xs sm:text-sm md:text-base">Пример поста #3: Люблю делиться вдохновением!</p>
-                        <p class="text-gray-500 text-xs mt-2">2025-07-08</p>
-                    </div>
-                `;
-            }
-        }
-    </script>
+    // Темная тема
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+    });
+  </script>
 </body>
 </html>
