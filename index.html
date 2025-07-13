@@ -87,31 +87,25 @@
     .avatar:hover {
       transform: scale(1.1);
     }
-    nav a.active {
-      @apply border-b-2 border-indigo-400;
+    .welcome-text {
+      animation: pulse 2s ease-in-out infinite;
     }
-    /* Мобильное меню */
-    #nav-menu {
-      transition: transform 0.3s ease-in-out;
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
-    #nav-menu.hidden {
-      transform: translateX(100%);
+    .progress-bar {
+      height: 0.5rem;
+      background-color: #e5e7eb;
+      border-radius: 0.25rem;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background-color: #4f46e5;
+      transition: width 0.5s ease-in-out;
     }
     @media (max-width: 640px) {
-      #nav-menu {
-        position: fixed;
-        top: 0;
-        right: 0;
-        height: 100%;
-        width: 75%;
-        background: #4c51bf;
-        flex-direction: column;
-        padding: 2rem;
-        z-index: 30;
-      }
-      #nav-toggle {
-        display: block;
-      }
       .avatar {
         width: 6rem;
         height: 6rem;
@@ -128,14 +122,6 @@
       .container {
         padding-left: 1rem;
         padding-right: 1rem;
-      }
-    }
-    @media (min-width: 641px) {
-      #nav-toggle {
-        display: none;
-      }
-      #nav-menu {
-        transform: translateX(0);
       }
     }
   </style>
@@ -155,28 +141,20 @@
 
   <!-- Полная версия сайта -->
   <div id="full-site" style="display: none;">
-    <!-- Навигация -->
-    <nav class="bg-indigo-700 dark:bg-gray-900 text-white fixed top-0 w-full shadow z-20">
-      <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-        <button id="nav-toggle" class="text-2xl sm:hidden">☰</button>
-        <ul id="nav-menu" class="flex space-x-4 text-sm sm:flex sm:items-center hidden sm:flex-row">
-          <li><a href="#about" class="hover:underline">Обо мне</a></li>
-          <li><a href="#videos" class="hover:underline">Видео</a></li>
-          <li><a href="#projects" class="hover:underline">Проекты</a></li>
-          <li><a href="#contact" class="hover:underline">Контакты</a></li>
-        </ul>
-        <button id="theme-toggle" class="text-2xl">🌙</button>
-      </div>
-    </nav>
+    <!-- Приветствие -->
+    <section id="welcome" class="py-16 text-center fade-in">
+      <h1 class="text-2xl sm:text-4xl font-bold text-indigo-700 dark:text-indigo-300 mb-4 welcome-text">Йо, это Mortis Play! Врывайся в мой мир! 🚀</h1>
+      <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mx-auto max-w-2xl">Готов к эпичным каткам, мемам и взрывному вайбу? Подписывайся на мои каналы и становись частью тусы! 😎</p>
+    </section>
 
-    <!-- Обо мне -->
-    <section id="about" class="pt-24 pb-16">
+    <!-- Информация -->
+    <section id="about" class="pb-16">
       <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
         <video autoplay loop muted playsinline class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="https://www.dropbox.com/scl/fi/88ah9ztt928j4dq0i4z8r/photo.mp4?rlkey=f7tof2pn98h3dcw928uh0jlta&st=zkt26pwc&dl=1" type="video/mp4">
           Твой браузер не поддерживает видео.
         </video>
         <div>
-          <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Обо мне</h2>
+          <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Информация</h2>
           <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
             Привет! Я Mortis Play — стример, геймер и мастер мемов с душой настоящего бойца Brawl Stars! Моя история началась с любви к играм, когда я ещё пацаном гонял в аркады и мечтал стать частью игрового мира. Сегодня мои стримы собирают тысячи зрителей, которые приходят за эпичными катками, взрывным юмором и моими фирменными мемами. 
             Я специализируюсь на Brawl Stars, но не ограничиваюсь одной игрой — от шутеров до стратегий, я всегда в деле! Мои Telegram-каналы — это место, где рождаются легендарные моменты, от раздачи гемов до безумных челленджей. 
@@ -205,18 +183,22 @@
     <section id="projects" class="bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4">
         <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-6">Мои проекты</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow">
-            <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Grok Alpha</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-300">Прототип сайта, созданный за один день с использованием ИИ-технологий.</p>
+            <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">3 Сезон "Бароны"</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Новый эпичный сезон, готовлю контент для настоящих бойцов!</p>
+            <div class="progress-bar mt-2">
+              <div class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Прогресс: 0%</p>
           </div>
           <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow">
-            <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Brawl Stars Гайды</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-300">Серия обучающих видео для новичков и профи в Brawl Stars.</p>
-          </div>
-          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow">
-            <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Коллаборации со стримерами</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-300">Совместные стримы и проекты с топовыми игровыми блогерами.</p>
+            <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">1 сезон "Типичный случай"</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Серия стримов с мемами и безумными челленджами.</p>
+            <div class="progress-bar mt-2">
+              <div class="progress-bar-fill" style="width: 50%;"></div>
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Прогресс: 50%</p>
           </div>
         </div>
       </div>
@@ -320,41 +302,12 @@
     }, { threshold: 0.1 });
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-    // Темная тема
-    const themeToggle = document.getElementById('theme-toggle');
-    if (localStorage.getItem('theme') === 'dark') {
+    // Темная тема по системным настройкам
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       document.body.classList.add('dark');
-      themeToggle.textContent = '☀️';
     }
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark');
-      themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
-      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
-    });
-
-    // Гамбургер-меню для мобильных
-    const navToggle = document.getElementById('nav-toggle');
-    const navMenu = document.getElementById('nav-menu');
-    navToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('hidden');
-    });
-
-    // Подсветка активного пункта меню
-    const navLinks = document.querySelectorAll('nav a');
-    window.addEventListener('scroll', () => {
-      let current = '';
-      document.querySelectorAll('section').forEach(section => {
-        const sectionTop = section.offsetTop;
-        if (window.scrollY >= sectionTop - 60) {
-          current = section.getAttribute('id');
-        }
-      });
-      navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href').slice(1) === current) {
-          link.classList.add('active');
-        }
-      });
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      document.body.classList.toggle('dark', e.matches);
     });
   </script>
 </body>
