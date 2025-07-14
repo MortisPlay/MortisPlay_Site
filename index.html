@@ -121,6 +121,7 @@
       transform: scale(1.05);
     }
     .play-button {
+      .play-button {
       margin-top: 0.5rem;
       text-align: center;
     }
@@ -211,7 +212,7 @@
 
     <!-- Видео -->
     <section id="videos" class="bg-white dark:bg-gray-800 py-16">
-      <div class="container mx-auto px-4">
+      <div class="container mxfootnote-auto px-4">
         <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-8">Мои видео</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Заглушка, видео будут позже -->
@@ -235,7 +236,7 @@
     </section>
 
     <!-- Мемы от авторов -->
-    <section id="fan-memes" class="bg-white dark:bg-gray-800 py-16">
+    <section id="fan-memes" class Preformatted textclass="bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Мемы от авторов</h2>
         <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Жду твои мемы! 😎 Врывайся с креативом, но следуй правилам:</p>
@@ -311,7 +312,6 @@
     </footer>
   </div>
 
-  <script src="https://www.youtube.com/iframe_api"></script>
   <script>
     // Показ полной версии и навигации, если ?dev=true
     const urlParams = new URLSearchParams(window.location.search);
@@ -409,62 +409,6 @@
     }
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
       document.body.classList.toggle('dark', e.matches);
-    });
-
-    // YouTube IFrame API
-    let players = {};
-    function onYouTubeIframeAPIReady() {
-      try {
-        players['player-1'] = new YT.Player('player-1', {
-          events: {
-            'onReady': onPlayerReady,
-            'onError': onPlayerError
-          }
-        });
-        players['player-2'] = new YT.Player('player-2', {
-          events: {
-            'onReady': onPlayerReady,
-            'onError': onPlayerError
-          }
-        });
-        players['player-3'] = new YT.Player('player-3', {
-          events: {
-            'onReady': onPlayerReady,
-            'onError': onPlayerError
-          }
-        });
-      } catch (e) {
-        console.error('Ошибка инициализации YouTube плееров:', e);
-      }
-    }
-
-    function onPlayerReady(event) {
-      console.log('Плеер готов:', event.target.getIframe().id);
-    }
-
-    function onPlayerError(event) {
-      console.error('Ошибка плеера:', event.target.getIframe().id, event.data);
-    }
-
-    // Обработка кнопок воспроизведения
-    document.querySelectorAll('.play-button-toggle').forEach(button => {
-      button.addEventListener('click', () => {
-        const playerId = button.getAttribute('data-player');
-        const player = players[playerId];
-        if (player && typeof player.playVideo === 'function') {
-          const state = player.getPlayerState();
-          if (state === YT.PlayerState.PLAYING) {
-            player.pauseVideo();
-            button.textContent = 'Смотреть';
-          } else {
-            player.playVideo();
-            button.textContent = 'Пауза';
-            gtag('event', 'play_video', { 'event_category': 'Engagement', 'event_label': playerId });
-          }
-        } else {
-          console.error('Плеер не найден или не готов:', playerId);
-        }
-      });
     });
 
     // Google Analytics события
