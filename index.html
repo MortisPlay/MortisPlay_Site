@@ -169,7 +169,7 @@
         <a href="#about" class="py-2 hover:text-indigo-300">Информация</a>
         <a href="#videos" class="py-2 hover:text-indigo-300">Видео</a>
         <a href="#memes" class="py-2 hover:text-indigo-300">Мемы</a>
-        <a href="#fan-memes" class="py-2 hover:text-indigo-300">Мемы от авторов</a>
+        <a href="#fan-memes" class="py-2 hover:text-indigo-300">Мемы от автора</a>
         <a href="#projects" class="py-2 hover:text-indigo-300">Проекты</a>
         <a href="#news" class="py-2 hover:text-indigo-300">Новости</a>
         <a href="#contact" class="py-2 hover:text-indigo-300">Контакты</a>
@@ -178,7 +178,7 @@
   </nav>
 
   <!-- Заглушка с кнопками -->
-  <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in px-4">
+  <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in px-4" style="z-index: 10;">
     <h1 class="text-2xl sm:text-4xl font-bold text-white mb-6">Mortis Play — Скоро открытие!</h1>
     <p class="text-base sm:text-lg text-white mb-6">Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить!</p>
     <div class="flex flex-col sm:flex-row gap-4">
@@ -198,10 +198,10 @@
     <!-- Информация -->
     <section id="about" class="pb-16">
       <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
-        <video autoplay loop muted playsinline loading="lazy" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" src="https://www.dropbox.com/scl/fi/88ah9ztt928j4dq0i4z8r/photo.mp4?rlkey=f7tof2pn98h3dcw928uh0jlta&st=zkt26pwc&dl=1" type="video/mp4">
+        <video autoplay loop muted playsinline loading="lazy" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='block';console.log('Ошибка загрузки видео аватарки');" src="https://www.dropbox.com/scl/fi/88ah9ztt928j4dq0i4z8r/photo.mp4?rlkey=f7tof2pn98h3dcw928uh0jlta&st=zkt26pwc&dl=1" type="video/mp4">
           Твой браузер не поддерживает видео.
         </video>
-        <img src="https://via.placeholder.com/48x48" alt="Аватарка заглушка" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar hidden">
+        <img src="https://via.placeholder.com/48x48" alt="Аватарка заглушка" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" style="display: none;">
         <div>
           <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Информация</h2>
           <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
@@ -416,27 +416,37 @@
       document.body.classList.toggle('dark', e.matches);
     });
 
+    // Отладка ошибок
+    window.addEventListener('error', (e) => {
+      console.log('Общая ошибка:', e.message);
+    });
+
     // Google Analytics события
     document.querySelector('.donation-link').addEventListener('click', () => {
       if (window.gtag) gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
+      else console.log('gtag не загружен');
     });
     document.querySelectorAll('.main-telegram').forEach(link => {
       link.addEventListener('click', () => {
         if (window.gtag) gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'MainTelegram' });
+        else console.log('gtag не загружен');
       });
     });
     document.querySelectorAll('.private-telegram').forEach(link => {
       link.addEventListener('click', () => {
         if (window.gtag) gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PrivateTelegram' });
+        else console.log('gtag не загружен');
       });
     });
     document.querySelectorAll('.personal-telegram').forEach(link => {
       link.addEventListener('click', () => {
         if (window.gtag) gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
+        else console.log('gtag не загружен');
       });
     });
     document.querySelector('.youtube-link').addEventListener('click', () => {
       if (window.gtag) gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
+      else console.log('gtag не загружен');
     });
   </script>
 </body>
