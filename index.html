@@ -43,14 +43,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mortis Play</title>
-  <!-- Google Analytics (только для десктопа) -->
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
   <script>
-    if (window.innerWidth > 640) {
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtag.js':i});w[l]=w[l]||[];
-        var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtag/js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','G-W7QBLDDSSK');
-    }
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-W7QBLDDSSK');
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -75,7 +74,6 @@
       height: 100%;
       z-index: -1;
       opacity: 0.2;
-      /* Включаем обратно с минимальным влиянием */
     }
     @keyframes gradient {
       0% { background-position: 0% 50%; }
@@ -131,6 +129,9 @@
         width: 6rem;
         height: 6rem;
       }
+      canvas {
+        display: none; /* Отключаем тяжелую анимацию на мобильных */
+      }
       h1, h2 {
         font-size: 1.5rem;
       }
@@ -145,9 +146,9 @@
   </style>
 </head>
 <body class="text-gray-800 font-sans">
-  <canvas id="backgroundCanvas" style="display: block;" data-show-on-desktop="true"></canvas>
+  <canvas id="backgroundCanvas"></canvas>
 
-  <!-- Навигация возвращена -->
+  <!-- Навигация -->
   <nav id="nav-menu" class="fixed top-0 w-full bg-indigo-900 dark:bg-gray-900 text-white py-4 z-10" style="display: none;">
     <div class="container mx-auto px-4 flex justify-between items-center">
       <a href="#welcome" class="text-xl font-bold">Mortis Play</a>
@@ -167,7 +168,7 @@
         <a href="#about" class="py-2 hover:text-indigo-300">Информация</a>
         <a href="#videos" class="py-2 hover:text-indigo-300">Видео</a>
         <a href="#memes" class="py-2 hover:text-indigo-300">Мемы</a>
-        <a href="#fan-memes" class="py-2 hover:text-indigo-300">Мемы от автора</a>
+        <a href="#fan-memes" class="py-2 hover:text-indigo-300">Мемы от авторов</a>
         <a href="#projects" class="py-2 hover:text-indigo-300">Проекты</a>
         <a href="#news" class="py-2 hover:text-indigo-300">Новости</a>
         <a href="#contact" class="py-2 hover:text-indigo-300">Контакты</a>
@@ -175,24 +176,14 @@
     </div>
   </nav>
 
-  <!-- Заглушка с кнопками -->
-  <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in px-4" style="z-index: 9999 !important; position: relative !important; background: rgba(255, 0, 0, 0.5) !important; display: flex !important;">
-    <h1 class="text-2xl sm:text-4xl font-bold text-white mb-6">Mortis Play — Скоро открытие! (ТЕСТ)</h1>
-    <p class="text-base sm:text-lg text-white mb-6">Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить! (ТЕСТ)</p>
+  <!-- Заглушка -->
+  <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in px-4">
+    <h1 class="text-2xl sm:text-4xl font-bold text-white mb-6">Mortis Play — Скоро открытие!</h1>
+    <p class="text-base sm:text-lg text-white mb-6">Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить!</p>
     <div class="flex flex-col sm:flex-row gap-4">
-      <a href="https://t.me/MortisPlayTG" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition main-telegram">Присоединиться к основному каналу (ТЕСТ)</a>
-      <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition private-telegram">Присоединиться к частному каналу (платно) (ТЕСТ)</a>
+      <a href="https://t.me/MortisPlayTG" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition main-telegram">Основной канал</a>
+      <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition private-telegram">Частный канал (вход платный)</a>
     </div>
-    <script>
-      const comingSoon = document.getElementById('coming-soon');
-      console.log('Заглушка видна:', comingSoon.style.display !== 'none');
-      if (comingSoon.style.display === 'none') {
-        console.log('Заглушка скрыта, принудительно показываем:', comingSoon.style.display = 'flex !important');
-        console.log('Проверка DOM:', comingSoon);
-      } else {
-        console.log('Заглушка отображается, кнопок найдено:', document.querySelectorAll('#coming-soon a').length);
-      }
-    </script>
   </section>
 
   <!-- Полная версия сайта -->
@@ -206,10 +197,9 @@
     <!-- Информация -->
     <section id="about" class="pb-16">
       <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
-        <video autoplay loop muted playsinline loading="lazy" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='block';console.log('Ошибка загрузки видео аватарки');" src="https://www.dropbox.com/scl/fi/88ah9ztt928j4dq0i4z8r/photo.mp4?rlkey=f7tof2pn98h3dcw928uh0jlta&st=zkt26pwc&dl=1" type="video/mp4">
+        <video autoplay loop muted playsinline class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="https://www.dropbox.com/scl/fi/88ah9ztt928j4dq0i4z8r/photo.mp4?rlkey=f7tof2pn98h3dcw928uh0jlta&st=zkt26pwc&dl=1" type="video/mp4">
           Твой браузер не поддерживает видео.
         </video>
-        <img src="https://via.placeholder.com/48x48" alt="Аватарка заглушка" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" style="display: none;">
         <div>
           <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Информация</h2>
           <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
@@ -321,6 +311,7 @@
     </footer>
   </div>
 
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script>
     // Показ полной версии и навигации, если ?dev=true
     const urlParams = new URLSearchParams(window.location.search);
@@ -334,7 +325,7 @@
       fullSite.style.display = 'block';
       navMenu.style.display = 'block';
     } else {
-      comingSoon.style.display = 'flex !important'; // Принудительное отображение
+      comingSoon.style.display = 'flex';
       fullSite.style.display = 'none';
       navMenu.style.display = 'none';
     }
@@ -345,75 +336,72 @@
       menu.classList.toggle('hidden');
     });
 
-    // Анимация фона с плавающими смайликами (восстановлено)
+    // Анимация фона с плавающими смайликами
     const canvas = document.getElementById('backgroundCanvas');
     const ctx = canvas.getContext('2d');
 
-    if (window.innerWidth > 640) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-      const emotes = [">:(", ">:D", ":)", ":/", ":P", "^_^", "-_-"];
-      const particles = [];
+    const emotes = [">:(", ">:D", ":)", ":/", ":P", "^_^", "-_-"];
+    const particles = [];
 
-      class Particle {
-        constructor() {
-          this.x = Math.random() * canvas.width;
-          this.y = Math.random() * canvas.height;
-          this.size = Math.random() * 20 + 10;
-          this.speedX = Math.random() * 2 - 1;
-          this.speedY = Math.random() * 2 - 1;
-          this.emote = emotes[Math.floor(Math.random() * emotes.length)];
-        }
-
-        update() {
-          this.x += this.speedX;
-          this.y += this.speedY;
-
-          if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-          if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-        }
-
-        draw() {
-          ctx.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.5)';
-          ctx.font = `${this.size}px Arial`;
-          ctx.fillText(this.emote, this.x, this.y);
-        }
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 20 + 10;
+        this.speedX = Math.random() * 2 - 1;
+        this.speedY = Math.random() * 2 - 1;
+        this.emote = emotes[Math.floor(Math.random() * emotes.length)];
       }
 
-      function init() {
-        const particleCount = 20;
-        for (let i = 0; i < particleCount; i++) {
-          particles.push(new Particle());
-        }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
       }
 
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(particle => {
-          particle.update();
-          particle.draw();
-        });
-        requestAnimationFrame(animate);
+      draw() {
+        ctx.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.5)';
+        ctx.font = `${this.size}px Arial`;
+        ctx.fillText(this.emote, this.x, this.y);
       }
-
-      init();
-      animate();
-
-      window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      });
     }
 
-    // Плавное появление только для welcome
+    function init() {
+      const particleCount = window.innerWidth <= 640 ? 20 : 50; // Меньше частиц на мобильных
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Плавное появление блоков
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('visible');
       });
     }, { threshold: 0.1 });
-    document.querySelector('#welcome').classList.add('fade-in');
-    observer.observe(document.querySelector('#welcome'));
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
     // Темная тема по системным настройкам
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -423,37 +411,83 @@
       document.body.classList.toggle('dark', e.matches);
     });
 
-    // Отладка ошибок
-    window.addEventListener('error', (e) => {
-      console.log('Общая ошибка:', e.message);
+    // YouTube IFrame API
+    let players = {};
+    function onYouTubeIframeAPIReady() {
+      try {
+        players['player-1'] = new YT.Player('player-1', {
+          events: {
+            'onReady': onPlayerReady,
+            'onError': onPlayerError
+          }
+        });
+        players['player-2'] = new YT.Player('player-2', {
+          events: {
+            'onReady': onPlayerReady,
+            'onError': onPlayerError
+          }
+        });
+        players['player-3'] = new YT.Player('player-3', {
+          events: {
+            'onReady': onPlayerReady,
+            'onError': onPlayerError
+          }
+        });
+      } catch (e) {
+        console.error('Ошибка инициализации YouTube плееров:', e);
+      }
+    }
+
+    function onPlayerReady(event) {
+      console.log('Плеер готов:', event.target.getIframe().id);
+    }
+
+    function onPlayerError(event) {
+      console.error('Ошибка плеера:', event.target.getIframe().id, event.data);
+    }
+
+    // Обработка кнопок воспроизведения
+    document.querySelectorAll('.play-button-toggle').forEach(button => {
+      button.addEventListener('click', () => {
+        const playerId = button.getAttribute('data-player');
+        const player = players[playerId];
+        if (player && typeof player.playVideo === 'function') {
+          const state = player.getPlayerState();
+          if (state === YT.PlayerState.PLAYING) {
+            player.pauseVideo();
+            button.textContent = 'Смотреть';
+          } else {
+            player.playVideo();
+            button.textContent = 'Пауза';
+            gtag('event', 'play_video', { 'event_category': 'Engagement', 'event_label': playerId });
+          }
+        } else {
+          console.error('Плеер не найден или не готов:', playerId);
+        }
+      });
     });
 
     // Google Analytics события
     document.querySelector('.donation-link').addEventListener('click', () => {
-      if (window.gtag) gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
-      else console.log('gtag не загружен');
+      gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
     });
     document.querySelectorAll('.main-telegram').forEach(link => {
       link.addEventListener('click', () => {
-        if (window.gtag) gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'MainTelegram' });
-        else console.log('gtag не загружен');
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'MainTelegram' });
       });
     });
     document.querySelectorAll('.private-telegram').forEach(link => {
       link.addEventListener('click', () => {
-        if (window.gtag) gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PrivateTelegram' });
-        else console.log('gtag не загружен');
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PrivateTelegram' });
       });
     });
     document.querySelectorAll('.personal-telegram').forEach(link => {
       link.addEventListener('click', () => {
-        if (window.gtag) gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
-        else console.log('gtag не загружен');
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
       });
     });
     document.querySelector('.youtube-link').addEventListener('click', () => {
-      if (window.gtag) gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
-      else console.log('gtag не загружен');
+      gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
     });
   </script>
 </body>
