@@ -125,13 +125,24 @@
       margin-top: 0.5rem;
       text-align: center;
     }
+    #nav-menu {
+      transition: all 0.3s ease;
+    }
+    #nav-menu a.active {
+      color: #a3e4db;
+      font-weight: bold;
+    }
+    .section {
+      padding: 4rem 0;
+      margin-bottom: 2rem;
+    }
     @media (max-width: 640px) {
       .avatar {
         width: 6rem;
         height: 6rem;
       }
       canvas {
-        display: none; /* Отключаем тяжелую анимацию на мобильных */
+        display: none;
       }
       h1, h2 {
         font-size: 1.5rem;
@@ -142,6 +153,10 @@
       .container {
         padding-left: 1rem;
         padding-right: 1rem;
+      }
+      .section {
+        padding: 2rem 0;
+        margin-bottom: 1rem;
       }
     }
   </style>
@@ -190,18 +205,18 @@
   <!-- Полная версия сайта -->
   <div id="full-site" style="display: none;">
     <!-- Приветствие -->
-    <section id="welcome" class="py-16 text-center fade-in mt-16">
-      <h1 class="text-2xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4 welcome-text">Йо, это Mortis Play! Врывайся в мой мир! 🚀</h1>
+    <section id="welcome" class="section py-16 text-center fade-in mt-16">
+      <h1 class="text-2xl sm:text-4xl font-bold text-indigo-700 dark:text-indigo-300 mb-4 welcome-text">Йо, это Mortis Play! Врывайся в мой мир! 🚀</h1>
       <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mx-auto max-w-2xl">Готов к эпичным каткам, мемам и взрывному вайбу? Подписывайся на мои каналы и становись частью тусы! 😎</p>
     </section>
 
     <!-- Информация -->
-    <section id="about" class="pb-16">
+    <section id="about" class="section pb-16">
       <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
-        <video autoplay loop muted playsinline class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="/assets/photo.mp4" type="video/mp4" onerror="console.error('Ошибка загрузки видео:', this.error); this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <video autoplay loop muted playsinline class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="/assets/photo.mp4" type="video/mp4" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
           Твой браузер не поддерживает видео.
         </video>
-        <img src="https://via.placeholder.com/48x48" alt="Аватарка заглушка" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" style="display: none;">
+        <img src="/assets/photo.jpg" alt="Аватарка" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" style="display: none;">
         <div>
           <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Информация</h2>
           <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
@@ -212,7 +227,7 @@
     </section>
 
     <!-- Видео -->
-    <section id="videos" class="bg-white dark:bg-gray-800 py-16">
+    <section id="videos" class="section bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4">
         <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-8">Мои видео</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -226,7 +241,7 @@
     </section>
 
     <!-- Мемы -->
-    <section id="memes" class="bg-white dark:bg-gray-800 py-16">
+    <section id="memes" class="section bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Мемы</h2>
         <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Идёт разработка мемов ...</p>
@@ -237,7 +252,7 @@
     </section>
 
     <!-- Мемы от авторов -->
-    <section id="fan-memes" class="bg-white dark:bg-gray-800 py-16">
+    <section id="fan-memes" class="section bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Мемы от авторов</h2>
         <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Жду твои мемы! 😎 Врывайся с креативом, но следуй правилам:</p>
@@ -256,7 +271,7 @@
     </section>
 
     <!-- Проекты -->
-    <section id="projects" class="bg-white dark:bg-gray-800 py-16">
+    <section id="projects" class="section bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4">
         <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-6">Мои проекты</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -281,7 +296,7 @@
     </section>
 
     <!-- Новости -->
-    <section id="news" class="bg-white dark:bg-gray-800 py-16">
+    <section id="news" class="section bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4">
         <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-6">Новости</h2>
         <div class="grid grid-cols-1 gap-6">
@@ -293,7 +308,7 @@
     </section>
 
     <!-- Контакты -->
-    <section id="contact" class="py-16">
+    <section id="contact" class="section py-16">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Связь со мной</h2>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Хочешь предложить коллаб или просто поболтать? Пиши!</p>
@@ -373,7 +388,7 @@
     }
 
     function init() {
-      const particleCount = window.innerWidth <= 640 ? 20 : 50; // Меньше частиц на мобильных
+      const particleCount = window.innerWidth <= 640 ? 20 : 50;
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle());
       }
@@ -404,12 +419,40 @@
     }, { threshold: 0.1 });
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-    // Темная тема по системным настройкам
+    // Темная тема
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       document.body.classList.add('dark');
     }
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
       document.body.classList.toggle('dark', e.matches);
+    });
+
+    // Навигация
+    document.querySelectorAll('nav a').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        target.scrollIntoView({ behavior: 'smooth' });
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('section');
+      let currentSection = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (scrollY >= sectionTop - 100) {
+          currentSection = section.getAttribute('id');
+        }
+      });
+      document.querySelectorAll('nav a').forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === `#${currentSection}`) {
+          a.classList.add('active');
+        }
+      });
     });
 
     // Google Analytics события
