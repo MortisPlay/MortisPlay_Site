@@ -136,6 +136,20 @@
       padding: 4rem 0;
       margin-bottom: 2rem;
     }
+    #welcome {
+      padding: 6rem 0;
+      margin-bottom: 3rem;
+    }
+    #about {
+      padding: 6rem 0;
+      margin-bottom: 3rem;
+    }
+    .like-btn {
+      transition: background-color 0.3s ease;
+    }
+    .like-btn.liked {
+      background-color: #10b981;
+    }
     @media (max-width: 640px) {
       .avatar {
         width: 6rem;
@@ -158,6 +172,14 @@
         padding: 2rem 0;
         margin-bottom: 1rem;
       }
+      #welcome {
+        padding: 3rem 0;
+        margin-bottom: 1.5rem;
+      }
+      #about {
+        padding: 3rem 0;
+        margin-bottom: 1.5rem;
+      }
     }
   </style>
 </head>
@@ -171,6 +193,7 @@
       <div class="hidden md:flex space-x-4">
         <a href="#welcome" class="hover:text-indigo-300">Главная</a>
         <a href="#about" class="hover:text-indigo-300">Информация</a>
+        <a href="#stories" class="hover:text-indigo-300">Мои истории</a>
         <a href="#videos" class="hover:text-indigo-300">Видео</a>
         <a href="#memes" class="hover:text-indigo-300">Мемы</a>
         <a href="#fan-memes" class="hover:text-indigo-300">Мемы от авторов</a>
@@ -182,6 +205,7 @@
       <div id="mobile-menu" class="hidden md:hidden flex-col absolute top-16 left-0 w-full bg-indigo-900 dark:bg-gray-900 text-white p-4">
         <a href="#welcome" class="py-2 hover:text-indigo-300">Главная</a>
         <a href="#about" class="py-2 hover:text-indigo-300">Информация</a>
+        <a href="#stories" class="py-2 hover:text-indigo-300">Мои истории</a>
         <a href="#videos" class="py-2 hover:text-indigo-300">Видео</a>
         <a href="#memes" class="py-2 hover:text-indigo-300">Мемы</a>
         <a href="#fan-memes" class="py-2 hover:text-indigo-300">Мемы от авторов</a>
@@ -222,6 +246,22 @@
           <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
             Всем привет, с вами Mortisplay32. Настоящее имя — Дмитрий. На этом сайте ты найдёшь: любимые видео, полезную информацию, которую не расскажу нигде, мемы, воссозданные мной и другими авторами (скоро), и связь со мной. Располагайся как тебе удобно и приятного тебе времяпрепровождения на этом удивительном сайте!
           </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Мои истории -->
+    <section id="stories" class="section bg-white dark:bg-gray-800 py-16">
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Мои истории</h2>
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Здесь мои эпичные истории! Лайкай, если понравилось! 😎</p>
+        <div id="stories-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center">
+            <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">История 1: Великая битва</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">Однажды я победил в эпической битве в Brawl Stars...</p>
+            <button id="like-1" class="bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded mt-2 like-btn">👍 Лайк (0)</button>
+          </div>
+          <!-- Добавь больше историй по аналогии -->
         </div>
       </div>
     </section>
@@ -451,6 +491,18 @@
         a.classList.remove('active');
         if (a.getAttribute('href') === `#${currentSection}`) {
           a.classList.add('active');
+        }
+      });
+    });
+
+    // Лайки для историй
+    document.querySelectorAll('.like-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        if (!button.classList.contains('liked')) {
+          let count = parseInt(button.textContent.match(/\d+/)[0]) || 0;
+          count++;
+          button.textContent = `👍 Лайк (${count})`;
+          button.classList.add('liked');
         }
       });
     });
