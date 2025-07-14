@@ -37,45 +37,6 @@
         }
         return gk_fileData[filename] || "";
         }
-        </script><script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
         </script><!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -216,13 +177,13 @@
     </div>
   </nav>
 
-  <!-- Заглушка -->
+  <!-- Заглушка с кнопками -->
   <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in px-4">
     <h1 class="text-2xl sm:text-4xl font-bold text-white mb-6">Mortis Play — Скоро открытие!</h1>
     <p class="text-base sm:text-lg text-white mb-6">Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить!</p>
     <div class="flex flex-col sm:flex-row gap-4">
-      <a href="https://t.me/MortisPlayTG" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition main-telegram">Основной канал</a>
-      <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition private-telegram">Частный канал (вход платный)</a>
+      <a href="https://t.me/MortisPlayTG" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition main-telegram">Присоединиться к основному каналу</a>
+      <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition private-telegram">Присоединиться к частному каналу (платно)</a>
     </div>
   </section>
 
@@ -237,9 +198,10 @@
     <!-- Информация -->
     <section id="about" class="pb-16">
       <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
-        <video autoplay loop muted playsinline loading="lazy" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="https://www.dropbox.com/scl/fi/88ah9ztt928j4dq0i4z8r/photo.mp4?rlkey=f7tof2pn98h3dcw928uh0jlta&st=zkt26pwc&dl=1" type="video/mp4">
+        <video autoplay loop muted playsinline loading="lazy" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" src="https://www.dropbox.com/scl/fi/88ah9ztt928j4dq0i4z8r/photo.mp4?rlkey=f7tof2pn98h3dcw928uh0jlta&st=zkt26pwc&dl=1" type="video/mp4">
           Твой браузер не поддерживает видео.
         </video>
+        <img src="https://via.placeholder.com/48x48" alt="Аватарка заглушка" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar hidden">
         <div>
           <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Информация</h2>
           <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
