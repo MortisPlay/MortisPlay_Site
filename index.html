@@ -178,13 +178,16 @@
   </nav>
 
   <!-- Заглушка с кнопками -->
-  <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in px-4" style="z-index: 10;">
+  <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in px-4" style="z-index: 20; position: relative;">
     <h1 class="text-2xl sm:text-4xl font-bold text-white mb-6">Mortis Play — Скоро открытие!</h1>
     <p class="text-base sm:text-lg text-white mb-6">Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить!</p>
     <div class="flex flex-col sm:flex-row gap-4">
       <a href="https://t.me/MortisPlayTG" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition main-telegram">Присоединиться к основному каналу</a>
       <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition private-telegram">Присоединиться к частному каналу (платно)</a>
     </div>
+    <script>
+      console.log('Заглушка видна:', document.getElementById('coming-soon').style.display !== 'none');
+    </script>
   </section>
 
   <!-- Полная версия сайта -->
