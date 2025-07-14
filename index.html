@@ -68,13 +68,7 @@
       color: #e2e8f0;
     }
     canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.2;
+      display: none !important; /* Полностью отключаем для теста */
     }
     @keyframes gradient {
       0% { background-position: 0% 50%; }
@@ -130,9 +124,6 @@
         width: 6rem;
         height: 6rem;
       }
-      canvas {
-        display: none; /* Отключаем тяжелую анимацию на мобильных */
-      }
       h1, h2 {
         font-size: 1.5rem;
       }
@@ -147,46 +138,26 @@
   </style>
 </head>
 <body class="text-gray-800 font-sans">
-  <canvas id="backgroundCanvas" style="display: none;" data-show-on-desktop="true"></canvas>
-
-  <!-- Навигация -->
-  <nav id="nav-menu" class="fixed top-0 w-full bg-indigo-900 dark:bg-gray-900 text-white py-4 z-10" style="display: none;">
-    <div class="container mx-auto px-4 flex justify-between items-center">
-      <a href="#welcome" class="text-xl font-bold">Mortis Play</a>
-      <div class="hidden md:flex space-x-4">
-        <a href="#welcome" class="hover:text-indigo-300">Главная</a>
-        <a href="#about" class="hover:text-indigo-300">Информация</a>
-        <a href="#videos" class="hover:text-indigo-300">Видео</a>
-        <a href="#memes" class="hover:text-indigo-300">Мемы</a>
-        <a href="#fan-memes" class="hover:text-indigo-300">Мемы от авторов</a>
-        <a href="#projects" class="hover:text-indigo-300">Проекты</a>
-        <a href="#news" class="hover:text-indigo-300">Новости</a>
-        <a href="#contact" class="hover:text-indigo-300">Контакты</a>
-      </div>
-      <button id="burger" class="md:hidden text-2xl">☰</button>
-      <div id="mobile-menu" class="hidden md:hidden flex-col absolute top-16 left-0 w-full bg-indigo-900 dark:bg-gray-900 text-white p-4">
-        <a href="#welcome" class="py-2 hover:text-indigo-300">Главная</a>
-        <a href="#about" class="py-2 hover:text-indigo-300">Информация</a>
-        <a href="#videos" class="py-2 hover:text-indigo-300">Видео</a>
-        <a href="#memes" class="py-2 hover:text-indigo-300">Мемы</a>
-        <a href="#fan-memes" class="py-2 hover:text-indigo-300">Мемы от автора</a>
-        <a href="#projects" class="py-2 hover:text-indigo-300">Проекты</a>
-        <a href="#news" class="py-2 hover:text-indigo-300">Новости</a>
-        <a href="#contact" class="py-2 hover:text-indigo-300">Контакты</a>
-      </div>
-    </div>
-  </nav>
+  <!-- Навигация временно убрана для теста -->
+  <!-- <nav id="nav-menu" class="fixed top-0 w-full bg-indigo-900 dark:bg-gray-900 text-white py-4 z-10" style="display: none;">
+    ... (убран для упрощения)
+  </nav> -->
 
   <!-- Заглушка с кнопками -->
-  <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in px-4" style="z-index: 20; position: relative;">
-    <h1 class="text-2xl sm:text-4xl font-bold text-white mb-6">Mortis Play — Скоро открытие!</h1>
-    <p class="text-base sm:text-lg text-white mb-6">Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить!</p>
+  <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in px-4" style="z-index: 9999 !important; position: relative !important; background: rgba(255, 0, 0, 0.5) !important;">
+    <h1 class="text-2xl sm:text-4xl font-bold text-white mb-6">Mortis Play — Скоро открытие! (ТЕСТ)</h1>
+    <p class="text-base sm:text-lg text-white mb-6">Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить! (ТЕСТ)</p>
     <div class="flex flex-col sm:flex-row gap-4">
-      <a href="https://t.me/MortisPlayTG" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition main-telegram">Присоединиться к основному каналу</a>
-      <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition private-telegram">Присоединиться к частному каналу (платно)</a>
+      <a href="https://t.me/MortisPlayTG" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition main-telegram">Присоединиться к основному каналу (ТЕСТ)</a>
+      <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition private-telegram">Присоединиться к частному каналу (платно) (ТЕСТ)</a>
     </div>
     <script>
       console.log('Заглушка видна:', document.getElementById('coming-soon').style.display !== 'none');
+      if (document.getElementById('coming-soon').style.display === 'none') {
+        console.log('Заглушка скрыта, проверяю DOM:', document.getElementById('coming-soon'));
+      } else {
+        console.log('Заглушка отображается, проверяю содержимое:', document.querySelectorAll('#coming-soon a').length + ' кнопок найдено');
+      }
     </script>
   </section>
 
@@ -327,80 +298,18 @@
     if (isDev) {
       comingSoon.style.display = 'none';
       fullSite.style.display = 'block';
-      navMenu.style.display = 'block';
+      // navMenu.style.display = 'block'; // Временно убрано
     } else {
-      comingSoon.style.display = 'flex';
+      comingSoon.style.display = 'flex !important';
       fullSite.style.display = 'none';
-      navMenu.style.display = 'none';
+      // navMenu.style.display = 'none'; // Временно убрано
     }
 
-    // Бургер-меню
-    document.getElementById('burger').addEventListener('click', () => {
+    // Бургер-меню временно отключено
+    /* document.getElementById('burger').addEventListener('click', () => {
       const menu = document.getElementById('mobile-menu');
       menu.classList.toggle('hidden');
-    });
-
-    // Анимация фона с плавающими смайликами (только для десктопа)
-    const canvas = document.getElementById('backgroundCanvas');
-    const ctx = canvas.getContext('2d');
-
-    if (window.innerWidth > 640) {
-      canvas.style.display = 'block';
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      const emotes = [">:(", ">:D", ":)", ":/", ":P", "^_^", "-_-"];
-      const particles = [];
-
-      class Particle {
-        constructor() {
-          this.x = Math.random() * canvas.width;
-          this.y = Math.random() * canvas.height;
-          this.size = Math.random() * 20 + 10;
-          this.speedX = Math.random() * 2 - 1;
-          this.speedY = Math.random() * 2 - 1;
-          this.emote = emotes[Math.floor(Math.random() * emotes.length)];
-        }
-
-        update() {
-          this.x += this.speedX;
-          this.y += this.speedY;
-
-          if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-          if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-        }
-
-        draw() {
-          ctx.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.5)';
-          ctx.font = `${this.size}px Arial`;
-          ctx.fillText(this.emote, this.x, this.y);
-        }
-      }
-
-      function init() {
-        const particleCount = 20; // Уменьшено для оптимизации
-        for (let i = 0; i < particleCount; i++) {
-          particles.push(new Particle());
-        }
-      }
-
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(particle => {
-          particle.update();
-          particle.draw();
-        });
-        requestAnimationFrame(animate);
-      }
-
-      init();
-      animate();
-
-      window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      });
-    }
+    }); */
 
     // Плавное появление только для welcome
     const observer = new IntersectionObserver(entries => {
