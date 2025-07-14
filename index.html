@@ -44,6 +44,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Mortis Play</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
   <script>
@@ -226,6 +228,14 @@
     <section id="welcome" class="section py-16 text-center fade-in mt-16">
       <h1 class="text-2xl sm:text-4xl font-bold text-indigo-700 dark:text-indigo-300 mb-4 welcome-text">Йо, это Mortis Play! Врывайся в мой мир! 🚀</h1>
       <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mx-auto max-w-2xl">Готов к эпичным каткам, мемам и взрывному вайбу? Подписывайся на мои каналы и становись частью тусы! 😎</p>
+      <div id="stats" class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-4">
+        <p>Подписчиков: <span id="subscriberCount">10K</span></p>
+        <p>Просмотров: <span id="viewCount">50K</span></p>
+      </div>
+      <div class="mt-6">
+        <a href="#stories" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Смотреть истории</a>
+      </div>
+      <p id="quote" class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-4 italic">"Живи на полную, как в Brawl Stars! 😎"</p>
     </section>
 
     <!-- Информация -->
@@ -238,8 +248,19 @@
         <div>
           <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Информация</h2>
           <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
-            Всем привет, с вами Mortisplay32. Настоящее имя — Дмитрий. На этом сайте ты найдёшь: любимые видео, полезную информацию, которую не расскажу нигде, мемы, воссозданные мной и другими авторами (скоро), и связь со мной. Располагайся как тебе удобно и приятного тебе времяпрепровождения на этом удивительном сайте!
+            Всем привет, с вами Mortisplay32. Настоящее имя — Дмитрий. На этом сайте ты найдёшь: любимые видео, полезную информацию, которую не расскажу нигде, мемы, воссозданные мной и другими авторами (скоро), и связь со мной. Играю в Brawl Stars с 2018 года и победил в локальном турнире 2023!
           </p>
+          <div class="mt-4 flex justify-center space-x-4">
+            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="text-red-600 hover:text-red-700">YouTube</a>
+            <a href="https://t.me/MortisPlayTG" target="_blank" class="text-blue-600 hover:text-blue-700">Telegram</a>
+          </div>
+          <div class="mt-4">
+            <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">Какой твой любимый герой?</p>
+            <div class="flex justify-center space-x-4 mt-2">
+              <button class="bg-indigo-600 hover:bg-indigo-700 text-white py-1 px-2 rounded">Шелли</button>
+              <button class="bg-indigo-600 hover:bg-indigo-700 text-white py-1 px-2 rounded">Спайк</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -250,7 +271,6 @@
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Мои истории</h2>
         <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Здесь мои эпичные истории в видеоформате! Скоро добавлю больше контента! 😎</p>
         <div id="stories-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Заглушка для видео -->
           <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center">
             <div class="video-placeholder w-full h-48 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center">Видео 1 (скоро)</div>
           </div>
@@ -260,7 +280,6 @@
           <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center">
             <div class="video-placeholder w-full h-48 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center">Видео 3 (скоро)</div>
           </div>
-          <!-- Добавь больше заглушек по аналогии -->
         </div>
       </div>
     </section>
@@ -493,6 +512,29 @@
         }
       });
     });
+
+    // Анимация статистики
+    function animateValue(id, start, end, duration) {
+      const element = document.getElementById(id);
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        element.textContent = Math.floor(progress * (end - start) + start) + 'K';
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+    animateValue("subscriberCount", 0, 10, 2000);
+    animateValue("viewCount", 0, 50, 2000);
+
+    // Случайная цитата
+    const quotes = [
+      "Живи на полную, как в Brawl Stars! 😎",
+      "Мемы — это моя суперсила! 🚀",
+      "Каждый день — новая битва! >:D"
+    ];
+    document.getElementById('quote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
 
     // Google Analytics события
     document.querySelector('.donation-link').addEventListener('click', () => {
