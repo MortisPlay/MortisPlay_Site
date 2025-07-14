@@ -41,7 +41,8 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Mortis Play</title>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
@@ -121,7 +122,6 @@
       transform: scale(1.05);
     }
     .play-button {
-      .play-button {
       margin-top: 0.5rem;
       text-align: center;
     }
@@ -191,16 +191,17 @@
   <div id="full-site" style="display: none;">
     <!-- Приветствие -->
     <section id="welcome" class="py-16 text-center fade-in mt-16">
-      <h1 class="text-2xl sm:text-4xl font-bold text-indigo-700 dark:text-indigo-300 mb-4 welcome-text">Йо, это Mortis Play! Врывайся в мой мир! 🚀</h1>
+      <h1 class="text-2xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4 welcome-text">Йо, это Mortis Play! Врывайся в мой мир! 🚀</h1>
       <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mx-auto max-w-2xl">Готов к эпичным каткам, мемам и взрывному вайбу? Подписывайся на мои каналы и становись частью тусы! 😎</p>
     </section>
 
     <!-- Информация -->
     <section id="about" class="pb-16">
       <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
-        <video autoplay loop muted playsinline class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="https://www.dropbox.com/scl/fi/88ah9ztt928j4dq0i4z8r/photo.mp4?rlkey=f7tof2pn98h3dcw928uh0jlta&st=zkt26pwc&dl=1" type="video/mp4">
+        <video autoplay loop muted playsinline class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="/assets/photo.mp4" type="video/mp4" onerror="console.error('Ошибка загрузки видео:', this.error); this.style.display='none'; this.nextElementSibling.style.display='block';">
           Твой браузер не поддерживает видео.
         </video>
+        <img src="https://via.placeholder.com/48x48" alt="Аватарка заглушка" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" style="display: none;">
         <div>
           <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Информация</h2>
           <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
@@ -212,7 +213,7 @@
 
     <!-- Видео -->
     <section id="videos" class="bg-white dark:bg-gray-800 py-16">
-      <div class="container mxfootnote-auto px-4">
+      <div class="container mx-auto px-4">
         <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-8">Мои видео</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Заглушка, видео будут позже -->
@@ -236,7 +237,7 @@
     </section>
 
     <!-- Мемы от авторов -->
-    <section id="fan-memes" class Preformatted textclass="bg-white dark:bg-gray-800 py-16">
+    <section id="fan-memes" class="bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Мемы от авторов</h2>
         <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Жду твои мемы! 😎 Врывайся с креативом, но следуй правилам:</p>
