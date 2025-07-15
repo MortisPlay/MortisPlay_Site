@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -146,6 +107,70 @@
       padding: 6rem 0;
       margin-bottom: 3rem;
     }
+    #accessButton { 
+      background-color: #ff4444; 
+      color: white; 
+      border: none; 
+      border-radius: 5px; 
+      padding: 12px 24px; 
+      font-size: 16px; 
+      transition: transform 0.3s, opacity 0.3s; 
+    }
+    #accessButton:hover:not(:disabled) { 
+      transform: scale(1.1); 
+    }
+    #accessButton:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .modal { 
+      display: none; 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: rgba(0,0,0,0.5); 
+      z-index: 1000; 
+    }
+    .modal-content { 
+      background: white; 
+      color: #333; 
+      margin: 15% auto; 
+      padding: 20px; 
+      width: 70%; 
+      max-width: 500px; 
+      border-radius: 5px; 
+      text-align: left; 
+    }
+    body.dark .modal-content { 
+      background: #2d3748; 
+      color: #e2e8f0; 
+    }
+    .modal-content a {
+      color: #1e90ff; 
+    }
+    body.dark .modal-content a {
+      color: #63b3ed; 
+    }
+    .close { 
+      float: right; 
+      font-size: 20px; 
+      cursor: pointer; 
+      color: #333; 
+    }
+    body.dark .close {
+      color: #e2e8f0; 
+    }
+    #faqModal .modal-content, #dateModal .modal-content, #vipModal .modal-content, #accessModal .modal-content { 
+      max-height: 70vh; 
+      overflow-y: auto; 
+    }
+    #countdown {
+      color: white;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
     @media (max-width: 640px) {
       .avatar {
         width: 6rem;
@@ -175,6 +200,9 @@
       #about {
         padding: 3rem 0;
         margin-bottom: 1.5rem;
+      }
+      #countdown {
+        font-size: 0.9rem;
       }
     }
   </style>
@@ -220,6 +248,13 @@
       <a href="https://t.me/MortisPlayTG" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition main-telegram">Основной канал</a>
       <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition private-telegram">Частный канал (вход платный)</a>
     </div>
+    <button id="accessButton" onclick="openAccessModal()" class="mt-6" disabled>Получить закрытый доступ</button>
+    <div id="countdown" class="text-white mt-2"></div>
+    <button onclick="openFAQModal()" class="mt-2 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-full font-semibold transition">Помощь/FAQ</button>
+    <div class="mt-4">
+      <input id="codeInput" type="text" class="border rounded p-2" placeholder="Введите код">
+      <button onclick="checkAccessCode()" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition mt-2">Ввести</button>
+    </div>
   </section>
 
   <!-- Полная версия сайта -->
@@ -262,16 +297,27 @@
     <section id="stories" class="section bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Мои истории</h2>
-        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Здесь мои эпичные истории в видеоформате! Скоро добавлю больше контента! 😎</p>
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Эпичные моменты из Brawl Stars и не только! Смотри мои истории! 😎</p>
         <div id="stories-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center">
-            <div class="video-placeholder w-full h-48 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center">Видео 1 (скоро)</div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
+            <iframe class="w-full h-48 rounded" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Эпичная катка в Brawl Stars" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Эпичная катка #1</p>
           </div>
-          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center">
-            <div class="video-placeholder w-full h-48 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center">Видео 2 (скоро)</div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
+            <iframe class="w-full h-48 rounded" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Секреты Mortis" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Секреты Mortis</p>
           </div>
-          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center">
-            <div class="video-placeholder w-full h-48 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center">Видео 3 (скоро)</div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
+            <iframe class="w-full h-48 rounded" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Турнир 2023" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Турнир 2023</p>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
+            <iframe class="w-full h-48 rounded" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Челлендж без доната" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Челлендж без доната</p>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
+            <iframe class="w-full h-48 rounded" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Мемы в Brawl Stars" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Мемы в Brawl Stars</p>
           </div>
         </div>
       </div>
@@ -282,9 +328,27 @@
       <div class="container mx-auto px-4">
         <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-8">Мои видео</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Заглушка, видео будут позже -->
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
+            <iframe class="w-full h-48 rounded" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Лучшие моменты стрима" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Лучшие моменты стрима</p>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
+            <iframe class="w-full h-48 rounded" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Гайд по Mortis" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Гайд по Mortis</p>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
+            <iframe class="w-full h-48 rounded" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Смешные фейлы" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Смешные фейлы</p>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
+            <iframe class="w-full h-48 rounded" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Топ-10 скинов" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Топ-10 скинов</p>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
+            <iframe class="w-full h-48 rounded" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Реакция на обнову" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Реакция на обнову</p>
+          </div>
         </div>
-        <p class="text-center text-gray-700 dark:text-gray-300 mt-4">Видео пока загружаются на Rutube! Скоро тут будут эпичные ролики. 😎 Следи за обновлениями!</p>
         <div class="text-center mt-6">
           <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-full font-semibold transition youtube-link">Смотреть все видео</a>
         </div>
@@ -375,10 +439,106 @@
 
     <!-- Футер -->
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
-      <p class="text-sm">© 2025 Mortis Play. Все права защищены.</p>
+      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.0.5</p>
     </footer>
   </div>
 
+  <!-- Модальное окно для доступа -->
+  <div id="accessModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('accessModal')">×</span>
+      <h2>Условия закрытого доступа</h2>
+      <p>Чтобы получить закрытый доступ к сайту, выполните следующие шаги:</p>
+      <ol>
+        <li>Подпишитесь на наш Telegram-канал <a href="https://t.me/MortisPlayTG" target="_blank" class="main-telegram">@MortisPlayTG</a>.</li>
+        <li>Введите ваш Telegram-ник (например, @dimap7221) и нажмите "Проверить подписку".</li>
+      </ol>
+      <p>Если вы подписаны, вам выдадут уникальный код!</p>
+      <div class="mt-4">
+        <input id="telegramUsername" type="text" class="border rounded p-2 w-full" placeholder="Введите ваш Telegram-ник (например, @dimap7221)">
+        <button id="checkSubscriptionBtn" onclick="checkSubscription()" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition mt-2">Проверить подписку</button>
+      </div>
+      <p id="codeResult" class="mt-4"></p>
+    </div>
+  </div>
+
+  <!-- Модальное окно для FAQ -->
+  <div id="faqModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('faqModal')">×</span>
+      <h2>Помощь/FAQ</h2>
+      <p><strong>Как получить доступ?</strong></p>
+      <ul>
+        <li>Нажмите "Получить закрытый доступ".</li>
+        <li>Подпишитесь на наш Telegram-канал <a href="https://t.me/MortisPlayTG" class="main-telegram">@MortisPlayTG</a>.</li>
+        <li>Введите ваш Telegram-ник и нажмите "Проверить подписку" — получите код.</li>
+        <li>Введите код в поле на главной странице.</li>
+      </ul>
+      <p><strong>Что мне делать с кодом, который мне выдали?</strong></p>
+      <p>После нажатия "Проверить подписку" вы получите уникальный код. Этот код может дать:</p>
+      <ul>
+        <li><strong>Мгновенный доступ к сайту</strong>: Введите код в поле на главной странице, чтобы сразу открыть полный сайт.</li>
+        <li><strong>Доступ с датой</strong>: Код откроет сайт 22.07.2025 в 10:00 по МСК. Сохраните код и введите его после указанной даты.</li>
+        <li><strong>Доступ к сайту + частный канал</strong>: Код откроет сайт и даст ссылку на частный Telegram-канал. Введите код, чтобы получить доступ и ссылку.</li>
+      </ul>
+      <p>Скопируйте код и вставьте его в поле ввода на главной странице. Если код не работает, проверьте правильность ввода или свяжитесь с администратором.</p>
+      <p><strong>Что делать, если код не работает?</strong></p>
+      <p>Обратитесь к администратору (<a href="https://t.me/dimap7221" class="personal-telegram">@dimap7221</a>) или попробуйте заново.</p>
+    </div>
+  </div>
+
+  <!-- Модальное окно для даты -->
+  <div id="dateModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('dateModal')">×</span>
+      <h2>Доступ с датой</h2>
+      <p>Этот код даст доступ к сайту <strong>22 июля 2025 в 10:00 по МСК</strong>.</p>
+      <p>Сохраните код и попробуйте ввести его после указанной даты.</p>
+    </div>
+  </div>
+
+  <!-- Модальное окно для VIP-доступа -->
+  <div id="vipModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('vipModal')">×</span>
+      <h2>Поздравляю! VIP-доступ</h2>
+      <p>Вы получили мгновенный доступ к сайту и ссылку на частный Telegram-канал:</p>
+      <p><a href="https://t.me/+VhpxzWl9ygYzMmFi" class="text-indigo-600 dark:text-indigo-400 underline private-telegram">t.me/+VhpxzWl9ygYzMmFi</a></p>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+          var firstSheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[firstSheetName];
+          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+          var filteredData = jsonData.filter(row => row.some(filledCell));
+          var headerRowIndex = filteredData.findIndex((row, index) =>
+            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+          );
+          if (headerRowIndex === -1 || headerRowIndex > 25) {
+            headerRowIndex = 0;
+          }
+          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+          return csv;
+        } catch (e) {
+          console.error(e);
+          return "";
+        }
+      }
+      return gk_fileData[filename] || "";
+    }
+  </script>
   <script>
     // Показ полной версии и навигации, если ?dev=true
     const urlParams = new URLSearchParams(window.location.search);
@@ -391,10 +551,41 @@
       comingSoon.style.display = 'none';
       fullSite.style.display = 'block';
       navMenu.style.display = 'block';
+      document.getElementById('accessButton').disabled = false;
+      document.getElementById('countdown').style.display = 'none';
     } else {
       comingSoon.style.display = 'flex';
       fullSite.style.display = 'none';
       navMenu.style.display = 'none';
+    }
+
+    // Обратный отсчёт до открытия
+    const openDate = new Date('2025-07-16T10:00:00+03:00');
+    const accessButton = document.getElementById('accessButton');
+    const countdownElement = document.getElementById('countdown');
+
+    function updateCountdown() {
+      const now = new Date();
+      const timeLeft = openDate - now;
+
+      if (timeLeft <= 0) {
+        accessButton.disabled = false;
+        accessButton.classList.remove('opacity-50', 'cursor-not-allowed');
+        countdownElement.style.display = 'none';
+        gtag('event', 'access_button_enabled', { 'event_category': 'Access', 'event_label': 'ButtonEnabled' });
+      } else {
+        accessButton.disabled = true;
+        accessButton.classList.add('opacity-50', 'cursor-not-allowed');
+        const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        countdownElement.textContent = `Доступ откроется через ${hours}ч ${minutes}м ${seconds}с`;
+        setTimeout(updateCountdown, 1000);
+      }
+    }
+
+    if (!isDev) {
+      updateCountdown();
     }
 
     // Бургер-меню
@@ -406,7 +597,6 @@
     // Анимация фона с плавающими смайликами
     const canvas = document.getElementById('backgroundCanvas');
     const ctx = canvas.getContext('2d');
-
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
@@ -422,15 +612,12 @@
         this.speedY = Math.random() * 2 - 1;
         this.emote = emotes[Math.floor(Math.random() * emotes.length)];
       }
-
       update() {
         this.x += this.speedX;
         this.y += this.speedY;
-
         if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
         if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
       }
-
       draw() {
         ctx.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.5)';
         ctx.font = `${this.size}px Arial`;
@@ -550,6 +737,153 @@
     });
     document.querySelector('.youtube-link').addEventListener('click', () => {
       gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
+    });
+
+    // Логика закрытого доступа
+    const accessCodes = [
+      { code: "X7K9P2", type: "site", description: "Мгновенный доступ к сайту", weight: 85 },
+      { code: "K9P2X7", type: "site", description: "Мгновенный доступ к сайту", weight: 85 },
+      { code: "A1B2C3", type: "site", description: "Мгновенный доступ к сайту", weight: 85 },
+      { code: "MORTIS01", type: "date", description: "Доступ к сайту с 22.07.2025 10:00 МСК", weight: 15 },
+      { code: "MORTIS02", type: "date", description: "Доступ к сайту с 22.07.2025 10:00 МСК", weight: 15 },
+      { code: "MORTIS03", type: "date", description: "Доступ к сайту с 22.07.2025 10:00 МСК", weight: 15 },
+      { code: "VIPMORTIS1", type: "site+private", description: "Мгновенный доступ к сайту + ссылка на частный канал", weight: 5 },
+      { code: "VIPMORTIS2", type: "site+private", description: "Мгновенный доступ к сайту + ссылка на частный канал", weight: 5 },
+      { code: "VIPMORTIS3", type: "site+private", description: "Мгновенный доступ к сайту + ссылка на частный канал", weight: 5 }
+    ];
+    let accessGranted = false;
+    let codeGenerated = false;
+
+    function openModal(modalId) {
+      document.getElementById(modalId).style.display = "block";
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = "none";
+    }
+
+    function openAccessModal() {
+      if (accessButton.disabled) {
+        alert("Доступ откроется завтра, 16 июля 2025, в 10:00 МСК!");
+        gtag('event', 'access_button_disabled_click', { 'event_category': 'Access', 'event_label': 'ButtonDisabled' });
+        return;
+      }
+      openModal("accessModal");
+      gtag('event', 'open_access_modal', { 'event_category': 'Access', 'event_label': 'AccessModal' });
+    }
+
+    function openFAQModal() {
+      openModal("faqModal");
+      gtag('event', 'open_faq_modal', { 'event_category': 'Access', 'event_label': 'FAQModal' });
+    }
+
+    async function checkSubscription() {
+      if (codeGenerated) {
+        document.getElementById("codeResult").innerHTML = "Вы уже получили код!";
+        return;
+      }
+
+      const telegramUsername = document.getElementById("telegramUsername").value.trim();
+      if (!telegramUsername || !telegramUsername.startsWith('@')) {
+        document.getElementById("codeResult").innerHTML = "Пожалуйста, введите ваш Telegram-ник (например, @dimap7221).";
+        return;
+      }
+
+      document.getElementById("checkSubscriptionBtn").disabled = true;
+      document.getElementById("checkSubscriptionBtn").classList.add("opacity-50", "cursor-not-allowed");
+      document.getElementById("codeResult").innerHTML = "Проверка подписки...";
+
+      try {
+        const response = await fetch('http://localhost:3000/check-subscription', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: telegramUsername, channel: '@MortisPlayTG' })
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to check subscription');
+        }
+
+        if (!result.isSubscribed) {
+          document.getElementById("codeResult").innerHTML = 'Вы не подписаны на <a href="https://t.me/MortisPlayTG" target="_blank" class="main-telegram">@MortisPlayTG</a>. Подпишитесь и попробуйте снова!';
+          gtag('event', 'subscription_check_failed', { 'event_category': 'Access', 'event_label': 'NotSubscribed' });
+          document.getElementById("checkSubscriptionBtn").disabled = false;
+          document.getElementById("checkSubscriptionBtn").classList.remove("opacity-50", "cursor-not-allowed");
+          return;
+        }
+
+        const totalWeight = accessCodes.reduce((sum, code) => sum + code.weight, 0);
+        let random = Math.random() * totalWeight;
+        let selectedCode = null;
+        for (const code of accessCodes) {
+          random -= code.weight;
+          if (random <= 0) {
+            selectedCode = code;
+            break;
+          }
+        }
+        if (!selectedCode) selectedCode = accessCodes[0];
+        document.getElementById("codeResult").innerHTML = `Ваш код: <strong>${selectedCode.code}</strong><br>Тип доступа: ${selectedCode.description}<br><button onclick="navigator.clipboard.writeText('${selectedCode.code}')" class="bg-gray-600 hover:bg-gray-700 text-white py-1 px-2 rounded mt-2">Копировать код</button>`;
+        codeGenerated = true;
+        gtag('event', 'generate_code', { 'event_category': 'Access', 'event_label': `CodeGenerated_${selectedCode.type}` });
+      } catch (error) {
+        document.getElementById("codeResult").innerHTML = `Ошибка проверки подписки: ${error.message}. Попробуйте позже или свяжитесь с <a href='https://t.me/dimap7221' class='personal-telegram'>@dimap7221</a>.`;
+        gtag('event', 'subscription_check_error', { 'event_category': 'Access', 'event_label': 'CheckError' });
+        document.getElementById("checkSubscriptionBtn").disabled = false;
+        document.getElementById("checkSubscriptionBtn").classList.remove("opacity-50", "cursor-not-allowed");
+      }
+    }
+
+    function checkAccessCode() {
+      const userCode = document.getElementById('codeInput').value.trim();
+      const codeObj = accessCodes.find(c => c.code === userCode);
+      if (!codeObj) {
+        alert("Неверный код!");
+        gtag('event', 'access_denied', { 'event_category': 'Access', 'event_label': 'CodeFail' });
+        return;
+      }
+
+      const openDate = new Date('2025-07-22T10:00:00+03:00');
+      const now = new Date();
+
+      if (codeObj.type === "site") {
+        accessGranted = true;
+        comingSoon.style.display = 'none';
+        fullSite.style.display = 'block';
+        navMenu.style.display = 'block';
+        gtag('event', 'access_granted', { 'event_category': 'Access', 'event_label': 'SiteAccess' });
+      } else if (codeObj.type === "date") {
+        if (now >= openDate) {
+          accessGranted = true;
+          comingSoon.style.display = 'none';
+          fullSite.style.display = 'block';
+          navMenu.style.display = 'block';
+          gtag('event', 'access_granted', { 'event_category': 'Access', 'event_label': 'DateAccess' });
+        } else {
+          openModal('dateModal');
+          gtag('event', 'access_denied', { 'event_category': 'Access', 'event_label': 'DateAccessEarly' });
+        }
+      } else if (codeObj.type === "site+private") {
+        accessGranted = true;
+        comingSoon.style.display = 'none';
+        fullSite.style.display = 'block';
+        navMenu.style.display = 'block';
+        openModal('vipModal');
+        gtag('event', 'access_granted', { 'event_category': 'Access', 'event_label': 'SiteAndPrivateAccess' });
+      }
+    }
+
+    // Проверка кода при загрузке
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!isDev && !accessGranted) {
+        document.getElementById('codeInput').addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') checkAccessCode();
+        });
+        document.getElementById('telegramUsername').addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') checkSubscription();
+        });
+      }
     });
   </script>
 </body>
