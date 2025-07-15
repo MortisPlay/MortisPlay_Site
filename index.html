@@ -431,7 +431,7 @@
 
     <!-- Футер -->
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
-      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.1.2</p>
+      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.1.5</p>
     </footer>
   </div>
 
@@ -468,13 +468,21 @@
     }
   </script>
   <script>
-    // Показ полной версии и навигации при клике на кнопку
+    // Проверка параметра ?dev=true и показ полной версии
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDev = urlParams.get('dev') === 'true';
     const comingSoon = document.getElementById('coming-soon');
     const fullSite = document.getElementById('full-site');
     const navMenu = document.getElementById('nav-menu');
     const accessButton = document.getElementById('accessButton');
     const buttonCountdownElement = document.getElementById('buttonCountdown');
     const countdownElement = document.getElementById('countdown');
+
+    if (isDev) {
+      comingSoon.style.display = 'none';
+      fullSite.style.display = 'block';
+      navMenu.style.display = 'block';
+    }
 
     // Таймер активации кнопки до 16 июля 2025, 10:00 МСК
     const activationDate = new Date('2025-07-16T10:00:00+03:00');
@@ -491,6 +499,7 @@
         const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
         buttonCountdownElement.textContent = `Активация кнопки через ${days}д ${hours}ч ${minutes}м ${seconds}с`;
+        accessButton.disabled = true;
       }
     }
 
@@ -649,9 +658,9 @@
 
     // Случайная цитата
     const quotes = [
-      "Если хочешь кайфовать - кайфуй, кайфуй",
-      "Хочешь прикол? Обойдешься.",
-      "Кусочек обновы - это как пирог с мясом, только оно готовенькое) >:D"
+      "Живи на полную, как в Brawl Stars! 😎",
+      "Мемы — это моя суперсила! 🚀",
+      "Каждый день — новая битва! >:D"
     ];
     document.getElementById('quote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
 
