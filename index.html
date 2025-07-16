@@ -167,10 +167,10 @@
       font-size: 1rem;
       margin-top: 0.5rem;
     }
-    .news-card {
+    .news-card, .update-card {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .news-card:hover {
+    .news-card:hover, .update-card:hover {
       transform: scale(1.05);
       box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
     }
@@ -429,12 +429,24 @@
     <!-- Обновление -->
     <section id="updates" class="section bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4 text-center">
-        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Последние обновления сайта (только официальные)</h2>
+        <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-6">Последние обновления сайта (только официальные)</h2>
         <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Исправление, удаление, добавление и так далее</p>
-        <div class="grid grid-cols-1 gap-6">
-          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center">
-            <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300"><span class="text-yellow-500 font-semibold">Обычное обновление:</span> Версия 4.5 — обновлены разделы «Мои истории» и «Видео» с переходом на RuTube, улучшены тексты и добавлена поддержка цветных заголовков.</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Примечание: Обновления проводились до открытия доступа к сайту.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="update-card bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg p-6 shadow-lg text-white fade-in">
+            <h3 class="text-lg font-semibold mb-2">Обычное обновление</h3>
+            <p class="text-sm">Версия 4.5 — обновлены разделы «Мои истории» и «Видео» с переходом на RuTube, улучшены тексты и добавлена поддержка цветных заголовков.</p>
+            <p class="text-xs mt-2">Примечание: Обновления проводились до открытия доступа к сайту.</p>
+            <p class="text-xs mt-2">16 июля 2025</p>
+          </div>
+          <div class="update-card bg-gradient-to-r from-green-500 to-lime-500 rounded-lg p-6 shadow-lg text-white fade-in" style="display: none;">
+            <h3 class="text-lg font-semibold mb-2">Техническое обновление</h3>
+            <p class="text-sm">Исправлены баги и оптимизирована скорость загрузки сайта.</p>
+            <p class="text-xs mt-2">Ожидается...</p>
+          </div>
+          <div class="update-card bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg p-6 shadow-lg text-white fade-in" style="display: none;">
+            <h3 class="text-lg font-semibold mb-2">Новое оформление</h3>
+            <p class="text-sm">Добавлены стильные карточки для новостей и обновлений.</p>
+            <p class="text-xs mt-2">Ожидается...</p>
           </div>
         </div>
       </div>
