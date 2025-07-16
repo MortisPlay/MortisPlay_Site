@@ -506,8 +506,8 @@
             <p class="text-xs mt-2">16 июля 2025</p>
           </div>
           <div class="update-card bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg p-6 shadow-lg text-white fade-in">
-            <h3 class="text-lg font-semibold mb-2">Небольшое обновление</h3>
-            <p class="text-sm">Версия 4.7.2 — добавлена страница технического перерыва с эпичным фоном черной дыры для стиля и оптимизации. Врывайся в космос, пока мы чиним шоколадки! 😎</p>
+            <h3 class="text-lg font-semibold mb-2">Обычное обновление</h3>
+            <p class="text-sm">Версия 4.7 — добавлены крутой FAQ с ответами на твои вопросы и стильное уведомление для свежих новостей. Сайт становится ещё эпичнее — врывайся и проверяй! 😎</p>
             <p class="text-xs mt-2">16 июля 2025</p>
           </div>
         </div>
@@ -559,19 +559,9 @@
       Добро пожаловать на Mortis Play! Сайт в разработке, следи за обновлениями. 😎
     </div>
 
-    <!-- Страница технического обслуживания -->
-    <div id="maintenance" class="min-h-screen flex flex-col items-center justify-center text-center text-white bg-gray-900 hidden">
-      <canvas id="blackHoleCanvas" class="absolute top-0 left-0 w-full h-full z-0" style="opacity: 0.8;"></canvas>
-      <div class="relative z-10">
-        <h1 class="text-4xl sm:text-6xl font-bold mb-6">Технические шоколадки! :)</h1>
-        <p class="text-lg sm:text-xl mb-6">Мы уже исправляем эту ситуацию и мы скоро вернемся! Следите за новостями в нашем Telegram канале.</p>
-        <a href="https://t.me/MortisPlayTG" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition main-telegram">Telegram канал</a>
-      </div>
-    </div>
-
     <!-- Футер -->
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
-      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.7.2</p>
+      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.7</p>
     </footer>
   </div>
 
@@ -608,320 +598,236 @@
     }
   </script>
   <script>
-  <script>
-  // Проверка параметра ?dev=true и показ полной версии
-  const urlParams = new URLSearchParams(window.location.search);
-  const isDev = urlParams.get('dev') === 'true';
-  const comingSoon = document.getElementById('coming-soon');
-  const fullSite = document.getElementById('full-site');
-  const navMenu = document.getElementById('nav-menu');
-  const accessButton = document.getElementById('accessButton');
-  const buttonCountdownElement = document.getElementById('buttonCountdown');
-  const countdownElement = document.getElementById('countdown');
-  const modal = document.getElementById('modal');
-  const modalClose = document.getElementsByClassName('close')[0];
-  const notification = document.getElementById('notification');
-  const maintenance = document.getElementById('maintenance');
-  const blackHoleCanvas = document.getElementById('blackHoleCanvas');
+    // Проверка параметра ?dev=true и показ полной версии
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDev = urlParams.get('dev') === 'true';
+    const comingSoon = document.getElementById('coming-soon');
+    const fullSite = document.getElementById('full-site');
+    const navMenu = document.getElementById('nav-menu');
+    const accessButton = document.getElementById('accessButton');
+    const buttonCountdownElement = document.getElementById('buttonCountdown');
+    const countdownElement = document.getElementById('countdown');
+    const modal = document.getElementById('modal');
+    const modalClose = document.getElementsByClassName('close')[0];
+    const notification = document.getElementById('notification');
 
-  if (isDev) {
-    comingSoon.style.display = 'none';
-    fullSite.style.display = 'block';
-    navMenu.style.display = 'block';
-  }
-
-  // Таймер активации кнопки до 16 июля 2025, 10:00 МСК
-  const activationDate = new Date('2025-07-16T10:00:00+03:00');
-  function updateButtonCountdown() {
-    const now = new Date();
-    const timeLeft = activationDate - now;
-
-    if (timeLeft <= 0) {
-      buttonCountdownElement.textContent = "Кнопка активирована!";
-      accessButton.disabled = false;
-    } else {
-      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-      buttonCountdownElement.textContent = `Активация кнопки через ${days}д ${hours}ч ${minutes}м ${seconds}с`;
-      accessButton.disabled = true;
+    if (isDev) {
+      comingSoon.style.display = 'none';
+      fullSite.style.display = 'block';
+      navMenu.style.display = 'block';
     }
-  }
 
-  // Таймер открытия до 22 июля 2025, 10:00 МСК
-  const openDate = new Date('2025-07-22T10:00:00+03:00');
-  function updateOpenCountdown() {
-    const now = new Date();
-    const timeLeft = openDate - now;
+    // Таймер активации кнопки до 16 июля 2025, 10:00 МСК
+    const activationDate = new Date('2025-07-16T10:00:00+03:00');
+    function updateButtonCountdown() {
+      const now = new Date();
+      const timeLeft = activationDate - now;
 
-    if (timeLeft <= 0) {
-      countdownElement.textContent = "Сайт открыт!";
-    } else {
-      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-      countdownElement.textContent = `Открытие через ${days}д ${hours}ч ${minutes}м ${seconds}с`;
+      if (timeLeft <= 0) {
+        buttonCountdownElement.textContent = "Кнопка активирована!";
+        accessButton.disabled = false;
+      } else {
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        buttonCountdownElement.textContent = `Активация кнопки через ${days}д ${hours}ч ${minutes}м ${seconds}с`;
+        accessButton.disabled = true;
+      }
     }
-  }
 
-  // Обновление таймеров
-  setInterval(() => {
-    updateButtonCountdown();
-    updateOpenCountdown();
-  }, 1000);
+    // Таймер открытия до 22 июля 2025, 10:00 МСК
+    const openDate = new Date('2025-07-22T10:00:00+03:00');
+    function updateOpenCountdown() {
+      const now = new Date();
+      const timeLeft = openDate - now;
 
-  // Обработка клика по кнопке с модальным окном
-  accessButton.addEventListener('click', () => {
-    if (!accessButton.disabled) {
-      modal.style.display = 'block';
-      gtag('event', 'access_granted', { 'event_category': 'Access', 'event_label': 'OpenAccess' });
+      if (timeLeft <= 0) {
+        countdownElement.textContent = "Сайт открыт!";
+      } else {
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        countdownElement.textContent = `Открытие через ${days}д ${hours}ч ${minutes}м ${seconds}с`;
+      }
     }
-  });
 
-  // Закрытие модального окна
-  modalClose.addEventListener('click', () => {
-    modal.style.display = 'none';
-  });
+    // Обновление таймеров
+    setInterval(() => {
+      updateButtonCountdown();
+      updateOpenCountdown();
+    }, 1000);
 
-  window.addEventListener('click', (event) => {
-    if (event.target == modal) {
-      modal.style.display = 'none';
-    }
-  });
-
-  // Бургер-меню
-  document.getElementById('burger').addEventListener('click', () => {
-    const menu = document.getElementById('mobile-menu');
-    menu.classList.toggle('hidden');
-  });
-
-  // Анимация фона с плавающими смайликами
-  const canvas = document.getElementById('backgroundCanvas');
-  const ctxCanvas = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  const emotes = [">:(", ">:D", ":)", ":/", ":P", "^_^", "-_-"];
-  const particles = [];
-
-  class Particle {
-    constructor() {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.size = Math.random() * 20 + 10;
-      this.speedX = Math.random() * 2 - 1;
-      this.speedY = Math.random() * 2 - 1;
-      this.emote = emotes[Math.floor(Math.random() * emotes.length)];
-    }
-    update() {
-      this.x += this.speedX;
-      this.y += this.speedY;
-      if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-      if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-    }
-    draw() {
-      ctxCanvas.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.5)';
-      ctxCanvas.font = `${this.size}px Arial`;
-      ctxCanvas.fillText(this.emote, this.x, this.y);
-    }
-  }
-
-  function init() {
-    const particleCount = window.innerWidth <= 640 ? 20 : 50;
-    for (let i = 0; i < particleCount; i++) {
-      particles.push(new Particle());
-    }
-  }
-
-  function animate() {
-    ctxCanvas.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(particle => {
-      particle.update();
-      particle.draw();
+    // Обработка клика по кнопке с модальным окном
+    accessButton.addEventListener('click', () => {
+      if (!accessButton.disabled) {
+        modal.style.display = 'block';
+        gtag('event', 'access_granted', { 'event_category': 'Access', 'event_label': 'OpenAccess' });
+      }
     });
-    requestAnimationFrame(animate);
-  }
 
-  init();
-  animate();
+    // Закрытие модального окна
+    modalClose.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
 
-  window.addEventListener('resize', () => {
+    window.addEventListener('click', (event) => {
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Бургер-меню
+    document.getElementById('burger').addEventListener('click', () => {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    });
+
+    // Анимация фона с плавающими смайликами
+    const canvas = document.getElementById('backgroundCanvas');
+    const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-  });
 
-  // Плавное появление блоков
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('visible');
-    });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    const emotes = [">:(", ">:D", ":)", ":/", ":P", "^_^", "-_-"];
+    const particles = [];
 
-  // Темная тема
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.body.classList.add('dark');
-  }
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-    document.body.classList.toggle('dark', e.matches);
-  });
-
-  // Навигация
-  document.querySelectorAll('nav a').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      target.scrollIntoView({ behavior: 'smooth' });
-      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-      this.classList.add('active');
-    });
-  });
-
-  window.addEventListener('scroll', () => {
-    const sections = document.querySelectorAll('section');
-    let currentSection = '';
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop;
-      if (scrollY >= sectionTop - 100) {
-        currentSection = section.getAttribute('id');
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 20 + 10;
+        this.speedX = Math.random() * 2 - 1;
+        this.speedY = Math.random() * 2 - 1;
+        this.emote = emotes[Math.floor(Math.random() * emotes.length)];
       }
-    });
-    document.querySelectorAll('nav a').forEach(a => {
-      a.classList.remove('active');
-      if (a.getAttribute('href') === `#${currentSection}`) {
-        a.classList.add('active');
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
       }
-    });
-  });
-
-  // Анимация статистики
-  function animateValue(id, start, end, duration) {
-    const element = document.getElementById(id);
-    let startTimestamp = null;
-    const step = (timestamp) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      element.textContent = Math.floor(progress * (end - start) + start) + (id === 'viewCount' ? 'K' : '');
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }
-  animateValue("subscriberCount", 0, 420, 2000);
-  animateValue("viewCount", 0, 146, 2000);
-
-  // Google Analytics события
-  document.querySelector('.donation-link').addEventListener('click', () => {
-    gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
-  });
-  document.querySelectorAll('.main-telegram').forEach(link => {
-    link.addEventListener('click', () => {
-      gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'MainTelegram' });
-    });
-  });
-  document.querySelectorAll('.private-telegram').forEach(link => {
-    link.addEventListener('click', () => {
-      gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PrivateTelegram' });
-    });
-  });
-  document.querySelectorAll('.personal-telegram').forEach(link => {
-    link.addEventListener('click', () => {
-      gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
-    });
-  });
-  document.querySelector('.youtube-link').addEventListener('click', () => {
-    gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
-  });
-
-  // Уведомление
-  if (!localStorage.getItem('notificationShown')) {
-    notification.style.display = 'block';
-    setTimeout(() => {
-      localStorage.setItem('notificationShown', 'true');
-    }, 4500);
-  }
-
-  // Анимация фона черной дыры для технического перерыва
-  window.onload = function () {
-    if (blackHoleCanvas && urlParams.get('maintenance') === 'true') {
-      const ctx = blackHoleCanvas.getContext('2d');
-      if (!ctx) {
-        console.error('Не удалось получить контекст Canvas для черной дыры');
-        return;
+      draw() {
+        ctx.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.5)';
+        ctx.font = `${this.size}px Arial`;
+        ctx.fillText(this.emote, this.x, this.y);
       }
+    }
 
-      comingSoon.style.display = 'none';
-      fullSite.style.display = 'none';
-      navMenu.style.display = 'none';
-      maintenance.classList.remove('hidden');
-
-      function resizeCanvas() {
-        blackHoleCanvas.width = window.innerWidth;
-        blackHoleCanvas.height = window.innerHeight;
-      }
-      window.addEventListener('resize', resizeCanvas);
-      resizeCanvas();
-
-      class Particle {
-        constructor() {
-          this.x = Math.random() * blackHoleCanvas.width;
-          this.y = Math.random() * blackHoleCanvas.height;
-          this.size = Math.random() * 2 + 1;
-          this.speed = Math.random() * 0.5 + 0.2;
-          this.angle = Math.random() * Math.PI * 2;
-          this.distance = Math.random() * 100 + 50;
-        }
-        update() {
-          const centerX = blackHoleCanvas.width / 2;
-          const centerY = blackHoleCanvas.height / 2;
-          const dx = centerX - this.x;
-          const dy = centerY - this.y;
-          const distanceToCenter = Math.sqrt(dx * dx + dy * dy);
-          const force = Math.max(0.1, 50 / (distanceToCenter + 1));
-          this.angle += force * 0.001;
-          this.x = centerX + Math.cos(this.angle) * this.distance;
-          this.y = centerY + Math.sin(this.angle) * this.distance;
-        }
-        draw() {
-          ctx.fillStyle = `rgba(255, 255, 255, ${this.size / 3})`;
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-
-      const particles = [];
-      const particleCount = window.innerWidth <= 640 ? 50 : 100;
+    function init() {
+      const particleCount = window.innerWidth <= 640 ? 20 : 50;
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle());
       }
-
-      function animateBlackHole() {
-        if (blackHoleCanvas.width > 0 && blackHoleCanvas.height > 0) {
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-          ctx.fillRect(0, 0, blackHoleCanvas.width, blackHoleCanvas.height);
-
-          const gradient = ctx.createRadialGradient(
-            blackHoleCanvas.width / 2, blackHoleCanvas.height / 2, 0,
-            blackHoleCanvas.width / 2, blackHoleCanvas.height / 2, 200
-          );
-          gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
-          gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-          ctx.fillStyle = gradient;
-          ctx.fillRect(0, 0, blackHoleCanvas.width, blackHoleCanvas.height);
-
-          particles.forEach(particle => {
-            particle.update();
-            particle.draw();
-          });
-        }
-        requestAnimationFrame(animateBlackHole);
-      }
-
-      animateBlackHole();
     }
-  };
-</script>
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Плавное появление блоков
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Темная тема
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.body.classList.add('dark');
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      document.body.classList.toggle('dark', e.matches);
+    });
+
+    // Навигация
+    document.querySelectorAll('nav a').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        target.scrollIntoView({ behavior: 'smooth' });
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('section');
+      let currentSection = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (scrollY >= sectionTop - 100) {
+          currentSection = section.getAttribute('id');
+        }
+      });
+      document.querySelectorAll('nav a').forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === `#${currentSection}`) {
+          a.classList.add('active');
+        }
+      });
+    });
+
+    // Анимация статистики
+    function animateValue(id, start, end, duration) {
+      const element = document.getElementById(id);
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        element.textContent = Math.floor(progress * (end - start) + start) + (id === 'viewCount' ? 'K' : '');
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+    animateValue("subscriberCount", 0, 420, 2000);
+    animateValue("viewCount", 0, 146, 2000);
+
+    // Google Analytics события
+    document.querySelector('.donation-link').addEventListener('click', () => {
+      gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
+    });
+    document.querySelectorAll('.main-telegram').forEach(link => {
+      link.addEventListener('click', () => {
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'MainTelegram' });
+      });
+    });
+    document.querySelectorAll('.private-telegram').forEach(link => {
+      link.addEventListener('click', () => {
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PrivateTelegram' });
+      });
+    });
+    document.querySelectorAll('.personal-telegram').forEach(link => {
+      link.addEventListener('click', () => {
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
+      });
+    });
+    document.querySelector('.youtube-link').addEventListener('click', () => {
+      gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
+    });
+
+    // Уведомление
+    if (!localStorage.getItem('notificationShown')) {
+      notification.style.display = 'block';
+      setTimeout(() => {
+        localStorage.setItem('notificationShown', 'true');
+      }, 4500);
+    }
+  </script>
 </body>
 </html>
