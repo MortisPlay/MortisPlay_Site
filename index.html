@@ -559,16 +559,6 @@
       Добро пожаловать на Mortis Play! Сайт в разработке, следи за обновлениями. 😎
     </div>
 
-    <!-- Страница технического обслуживания -->
-    <div id="maintenance" class="min-h-screen flex flex-col items-center justify-center text-center text-white bg-gray-900 hidden">
-      <canvas id="blackHoleCanvas" class="absolute top-0 left-0 w-full h-full z-0" style="opacity: 0.8;"></canvas>
-      <div class="relative z-10">
-        <h1 class="text-4xl sm:text-6xl font-bold mb-6">Технические шоколадки! :)</h1>
-        <p class="text-lg sm:text-xl mb-6">Мы уже исправляем эту ситуацию и мы скоро вернемся! Следите за новостями в нашем Telegram канале.</p>
-        <a href="https://t.me/MortisPlayTG" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition main-telegram">Telegram канал</a>
-      </div>
-    </div>
-
     <!-- Футер -->
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
       <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.7</p>
@@ -620,8 +610,6 @@
     const modal = document.getElementById('modal');
     const modalClose = document.getElementsByClassName('close')[0];
     const notification = document.getElementById('notification');
-    const maintenance = document.getElementById('maintenance');
-    const blackHoleCanvas = document.getElementById('blackHoleCanvas');
 
     if (isDev) {
       comingSoon.style.display = 'none';
@@ -840,87 +828,6 @@
         localStorage.setItem('notificationShown', 'true');
       }, 4500);
     }
-
-    // Анимация фона черной дыры для технического перерыва
-    window.onload = function () {
-      if (blackHoleCanvas && urlParams.get('maintenance') === 'true') {
-        const ctx = blackHoleCanvas.getContext('2d');
-        if (!ctx) {
-          console.error('Не удалось получить контекст Canvas для черной дыры');
-          return;
-        }
-
-        comingSoon.style.display = 'none';
-        fullSite.style.display = 'none';
-        navMenu.style.display = 'none';
-        maintenance.classList.remove('hidden');
-
-        function resizeCanvas() {
-          blackHoleCanvas.width = window.innerWidth;
-          blackHoleCanvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        class Particle {
-          constructor() {
-            this.x = Math.random() * blackHoleCanvas.width;
-            this.y = Math.random() * blackHoleCanvas.height;
-            this.size = Math.random() * 2 + 1;
-            this.speed = Math.random() * 0.5 + 0.2;
-            this.angle = Math.random() * Math.PI * 2;
-            this.distance = Math.random() * 100 + 50;
-          }
-          update() {
-            const centerX = blackHoleCanvas.width / 2;
-            const centerY = blackHoleCanvas.height / 2;
-            const dx = centerX - this.x;
-            const dy = centerY - this.y;
-            const distanceToCenter = Math.sqrt(dx * dx + dy * dy);
-            const force = Math.max(0.1, 50 / (distanceToCenter + 1));
-            this.angle += force * 0.001;
-            this.x = centerX + Math.cos(this.angle) * this.distance;
-            this.y = centerY + Math.sin(this.angle) * this.distance;
-          }
-          draw() {
-            ctx.fillStyle = `rgba(255, 255, 255, ${this.size / 3})`;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
-
-        const particles = [];
-        const particleCount = window.innerWidth <= 640 ? 50 : 100;
-        for (let i = 0; i < particleCount; i++) {
-          particles.push(new Particle());
-        }
-
-        function animateBlackHole() {
-          if (blackHoleCanvas.width > 0 && blackHoleCanvas.height > 0) {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.fillRect(0, 0, blackHoleCanvas.width, blackHoleCanvas.height);
-
-            const gradient = ctx.createRadialGradient(
-              blackHoleCanvas.width / 2, blackHoleCanvas.height / 2, 0,
-              blackHoleCanvas.width / 2, blackHoleCanvas.height / 2, 200
-            );
-            gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
-            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, blackHoleCanvas.width, blackHoleCanvas.height);
-
-            particles.forEach(particle => {
-              particle.update();
-              particle.draw();
-            });
-          }
-          requestAnimationFrame(animateBlackHole);
-        }
-
-        animateBlackHole();
-      }
-    };
   </script>
 </body>
 </html>
