@@ -510,6 +510,11 @@
             <p class="text-sm">Версия 4.7 — добавлены крутой FAQ с ответами на твои вопросы и стильное уведомление для свежих новостей. Сайт становится ещё эпичнее — врывайся и проверяй! 😎</p>
             <p class="text-xs mt-2">16 июля 2025</p>
           </div>
+          <div class="update-card bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 shadow-lg text-white fade-in">
+            <h3 class="text-lg font-semibold mb-2">Маленькое обновление</h3>
+            <p class="text-sm">Версия 4.7.1 — оптимизированы скрипты активации кнопки и таймеров, улучшена структура кода для стабильности.</p>
+            <p class="text-xs mt-2">16 июля 2025</p>
+          </div>
         </div>
       </div>
     </section>
@@ -546,7 +551,7 @@
             <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Где найти эксклюзивные видео и всякие контенты?</div>
             <div class="faq-answer">Эксклюзивы доступны только на этом сайте и в частном Telegram-канале после подписки.</div>
           </div>
-         <div class="faq-item">
+          <div class="faq-item">
             <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Почему в открытой версии, версия сайта обозначана выше 1.0?</div>
             <div class="faq-answer">Так как это открытый доступ к сайту, она выглядит именно так, в полной версии она сбросится до 1.0.</div>
           </div>
@@ -561,7 +566,7 @@
 
     <!-- Футер -->
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
-      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.7</p>
+      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.7.1</p>
     </footer>
   </div>
 
@@ -619,26 +624,22 @@
 
     // Таймер активации кнопки до 16 июля 2025, 10:00 МСК
     const activationDate = new Date('2025-07-16T10:00:00+03:00');
-function updateButtonCountdown() {
-  const now = new Date();
-  const timeLeft = activationDate - now;
+    function updateButtonCountdown() {
+      const now = new Date();
+      const timeLeft = activationDate - now;
 
-  if (timeLeft <= 0) {
-    buttonCountdownElement.textContent = "Кнопка активирована!";
-    accessButton.disabled = false;
-  } else {
-    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-    buttonCountdownElement.textContent = `Активация кнопки через ${days}д ${hours}ч ${minutes}м ${seconds}с`;
-    accessButton.disabled = true;
-  }
-}
-
-setInterval(() => {
-  updateButtonCountdown();
-}, 1000);
+      if (timeLeft <= 0) {
+        buttonCountdownElement.textContent = "Кнопка активирована!";
+        accessButton.disabled = false;
+      } else {
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        buttonCountdownElement.textContent = `Активация кнопки через ${days}д ${hours}ч ${minutes}м ${seconds}с`;
+        accessButton.disabled = true;
+      }
+    }
 
     // Таймер открытия до 22 июля 2025, 10:00 МСК
     const openDate = new Date('2025-07-22T10:00:00+03:00');
