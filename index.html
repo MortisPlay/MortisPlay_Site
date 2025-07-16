@@ -512,7 +512,7 @@
           </div>
           <div class="update-card bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 shadow-lg text-white fade-in">
             <h3 class="text-lg font-semibold mb-2">Маленькое обновление</h3>
-            <p class="text-sm">Версия 4.7.1 — оптимизированы скрипты активации кнопки и таймеров, улучшена структура кода для стабильности.</p>
+            <p class="text-sm">Версия 4.7.1 — оптимизированы скрипты активации кнопки и таймеров, улучшена структура кода для стабильности, модальное окно теперь открывается только один раз.</p>
             <p class="text-xs mt-2">16 июля 2025</p>
           </div>
         </div>
@@ -555,7 +555,7 @@
             <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Почему в открытой версии, версия сайта обозначана выше 1.0?</div>
             <div class="faq-answer">Так как это открытый доступ к сайту, она выглядит именно так, в полной версии она сбросится до 1.0.</div>
           </div>
-         <div class="faq-item">
+          <div class="faq-item">
             <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Как мне участвовать в мемах от автора?</div>
             <div class="faq-answer">Всё просто! Переходите в раздел "Мемы от автора", читаете правила, затем мне присылаете мем соблюдая правилам (18+ нельзя!) и в итоге я могу как одобрить мем соответсвующему правилу так и отклонить. И если вам одобрят мем его добавят на наш сайт) А если отклонят, ничего страшного вы можете быть лучше! *При одобрении не забудьте подписать свой ник либо в картинке либо я добавлю его вручную.</div>
           </div>
@@ -668,11 +668,18 @@
       updateOpenCountdown();
     }, 1000);
 
-    // Обработка клика по кнопке с модальным окном
+    // Обработка клика по кнопке с модальным окном и переключением сайта
     accessButton.addEventListener('click', () => {
-      if (!accessButton.disabled) {
+      if (!accessButton.disabled && !localStorage.getItem('modalShown')) {
         modal.style.display = 'block';
         gtag('event', 'access_granted', { 'event_category': 'Access', 'event_label': 'OpenAccess' });
+        localStorage.setItem('modalShown', 'true'); // Флаг для одного открытия
+        modalClose.addEventListener('click', () => {
+          modal.style.display = 'none';
+          comingSoon.style.display = 'none';
+          fullSite.style.display = 'block';
+          navMenu.style.display = 'block';
+        });
       }
     });
 
@@ -684,6 +691,9 @@
     window.addEventListener('click', (event) => {
       if (event.target == modal) {
         modal.style.display = 'none';
+        comingSoon.style.display = 'none';
+        fullSite.style.display = 'block';
+        navMenu.style.display = 'block';
       }
     });
 
