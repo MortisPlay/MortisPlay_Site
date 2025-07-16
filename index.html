@@ -141,7 +141,7 @@
       width: 70%; 
       max-width: 500px; 
       border-radius: 5px; 
-      text-align: left; 
+      text-align: center; 
     }
     body.dark .modal-content { 
       background: #2d3748; 
@@ -249,20 +249,28 @@
     <div id="countdown" class="text-white mt-2"></div>
   </section>
 
+  <!-- Модальное окно -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p>Сайт находится в раннем доступе! Спасибо за внимание!</p>
+    </div>
+  </div>
+
   <!-- Полная версия сайта -->
   <div id="full-site" style="display: none;">
     <!-- Приветствие -->
     <section id="welcome" class="section py-16 text-center fade-in mt-16">
-      <h1 class="text-2xl sm:text-4xl font-bold text-indigo-700 dark:text-indigo-300 mb-4 welcome-text">Йо, это Mortis Play! Врывайся в мой мир! 🚀</h1>
+      <h1 class="text-2xl sm:text-4xl font-bold text-indigo-700 dark:text-indigo-300 mb-4 welcome-text">Йоу, это сайт Mortis Play! В этом сайте ты найдешь: ЭКСКЛЮЗИВНЫЕ ВИДЕО В КОТОРОМ ТЫ НИГДЕ НЕ НАЙДЕШЬ! Новости о сайте, обновление и многое другое! Врывайся вместе с нами, ведь многое что может произойти на сайте ;)</h1>
       <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mx-auto max-w-2xl">Готов к эпичным каткам, мемам и взрывному вайбу? Подписывайся на мои каналы и становись частью тусы! 😎</p>
       <div id="stats" class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-4">
-        <p>Подписчиков: <span id="subscriberCount">10K</span></p>
-        <p>Просмотров: <span id="viewCount">50K</span></p>
+        <p>Подписчиков: <span id="subscriberCount">420</span></p>
+        <p>Просмотров: <span id="viewCount">146K</span></p>
       </div>
-      <div class="mt-6">
+      <div class="mt-6 flex justify-center space-x-4">
         <a href="#stories" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Смотреть истории</a>
+        <a href="#updates" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Обновления</a>
       </div>
-      <p id="quote" class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-4 italic">"Живи на полную, как в Brawl Stars! 😎"</p>
     </section>
 
     <!-- Информация -->
@@ -275,7 +283,7 @@
         <div>
           <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Информация</h2>
           <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
-            Всем привет, с вами Mortisplay32. Настоящее имя — Дмитрий. На этом сайте ты найдёшь: любимые видео, полезную информацию, которую не расскажу нигде, мемы, воссозданные мной и другими авторами (скоро), и связь со мной. Играю в Brawl Stars с 2018 года и победил в локальном турнире 2023!
+            Всем привет, с вами Mortisplay32. Настоящее имя — Дмитрий. На этом сайте ты найдёшь: любимые видео, полезную информацию, которую не расскажу нигде, мемы, воссозданные мной и другими авторами (скоро), и связь со мной. <i>Гений, миллиардер, плэйбой, филантроп</i>
           </p>
           <div class="mt-4 flex justify-center space-x-4">
             <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="text-red-600 hover:text-red-700">YouTube</a>
@@ -408,7 +416,20 @@
         <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-6">Новости</h2>
         <div class="grid grid-cols-1 gap-6">
           <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center">
-            <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">За последнее время не поступило никаких свежих новостей. Мы скучаем ;(</p>
+            <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">За последнее время не поступило никаких свежих новостей.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Обновление -->
+    <section id="updates" class="section bg-white dark:bg-gray-800 py-16">
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Последние обновления сайта (только официальные)</h2>
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Исправление, удаление, добавление и так далее</p>
+        <div class="grid grid-cols-1 gap-6">
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center">
+            <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">Пока обновлений нет, следи за анонсами!</p>
           </div>
         </div>
       </div>
@@ -421,7 +442,7 @@
         <p class="text-gray-600 dark:text-gray-300 mb-2">Хочешь предложить коллаб или просто поболтать? Пиши!</p>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Мой Telegram: <a href="https://t.me/dimap7221" class="text-indigo-600 dark:text-indigo-400 underline personal-telegram">@dimap7221</a></p>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Telegram канал: <a href="https://t.me/MortisPlayTG" class="text-indigo-600 dark:text-indigo-400 underline main-telegram">@MortisPlayTG</a></p>
-        <p class="text-gray-600 dark:text-gray-300 mb-2">Частный канал: <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="text-indigo-600 dark:text-indigo-400 underline private-telegram">t.me/+VhpxzWl9ygYzMmFi</a>. Мы скучаем ;(</p>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">Частный канал: <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="text-indigo-600 dark:text-indigo-400 underline private-telegram">t.me/+VhpxzWl9ygYzMmFi</a></p>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Email: <a href="mailto:mortisplay@mail.ru" class="text-indigo-600 dark:text-indigo-400 underline">mortisplay@mail.ru</a></p>
         <div class="mt-4">
           <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-full font-semibold transition donation-link">Поддержать проект! 💰</a>
@@ -431,7 +452,7 @@
 
     <!-- Футер -->
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
-      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.1.5</p>
+      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.2</p>
     </footer>
   </div>
 
@@ -477,6 +498,8 @@
     const accessButton = document.getElementById('accessButton');
     const buttonCountdownElement = document.getElementById('buttonCountdown');
     const countdownElement = document.getElementById('countdown');
+    const modal = document.getElementById('modal');
+    const modalClose = document.getElementsByClassName('close')[0];
 
     if (isDev) {
       comingSoon.style.display = 'none';
@@ -526,13 +549,22 @@
       updateOpenCountdown();
     }, 1000);
 
-    // Обработка клика по кнопке
+    // Обработка клика по кнопке с модальным окном
     accessButton.addEventListener('click', () => {
       if (!accessButton.disabled) {
-        comingSoon.style.display = 'none';
-        fullSite.style.display = 'block';
-        navMenu.style.display = 'block';
+        modal.style.display = 'block';
         gtag('event', 'access_granted', { 'event_category': 'Access', 'event_label': 'OpenAccess' });
+      }
+    });
+
+    // Закрытие модального окна
+    modalClose.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target == modal) {
+        modal.style.display = 'none';
       }
     });
 
@@ -648,21 +680,13 @@
       const step = (timestamp) => {
         if (!startTimestamp) startTimestamp = timestamp;
         const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        element.textContent = Math.floor(progress * (end - start) + start) + 'K';
+        element.textContent = Math.floor(progress * (end - start) + start) + (id === 'viewCount' ? 'K' : '');
         if (progress < 1) requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
     }
-    animateValue("subscriberCount", 0, 10, 2000);
-    animateValue("viewCount", 0, 50, 2000);
-
-    // Случайная цитата
-    const quotes = [
-      "Живи на полную, как в Brawl Stars! 😎",
-      "Мемы — это моя суперсила! 🚀",
-      "Каждый день — новая битва! >:D"
-    ];
-    document.getElementById('quote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
+    animateValue("subscriberCount", 0, 420, 2000);
+    animateValue("viewCount", 0, 146, 2000);
 
     // Google Analytics события
     document.querySelector('.donation-link').addEventListener('click', () => {
