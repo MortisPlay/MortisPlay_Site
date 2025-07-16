@@ -174,6 +174,54 @@
       transform: scale(1.05);
       box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
     }
+    .faq-item {
+      margin-bottom: 1rem;
+    }
+    .faq-question {
+      background: linear-gradient(to right, #4b5e9e, #8b9dc3);
+      color: white;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .faq-question:hover {
+      transform: scale(1.02);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
+    .faq-answer {
+      display: none;
+      padding: 1rem;
+      background-color: #f9fafb;
+      border-radius: 0 0 0.5rem 0.5rem;
+      color: #333;
+    }
+    body.dark .faq-answer {
+      background-color: #2d3748;
+      color: #e2e8f0;
+    }
+    .notification {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(to right, #ff6f61, #ff8e53);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      z-index: 1001;
+      animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-out 4s forwards;
+    }
+    @keyframes slideIn {
+      from { top: -100px; }
+      to { top: 20px; }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
     @media (max-width: 640px) {
       .avatar {
         width: 6rem;
@@ -207,6 +255,16 @@
       #countdown, #buttonCountdown {
         font-size: 0.9rem;
       }
+      .faq-question {
+        padding: 0.75rem;
+      }
+      .faq-answer {
+        padding: 0.75rem;
+      }
+      .notification {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
@@ -226,7 +284,9 @@
         <a href="#fan-memes" class="hover:text-indigo-300">Мемы от авторов</a>
         <a href="#projects" class="hover:text-indigo-300">Проекты</a>
         <a href="#news" class="hover:text-indigo-300">Новости</a>
+        <a href="#updates" class="hover:text-indigo-300">Обновления</a>
         <a href="#contact" class="hover:text-indigo-300">Контакты</a>
+        <a href="#faq" class="hover:text-indigo-300">FAQ</a>
       </div>
       <button id="burger" class="md:hidden text-2xl">☰</button>
       <div id="mobile-menu" class="hidden md:hidden flex-col absolute top-16 left-0 w-full bg-indigo-900 dark:bg-gray-900 text-white p-4">
@@ -238,7 +298,9 @@
         <a href="#fan-memes" class="py-2 hover:text-indigo-300">Мемы от авторов</a>
         <a href="#projects" class="py-2 hover:text-indigo-300">Проекты</a>
         <a href="#news" class="py-2 hover:text-indigo-300">Новости</a>
+        <a href="#updates" class="py-2 hover:text-indigo-300">Обновления</a>
         <a href="#contact" class="py-2 hover:text-indigo-300">Контакты</a>
+        <a href="#faq" class="py-2 hover:text-indigo-300">FAQ</a>
       </div>
     </div>
   </nav>
@@ -443,10 +505,10 @@
             <p class="text-sm">Версия 4.6 - Добавили дизайн к разделам и исправили куча багов.</p>
             <p class="text-xs mt-2">16 июля 2025</p>
           </div>
-          <div class="update-card bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg p-6 shadow-lg text-white fade-in" style="display: none;">
-            <h3 class="text-lg font-semibold mb-2">Новое оформление</h3>
-            <p class="text-sm">Добавлены стильные карточки для новостей и обновлений.</p>
-            <p class="text-xs mt-2">Ожидается...</p>
+          <div class="update-card bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg p-6 shadow-lg text-white fade-in">
+            <h3 class="text-lg font-semibold mb-2">Обычное обновление</h3>
+            <p class="text-sm">Версия 4.7 — добавлены крутой FAQ с ответами на твои вопросы и стильное уведомление для свежих новостей. Сайт становится ещё эпичнее — врывайся и проверяй! 😎</p>
+            <p class="text-xs mt-2">16 июля 2025</p>
           </div>
         </div>
       </div>
@@ -467,9 +529,35 @@
       </div>
     </section>
 
+    <!-- FAQ -->
+    <section id="faq" class="section bg-white dark:bg-gray-800 py-16">
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Часто задаваемые вопросы (FAQ)</h2>
+        <div class="max-w-2xl mx-auto">
+          <div class="faq-item">
+            <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Как связаться с тобой?</div>
+            <div class="faq-answer">Пиши мне в Telegram: <a href="https://t.me/dimap7221" class="text-indigo-600 dark:text-indigo-400 underline">@dimap7221</a>, или на email: <a href="mailto:mortisplay@mail.ru" class="text-indigo-600 dark:text-indigo-400 underline">mortisplay@mail.ru</a>.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Когда сайт будет полностью открыт?</div>
+            <div class="faq-answer">Полное открытие запланировано на 22 июля 2025, следи за новостями!</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Где найти эксклюзивные видео и всякие контенты?</div>
+            <div class="faq-answer">Эксклюзивы доступны только на этом сайте и в частном Telegram-канале после подписки.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Уведомление -->
+    <div id="notification" class="notification">
+      Добро пожаловать на Mortis Play! Сайт в разработке, следи за обновлениями. 😎
+    </div>
+
     <!-- Футер -->
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
-      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.6</p>
+      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.7</p>
     </footer>
   </div>
 
@@ -517,6 +605,7 @@
     const countdownElement = document.getElementById('countdown');
     const modal = document.getElementById('modal');
     const modalClose = document.getElementsByClassName('close')[0];
+    const notification = document.getElementById('notification');
 
     if (isDev) {
       comingSoon.style.display = 'none';
@@ -727,6 +816,14 @@
     document.querySelector('.youtube-link').addEventListener('click', () => {
       gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
     });
+
+    // Уведомление
+    if (!localStorage.getItem('notificationShown')) {
+      notification.style.display = 'block';
+      setTimeout(() => {
+        localStorage.setItem('notificationShown', 'true');
+      }, 4500);
+    }
   </script>
 </body>
 </html>
