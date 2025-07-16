@@ -619,22 +619,26 @@
 
     // Таймер активации кнопки до 16 июля 2025, 10:00 МСК
     const activationDate = new Date('2025-07-16T10:00:00+03:00');
-    function updateButtonCountdown() {
-      const now = new Date();
-      const timeLeft = activationDate - now;
+function updateButtonCountdown() {
+  const now = new Date();
+  const timeLeft = activationDate - now;
 
-      if (timeLeft <= 0) {
-        buttonCountdownElement.textContent = "Кнопка активирована!";
-        accessButton.disabled = false;
-      } else {
-        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-        buttonCountdownElement.textContent = `Активация кнопки через ${days}д ${hours}ч ${minutes}м ${seconds}с`;
-        accessButton.disabled = true;
-      }
-    }
+  if (timeLeft <= 0) {
+    buttonCountdownElement.textContent = "Кнопка активирована!";
+    accessButton.disabled = false;
+  } else {
+    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+    buttonCountdownElement.textContent = `Активация кнопки через ${days}д ${hours}ч ${minutes}м ${seconds}с`;
+    accessButton.disabled = true;
+  }
+}
+
+setInterval(() => {
+  updateButtonCountdown();
+}, 1000);
 
     // Таймер открытия до 22 июля 2025, 10:00 МСК
     const openDate = new Date('2025-07-22T10:00:00+03:00');
