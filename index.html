@@ -287,7 +287,7 @@
         <a href="#updates" class="hover:text-indigo-300">Обновления</a>
         <a href="#contact" class="hover:text-indigo-300">Контакты</a>
         <a href="#faq" class="hover:text-indigo-300">FAQ</a>
-        <a href="#forum" class="hover:text-indigo-300">Форум</a>
+        <a href="#twitch-section" class="hover:text-indigo-300">Twitch</a>
       </div>
       <button id="burger" class="md:hidden text-2xl">☰</button>
       <div id="mobile-menu" class="hidden md:hidden flex-col absolute top-16 left-0 w-full bg-indigo-900 dark:bg-gray-900 text-white p-4">
@@ -302,7 +302,7 @@
         <a href="#updates" class="py-2 hover:text-indigo-300">Обновления</a>
         <a href="#contact" class="py-2 hover:text-indigo-300">Контакты</a>
         <a href="#faq" class="py-2 hover:text-indigo-300">FAQ</a>
-        <a href="#forum" class="py-2 hover:text-indigo-300">Форум</a>
+        <a href="#twitch-section" class="py-2 hover:text-indigo-300">Twitch</a>
       </div>
     </div>
   </nav>
@@ -535,6 +535,11 @@
           <div class="update-card bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 shadow-lg text-white fade-in">
             <h3 class="text-lg font-semibold mb-2">Небольшое обновление</h3>
             <p class="text-sm">Версия 4.7.3 — Добавлен форум для общения и вопросов, данные сохраняются через Google Forms с ручной модерацией.</p>
+            <p class="text-xs mt-2">17 июля 2025</p>
+          </div>
+          <div class="update-card bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 shadow-lg text-white fade-in">
+            <h3 class="text-lg font-semibold mb-2">Небольшое обновление</h3>
+            <p class="text-sm">Версия 4.7.4 — Убран форум т.к они были нестабильными, вместо них добавлен новый раздел Twitch с клипами и стримами для эпичного вайба! 😎</p>
             <p class="text-xs mt-2">17 июля 2025 *NEW*</p>
           </div>
         </div>
@@ -585,33 +590,32 @@
       </div>
     </section>
 
-    <!-- Форум -->
-    <section id="forum" class="section bg-white dark:bg-gray-800 py-16">
+    <!-- Twitch -->
+    <section id="twitch-section" class="section bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4 text-center">
-        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Форум и Вопросы (Q&A)</h2>
-        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Задай свой вопрос или посмотри ответы других!</p>
+        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Клипы и стримы с Twitch</h2>
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Смотри мои живые стримы и лучшие моменты в клипах! 😎</p>
+        <div id="twitch-embed-live" style="width: 854px; height: 480px; margin: 0 auto;"></div>
+        <div id="twitch-embed-clip" style="width: 854px; height: 480px; margin: 20px auto 0;"></div>
 
-        <!-- Форма для вопросов -->
-        <div class="max-w-xl mx-auto mb-8">
-          <form id="questionForm" class="flex flex-col space-y-4">
-            <input type="text" id="questionName" placeholder="Твое имя (или ник)" class="p-2 rounded border dark:bg-gray-700 dark:border-gray-600" required>
-            <textarea id="questionText" placeholder="Задай свой вопрос" class="p-2 rounded border h-24 dark:bg-gray-700 dark:border-gray-600" required></textarea>
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded transition">Отправить</button>
-          </form>
-          <p id="formMessage" class="mt-2 text-green-600 dark:text-green-400"></p>
-        </div>
+        <script src="https://embed.twitch.tv/embed/v1.js"></script>
+        <script type="text/javascript">
+          // Встраивание живого стрима (замени "twitchdev" на свой канал)
+          new Twitch.Embed("twitch-embed-live", {
+            width: 854,
+            height: 480,
+            channel: "mortisplay32", // Замени на свой Twitch-канал
+            parent: [window.location.hostname] // Укажи домен сайта
+          });
 
-        <!-- Список вопросов и ответов -->
-        <div id="questionsList" class="max-w-2xl mx-auto text-left">
-          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded mb-4">
-            <p class="font-semibold">От @kirieshka_kuct: Когда стрим?</p>
-            <p class="text-sm text-gray-600 dark:text-gray-300">Ответ: Скоро, следи за новостями! — @dimap7221</p>
-          </div>
-          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded mb-4">
-            <p class="font-semibold">От @shartkk: Как сделать мем?</p>
-            <p class="text-sm text-gray-600 dark:text-gray-300">Ответ: Используй любые фоторедакторы, добавь вайба! — @dimap7221</p>
-          </div>
-        </div>
+          // Встраивание клипа (замени URL на свой клип)
+          const clipIframe = document.createElement("iframe");
+          clipIframe.src = "https://clips.twitch.tv/embed?clip=MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm&parent=" + window.location.hostname;
+          clipIframe.width = "854";
+          clipIframe.height = "480";
+          clipIframe.allowFullscreen = true;
+          document.getElementById("twitch-embed-clip").appendChild(clipIframe);
+        </script>
       </div>
     </section>
 
@@ -622,7 +626,7 @@
 
     <!-- Футер -->
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
-      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.7.3</p>
+      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.7.4</p>
     </footer>
   </div>
 
@@ -892,52 +896,6 @@
       localStorage.setItem('notificationShown', 'true');
     }, 4500);
   }
-
-  // Форум: отправка вопросов через Google Forms
-  document.getElementById('questionForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // Предотвращаем стандартную отправку формы
-
-    // Проверяем, не отправляется ли уже запрос
-    if (this.getAttribute('data-submitting') === 'true') {
-      return; // Блокируем повторную отправку
-    }
-
-    const name = document.getElementById('questionName').value.trim();
-    const question = document.getElementById('questionText').value.trim();
-    const message = document.getElementById('formMessage');
-
-    // Проверка на пустые поля
-    if (!name || !question) {
-      message.textContent = 'Заполни все поля!';
-      return;
-    }
-
-    // Устанавливаем флаг отправки
-    this.setAttribute('data-submitting', 'true');
-    message.textContent = 'Отправка...';
-
-    // Отправка на новую Google Forms (замени на реальные данные)
-    const formUrl = 'https://docs.google.com/forms/d/1byyywjkfz92rY3xJtidGe2TL8E1R0oSzMw0piinF6_Y/formResponse'; // Вставь новый URL
-    fetch(formUrl, {
-      method: 'POST',
-      mode: 'no-cors', // Для Google Forms
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: `entry.1751798871_NAME=${encodeURIComponent(name)}&entry.921281209_QUESTION=${encodeURIComponent(question)}` // Вставь новые entry.ID
-    })
-    .then(() => {
-      message.textContent = 'Вопрос отправлен! Скоро отвечу!';
-      this.reset(); // Очищаем форму
-    })
-    .catch((error) => {
-      console.error('Ошибка отправки:', error);
-      message.textContent = 'Ошибка, попробуй позже.';
-    })
-    .finally(() => {
-      this.removeAttribute('data-submitting'); // Снимаем флаг после завершения
-    });
-  });
 </script>
 </body>
 </html>
