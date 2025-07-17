@@ -539,7 +539,7 @@
           </div>
           <div class="update-card bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 shadow-lg text-white fade-in">
             <h3 class="text-lg font-semibold mb-2">Небольшое обновление</h3>
-            <p class="text-sm">Версия 4.7.4 — Убран форум т.к они были нестабильными, вместо них добавлен новый раздел Twitch с клипами и стримами для эпичного вайба! 😎</p>
+            <p class="text-sm">Версия 4.7.4 — Убран форум т.к они были нестабильными, вместо них добавлен новый раздел Twitch с клипами для эпичного вайба! 😎</p>
             <p class="text-xs mt-2">17 июля 2025 *NEW*</p>
           </div>
         </div>
@@ -593,31 +593,12 @@
     <!-- Twitch -->
 <section id="twitch-section" class="section bg-white dark:bg-gray-800 py-16">
   <div class="container mx-auto px-4 text-center">
-    <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Клипы и стримы с Twitch</h2>
-    <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Смотри мои живые стримы и лучшие моменты в клипах! 😎</p>
-    <div class="twitch-stream-container mx-auto" style="max-width: 100%; aspect-ratio: 16 / 9; overflow: hidden;">
-      <div id="twitch-embed-live"></div>
-    </div>
+    <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Клипы с Twitch</h2>
+    <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Смотри лучшие моменты в клипах! 😎</p>
     <div id="twitch-content" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
     <script src="https://embed.twitch.tv/embed/v1.js"></script>
     <script type="text/javascript">
-      // Встраивание живого стрима (замени "mortisplay32" на свой канал)
-      new Twitch.Embed("twitch-embed-live", {
-        width: "100%",
-        height: 0, // Высота будет определяться через aspect-ratio
-        channel: "mortisplay32", // Замени на свой Twitch-канал
-        parent: ["mortisplay.ru"], // Укажи свой домен
-        layout: "video"
-      });
-
-      // Установка размеров после загрузки
-      document.querySelector(".twitch-stream-container").addEventListener("load", function() {
-        const embed = document.getElementById("twitch-embed-live");
-        embed.style.width = "100%";
-        embed.style.height = "auto";
-      });
-
       // Массив с данными о клипах и Highlights
       const twitchContent = [
         {
@@ -681,7 +662,6 @@
     </script>
   </div>
 </section>
-
     <!-- Уведомление -->
     <div id="notification" class="notification">
       Добро пожаловать на Mortis Play! Сайт в разработке, следи за обновлениями. 😎
