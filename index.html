@@ -595,17 +595,18 @@
   <div class="container mx-auto px-4 text-center">
     <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Клипы и стримы с Twitch</h2>
     <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Смотри мои живые стримы и лучшие моменты в клипах! 😎</p>
-    <div id="twitch-embed-live" style="width: 854px; height: 480px; margin: 0 auto;"></div>
-    <div id="twitch-content" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <div id="twitch-embed-live" class="mx-auto" style="max-width: 100%; aspect-ratio: 16 / 9;"></div>
+    <div id="twitch-content" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
     <script src="https://embed.twitch.tv/embed/v1.js"></script>
     <script type="text/javascript">
-      // Встраивание живого стрима (замени "twitchdev" на свой канал)
+      // Встраивание живого стрима (замени "mortisplay32" на свой канал)
       new Twitch.Embed("twitch-embed-live", {
-        width: 854,
-        height: 480,
+        width: "100%",
+        height: "auto",
         channel: "mortisplay32", // Замени на свой Twitch-канал
-        parent: [window.location.hostname] // Укажи домен сайта
+        parent: [window.location.hostname], // Укажи домен сайта
+        layout: "video"
       });
 
       // Массив с данными о клипах и Highlights
@@ -633,28 +634,32 @@
         }
       ];
 
-      // Генерация контента
+      // Генерация контента с адаптацией
       const twitchContentDiv = document.getElementById("twitch-content");
-      twitchContent.forEach(item => {
+      twitchContent.forEach((item, index) => {
+        // Ограничиваем количество клипов на мобильных (максимум 2)
+        if (window.innerWidth <= 640 && index >= 2) return;
+
         const div = document.createElement("div");
-        div.className = "video-container";
-        div.style.width = "854px";
-        div.style.height = "480px";
-        div.style.margin = "20px auto";
+        div.className = "video-container relative";
+        div.style.maxWidth = "100%";
+        div.style.aspectRatio = "16 / 9";
 
         if (item.type === "clip") {
           const iframe = document.createElement("iframe");
           iframe.src = `https://clips.twitch.tv/embed?clip=${item.id}&parent=${window.location.hostname}`;
-          iframe.width = "854";
-          iframe.height = "480";
+          iframe.width = "100%";
+          iframe.height = "100%";
           iframe.allowFullscreen = true;
+          iframe.loading = "lazy"; // Ленивая загрузка для оптимизации
           div.appendChild(iframe);
         } else if (item.type === "highlight") {
           const iframe = document.createElement("iframe");
           iframe.src = `https://player.twitch.tv/?video=${item.videoId}&parent=${window.location.hostname}&t=${item.startTime}`;
-          iframe.width = "854";
-          iframe.height = "480";
+          iframe.width = "100%";
+          iframe.height = "100%";
           iframe.allowFullscreen = true;
+          iframe.loading = "lazy"; // Ленивая загрузка для оптимизации
           div.appendChild(iframe);
         }
 
