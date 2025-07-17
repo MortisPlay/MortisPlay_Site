@@ -287,6 +287,7 @@
         <a href="#updates" class="hover:text-indigo-300">Обновления</a>
         <a href="#contact" class="hover:text-indigo-300">Контакты</a>
         <a href="#faq" class="hover:text-indigo-300">FAQ</a>
+        <a href="#forum" class="hover:text-indigo-300">Форум</a>
       </div>
       <button id="burger" class="md:hidden text-2xl">☰</button>
       <div id="mobile-menu" class="hidden md:hidden flex-col absolute top-16 left-0 w-full bg-indigo-900 dark:bg-gray-900 text-white p-4">
@@ -301,6 +302,7 @@
         <a href="#updates" class="py-2 hover:text-indigo-300">Обновления</a>
         <a href="#contact" class="py-2 hover:text-indigo-300">Контакты</a>
         <a href="#faq" class="py-2 hover:text-indigo-300">FAQ</a>
+        <a href="#forum" class="py-2 hover:text-indigo-300">Форум</a>
       </div>
     </div>
   </nav>
@@ -527,7 +529,12 @@
             <h3 class="text-lg font-semibold mb-2">Небольшое обновление</h3>
             <p class="text-sm">Версия 4.7.2 — Завезли новые мемы от создателя, теперь можете наслаждаться ими) Пофиксили баг в разделе "Мемы от авторов" Теперь больше не отображается странная надпись с пустым файлом.</p>
             <p class="text-xs mt-2">Также мы добавили пометку о том, какая версия свежая. (NEW)</p>
-            <p class="text-xs mt-2">16 июля 2025 *NEW*</p>
+            <p class="text-xs mt-2">16 июля 2025</p>
+          </div>
+          <div class="update-card bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 shadow-lg text-white fade-in">
+            <h3 class="text-lg font-semibold mb-2">Небольшое обновление</h3>
+            <p class="text-sm">Версия 4.7.3 — Добавлен форум для общения и вопросов, данные сохраняются через Google Forms с ручной модерацией.</p>
+            <p class="text-xs mt-2">17 июля 2025 *NEW*</p>
           </div>
         </div>
       </div>
@@ -577,6 +584,36 @@
       </div>
     </section>
 
+    <!-- Форум -->
+    <section id="forum" class="section bg-white dark:bg-gray-800 py-16">
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Форум и Вопросы (Q&A)</h2>
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Задай свой вопрос или посмотри ответы других!</p>
+
+        <!-- Форма для вопросов -->
+        <div class="max-w-xl mx-auto mb-8">
+          <form id="questionForm" class="flex flex-col space-y-4">
+            <input type="text" id="questionName" placeholder="Твое имя (или ник)" class="p-2 rounded border dark:bg-gray-700 dark:border-gray-600" required>
+            <textarea id="questionText" placeholder="Задай свой вопрос" class="p-2 rounded border h-24 dark:bg-gray-700 dark:border-gray-600" required></textarea>
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded transition">Отправить</button>
+          </form>
+          <p id="formMessage" class="mt-2 text-green-600 dark:text-green-400"></p>
+        </div>
+
+        <!-- Список вопросов и ответов -->
+        <div id="questionsList" class="max-w-2xl mx-auto text-left">
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded mb-4">
+            <p class="font-semibold">От @fan123: Когда стрим?</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Ответ: Скоро, следи за новостями! — @dimap7221</p>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded mb-4">
+            <p class="font-semibold">От @gamerXD: Как сделать мем?</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Ответ: Используй Canva, добавь вайб! — @dimap7221</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Уведомление -->
     <div id="notification" class="notification">
       Добро пожаловать на Mortis Play! Сайт в разработке, следи за обновлениями. 😎
@@ -584,7 +621,7 @@
 
     <!-- Футер -->
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
-      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.7.2</p>
+      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 4.7.3</p>
     </footer>
   </div>
 
@@ -854,6 +891,32 @@
         localStorage.setItem('notificationShown', 'true');
       }, 4500);
     }
+
+    // Форум: отправка вопросов через Google Forms
+    document.getElementById('questionForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('questionName').value;
+      const question = document.getElementById('questionText').value;
+      const message = document.getElementById('formMessage');
+
+      // Отправка на Google Forms (замени URL и entry.ID на свои)
+      const formUrl = 'https://docs.google.com/forms/d/e/1aBwUORhd6hVAx2gvnwPDEqe3PxxpIDqRJmU62oO96HQ/formResponse'; // Получи ID формы
+      fetch(formUrl, {
+        method: 'POST',
+        mode: 'no-cors', // Для Google Forms
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `entry.123456789=${encodeURIComponent(name)}&entry.987654321=${encodeURIComponent(question)}` // Замени entry.ID на реальные
+      })
+      .then(() => {
+        message.textContent = 'Вопрос отправлен! Скоро отвечу!';
+        this.reset();
+      })
+      .catch(() => {
+        message.textContent = 'Ошибка, попробуй позже.';
+      });
+    });
   </script>
 </body>
 </html>
