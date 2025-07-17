@@ -595,7 +595,9 @@
   <div class="container mx-auto px-4 text-center">
     <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Клипы и стримы с Twitch</h2>
     <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Смотри мои живые стримы и лучшие моменты в клипах! 😎</p>
-    <div id="twitch-embed-live" class="mx-auto" style="max-width: 100%; aspect-ratio: 16 / 9;"></div>
+    <div class="twitch-stream-container mx-auto" style="max-width: 100%; aspect-ratio: 16 / 9; overflow: hidden;">
+      <div id="twitch-embed-live"></div>
+    </div>
     <div id="twitch-content" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
     <script src="https://embed.twitch.tv/embed/v1.js"></script>
@@ -603,10 +605,17 @@
       // Встраивание живого стрима (замени "mortisplay32" на свой канал)
       new Twitch.Embed("twitch-embed-live", {
         width: "100%",
-        height: "auto",
+        height: 0, // Высота будет определяться через aspect-ratio
         channel: "mortisplay32", // Замени на свой Twitch-канал
-        parent: [window.location.hostname], // Укажи домен сайта
+        parent: ["mortisplay.ru"], // Укажи свой домен
         layout: "video"
+      });
+
+      // Установка размеров после загрузки
+      document.querySelector(".twitch-stream-container").addEventListener("load", function() {
+        const embed = document.getElementById("twitch-embed-live");
+        embed.style.width = "100%";
+        embed.style.height = "auto";
       });
 
       // Массив с данными о клипах и Highlights
@@ -637,7 +646,6 @@
       // Генерация контента с адаптацией
       const twitchContentDiv = document.getElementById("twitch-content");
       twitchContent.forEach((item, index) => {
-        // Ограничиваем количество клипов на мобильных (максимум 2)
         if (window.innerWidth <= 640 && index >= 2) return;
 
         const div = document.createElement("div");
@@ -651,7 +659,7 @@
           iframe.width = "100%";
           iframe.height = "100%";
           iframe.allowFullscreen = true;
-          iframe.loading = "lazy"; // Ленивая загрузка для оптимизации
+          iframe.loading = "lazy";
           div.appendChild(iframe);
         } else if (item.type === "highlight") {
           const iframe = document.createElement("iframe");
@@ -659,7 +667,7 @@
           iframe.width = "100%";
           iframe.height = "100%";
           iframe.allowFullscreen = true;
-          iframe.loading = "lazy"; // Ленивая загрузка для оптимизации
+          iframe.loading = "lazy";
           div.appendChild(iframe);
         }
 
