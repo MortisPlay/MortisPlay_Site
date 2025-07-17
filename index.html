@@ -591,33 +591,83 @@
     </section>
 
     <!-- Twitch -->
-    <section id="twitch-section" class="section bg-white dark:bg-gray-800 py-16">
-      <div class="container mx-auto px-4 text-center">
-        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Клипы и стримы с Twitch</h2>
-        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Смотри мои живые стримы и лучшие моменты в клипах! 😎</p>
-        <div id="twitch-embed-live" style="width: 854px; height: 480px; margin: 0 auto;"></div>
-        <div id="twitch-embed-clip" style="width: 854px; height: 480px; margin: 20px auto 0;"></div>
+<section id="twitch-section" class="section bg-white dark:bg-gray-800 py-16">
+  <div class="container mx-auto px-4 text-center">
+    <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Клипы и стримы с Twitch</h2>
+    <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Смотри мои живые стримы и лучшие моменты в клипах! 😎</p>
+    <div id="twitch-embed-live" style="width: 854px; height: 480px; margin: 0 auto;"></div>
+    <div id="twitch-content" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
-        <script src="https://embed.twitch.tv/embed/v1.js"></script>
-        <script type="text/javascript">
-          // Встраивание живого стрима (замени "twitchdev" на свой канал)
-          new Twitch.Embed("twitch-embed-live", {
-            width: 854,
-            height: 480,
-            channel: "mortisplay32", // Замени на свой Twitch-канал
-            parent: [window.location.hostname] // Укажи домен сайта
-          });
+    <script src="https://embed.twitch.tv/embed/v1.js"></script>
+    <script type="text/javascript">
+      // Встраивание живого стрима (замени "twitchdev" на свой канал)
+      new Twitch.Embed("twitch-embed-live", {
+        width: 854,
+        height: 480,
+        channel: "mortisplay32", // Замени на свой Twitch-канал
+        parent: [window.location.hostname] // Укажи домен сайта
+      });
 
-          // Встраивание клипа (замени URL на свой клип)
-          const clipIframe = document.createElement("iframe");
-          clipIframe.src = "https://clips.twitch.tv/embed?clip=MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm&parent=" + window.location.hostname;
-          clipIframe.width = "854";
-          clipIframe.height = "480";
-          clipIframe.allowFullscreen = true;
-          document.getElementById("twitch-embed-clip").appendChild(clipIframe);
-        </script>
-      </div>
-    </section>
+      // Массив с данными о клипах и Highlights
+      const twitchContent = [
+        {
+          type: "clip",
+          id: "OutstandingSmallPeachOneHand-34JGV7ccc7luTPSc",
+          title: "Отдали раунд на халяву XD"
+        },
+        {
+          type: "clip",
+          id: "ResoluteFlaccidFrogTF2John-Rsv5zTsbJDJvqnwD",
+          title: "XD"
+        },
+        {
+          type: "clip",
+          id: "GlutenFreeShortJuiceEleGiggle-Z5e2rv159RqomWb4",
+          title: "Да что мне она сделает?"
+        },
+        {
+          type: "highlight", // Для ярких моментов (VOD)
+          videoId: "2475851398",
+          startTime: "00:01:52", // Время начала в формате HH:MM:SS
+          title: "На контентик)"
+        }
+      ];
+
+      // Генерация контента
+      const twitchContentDiv = document.getElementById("twitch-content");
+      twitchContent.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "video-container";
+        div.style.width = "854px";
+        div.style.height = "480px";
+        div.style.margin = "20px auto";
+
+        if (item.type === "clip") {
+          const iframe = document.createElement("iframe");
+          iframe.src = `https://clips.twitch.tv/embed?clip=${item.id}&parent=${window.location.hostname}`;
+          iframe.width = "854";
+          iframe.height = "480";
+          iframe.allowFullscreen = true;
+          div.appendChild(iframe);
+        } else if (item.type === "highlight") {
+          const iframe = document.createElement("iframe");
+          iframe.src = `https://player.twitch.tv/?video=${item.videoId}&parent=${window.location.hostname}&t=${item.startTime}`;
+          iframe.width = "854";
+          iframe.height = "480";
+          iframe.allowFullscreen = true;
+          div.appendChild(iframe);
+        }
+
+        const title = document.createElement("p");
+        title.textContent = item.title;
+        title.className = "mt-2 text-sm text-gray-600 dark:text-gray-300 text-center";
+        div.appendChild(title);
+
+        twitchContentDiv.appendChild(div);
+      });
+    </script>
+  </div>
+</section>
 
     <!-- Уведомление -->
     <div id="notification" class="notification">
