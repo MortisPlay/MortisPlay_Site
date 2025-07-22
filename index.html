@@ -105,22 +105,6 @@
       padding: 6rem 0;
       margin-bottom: 3rem;
     }
-    #accessButton { 
-      background-color: #ff4444; 
-      color: white; 
-      border: none; 
-      border-radius: 5px; 
-      padding: 12px 24px; 
-      font-size: 16px; 
-      transition: transform 0.3s, opacity 0.3s; 
-    }
-    #accessButton:hover:not(:disabled) { 
-      transform: scale(1.1); 
-    }
-    #accessButton:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
     .modal { 
       display: none; 
       position: fixed; 
@@ -159,11 +143,6 @@
     }
     body.dark .close {
       color: #e2e8f0; 
-    }
-    #countdown, #buttonCountdown {
-      color: white;
-      font-size: 1rem;
-      margin-top: 0.5rem;
     }
     .news-card, .update-card {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -250,15 +229,6 @@
         padding: 3rem 0;
         margin-bottom: 1.5rem;
       }
-      #countdown, #buttonCountdown {
-        font-size: 0.9rem;
-      }
-      .faq-question {
-        padding: 0.75rem;
-      }
-      .faq-answer {
-        padding: 0.75rem;
-      }
       .notification {
         padding: 0.75rem 1.5rem;
         font-size: 0.9rem;
@@ -271,7 +241,7 @@
 <body class="text-gray-800 font-sans">
   <canvas id="backgroundCanvas"></canvas>
 
-  <nav id="nav-menu" class="fixed top-0 w-full bg-indigo-900 dark:bg-gray-900 text-white py-4 z-10" style="display: none;">
+  <nav id="nav-menu" class="fixed top-0 w-full bg-indigo-900 dark:bg-gray-900 text-white py-4 z-10">
     <div class="container mx-auto px-4 flex justify-between items-center">
       <a href="#welcome" class="text-xl font-bold">Mortis Play</a>
       <div class="hidden md:flex space-x-4">
@@ -312,41 +282,7 @@
     </div>
   </nav>
 
-  <section id="coming-soon" class="min-h-screen flex flex-col items-center justify-center text-center fade-in px-4">
-    <h1 class="text-2xl sm:text-4xl font-bold text-white mb-6">Mortis Play — Скоро открытие!</h1>
-    <p class="text-base sm:text-lg text-white mb-6">Готовлю для вас эпичный контент! Подпишись, чтобы не пропустить!</p>
-    <div class="flex flex-col sm:flex-row gap-4">
-      <a href="https://t.me/MortisPlayTG" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition main-telegram">Основной канал</a>
-      <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition private-telegram">Частный канал (вход платный)</a>
-    </div>
-    <button id="accessButton" class="mt-6" disabled>Получить открытый доступ</button>
-    <div id="buttonCountdown" class="text-white mt-2"></div>
-    <div id="countdown" class="text-white mt-2"></div>
-  </section>
-
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <span class="close">×</span>
-      <p>Сайт находится в раннем доступе! Спасибо за внимание!</p>
-      <p>Если вы обнаружите баг, ошибку или что то страшное, напишите мне в Telegram: <a href="https://t.me/Mortisplay_YT" target="_blank" class="text-indigo-600 dark:text-indigo-400 underline">MortisPlay</a></p>
-    </div>
-  </div>
-
-  <div id="update-modal" class="modal">
-    <div class="modal-content">
-      <span class="close">×</span>
-      <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-2">Последние обновления</h3>
-      <p class="text-base text-gray-700 dark:text-gray-300">Версия 1.0 (22 июля 2025 *NEW*):</p>
-      <ul class="text-base text-gray-700 dark:text-gray-300 text-left ml-4">
-        <li>Что добавлено: Раздел "Розыгрыши" - в этом разделе будут показываться шаблоны розыгрышей а сами конкурсы будут проводиться в основном Telegram канале. Вернули форум но пока находится в разработке, останется еще пару деталек и все готово) Добавили Раздел "Архив" в котором будут отображаться архив обновлений чтобы не мешало сайту работать. Добавили еще клипов к ПК версии.
-Что удалено: Удалена "Ленивая загрузка" для раздела "Twitch"
-Что изменено: Изменяем оформление "Форум" теперь он будет выглядеть более реалистично)</li>
-      </ul>
-      <p class="text-base text-gray-700 dark:text-gray-300 mt-2">Следи за новостями для следующих обновлений! 😎</p>
-    </div>
-  </div>
-
-  <div id="full-site" style="display: none;">
+  <div id="full-site">
     <section id="welcome" class="section py-16 text-center fade-in mt-16">
       <h1 class="text-2xl sm:text-4xl font-bold text-indigo-700 dark:text-indigo-300 mb-4 welcome-text">Йоу, это сайт Mortis Play! В этом сайте ты найдешь: ЭКСКЛЮЗИВНЫЕ ВИДЕО В КОТОРОМ ТЫ НИГДЕ НЕ НАЙДЕШЬ! Новости о сайте, обновление и многое другое! Врывайся вместе с нами, ведь многое что может произойти на сайте ;)</h1>
       <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mx-auto max-w-2xl">Готов к эпичным каткам, мемам и взрывному вайбу? Подписывайся на мои каналы и становись частью тусы! 😎</p>
@@ -530,7 +466,6 @@
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Розыгрыш</h2>
         <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Скоро стартует эпичный розыгрыш призов! Следи за новостями и участвуй за шанс выиграть крутые бонусы! 😎</p>
-        <a href="#contact" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-full font-semibold transition">Участвовать</a>
       </div>
     </section>
 
@@ -612,7 +547,6 @@
 
         <script src="https://embed.twitch.tv/embed/v1.js"></script>
         <script type="text/javascript">
-          // Массив с данными о клипах и Highlights
           const twitchContent = [
             {
               type: "clip",
@@ -640,14 +574,13 @@
               title: "Крик помощи"
             },
             {
-              type: "highlight", // Для ярких моментов (VOD)
+              type: "highlight",
               videoId: "2475851398",
-              startTime: "00:01:52", // Время начала в формате HH:MM:SS
+              startTime: "00:01:52",
               title: "На контентик)"
             }
           ];
 
-          // Генерация контента с адаптацией
           const twitchContentDiv = document.getElementById("twitch-content");
           twitchContent.forEach((item, index) => {
             const div = document.createElement("div");
@@ -684,6 +617,28 @@
 
     <div id="notification" class="notification">
       Добро пожаловать на Mortis Play!
+    </div>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close">×</span>
+        <p>Сайт находится в раннем доступе! Спасибо за внимание!</p>
+        <p>Если вы обнаружите баг, ошибку или что то страшное, напишите мне в Telegram: <a href="https://t.me/Mortisplay_YT" target="_blank" class="text-indigo-600 dark:text-indigo-400 underline">MortisPlay</a></p>
+      </div>
+    </div>
+
+    <div id="update-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">×</span>
+        <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-2">Последние обновления</h3>
+        <p class="text-base text-gray-700 dark:text-gray-300">Версия 1.0 (22 июля 2025 *NEW*):</p>
+        <ul class="text-base text-gray-700 dark:text-gray-300 text-left ml-4">
+          <li>Что добавлено: Раздел "Розыгрыши" - в этом разделе будут показываться шаблоны розыгрышей а сами конкурсы будут проводиться в основном Telegram канале. Вернули форум но пока находится в разработке, останется еще пару деталек и все готово) Добавили Раздел "Архив" в котором будут отображаться архив обновлений чтобы не мешало сайту работать. Добавили еще клипов к ПК версии.
+Что удалено: Удалена "Ленивая загрузка" для раздела "Twitch"
+Что изменено: Изменяем оформление "Форум" теперь он будет выглядеть более реалистично)</li>
+        </ul>
+        <p class="text-base text-gray-700 dark:text-gray-300 mt-2">Следи за новостями для следующих обновлений! 😎</p>
+      </div>
     </div>
 
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
@@ -729,68 +684,19 @@
     const comingSoon = document.getElementById('coming-soon');
     const fullSite = document.getElementById('full-site');
     const navMenu = document.getElementById('nav-menu');
-    const accessButton = document.getElementById('accessButton');
-    const buttonCountdownElement = document.getElementById('buttonCountdown');
-    const countdownElement = document.getElementById('countdown');
-    const modal = document.getElementById('modal');
-    const updateModal = document.getElementById('update-modal');
-    const modalClose = document.getElementsByClassName('close');
-    const notification = document.getElementById('notification');
 
-    if (isDev) {
+    // Удаляем секцию "Coming Soon" и активируем сайт сразу при открытии
+    const openDate = new Date('2025-07-22T10:00:00+03:00');
+    if (new Date() >= openDate || isDev) {
       comingSoon.style.display = 'none';
       fullSite.style.display = 'block';
       navMenu.style.display = 'block';
     }
 
-    const activationDate = new Date('2025-07-16T10:00:00+03:00');
-    function updateButtonCountdown() {
-      const now = new Date();
-      const timeLeft = activationDate - now;
-
-      if (timeLeft <= 0) {
-        buttonCountdownElement.textContent = "Кнопка активирована!";
-        accessButton.disabled = false;
-      } else {
-        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-        buttonCountdownElement.textContent = `Активация кнопки через ${days}д ${hours}ч ${minutes}м ${seconds}с`;
-        accessButton.disabled = true;
-      }
-    }
-
-    const openDate = new Date('2025-07-22T10:00:00+03:00');
-    function updateOpenCountdown() {
-      const now = new Date();
-      const timeLeft = openDate - now;
-
-      if (timeLeft <= 0) {
-        countdownElement.textContent = "Сайт открыт!";
-      } else {
-        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-        countdownElement.textContent = `Открытие через ${days}д ${hours}ч ${minutes}м ${seconds}с`;
-      }
-    }
-
-    setInterval(() => {
-      updateButtonCountdown();
-      updateOpenCountdown();
-    }, 1000);
-
-    accessButton.addEventListener('click', () => {
-      if (!accessButton.disabled) {
-        modal.style.display = 'block';
-        gtag('event', 'access_granted', { 'event_category': 'Access', 'event_label': 'OpenAccess' });
-        comingSoon.style.display = 'none';
-        fullSite.style.display = 'block';
-        navMenu.style.display = 'block';
-      }
-    });
+    const modal = document.getElementById('modal');
+    const updateModal = document.getElementById('update-modal');
+    const modalClose = document.getElementsByClassName('close');
+    const notification = document.getElementById('notification');
 
     for (let i = 0; i < modalClose.length; i++) {
       modalClose[i].addEventListener('click', () => {
