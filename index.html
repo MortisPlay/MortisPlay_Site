@@ -257,7 +257,7 @@
         <a href="#updates" class="hover:text-indigo-300">Обновления</a>
         <a href="#giveaway" class="hover:text-indigo-300">Розыгрыш</a>
         <a href="#archive" class="hover:text-indigo-300">Архив обновлений</a>
-        <a href="#community" class="hover:text-indigo-300">Сообщество</a>
+        <a href="#forum" class="hover:text-indigo-300">Форум</a>
         <a href="#contact" class="hover:text-indigo-300">Контакты</a>
         <a href="#faq" class="hover:text-indigo-300">FAQ</a>
         <a href="#twitch-section" class="hover:text-indigo-300">Twitch</a>
@@ -275,7 +275,7 @@
         <a href="#updates" class="py-2 hover:text-indigo-300">Обновления</a>
         <a href="#giveaway" class="py-2 hover:text-indigo-300">Розыгрыш</a>
         <a href="#archive" class="py-2 hover:text-indigo-300">Архив обновлений</a>
-        <a href="#community" class="py-2 hover:text-indigo-300">Форум</a>
+        <a href="#forum" class="py-2 hover:text-indigo-300">Форум</a>
         <a href="#contact" class="py-2 hover:text-indigo-300">Контакты</a>
         <a href="#faq" class="py-2 hover:text-indigo-300">FAQ</a>
         <a href="#twitch-section" class="py-2 hover:text-indigo-300">Twitch</a>
@@ -516,27 +516,57 @@
       </div>
     </section>
 
-    <section id="community" class="section bg-white dark:bg-gray-800 py-16">
+    <section id="forum" class="section bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Форум</h2>
         <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">На данный момент форум в разработке</p>
-        </a>
       </div>
     </section>
 
     <section id="dev-forum" class="section bg-white dark:bg-gray-800 py-16" style="display: none;">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Тестовый Форум (Режим разработчика)</h2>
-        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Добро пожаловать на тестовый форум! Здесь ты можешь обсудить всё, что связано с сайтом.</p>
-        <div class="mb-6">
-          <iframe src="https://groups.google.com/a/your-group-name.com/forum/#!forum/your-forum-name" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Google Форум: Замени URL на свой (например, твой Google Group).</p>
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Добро пожаловать на тестовый форум! Обсуждай всё, что связано с сайтом. Запуск в августе с новым дизайном! 😎</p>
+
+        <!-- Список тем -->
+        <div class="mb-8 text-left max-w-3xl mx-auto">
+          <h3 class="text-lg font-semibold text-indigo-600 dark:text-indigo-400 mb-4">Темы форума</h3>
+          <div class="space-y-4">
+            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer">
+              <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Идеи для контента</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">Предложи свои идеи для видео или мемов!</p>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer">
+              <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Технические вопросы</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">Задай вопрос про сайт или стримы.</p>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer">
+              <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Обратная связь</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">Поделись впечатлениями о сайте!</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <iframe src="https://docs.google.com/spreadsheets/d/your-spreadsheet-id/edit?usp=sharing" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Google Таблица: Замени ID на свой (например, общедоступную таблицу).</p>
+
+        <!-- Форма для нового поста -->
+        <div class="max-w-2xl mx-auto">
+          <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-4">Создать новую тему</h3>
+          <form id="forum-post-form" class="bg-gray-50 dark:bg-gray-700 p-6 rounded shadow">
+            <div class="mb-4">
+              <label for="post-title" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Заголовок</label>
+              <input type="text" id="post-title" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="Введите заголовок" required>
+            </div>
+            <div class="mb-4">
+              <label for="post-content" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Сообщение</label>
+              <textarea id="post-content" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" rows="4" placeholder="Введите текст" required></textarea>
+            </div>
+            <div class="mb-4 text-left text-gray-600 dark:text-gray-400">
+              <p>Примечание: Капча (Google reCAPTCHA) будет добавлена перед запуском. Пока это тестовый режим.</p>
+            </div>
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Отправить</button>
+          </form>
         </div>
-        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-6">Примечание: Это тестовый режим. Капча будет добавлена позже.</p>
+
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-6">Все сообщения будут проверены модератором перед публикацией.</p>
       </div>
     </section>
 
@@ -855,14 +885,18 @@
     document.body.classList.toggle('dark', e.matches);
   });
 
-  // Навигация
+  // Навигация и фикс подсветки
   document.querySelectorAll('nav a').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
       const target = document.querySelector(this.getAttribute('href'));
       if (target) target.scrollIntoView({ behavior: 'smooth' });
       document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      mobileLinks.forEach(a => a.classList.remove('active'));
       this.classList.add('active');
+      mobileLinks.forEach(link => {
+        if (link.getAttribute('href') === this.getAttribute('href')) link.classList.add('active');
+      });
     });
   });
 
@@ -871,9 +905,16 @@
     let currentSection = '';
     sections.forEach(section => {
       const sectionTop = section.offsetTop;
-      if (scrollY >= sectionTop - 100) currentSection = section.getAttribute('id');
+      const sectionBottom = sectionTop + section.offsetHeight;
+      if (scrollY >= sectionTop - 100 && scrollY < sectionBottom - 100) {
+        currentSection = section.getAttribute('id');
+      }
     });
     document.querySelectorAll('nav a').forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
+    });
+    mobileLinks.forEach(a => {
       a.classList.remove('active');
       if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
     });
@@ -931,6 +972,16 @@
   document.querySelector('.open-update-modal')?.addEventListener('click', (e) => {
     e.preventDefault();
     if (updateModal) updateModal.style.display = 'block';
+  });
+
+  // Обработка формы форума
+  document.getElementById('forum-post-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = document.getElementById('post-title').value;
+    const content = document.getElementById('post-content').value;
+    console.log('Новый пост:', { title, content });
+    alert('Пост отправлен в тестовом режиме! (Пока только в консоль)');
+    document.getElementById('forum-post-form').reset();
   });
 </script>
 </body>
