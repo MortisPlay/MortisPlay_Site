@@ -15,7 +15,7 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous"></script>
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script> <!-- Подключение reCAPTCHA -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
     html { scroll-behavior: smooth; }
     body {
@@ -238,6 +238,49 @@
       }
       .grid-cols-3 { grid-template-columns: 1fr; }
       .grid-cols-7 { grid-template-columns: 1fr 1fr; }
+    }
+    /* Стили для Q&A в режиме разработчика */
+    #qa.dev-mode {
+      background: linear-gradient(135deg, #1e293b, #4a5568);
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    #qa.dev-mode h2 {
+      color: #a3e4db;
+      text-shadow: 0 0 5px rgba(163, 228, 219, 0.7);
+    }
+    #qa.dev-mode .topic-item {
+      background: linear-gradient(90deg, #2d3748, #4a5d78);
+      border: 1px solid #a3e4db;
+      border-radius: 0.5rem;
+      transition: transform 0.3s, background 0.3s;
+    }
+    #qa.dev-mode .topic-item:hover {
+      transform: translateY(-5px);
+      background: linear-gradient(90deg, #4a5d78, #2d3748);
+    }
+    #qa.dev-mode .topic-item.selected {
+      border-color: #4fd1c5;
+      background: linear-gradient(90deg, #2d3748, #3b556b);
+    }
+    #qa.dev-mode #qa-post-form {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+      border-radius: 0.75rem;
+    }
+    #qa.dev-mode #qa-post-form input,
+    #qa.dev-mode #qa-post-form textarea {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid #a3e4db;
+      color: #e2e8f0;
+    }
+    #qa.dev-mode #qa-post-form button {
+      background: linear-gradient(45deg, #4fd1c5, #76e4d3);
+      border: none;
+    }
+    #qa.dev-mode #qa-post-form button:hover {
+      background: linear-gradient(45deg, #76e4d3, #4fd1c5);
     }
   </style>
 </head>
@@ -485,7 +528,7 @@
           </div>
           <div class="update-card bg-gradient-to-r from-red-500 to-green-500 rounded-lg p-6 shadow-lg text-white fade-in">
             <h3 class="text-lg font-semibold mb-2">Небольшое обновление или список изменений</h3>
-            <p class="text-sm">Пофиксили баг в котором раздел "Мои истории" внезапно пропали после добавление иконок в разделе "Информация"</p>
+            <p class="text-sm">Пофиксили баг в котором раздел "Мои истории" внезапно пропали после добавление иконок в разделе "Информация". Добавили подсветку вокруг аватарки для улучшения визуального стиля.</p>
             <p class="text-xs mt-2">27 июля 2025 *NEW*</p>
           </div>
         </div>
@@ -555,7 +598,7 @@
           <textarea id="post-content" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" rows="4" placeholder="Введите текст" required></textarea>
         </div>
         <div class="mb-4">
-          <div class="g-recaptcha" data-sitekey="6Le1hJArAAAAAKnJHHzVWqrqnioE736-NqC67oMR"></div> <!-- Обновленный Site Key -->
+          <div class="g-recaptcha" data-sitekey="6Le1hJArAAAAAKnJHHzVWqrqnioE736-NqC67oMR"></div>
         </div>
         <div class="mb-4 text-left text-gray-600 dark:text-gray-400">
           <p>Примечание: Подтверди, что ты не робот, с помощью CAPTCHA.</p>
@@ -689,6 +732,7 @@
         <p class="text-base text-gray-700 dark:text-gray-300">Версия 1.0.2 (27 июля 2025 *NEW*):</p>
         <ul class="text-base text-gray-700 dark:text-gray-300 text-left ml-4">
           <li>Пофиксили баг в котором раздел "Мои истории" внезапно пропали после добавление иконок в разделе "Информация"</li>
+          <li>Добавили подсветку вокруг аватарки для улучшения визуального стиля</li>
         </ul>
         <p class="text-base text-gray-700 dark:text-gray-300 mt-2">Следи за новостями для следующих обновлений! 😎</p>
       </div>
@@ -749,6 +793,7 @@
       if (navMenu) navMenu.style.display = 'block';
       if (qaSection && isDev) {
         qaSection.style.display = 'block';
+        qaSection.classList.add('dev-mode');
         navLinks.forEach(link => {
           if (link.getAttribute('href') === '#qa') link.style.display = 'inline';
         });
