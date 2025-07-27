@@ -257,7 +257,7 @@
         <a href="#updates" class="hover:text-indigo-300">Обновления</a>
         <a href="#giveaway" class="hover:text-indigo-300">Розыгрыш</a>
         <a href="#archive" class="hover:text-indigo-300">Архив обновлений</a>
-        <a href="#forum" class="hover:text-indigo-300">Форум</a>
+        <a href="#qa" class="hover:text-indigo-300">Q&A</a> <!-- Изменено с #forum на #qa -->
         <a href="#contact" class="hover:text-indigo-300">Контакты</a>
         <a href="#faq" class="hover:text-indigo-300">FAQ</a>
         <a href="#twitch-section" class="hover:text-indigo-300">Twitch</a>
@@ -275,7 +275,7 @@
         <a href="#updates" class="py-2 hover:text-indigo-300">Обновления</a>
         <a href="#giveaway" class="py-2 hover:text-indigo-300">Розыгрыш</a>
         <a href="#archive" class="py-2 hover:text-indigo-300">Архив обновлений</a>
-        <a href="#forum" class="py-2 hover:text-indigo-300">Форум</a>
+        <a href="#qa" class="py-2 hover:text-indigo-300">Q&A</a> <!-- Изменено с #forum на #qa -->
         <a href="#contact" class="py-2 hover:text-indigo-300">Контакты</a>
         <a href="#faq" class="py-2 hover:text-indigo-300">FAQ</a>
         <a href="#twitch-section" class="py-2 hover:text-indigo-300">Twitch</a>
@@ -516,13 +516,6 @@
       </div>
     </section>
 
-    <section id="forum" class="section bg-white dark:bg-gray-800 py-16">
-      <div class="container mx-auto px-4 text-center">
-        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Форум</h2>
-        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">На данный момент форум в разработке</p>
-      </div>
-    </section>
-
     <section id="qa" class="section bg-white dark:bg-gray-800 py-16" style="display: none;">
   <div class="container mx-auto px-4 text-center">
     <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Q&A (Вопросы и ответы)</h2>
@@ -739,7 +732,7 @@
     const comingSoon = document.getElementById('coming-soon');
     const fullSite = document.getElementById('full-site');
     const navMenu = document.getElementById('nav-menu');
-    const devForum = document.getElementById('dev-forum');
+    const qaSection = document.getElementById('qa'); // Изменил с dev-forum на qa
     const navLinks = document.querySelectorAll('nav a');
     const mobileLinks = document.querySelectorAll('#mobile-menu a');
 
@@ -749,13 +742,13 @@
       if (comingSoon) comingSoon.style.display = 'none'; // Защита от ошибки, если элемент отсутствует
       if (fullSite) fullSite.style.display = 'block';
       if (navMenu) navMenu.style.display = 'block';
-      if (devForum && isDev) {
-        devForum.style.display = 'block';
+      if (qaSection && isDev) {
+        qaSection.style.display = 'block';
         navLinks.forEach(link => {
-          if (link.getAttribute('href') === '#dev-forum') link.style.display = 'inline';
+          if (link.getAttribute('href') === '#qa') link.style.display = 'inline';
         });
         mobileLinks.forEach(link => {
-          if (link.getAttribute('href') === '#dev-forum') link.style.display = 'block';
+          if (link.getAttribute('href') === '#qa') link.style.display = 'block';
         });
       }
     }
@@ -974,7 +967,7 @@
       if (updateModal) updateModal.style.display = 'block';
     });
 
-    // Логика форума
+    // Логика Q&A
     (function() {
   const form = document.getElementById('qa-post-form');
   if (form && !form.dataset.qaHandlerAttached) {
