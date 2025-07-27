@@ -571,6 +571,55 @@
 </section>
 
 <script>
+  // Обработчик кликов по темам
+  document.querySelectorAll('.topic-item').forEach(topic => {
+    topic.addEventListener('click', () => {
+      document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
+      topic.classList.add('selected');
+
+      const title = topic.getAttribute('data-title');
+      const placeholder = topic.getAttribute('data-placeholder');
+      document.getElementById('post-title').value = `${title}: Тема`;
+      document.getElementById('post-content').value = '';
+      document.getElementById('post-content').placeholder = placeholder;
+    });
+  });
+
+  // Обработчик формы с очисткой старых слушателей
+  (function() {
+    const form = document.getElementById('forum-post-form');
+    if (form) {
+      // Удаляем все предыдущие слушатели, если они есть
+      const oldSubmitHandler = form._submitHandler;
+      if (oldSubmitHandler) {
+        form.removeEventListener('submit', oldSubmitHandler);
+      }
+
+      // Новый обработчик
+      const submitHandler = function(e) {
+        e.preventDefault();
+        const title = document.getElementById('post-title').value;
+        const content = document.getElementById('post-content').value;
+        console.log('Новый пост:', { title, content });
+        alert('Пост отправлен в тестовом режиме! (Пока только в консоль)');
+        form.reset();
+      };
+
+      form.addEventListener('submit', submitHandler);
+      form._submitHandler = submitHandler; // Сохраняем ссылку на обработчик
+    }
+  })();
+
+</script>
+
+<style>
+  .topic-item.selected {
+    border: 2px solid #a3e4db;
+    background-color: rgba(163, 228, 219, 0.2);
+  }
+</style>
+
+<script>
   // Обработчик кликов по темам (выполняется один раз)
   document.querySelectorAll('.topic-item').forEach(topic => {
     topic.addEventListener('click', () => {
