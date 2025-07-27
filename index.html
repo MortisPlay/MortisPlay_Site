@@ -19,9 +19,9 @@
   <style>
     html { scroll-behavior: smooth; }
     body {
-      background: linear-gradient(45deg, #0088cc, #33b5e5, #6B7280, #0088cc);
+      background: linear-gradient(45deg, #ff4500, #ff8c00, #6B7280, #ff4500);
       background-size: 400%;
-      animation: gradient 15s ease infinite;
+      animation: gradient 10s ease infinite;
       overflow-x: hidden;
       position: relative;
       transition: background-color 0.3s, color 0.3s;
@@ -55,6 +55,7 @@
     }
     .avatar {
       transition: transform 0.3s ease;
+      box-shadow: 0 0 15px rgba(0, 191, 255, 0.5);
     }
     .avatar:hover {
       transform: scale(1.1);
@@ -554,7 +555,7 @@
           <textarea id="post-content" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" rows="4" placeholder="Введите текст" required></textarea>
         </div>
         <div class="mb-4">
-          <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div> <!-- Тестовый Site Key -->
+          <div class="g-recaptcha" data-sitekey="6Le1hJArAAAAAKnJHHzVWqrqnioE736-NqC67oMR"></div> <!-- Обновленный Site Key -->
         </div>
         <div class="mb-4 text-left text-gray-600 dark:text-gray-400">
           <p>Примечание: Подтверди, что ты не робот, с помощью CAPTCHA.</p>
@@ -996,7 +997,7 @@
 
       // Проверка reCAPTCHA
       const recaptchaResponse = grecaptcha.getResponse();
-      if (recaptchaResponse.length === 0) {
+      if (!recaptchaResponse) {
         alert('Пожалуйста, подтверди, что ты не робот!');
         return;
       }
