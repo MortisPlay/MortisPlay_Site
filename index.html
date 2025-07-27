@@ -15,6 +15,7 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous"></script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script> <!-- Подключение reCAPTCHA -->
   <style>
     html { scroll-behavior: smooth; }
     body {
@@ -257,7 +258,7 @@
         <a href="#updates" class="hover:text-indigo-300">Обновления</a>
         <a href="#giveaway" class="hover:text-indigo-300">Розыгрыш</a>
         <a href="#archive" class="hover:text-indigo-300">Архив обновлений</a>
-        <a href="#qa" class="hover:text-indigo-300">Q&A</a> <!-- Изменено с #forum на #qa -->
+        <a href="#qa" class="hover:text-indigo-300">Q&A</a>
         <a href="#contact" class="hover:text-indigo-300">Контакты</a>
         <a href="#faq" class="hover:text-indigo-300">FAQ</a>
         <a href="#twitch-section" class="hover:text-indigo-300">Twitch</a>
@@ -275,7 +276,7 @@
         <a href="#updates" class="py-2 hover:text-indigo-300">Обновления</a>
         <a href="#giveaway" class="py-2 hover:text-indigo-300">Розыгрыш</a>
         <a href="#archive" class="py-2 hover:text-indigo-300">Архив обновлений</a>
-        <a href="#qa" class="py-2 hover:text-indigo-300">Q&A</a> <!-- Изменено с #forum на #qa -->
+        <a href="#qa" class="py-2 hover:text-indigo-300">Q&A</a>
         <a href="#contact" class="py-2 hover:text-indigo-300">Контакты</a>
         <a href="#faq" class="py-2 hover:text-indigo-300">FAQ</a>
         <a href="#twitch-section" class="py-2 hover:text-indigo-300">Twitch</a>
@@ -552,8 +553,11 @@
           <label for="post-content" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Ваш вопрос</label>
           <textarea id="post-content" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" rows="4" placeholder="Введите текст" required></textarea>
         </div>
+        <div class="mb-4">
+          <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div> <!-- Тестовый Site Key -->
+        </div>
         <div class="mb-4 text-left text-gray-600 dark:text-gray-400">
-          <p>Примечание: Капча (Google reCAPTCHA) будет добавлена перед запуском. Пока это тестовый режим.</p>
+          <p>Примечание: Подтверди, что ты не робот, с помощью CAPTCHA.</p>
         </div>
         <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Отправить</button>
       </form>
@@ -732,14 +736,14 @@
     const comingSoon = document.getElementById('coming-soon');
     const fullSite = document.getElementById('full-site');
     const navMenu = document.getElementById('nav-menu');
-    const qaSection = document.getElementById('qa'); // Изменил с dev-forum на qa
+    const qaSection = document.getElementById('qa');
     const navLinks = document.querySelectorAll('nav a');
     const mobileLinks = document.querySelectorAll('#mobile-menu a');
 
     // Активация сайта
     const openDate = new Date('2025-07-22T10:00:00+03:00');
     if (new Date() >= openDate || isDev) {
-      if (comingSoon) comingSoon.style.display = 'none'; // Защита от ошибки, если элемент отсутствует
+      if (comingSoon) comingSoon.style.display = 'none';
       if (fullSite) fullSite.style.display = 'block';
       if (navMenu) navMenu.style.display = 'block';
       if (qaSection && isDev) {
@@ -803,8 +807,8 @@
         constructor() {
           this.x = Math.random() * canvas.width;
           this.y = Math.random() * canvas.height;
-          this.size = Math.random() * 15 + 5; // Уменьшен размер для оптимизации
-          this.speedX = Math.random() * 1 - 0.5; // Уменьшена скорость
+          this.size = Math.random() * 15 + 5;
+          this.speedX = Math.random() * 1 - 0.5;
           this.speedY = Math.random() * 1 - 0.5;
           this.emote = emotes[Math.floor(Math.random() * emotes.length)];
         }
@@ -822,8 +826,8 @@
       }
 
       function init() {
-        const particleCount = window.innerWidth <= 640 ? 10 : 30; // Оптимизировано для мобильных
-        particles.length = 0; // Очистка перед инициализацией
+        const particleCount = window.innerWidth <= 640 ? 10 : 30;
+        particles.length = 0;
         for (let i = 0; i < particleCount; i++) {
           particles.push(new Particle());
         }
@@ -843,7 +847,6 @@
       init();
       animate();
 
-      // Остановка анимации при скрытии canvas (мобильные устройства)
       const mediaQuery = window.matchMedia('(max-width: 640px)');
       function handleMediaChange(e) {
         if (e.matches) {
@@ -967,7 +970,7 @@
       if (updateModal) updateModal.style.display = 'block';
     });
 
-    // Логика Q&A
+    // Логика Q&A с CAPTCHA
     (function() {
   const form = document.getElementById('qa-post-form');
   if (form && !form.dataset.qaHandlerAttached) {
@@ -991,6 +994,13 @@
       const title = document.getElementById('post-title').value.trim();
       const content = document.getElementById('post-content').value.trim();
 
+      // Проверка reCAPTCHA
+      const recaptchaResponse = grecaptcha.getResponse();
+      if (recaptchaResponse.length === 0) {
+        alert('Пожалуйста, подтверди, что ты не робот!');
+        return;
+      }
+
       console.log('Длина заголовка:', title.length, 'Текст:', title);
       console.log('Длина вопроса:', content.length, 'Текст:', content);
 
@@ -1012,6 +1022,7 @@
         if (data.ok) {
           alert('Вопрос отправлен модератору!');
           form.reset();
+          grecaptcha.reset(); // Сброс CAPTCHA после успешной отправки
         } else {
           alert('Ошибка при отправке. Проверь токен и Chat ID.');
           console.error(data);
