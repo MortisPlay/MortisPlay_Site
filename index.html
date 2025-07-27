@@ -523,18 +523,18 @@
       </div>
     </section>
 
-    <section id="dev-forum" class="section bg-white dark:bg-gray-800 py-16" style="display: none;">
+    <section id="qa" class="section bg-white dark:bg-gray-800 py-16" style="display: none;">
   <div class="container mx-auto px-4 text-center">
-    <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Тестовый Форум (Режим разработчика)</h2>
-    <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Добро пожаловать на тестовый форум! Обсуждай всё, что связано с сайтом. Запуск в августе с новым дизайном! 😎</p>
+    <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Q&A (Вопросы и ответы)</h2>
+    <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Задавай свои вопросы! Ответы появятся после проверки модератором. Запуск в августе с новым дизайном! 😎</p>
 
     <!-- Список тем -->
     <div class="mb-8 text-left max-w-3xl mx-auto">
-      <h3 class="text-lg font-semibold text-indigo-600 dark:text-indigo-400 mb-4">Темы форума</h3>
-      <div class="space-y-4" id="forum-topics">
+      <h3 class="text-lg font-semibold text-indigo-600 dark:text-indigo-400 mb-4">Категории вопросов</h3>
+      <div class="space-y-4" id="qa-topics">
         <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Идеи для контента" data-placeholder="Опиши свою идею для видео или мема!">
           <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Идеи для контента</h4>
-          <p class="text-sm text-gray-600 dark:text-gray-300">Предложи свои идеи для видео или мемов!</p>
+          <p class="text-sm text-gray-600 dark:text-gray-300">Предложи идеи для видео или мемов!</p>
         </div>
         <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Технические вопросы" data-placeholder="Опиши проблему или вопрос про сайт!">
           <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Технические вопросы</h4>
@@ -547,16 +547,16 @@
       </div>
     </div>
 
-    <!-- Форма для нового поста -->
+    <!-- Форма для нового вопроса -->
     <div class="max-w-2xl mx-auto">
-      <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-4">Создать новую тему</h3>
-      <form id="forum-post-form" class="bg-gray-50 dark:bg-gray-700 p-6 rounded shadow">
+      <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-4">Задать вопрос</h3>
+      <form id="qa-post-form" class="bg-gray-50 dark:bg-gray-700 p-6 rounded shadow">
         <div class="mb-4">
           <label for="post-title" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Заголовок</label>
           <input type="text" id="post-title" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="Введите заголовок" required>
         </div>
         <div class="mb-4">
-          <label for="post-content" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Сообщение</label>
+          <label for="post-content" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Ваш вопрос</label>
           <textarea id="post-content" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" rows="4" placeholder="Введите текст" required></textarea>
         </div>
         <div class="mb-4 text-left text-gray-600 dark:text-gray-400">
@@ -566,7 +566,7 @@
       </form>
     </div>
 
-    <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-6">Все сообщения будут проверены модератором перед публикацией.</p>
+    <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-6">Все вопросы будут проверены модератором перед публикацией ответа.</p>
   </div>
 </section>
 
@@ -976,8 +976,8 @@
 
     // Логика форума
     (function() {
-  const form = document.getElementById('forum-post-form');
-  if (form && !form.dataset.forumHandlerAttached) {
+  const form = document.getElementById('qa-post-form');
+  if (form && !form.dataset.qaHandlerAttached) {
     // Обработчик кликов по темам
     document.querySelectorAll('.topic-item').forEach(topic => {
       topic.addEventListener('click', () => {
@@ -986,7 +986,7 @@
 
         const title = topic.getAttribute('data-title');
         const placeholder = topic.getAttribute('data-placeholder');
-        document.getElementById('post-title').value = `${title}: Тема`;
+        document.getElementById('post-title').value = `${title}: Вопрос`;
         document.getElementById('post-content').value = '';
         document.getElementById('post-content').placeholder = placeholder;
       });
@@ -999,10 +999,10 @@
       const content = document.getElementById('post-content').value.trim();
 
       console.log('Длина заголовка:', title.length, 'Текст:', title);
-      console.log('Длина сообщения:', content.length, 'Текст:', content);
+      console.log('Длина вопроса:', content.length, 'Текст:', content);
 
       if (title.length < 5 || content.length < 10) {
-        alert('Заголовок должен быть минимум 5 символов, а сообщение — 10!');
+        alert('Заголовок должен быть минимум 5 символов, а вопрос — 10!');
         return;
       }
 
@@ -1011,13 +1011,13 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           chat_id: 335236137,
-          text: `Новый пост:\nЗаголовок: ${title}\nСообщение: ${content}\nДата: ${new Date().toISOString()}`
+          text: `Новый вопрос:\nЗаголовок: ${title}\nВопрос: ${content}\nДата: ${new Date().toISOString()}`
         })
       })
       .then(response => response.json())
       .then(data => {
         if (data.ok) {
-          alert('Пост отправлен модератору!');
+          alert('Вопрос отправлен модератору!');
           form.reset();
         } else {
           alert('Ошибка при отправке. Проверь токен и Chat ID.');
@@ -1029,7 +1029,7 @@
         console.error('Ошибка:', error);
       });
 
-      form.dataset.forumHandlerAttached = 'true';
+      form.dataset.qaHandlerAttached = 'true';
     });
   }
 })();
