@@ -570,131 +570,6 @@
   </div>
 </section>
 
-<script>
-  // Обработчик кликов по темам
-  document.querySelectorAll('.topic-item').forEach(topic => {
-    topic.addEventListener('click', () => {
-      document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
-      topic.classList.add('selected');
-
-      const title = topic.getAttribute('data-title');
-      const placeholder = topic.getAttribute('data-placeholder');
-      document.getElementById('post-title').value = `${title}: Тема`;
-      document.getElementById('post-content').value = '';
-      document.getElementById('post-content').placeholder = placeholder;
-    });
-  });
-
-  // Обработчик формы с очисткой старых слушателей
-  (function() {
-    const form = document.getElementById('forum-post-form');
-    if (form) {
-      // Удаляем все предыдущие слушатели, если они есть
-      const oldSubmitHandler = form._submitHandler;
-      if (oldSubmitHandler) {
-        form.removeEventListener('submit', oldSubmitHandler);
-      }
-
-      // Новый обработчик
-      const submitHandler = function(e) {
-        e.preventDefault();
-        const title = document.getElementById('post-title').value;
-        const content = document.getElementById('post-content').value;
-        console.log('Новый пост:', { title, content });
-        alert('Пост отправлен в тестовом режиме! (Пока только в консоль)');
-        form.reset();
-      };
-
-      form.addEventListener('submit', submitHandler);
-      form._submitHandler = submitHandler; // Сохраняем ссылку на обработчик
-    }
-  })();
-
-</script>
-
-<style>
-  .topic-item.selected {
-    border: 2px solid #a3e4db;
-    background-color: rgba(163, 228, 219, 0.2);
-  }
-</style>
-
-<script>
-  // Обработчик кликов по темам (выполняется один раз)
-  document.querySelectorAll('.topic-item').forEach(topic => {
-    topic.addEventListener('click', () => {
-      document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
-      topic.classList.add('selected');
-
-      const title = topic.getAttribute('data-title');
-      const placeholder = topic.getAttribute('data-placeholder');
-      document.getElementById('post-title').value = `${title}: Тема`;
-      document.getElementById('post-content').value = '';
-      document.getElementById('post-content').placeholder = placeholder;
-    });
-  });
-
-  // Обработчик формы с защитой от дублирования
-  (function() {
-    const form = document.getElementById('forum-post-form');
-    if (form && !form.dataset.eventListenerAttached) {
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const title = document.getElementById('post-title').value;
-        const content = document.getElementById('post-content').value;
-        console.log('Новый пост:', { title, content });
-        alert('Пост отправлен в тестовом режиме! (Пока только в консоль)');
-        form.reset();
-      });
-      form.dataset.eventListenerAttached = 'true'; // Метка, чтобы избежать повторной привязки
-    }
-  })();
-
-</script>
-
-<style>
-  .topic-item.selected {
-    border: 2px solid #a3e4db;
-    background-color: rgba(163, 228, 219, 0.2);
-  }
-</style>
-
-<script>
-  // Обработчик кликов по темам
-  document.querySelectorAll('.topic-item').forEach(topic => {
-    topic.addEventListener('click', () => {
-      // Снимаем подсветку со всех тем
-      document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
-      // Добавляем подсветку текущей теме (будет стилизовано позже)
-      topic.classList.add('selected');
-
-      const title = topic.getAttribute('data-title');
-      const placeholder = topic.getAttribute('data-placeholder');
-      document.getElementById('post-title').value = `${title}: Тема`; // Предзаполняем, но оставляем редактируемым
-      document.getElementById('post-content').value = ''; // Сбрасываем текст
-      document.getElementById('post-content').placeholder = placeholder; // Обновляем подсказку
-    });
-  });
-
-  // Обработка формы
-  document.getElementById('forum-post-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const title = document.getElementById('post-title').value;
-    const content = document.getElementById('post-content').value;
-    console.log('Новый пост:', { title, content });
-    alert('Пост отправлен в тестовом режиме! (Пока только в консоль)');
-    document.getElementById('forum-post-form').reset();
-  });
-</script>
-
-<style>
-  .topic-item.selected {
-    /* Базовая подсветка для теста (будет доработана в будущем) */
-    border: 2px solid #a3e4db;
-    background-color: rgba(163, 228, 219, 0.2);
-  }
-</style>
-
     <section id="contact" class="section py-16">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Связь со мной</h2>
@@ -859,255 +734,284 @@
     }
   </script>
   <script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const isDev = urlParams.get('dev') === 'true';
-  const comingSoon = document.getElementById('coming-soon');
-  const fullSite = document.getElementById('full-site');
-  const navMenu = document.getElementById('nav-menu');
-  const devForum = document.getElementById('dev-forum');
-  const navLinks = document.querySelectorAll('nav a');
-  const mobileLinks = document.querySelectorAll('#mobile-menu a');
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDev = urlParams.get('dev') === 'true';
+    const comingSoon = document.getElementById('coming-soon');
+    const fullSite = document.getElementById('full-site');
+    const navMenu = document.getElementById('nav-menu');
+    const devForum = document.getElementById('dev-forum');
+    const navLinks = document.querySelectorAll('nav a');
+    const mobileLinks = document.querySelectorAll('#mobile-menu a');
 
-  // Активация сайта
-  const openDate = new Date('2025-07-22T10:00:00+03:00');
-  if (new Date() >= openDate || isDev) {
-    if (comingSoon) comingSoon.style.display = 'none'; // Защита от ошибки, если элемент отсутствует
-    if (fullSite) fullSite.style.display = 'block';
-    if (navMenu) navMenu.style.display = 'block';
-    if (devForum && isDev) {
-      devForum.style.display = 'block';
-      navLinks.forEach(link => {
-        if (link.getAttribute('href') === '#dev-forum') link.style.display = 'inline';
-      });
-      mobileLinks.forEach(link => {
-        if (link.getAttribute('href') === '#dev-forum') link.style.display = 'block';
-      });
-    }
-  }
-
-  // Модальные окна
-  const modal = document.getElementById('modal');
-  const updateModal = document.getElementById('update-modal');
-  const modalClose = document.getElementsByClassName('close');
-  const notification = document.getElementById('notification');
-
-  if (modalClose.length > 0) {
-    for (let i = 0; i < modalClose.length; i++) {
-      modalClose[i].addEventListener('click', () => {
-        if (modal) modal.style.display = 'none';
-        if (updateModal) updateModal.style.display = 'none';
-      });
-    }
-  }
-
-  window.addEventListener('click', (event) => {
-    if (modal && event.target == modal) modal.style.display = 'none';
-    if (updateModal && event.target == updateModal) updateModal.style.display = 'none';
-  });
-
-  // Мобильное меню
-  const burger = document.getElementById('burger');
-  if (burger) {
-    burger.addEventListener('click', () => {
-      const menu = document.getElementById('mobile-menu');
-      if (menu) menu.classList.toggle('hidden');
-    });
-  }
-
-  // Фон с canvas
-  const canvas = document.getElementById('backgroundCanvas');
-  if (canvas) {
-    const ctxCanvas = canvas.getContext('2d');
-    let animationFrameId;
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    const emotes = [">:(", ">:D", ":)", ":/", ":P", "^_^", "-_-"];
-    const particles = [];
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 15 + 5; // Уменьшен размер для оптимизации
-        this.speedX = Math.random() * 1 - 0.5; // Уменьшена скорость
-        this.speedY = Math.random() * 1 - 0.5;
-        this.emote = emotes[Math.floor(Math.random() * emotes.length)];
-      }
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-      }
-      draw() {
-        ctxCanvas.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.4)';
-        ctxCanvas.font = `${this.size}px Arial`;
-        ctxCanvas.fillText(this.emote, this.x, this.y);
-      }
-    }
-
-    function init() {
-      const particleCount = window.innerWidth <= 640 ? 10 : 30; // Оптимизировано для мобильных
-      particles.length = 0; // Очистка перед инициализацией
-      for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle());
-      }
-    }
-
-    function animate() {
-      if (ctxCanvas) {
-        ctxCanvas.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(particle => {
-          particle.update();
-          particle.draw();
+    // Активация сайта
+    const openDate = new Date('2025-07-22T10:00:00+03:00');
+    if (new Date() >= openDate || isDev) {
+      if (comingSoon) comingSoon.style.display = 'none'; // Защита от ошибки, если элемент отсутствует
+      if (fullSite) fullSite.style.display = 'block';
+      if (navMenu) navMenu.style.display = 'block';
+      if (devForum && isDev) {
+        devForum.style.display = 'block';
+        navLinks.forEach(link => {
+          if (link.getAttribute('href') === '#dev-forum') link.style.display = 'inline';
         });
-        animationFrameId = requestAnimationFrame(animate);
+        mobileLinks.forEach(link => {
+          if (link.getAttribute('href') === '#dev-forum') link.style.display = 'block';
+        });
       }
     }
 
-    init();
-    animate();
+    // Модальные окна
+    const modal = document.getElementById('modal');
+    const updateModal = document.getElementById('update-modal');
+    const modalClose = document.getElementsByClassName('close');
+    const notification = document.getElementById('notification');
 
-    // Остановка анимации при скрытии canvas (мобильные устройства)
-    const mediaQuery = window.matchMedia('(max-width: 640px)');
-    function handleMediaChange(e) {
-      if (e.matches) {
-        cancelAnimationFrame(animationFrameId);
-        canvas.style.display = 'none';
-      } else {
-        canvas.style.display = 'block';
-        init();
-        animate();
+    if (modalClose.length > 0) {
+      for (let i = 0; i < modalClose.length; i++) {
+        modalClose[i].addEventListener('click', () => {
+          if (modal) modal.style.display = 'none';
+          if (updateModal) updateModal.style.display = 'none';
+        });
       }
     }
-    mediaQuery.addEventListener('change', handleMediaChange);
-    handleMediaChange(mediaQuery);
-  }
 
-  // Intersection Observer для fade-in
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('visible');
+    window.addEventListener('click', (event) => {
+      if (modal && event.target == modal) modal.style.display = 'none';
+      if (updateModal && event.target == updateModal) updateModal.style.display = 'none';
     });
-  }, { threshold: 0.1 });
 
-  document.querySelectorAll('.fade-in').forEach(el => {
-    if (el) observer.observe(el);
-  });
+    // Мобильное меню
+    const burger = document.getElementById('burger');
+    if (burger) {
+      burger.addEventListener('click', () => {
+        const menu = document.getElementById('mobile-menu');
+        if (menu) menu.classList.toggle('hidden');
+      });
+    }
 
-  // Темная тема
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.body.classList.add('dark');
-  }
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-    document.body.classList.toggle('dark', e.matches);
-  });
+    // Фон с canvas
+    const canvas = document.getElementById('backgroundCanvas');
+    if (canvas) {
+      const ctxCanvas = canvas.getContext('2d');
+      let animationFrameId;
 
-  // Навигация и фикс подсветки
-  document.querySelectorAll('nav a').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
-      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-      mobileLinks.forEach(a => a.classList.remove('active'));
-      this.classList.add('active');
-      mobileLinks.forEach(link => {
-        if (link.getAttribute('href') === this.getAttribute('href')) link.classList.add('active');
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      const emotes = [">:(", ">:D", ":)", ":/", ":P", "^_^", "-_-"];
+      const particles = [];
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 15 + 5; // Уменьшен размер для оптимизации
+          this.speedX = Math.random() * 1 - 0.5; // Уменьшена скорость
+          this.speedY = Math.random() * 1 - 0.5;
+          this.emote = emotes[Math.floor(Math.random() * emotes.length)];
+        }
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+          if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        }
+        draw() {
+          ctxCanvas.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.4)';
+          ctxCanvas.font = `${this.size}px Arial`;
+          ctxCanvas.fillText(this.emote, this.x, this.y);
+        }
+      }
+
+      function init() {
+        const particleCount = window.innerWidth <= 640 ? 10 : 30; // Оптимизировано для мобильных
+        particles.length = 0; // Очистка перед инициализацией
+        for (let i = 0; i < particleCount; i++) {
+          particles.push(new Particle());
+        }
+      }
+
+      function animate() {
+        if (ctxCanvas) {
+          ctxCanvas.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach(particle => {
+            particle.update();
+            particle.draw();
+          });
+          animationFrameId = requestAnimationFrame(animate);
+        }
+      }
+
+      init();
+      animate();
+
+      // Остановка анимации при скрытии canvas (мобильные устройства)
+      const mediaQuery = window.matchMedia('(max-width: 640px)');
+      function handleMediaChange(e) {
+        if (e.matches) {
+          cancelAnimationFrame(animationFrameId);
+          canvas.style.display = 'none';
+        } else {
+          canvas.style.display = 'block';
+          init();
+          animate();
+        }
+      }
+      mediaQuery.addEventListener('change', handleMediaChange);
+      handleMediaChange(mediaQuery);
+    }
+
+    // Intersection Observer для fade-in
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      if (el) observer.observe(el);
+    });
+
+    // Темная тема
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.body.classList.add('dark');
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      document.body.classList.toggle('dark', e.matches);
+    });
+
+    // Навигация и фикс подсветки
+    document.querySelectorAll('nav a').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        mobileLinks.forEach(a => a.classList.remove('active'));
+        this.classList.add('active');
+        mobileLinks.forEach(link => {
+          if (link.getAttribute('href') === this.getAttribute('href')) link.classList.add('active');
+        });
       });
     });
-  });
 
-  window.addEventListener('scroll', () => {
-    const sections = document.querySelectorAll('section');
-    let currentSection = '';
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop;
-      const sectionBottom = sectionTop + section.offsetHeight;
-      if (scrollY >= sectionTop - 100 && scrollY < sectionBottom - 100) {
-        currentSection = section.getAttribute('id');
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('section');
+      let currentSection = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionBottom = sectionTop + section.offsetHeight;
+        if (scrollY >= sectionTop - 100 && scrollY < sectionBottom - 100) {
+          currentSection = section.getAttribute('id');
+        }
+      });
+      document.querySelectorAll('nav a').forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
+      });
+      mobileLinks.forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
+      });
+    });
+
+    // Анимация значений
+    function animateValue(id, start, end, duration) {
+      const element = document.getElementById(id);
+      if (element) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+          element.textContent = Math.floor(progress * (end - start) + start) + (id === 'viewCount' ? 'K' : '');
+          if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
       }
-    });
-    document.querySelectorAll('nav a').forEach(a => {
-      a.classList.remove('active');
-      if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
-    });
-    mobileLinks.forEach(a => {
-      a.classList.remove('active');
-      if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
-    });
-  });
-
-  // Анимация значений
-  function animateValue(id, start, end, duration) {
-    const element = document.getElementById(id);
-    if (element) {
-      let startTimestamp = null;
-      const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        element.textContent = Math.floor(progress * (end - start) + start) + (id === 'viewCount' ? 'K' : '');
-        if (progress < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
     }
-  }
-  animateValue("subscriberCount", 0, 420, 2000);
-  animateValue("viewCount", 0, 146, 2000);
+    animateValue("subscriberCount", 0, 420, 2000);
+    animateValue("viewCount", 0, 146, 2000);
 
-  // События для аналитики
-  document.querySelector('.donation-link')?.addEventListener('click', () => {
-    gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
-  });
-  document.querySelectorAll('.main-telegram').forEach(link => {
-    link.addEventListener('click', () => {
-      gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'MainTelegram' });
+    // События для аналитики
+    document.querySelector('.donation-link')?.addEventListener('click', () => {
+      gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
     });
-  });
-  document.querySelectorAll('.private-telegram').forEach(link => {
-    link.addEventListener('click', () => {
-      gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PrivateTelegram' });
+    document.querySelectorAll('.main-telegram').forEach(link => {
+      link.addEventListener('click', () => {
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'MainTelegram' });
+      });
     });
-  });
-  document.querySelectorAll('.personal-telegram').forEach(link => {
-    link.addEventListener('click', () => {
-      gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
+    document.querySelectorAll('.private-telegram').forEach(link => {
+      link.addEventListener('click', () => {
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PrivateTelegram' });
+      });
     });
-  });
-  document.querySelector('.youtube-link')?.addEventListener('click', () => {
-    gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
-  });
+    document.querySelectorAll('.personal-telegram').forEach(link => {
+      link.addEventListener('click', () => {
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
+      });
+    });
+    document.querySelector('.youtube-link')?.addEventListener('click', () => {
+      gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
+    });
 
-  // Уведомление
-  if (notification && !localStorage.getItem('notificationShown')) {
-    notification.style.display = 'block';
-    setTimeout(() => {
-      localStorage.setItem('notificationShown', 'true');
-    }, 4500);
-  }
+    // Уведомление
+    if (notification && !localStorage.getItem('notificationShown')) {
+      notification.style.display = 'block';
+      setTimeout(() => {
+        localStorage.setItem('notificationShown', 'true');
+      }, 4500);
+    }
 
-  // Открытие модального окна обновлений
-  document.querySelector('.open-update-modal')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (updateModal) updateModal.style.display = 'block';
-  });
+    // Открытие модального окна обновлений
+    document.querySelector('.open-update-modal')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (updateModal) updateModal.style.display = 'block';
+    });
 
-  // Обработка формы форума
-  document.getElementById('forum-post-form')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const title = document.getElementById('post-title').value;
-    const content = document.getElementById('post-content').value;
-    console.log('Новый пост:', { title, content });
-    alert('Пост отправлен в тестовом режиме! (Пока только в консоль)');
-    document.getElementById('forum-post-form').reset();
-  });
-</script>
+    // Логика форума (единственный обработчик)
+    (function() {
+      const form = document.getElementById('forum-post-form');
+      if (form && !form.dataset.forumHandlerAttached) {
+        // Обработчик кликов по темам
+        document.querySelectorAll('.topic-item').forEach(topic => {
+          topic.addEventListener('click', () => {
+            document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
+            topic.classList.add('selected');
+
+            const title = topic.getAttribute('data-title');
+            const placeholder = topic.getAttribute('data-placeholder');
+            document.getElementById('post-title').value = `${title}: Тема`;
+            document.getElementById('post-content').value = '';
+            document.getElementById('post-content').placeholder = placeholder;
+          });
+        });
+
+        // Обработчик формы
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const title = document.getElementById('post-title').value;
+          const content = document.getElementById('post-content').value;
+          console.log('Новый пост:', { title, content });
+          alert('Пост отправлен в тестовом режиме! (Пока только в консоль)');
+          form.reset();
+        });
+
+        form.dataset.forumHandlerAttached = 'true'; // Метка для уникальной привязки
+      }
+    })();
+  </script>
+
+  <style>
+    .topic-item.selected {
+      border: 2px solid #a3e4db;
+      background-color: rgba(163, 228, 219, 0.2);
+    }
+  </style>
 </body>
 </html>
