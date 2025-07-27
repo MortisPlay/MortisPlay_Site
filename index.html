@@ -976,60 +976,63 @@
 
     // Логика форума
     (function() {
-      const form = document.getElementById('forum-post-form');
-      if (form && !form.dataset.forumHandlerAttached) {
-        // Обработчик кликов по темам
-        document.querySelectorAll('.topic-item').forEach(topic => {
-          topic.addEventListener('click', () => {
-            document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
-            topic.classList.add('selected');
+  const form = document.getElementById('forum-post-form');
+  if (form && !form.dataset.forumHandlerAttached) {
+    // Обработчик кликов по темам
+    document.querySelectorAll('.topic-item').forEach(topic => {
+      topic.addEventListener('click', () => {
+        document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
+        topic.classList.add('selected');
 
-            const title = topic.getAttribute('data-title');
-            const placeholder = topic.getAttribute('data-placeholder');
-            document.getElementById('post-title').value = `${title}: Тема`;
-            document.getElementById('post-content').value = '';
-            document.getElementById('post-content').placeholder = placeholder;
-          });
-        });
+        const title = topic.getAttribute('data-title');
+        const placeholder = topic.getAttribute('data-placeholder');
+        document.getElementById('post-title').value = `${title}: Тема`;
+        document.getElementById('post-content').value = '';
+        document.getElementById('post-content').placeholder = placeholder;
+      });
+    });
 
-        // Обработчик формы
-        form.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const title = document.getElementById('post-title').value.trim();
-          const content = document.getElementById('post-content').value.trim();
+    // Обработчик формы
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('post-title').value.trim();
+      const content = document.getElementById('post-content').value.trim();
 
-          if (title.length > 5 || content.length > 10) {
-            alert('Заголовок должен быть минимум 5 символов, а сообщение — 10!');
-            return;
-          }
+      console.log('Длина заголовка:', title.length, 'Текст:', title);
+      console.log('Длина сообщения:', content.length, 'Текст:', content);
 
-          fetch('https://api.telegram.org/bot8376718026:AAE4I_ZH51z1cOe4pe6WXyuqwr8bfaX0gUE/sendMessage', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: 335236137,
-              text: `Новый пост:\nЗаголовок: ${title}\nСообщение: ${content}\nДата: ${new Date().toISOString()}`
-            })
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (data.ok) {
-              alert('Пост отправлен модератору!');
-              form.reset();
-            } else {
-              alert('Ошибка при отправке. Проверь токен и Chat ID.');
-              console.error(data);
-            }
-          })
-          .catch(error => {
-            alert('Ошибка сети. Попробуй позже.');
-            console.error('Ошибка:', error);
-          });
-
-          form.dataset.forumHandlerAttached = 'true';
-        });
+      if (title.length < 5 || content.length < 10) {
+        alert('Заголовок должен быть минимум 5 символов, а сообщение — 10!');
+        return;
       }
-    })();
+
+      fetch('https://api.telegram.org/bot8376718026:AAE4I_ZH51z1cOe4pe6WXyuqwr8bfaX0gUE/sendMessage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: 335236137,
+          text: `Новый пост:\nЗаголовок: ${title}\nСообщение: ${content}\nДата: ${new Date().toISOString()}`
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.ok) {
+          alert('Пост отправлен модератору!');
+          form.reset();
+        } else {
+          alert('Ошибка при отправке. Проверь токен и Chat ID.');
+          console.error(data);
+        }
+      })
+      .catch(error => {
+        alert('Ошибка сети. Попробуй позже.');
+        console.error('Ошибка:', error);
+      });
+
+      form.dataset.forumHandlerAttached = 'true';
+    });
+  }
+})();
   </script>
 
   <style>
