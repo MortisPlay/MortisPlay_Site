@@ -15,7 +15,7 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous"></script>
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script> <!-- Подключение reCAPTCHA -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
     html { scroll-behavior: smooth; }
     body {
@@ -30,6 +30,14 @@
       background: linear-gradient(45deg, #1a1a1a, #2d3748, #4a5568, #1a1a1a);
       color: #e2e8f0;
     }
+    .blackhole-bg {
+      background: radial-gradient(circle at center, #000000 0%, rgba(0, 0, 0, 0.8) 70%, transparent 100%);
+      animation: blackholeRotate 20s linear infinite;
+    }
+    @keyframes blackholeRotate {
+      0% { background-position: 0 0; }
+      100% { background-position: 100% 100%; }
+    }
     canvas {
       position: fixed;
       top: 0;
@@ -38,6 +46,41 @@
       height: 100%;
       z-index: -1;
       opacity: 0.2;
+    }
+    .avatar {
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+    .avatar:hover {
+      transform: scale(1.1);
+    }
+    .party-hat {
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(45deg, #ff4444, #ffbb33);
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      border-radius: 50% 50% 0 0;
+      animation: hatBounce 2s infinite;
+    }
+    .party-hat::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+      border-top: 20px solid #ffbb33;
+    }
+    @keyframes hatBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-5px); }
     }
     @keyframes gradient {
       0% { background-position: 0% 50%; }
@@ -52,12 +95,6 @@
     .fade-in.visible {
       opacity: 1;
       transform: translateY(0);
-    }
-    .avatar {
-      transition: transform 0.3s ease;
-    }
-    .avatar:hover {
-      transform: scale(1.1);
     }
     .welcome-text {
       animation: pulse 2s ease-in-out infinite;
@@ -241,7 +278,7 @@
   </style>
 </head>
 <body class="text-gray-800 font-sans">
-  <canvas id="backgroundCanvas"></canvas>
+  <canvas id="blackholeCanvas"></canvas>
 
   <nav id="nav-menu" class="fixed top-0 w-full bg-indigo-900 dark:bg-gray-900 text-white py-4 z-10">
     <div class="container mx-auto px-4 flex justify-between items-center">
@@ -300,10 +337,13 @@
 
     <section id="about" class="section pb-16">
       <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
-        <video autoplay loop muted playsinline class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="/assets/photo.mp4" type="video/mp4" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          Твой браузер не поддерживает видео.
-        </video>
-        <img src="/assets/photo.jpg" alt="Аватарка" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" style="display: none;">
+        <div class="avatar relative">
+          <video autoplay loop muted playsinline class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover" src="/assets/photo.mp4" type="video/mp4" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            Твой браузер не поддерживает видео.
+          </video>
+          <img src="/assets/photo.jpg" alt="Аватарка" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover" style="display: none;">
+          <div class="party-hat"></div>
+        </div>
         <div>
           <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Информация</h2>
           <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
@@ -554,7 +594,7 @@
           <textarea id="post-content" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" rows="4" placeholder="Введите текст" required></textarea>
         </div>
         <div class="mb-4">
-          <div class="g-recaptcha" data-sitekey="6Le1hJArAAAAAKnJHHzVWqrqnioE736-NqC67oMR"></div> <!-- Тестовый Site Key -->
+          <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
         </div>
         <div class="mb-4 text-left text-gray-600 dark:text-gray-400">
           <p>Примечание: Подтверди, что ты не робот, с помощью CAPTCHA.</p>
@@ -786,10 +826,10 @@
       });
     }
 
-    // Фон с canvas
-    const canvas = document.getElementById('backgroundCanvas');
+    // Фон с чёрной дырой
+    const canvas = document.getElementById('blackholeCanvas');
     if (canvas) {
-      const ctxCanvas = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d');
       let animationFrameId;
 
       function resizeCanvas() {
@@ -800,33 +840,44 @@
       window.addEventListener('resize', resizeCanvas);
       resizeCanvas();
 
-      const emotes = [">:(", ">:D", ":)", ":/", ":P", "^_^", "-_-"];
       const particles = [];
 
       class Particle {
         constructor() {
           this.x = Math.random() * canvas.width;
           this.y = Math.random() * canvas.height;
-          this.size = Math.random() * 15 + 5;
-          this.speedX = Math.random() * 1 - 0.5;
-          this.speedY = Math.random() * 1 - 0.5;
-          this.emote = emotes[Math.floor(Math.random() * emotes.length)];
+          this.size = Math.random() * 3 + 1;
+          this.speedX = Math.random() * 0.5 - 0.25;
+          this.speedY = Math.random() * 0.5 - 0.25;
+          this.life = 1;
+          this.maxLife = Math.random() * 100 + 50;
         }
         update() {
-          this.x += this.speedX;
-          this.y += this.speedY;
-          if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-          if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+          const centerX = canvas.width / 2;
+          const centerY = canvas.height / 2;
+          const dx = centerX - this.x;
+          const dy = centerY - this.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const force = 0.001 / (distance * distance + 1);
+          this.x += (dx * force) + this.speedX;
+          this.y += (dy * force) + this.speedY;
+          this.life -= 1 / this.maxLife;
+          if (this.life <= 0) {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.life = 1;
+          }
         }
         draw() {
-          ctxCanvas.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.4)';
-          ctxCanvas.font = `${this.size}px Arial`;
-          ctxCanvas.fillText(this.emote, this.x, this.y);
+          ctx.fillStyle = `rgba(255, 255, 255, ${this.life})`;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
         }
       }
 
       function init() {
-        const particleCount = window.innerWidth <= 640 ? 10 : 30;
+        const particleCount = window.innerWidth <= 640 ? 50 : 150;
         particles.length = 0;
         for (let i = 0; i < particleCount; i++) {
           particles.push(new Particle());
@@ -834,18 +885,27 @@
       }
 
       function animate() {
-        if (ctxCanvas) {
-          ctxCanvas.clearRect(0, 0, canvas.width, canvas.height);
+        if (ctx) {
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
           particles.forEach(particle => {
             particle.update();
             particle.draw();
           });
+          ctx.fillStyle = '#000000';
+          ctx.beginPath();
+          ctx.arc(canvas.width / 2, canvas.height / 2, 50, 0, Math.PI * 2);
+          ctx.fill();
           animationFrameId = requestAnimationFrame(animate);
         }
       }
 
-      init();
-      animate();
+      const birthday = new Date('2025-08-05');
+      if (isDev || new Date() >= birthday) {
+        document.body.classList.add('blackhole-bg');
+        init();
+        animate();
+      }
 
       const mediaQuery = window.matchMedia('(max-width: 640px)');
       function handleMediaChange(e) {
@@ -1022,7 +1082,7 @@
         if (data.ok) {
           alert('Вопрос отправлен модератору!');
           form.reset();
-          grecaptcha.reset(); // Сброс CAPTCHA после успешной отправки
+          grecaptcha.reset();
         } else {
           alert('Ошибка при отправке. Проверь токен и Chat ID.');
           console.error(data);
