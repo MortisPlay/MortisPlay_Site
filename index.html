@@ -998,7 +998,7 @@
           const title = document.getElementById('post-title').value.trim();
           const content = document.getElementById('post-content').value.trim();
 
-          if (title.length < 5 || content.length < 10) {
+          if (title.length > 5 || content.length > 10) {
             alert('Заголовок должен быть минимум 5 символов, а сообщение — 10!');
             return;
           }
