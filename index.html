@@ -194,6 +194,12 @@
       z-index: 1001;
       animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-out 4s forwards;
     }
+    #qa-notification.success {
+      background: linear-gradient(to right, #4fd1c5, #76e4d3);
+    }
+    #qa-notification.error {
+      background: linear-gradient(to right, #ff6f61, #ff8e53);
+    }
     @keyframes slideIn {
       from { top: -100px; }
       to { top: 20px; }
@@ -303,10 +309,26 @@
       color: #e2e8f0;
       line-height: 1.5;
     }
+    /* Адаптивные стили для Q&A в режиме разработчика */
+    @media (max-width: 640px) {
+      #qa.dev-mode {
+        padding: 1rem;
+      }
+      #qa.dev-mode #qa-post-form {
+        padding: 1rem;
+      }
+      #qa-answers {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+    }
   </style>
 </head>
 <body class="text-gray-800 font-sans">
   <canvas id="backgroundCanvas"></canvas>
+
+  <!-- Уведомление для Q&A -->
+  <div id="qa-notification" class="notification"></div>
 
   <nav id="nav-menu" class="fixed top-0 w-full bg-indigo-900 dark:bg-gray-900 text-white py-4 z-10">
     <div class="container mx-auto px-4 flex justify-between items-center">
@@ -583,57 +605,72 @@
     </section>
 
     <section id="qa" class="section bg-white dark:bg-gray-800 py-16" style="display: none;">
-  <div class="container mx-auto px-4 text-center">
-    <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Q&A (Вопросы и ответы)</h2>
-    <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Задавай свои вопросы! Ответы появятся после проверки модератором. Запуск в августе с новым дизайном! 😎</p>
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Q&A (Вопросы и ответы)</h2>
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Задавай свои вопросы! Ответы появятся после проверки модератором. Запуск в августе с новым дизайном! 😎</p>
 
-    <!-- Список тем -->
-    <div class="mb-8 text-left max-w-3xl mx-auto">
-      <h3 class="text-lg font-semibold text-indigo-600 dark:text-indigo-400 mb-4">Категории вопросов</h3>
-      <div class="space-y-4" id="qa-topics">
-        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Идеи для контента" data-placeholder="Опиши свою идею для видео или мема!">
-          <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Идеи для контента</h4>
-          <p class="text-sm text-gray-600 dark:text-gray-300">Предложи идеи для видео или мемов!</p>
+        <!-- Фильтр категорий (только в режиме разработчика) -->
+        <div id="qa-filter-container" style="display: none;">
+          <select id="qa-filter" class="p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 mb-6">
+            <option value="all">Все категории</option>
+            <option value="ideas">Идеи для контента</option>
+            <option value="tech">Технические вопросы</option>
+            <option value="feedback">Обратная связь</option>
+          </select>
         </div>
-        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Технические вопросы" data-placeholder="Опиши проблему или вопрос про сайт!">
-          <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Технические вопросы</h4>
-          <p class="text-sm text-gray-600 dark:text-gray-300">Задай вопрос про сайт или стримы.</p>
+
+        <!-- Список тем -->
+        <div class="mb-8 text-left max-w-3xl mx-auto">
+          <h3 class="text-lg font-semibold text-indigo-600 dark:text-indigo-400 mb-4">Категории вопросов</h3>
+          <div class="space-y-4" id="qa-topics">
+            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Идеи для контента" data-placeholder="Опиши свою идею для видео или мема!">
+              <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Идеи для контента</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">Предложи идеи для видео или мемов!</p>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Технические вопросы" data-placeholder="Опиши проблему или вопрос про сайт!">
+              <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Технические вопросы</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">Задай вопрос про сайт или стримы.</p>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Обратная связь" data-placeholder="Поделись впечатлениями или предложениями!">
+              <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Обратная связь</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">Поделись впечатлениями о сайте!</p>
+            </div>
+          </div>
         </div>
-        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Обратная связь" data-placeholder="Поделись впечатлениями или предложениями!">
-          <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Обратная связь</h4>
-          <p class="text-sm text-gray-600 dark:text-gray-300">Поделись впечатлениями о сайте!</p>
+
+        <!-- Форма для нового вопроса -->
+        <div class="max-w-2xl mx-auto">
+          <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-4">Задать вопрос</h3>
+          <form id="qa-post-form" class="bg-gray-50 dark:bg-gray-700 p-6 rounded shadow">
+            <!-- Поле для ника (только в режиме разработчика) -->
+            <div id="nickname-field" style="display: none;">
+              <label for="post-nickname" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Ваш ник (опционально)</label>
+              <input type="text" id="post-nickname" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="Введите ваш ник (например, @dimap7221)">
+            </div>
+            <div class="mb-4">
+              <label for="post-title" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Заголовок</label>
+              <input type="text" id="post-title" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="Введите заголовок" required>
+            </div>
+            <div class="mb-4">
+              <label for="post-content" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Ваш вопрос</label>
+              <textarea id="post-content" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" rows="4" placeholder="Введите текст" required></textarea>
+            </div>
+            <div class="mb-4">
+              <div class="g-recaptcha" data-sitekey="6Le1hJArAAAAAKnJHHzVWqrqnioE736-NqC67oMR"></div>
+            </div>
+            <div class="mb-4 text-left text-gray-600 dark:text-gray-400">
+              <p>Примечание: Подтверди, что ты не робот, с помощью CAPTCHA.</p>
+            </div>
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Отправить</button>
+          </form>
         </div>
+
+        <!-- Контейнер для отображения ответов -->
+        <div id="qa-answers" class="mt-8 max-w-2xl mx-auto"></div>
+
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-6">Все вопросы будут проверены модератором перед публикацией ответа.</p>
       </div>
-    </div>
-
-    <!-- Форма для нового вопроса -->
-    <div class="max-w-2xl mx-auto">
-      <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-4">Задать вопрос</h3>
-      <form id="qa-post-form" class="bg-gray-50 dark:bg-gray-700 p-6 rounded shadow">
-        <div class="mb-4">
-          <label for="post-title" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Заголовок</label>
-          <input type="text" id="post-title" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="Введите заголовок" required>
-        </div>
-        <div class="mb-4">
-          <label for="post-content" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Ваш вопрос</label>
-          <textarea id="post-content" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" rows="4" placeholder="Введите текст" required></textarea>
-        </div>
-        <div class="mb-4">
-          <div class="g-recaptcha" data-sitekey="6Le1hJArAAAAAKnJHHzVWqrqnioE736-NqC67oMR"></div>
-        </div>
-        <div class="mb-4 text-left text-gray-600 dark:text-gray-400">
-          <p>Примечание: Подтверди, что ты не робот, с помощью CAPTCHA.</p>
-        </div>
-        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Отправить</button>
-      </form>
-    </div>
-
-    <!-- Контейнер для отображения ответов -->
-    <div id="qa-answers" class="mt-8 max-w-2xl mx-auto"></div>
-
-    <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-6">Все вопросы будут проверены модератором перед публикацией ответа.</p>
-  </div>
-</section>
+    </section>
 
     <section id="contact" class="section py-16">
       <div class="container mx-auto px-4 text-center">
@@ -1040,40 +1077,91 @@
       if (updateModal) updateModal.style.display = 'block';
     });
 
-    // Логика Q&A с CAPTCHA и отображением ответов
+    // Логика Q&A с уведомлениями, адаптивностью, персонализацией и фильтрацией
     (function() {
       const form = document.getElementById('qa-post-form');
       const qaAnswers = document.getElementById('qa-answers');
-      if (form && !form.dataset.qaHandlerAttached) {
-        // Обработчик кликов по темам
-        document.querySelectorAll('.topic-item').forEach(topic => {
-          topic.addEventListener('click', () => {
-            document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
-            topic.classList.add('selected');
+      const qaNotification = document.getElementById('qa-notification');
+      const filterSelect = document.getElementById('qa-filter');
+      const nicknameField = document.getElementById('nickname-field');
+      const filterContainer = document.getElementById('qa-filter-container');
 
-            const title = topic.getAttribute('data-title');
-            const placeholder = topic.getAttribute('data-placeholder');
-            document.getElementById('post-title').value = `${title}: Вопрос`;
-            document.getElementById('post-content').value = '';
-            document.getElementById('post-content').placeholder = placeholder;
-          });
+      // Данные вопросов и ответов с категориями и никами
+      const qaData = [
+        { question: "Как связаться с тобой?", answer: "Пиши мне в Telegram: <a href='https://t.me/Mortisplay_YT' class='text-indigo-600 dark:text-indigo-400 underline'>MortisPlay</a>, или на email: <a href='mailto:mortisplay@mail.ru' class='text-indigo-600 dark:text-indigo-400 underline'>mortisplay@mail.ru</a>.", category: "tech", nickname: "Anon" },
+        { question: "Когда будут новые видео?", answer: "Новые видео появляются каждую неделю! Следи за новостями на сайте и в Telegram-канале!", category: "feedback", nickname: "@fan123" },
+        { question: "Как добавить свой мем?", answer: "Перейди в раздел 'Мемы от авторов', следуй правилам и отправь мем в Telegram!", category: "ideas", nickname: "@dimap7221" }
+      ];
+
+      // Функция показа уведомлений
+      function showNotification(message, type) {
+        qaNotification.textContent = message;
+        qaNotification.className = `notification ${type}`;
+        qaNotification.style.display = 'block';
+        setTimeout(() => {
+          qaNotification.style.display = 'none';
+        }, 4500);
+      }
+
+      // Функция рендеринга ответов с фильтрацией
+      function renderQA(filter = 'all') {
+        qaAnswers.innerHTML = '';
+        const filteredData = filter === 'all' ? qaData : qaData.filter(q => q.category === filter);
+        filteredData.forEach(qa => {
+          const div = document.createElement('div');
+          div.className = 'qa-item fade-in';
+          div.innerHTML = `
+            <div class="qa-question">${qa.question} ${isDev ? `<span class="text-sm text-gray-500 dark:text-gray-400">от ${qa.nickname}</span>` : ''}</div>
+            <div class="qa-answer">${qa.answer}</div>
+          `;
+          qaAnswers.appendChild(div);
+          observer.observe(div);
         });
+      }
 
-        // Обработчик формы
+      // Инициализация
+      if (qaAnswers) {
+        renderQA();
+      }
+      if (isDev) {
+        filterContainer.style.display = 'block';
+        nicknameField.style.display = 'block';
+        filterSelect.addEventListener('change', (e) => {
+          renderQA(e.target.value);
+        });
+      }
+
+      // Обработчик кликов по темам
+      document.querySelectorAll('.topic-item').forEach(topic => {
+        topic.addEventListener('click', () => {
+          document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
+          topic.classList.add('selected');
+          const title = topic.getAttribute('data-title');
+          const placeholder = topic.getAttribute('data-placeholder');
+          document.getElementById('post-title').value = `${title}: Вопрос`;
+          document.getElementById('post-content').value = '';
+          document.getElementById('post-content').placeholder = placeholder;
+        });
+      });
+
+      // Обработчик формы
+      if (form && !form.dataset.qaHandlerAttached) {
         form.addEventListener('submit', (e) => {
           e.preventDefault();
+          const nickname = isDev ? document.getElementById('post-nickname').value || 'Anon' : 'Anon';
           const title = document.getElementById('post-title').value.trim();
           const content = document.getElementById('post-content').value.trim();
 
-          // Проверка reCAPTCHA
           const recaptchaResponse = grecaptcha.getResponse();
           if (!recaptchaResponse) {
-            alert('Пожалуйста, подтверди, что ты не робот!');
+            if (isDev) showNotification('Подтверди, что ты не робот!', 'error');
+            else alert('Пожалуйста, подтверди, что ты не робот!');
             return;
           }
 
           if (title.length < 5 || content.length < 10) {
-            alert('Заголовок должен быть минимум 5 символов, а вопрос — 10!');
+            if (isDev) showNotification('Заголовок — мин. 5 символов, вопрос — мин. 10!', 'error');
+            else alert('Заголовок должен быть минимум 5 символов, а вопрос — 10!');
             return;
           }
 
@@ -1082,53 +1170,40 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: 335236137,
-              text: `Новый вопрос:\nЗаголовок: ${title}\nВопрос: ${content}\nДата: ${new Date().toISOString()}`
+              text: `Новый вопрос:\nЗаголовок: ${title}\nВопрос: ${content}\nНик: ${nickname}\nДата: ${new Date().toISOString()}`
             })
           })
           .then(response => response.json())
           .then(data => {
             if (data.ok) {
-              alert('Вопрос отправлен модератору!');
+              if (isDev) showNotification('Вопрос отправлен модератору!', 'success');
+              else alert('Вопрос отправлен модератору!');
               form.reset();
-              grecaptcha.reset(); // Сброс CAPTCHA после успешной отправки
+              grecaptcha.reset();
+              if (isDev) {
+                const newQA = { 
+                  question: title, 
+                  answer: 'Ваш вопрос находится на рассмотрении.', 
+                  category: document.querySelector('.topic-item.selected')?.getAttribute('data-title')?.toLowerCase() || 'feedback', 
+                  nickname 
+                };
+                qaData.unshift(newQA);
+                renderQA(filterSelect.value);
+              }
             } else {
-              alert('Ошибка при отправке. Проверь токен и Chat ID.');
+              if (isDev) showNotification('Ошибка отправки. Проверь токен и Chat ID.', 'error');
+              else alert('Ошибка при отправке. Проверь токен и Chat ID.');
               console.error(data);
             }
           })
           .catch(error => {
-            alert('Ошибка сети. Попробуй позже.');
+            if (isDev) showNotification('Ошибка сети. Попробуй позже.', 'error');
+            else alert('Ошибка сети. Попробуй позже.');
             console.error('Ошибка:', error);
           });
 
           form.dataset.qaHandlerAttached = 'true';
         });
-      }
-
-      // Данные вопросов и ответов (можно заменить на загрузку с сервера)
-      const qaData = [
-        { question: "Как связаться с тобой?", answer: "Пиши мне в Telegram: <a href='https://t.me/Mortisplay_YT' class='text-indigo-600 dark:text-indigo-400 underline'>MortisPlay</a>, или на email: <a href='mailto:mortisplay@mail.ru' class='text-indigo-600 dark:text-indigo-400 underline'>mortisplay@mail.ru</a>." },
-        { question: "Когда будут новые видео?", answer: "Новые видео появляются каждую неделю! Следи за новостями на сайте и в Telegram-канале!" }
-      ];
-
-      // Рендеринг ответов
-      function renderQA() {
-        qaAnswers.innerHTML = '';
-        qaData.forEach(item => {
-          const qaItem = document.createElement('div');
-          qaItem.className = 'qa-item fade-in';
-          qaItem.innerHTML = `
-            <div class="qa-question">${item.question}</div>
-            <div class="qa-answer">${item.answer}</div>
-          `;
-          qaAnswers.appendChild(qaItem);
-          observer.observe(qaItem); // Добавляем анимацию появления
-        });
-      }
-
-      // Инициализация при загрузке
-      if (qaAnswers) {
-        renderQA();
       }
     })();
   </script>
