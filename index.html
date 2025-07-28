@@ -110,7 +110,7 @@
       padding: 6rem 0;
       margin-bottom: 3rem;
     }
-    #about {
+    #biography {
       padding: 6rem 0;
       margin-bottom: 3rem;
     }
@@ -234,7 +234,7 @@
         padding: 3rem 0;
         margin-bottom: 1.5rem;
       }
-      #about {
+      #biography {
         padding: 3rem 0;
         margin-bottom: 1.5rem;
       }
@@ -314,6 +314,18 @@
       color: #a3e4db;
       margin-top: 0.5rem;
     }
+    .banner {
+      background: linear-gradient(to right, #ff4500, #ff8c00);
+      padding: 2rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .banner h2 {
+      color: white;
+      font-size: 2rem;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+    }
   </style>
 </head>
 <body class="text-gray-800 font-sans">
@@ -324,7 +336,7 @@
       <a href="#welcome" class="text-xl font-bold">Mortis Play</a>
       <div class="hidden md:flex space-x-4">
         <a href="#welcome" class="hover:text-indigo-300">Главная</a>
-        <a href="#about" class="hover:text-indigo-300">Информация</a>
+        <a href="#biography" class="hover:text-indigo-300">Биография</a>
         <a href="#stories" class="hover:text-indigo-300">Мои истории</a>
         <a href="#videos" class="hover:text-indigo-300">Видео</a>
         <a href="#memes" class="hover:text-indigo-300">Мемы</a>
@@ -342,7 +354,7 @@
       <button id="burger" class="md:hidden text-2xl">☰</button>
       <div id="mobile-menu" class="hidden md:hidden flex-col absolute top-16 left-0 w-full bg-indigo-900 dark:bg-gray-900 text-white p-4">
         <a href="#welcome" class="py-2 hover:text-indigo-300">Главная</a>
-        <a href="#about" class="py-2 hover:text-indigo-300">Информация</a>
+        <a href="#biography" class="py-2 hover:text-indigo-300">Биография</a>
         <a href="#stories" class="py-2 hover:text-indigo-300">Мои истории</a>
         <a href="#videos" class="py-2 hover:text-indigo-300">Видео</a>
         <a href="#memes" class="py-2 hover:text-indigo-300">Мемы</a>
@@ -371,42 +383,18 @@
       <div class="mt-6 flex justify-center space-x-4">
         <a href="#stories" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Смотреть истории</a>
         <a href="#" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition open-update-modal">Обновление</a>
+        <a href="#" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition open-bio-modal">Обо мне</a>
       </div>
     </section>
 
-    <section id="about" class="section pb-16">
-      <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
-        <video autoplay loop muted playsinline class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="/assets/photo.mp4" type="video/mp4" aria-label="Аватар Mortis Play" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.nextElementSibling.nextElementSibling.style.display='block';">
-          Твой браузер не поддерживает видео.
-        </video>
-        <img src="/assets/photo.jpg" alt="Аватарка" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" style="display: none;">
-        <p class="video-error" style="display: none;">Не удалось загрузить видео.</p>
-        <div>
-          <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Информация</h2>
-          <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
-            Всем привет, с вами Mortisplay32. Настоящее имя — Дмитрий. На этом сайте ты найдёшь: любимые видео, полезную информацию, которую не расскажу нигде, мемы, воссозданные мной и другими авторами (скоро), и связь со мной. <i>Гений, миллиардер, плэйбой, филантроп</i>
-          </p>
-          <div class="mt-4 flex justify-center space-x-4">
-            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="social-icon" aria-label="YouTube Mortis Play">
-              <svg class="w-6 h-6 text-red-600 hover:text-red-700 transition-transform duration-300 hover:scale-110" fill="current.Infrastructure" viewBox="0 0 24 24">
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505a3.017 3.017 0 0 0-2.122 2.136C0 8.127 0 12 0 12s0 3.873.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.377.505 9.377.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.873 24 12 24 12s0-3.873-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-              </svg>
-            </a>
-            <a href="https://t.me/MortisPlayTG" target="_blank" class="social-icon" aria-label="Telegram Mortis Play">
-              <i class="fab fa-telegram-plane text-blue-600 hover:text-blue-700 transition-transform duration-300 hover:scale-110" style="font-size: 1.5rem;"></i>
-            </a>
-            <a href="https://www.tiktok.com/@mortis.32?_t=ZM-8y9D60P1FQe&_r=1" target="_blank" class="social-icon" aria-label="TikTok Mortis Play">
-              <svg class="w-6 h-6 text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-transform duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 448 512">
-                <path d="M448 209.9a210.1 210.1 0 0 1-122.8-39.3V349.4A162.6 162.6 0 1 1 185 188.3V278.2a74.6 74.6 0 1 0 52.2 71.2V0l88 0a121.2 121.2 0 0 0 1.9 22.2h0A122.2 122.2 0 0 0 381 102.4a121.3 121.3 0 0 0 67 20.1z"/>
-              </svg>
-            </a>
-            <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="social-icon" aria-label="Twitch Mortis Play">
-              <svg class="w-6 h-6 text-purple-500 hover:text-purple-600 transition-transform duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M2.149 0l-1.612 4.119v16.836h5.731v3.045h3.224l3.045-3.045h4.657l6.269-6.269v-14.686h-21.314zm19.167 13.452l-3.045 3.045h-4.657l-3.045 3.045v-3.045h-3.731v-13.714h14.478v10.669zm-8.167-3.238h-2.238v4.952h2.238v-4.952zm5 0h-2.238v4.952h2.238v-4.952z"/>
-              </svg>
-            </a>
-          </div>
+    <section id="biography" class="section pb-16">
+      <div class="container mx-auto px-4">
+        <div class="banner">
+          <h2 class="text-3xl font-bold">!!!</h2>
         </div>
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 text-center mb-4">Дата рождения: 12 декабря 2000</p>
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 text-center mb-4">Увлечения: Игры, создание мемов, стримы</p>
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 text-center italic mb-4">Главная цитата: "Гений, миллиардер, плэйбой, филантроп 😎"</p>
       </div>
     </section>
 
@@ -414,7 +402,7 @@
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Мои истории</h2>
         <div class="video-container">
-          <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/9990b31904c4370f38188bd90a9e021a/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen aria-label="Видео: Эпик фейл" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"></iframe>
+          <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/9990b31904c4370f38188bd90a9e021a/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen aria-label="Видео: Эпик фейл" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.nextElementSibling.nextElementSibling.style.display='block';"></iframe>
           <p class="video-error" style="display: none;">Не удалось загрузить видео.</p>
           <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Эпик фейл</p>
         </div>
@@ -503,15 +491,14 @@
             </div>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Прогресс: 0%</p>
           </div>
-          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 Secondly, the progress-bar-fill animation has been added to the "Projects" section for version 1.0.3.
-        </div>
-        <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow">
-          <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">1 сезон "Типичный случай"</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-300">Серия стримов с мемами и безумными челленджами.</p>
-          <div class="progress-bar mt-2">
-            <div class="progress-bar-fill" style="width: 50%;"></div>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow">
+            <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">1 сезон "Типичный случай"</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Серия стримов с мемами и безумными челленджами.</p>
+            <div class="progress-bar mt-2">
+              <div class="progress-bar-fill" style="width: 50%;"></div>
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Прогресс: 50%</p>
           </div>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Прогресс: 50%</p>
         </div>
       </div>
     </section>
@@ -586,7 +573,8 @@
               - Обновлён Intersection Observer для новых вопросов;<br>
               - Добавлены атрибуты доступности (a11y);<br>
               - Анимированы прогресс-бары в "Проектах";<br>
-              - Добавлена проверка загрузки reCAPTCHA.</p>
+              - Добавлена проверка загрузки reCAPTCHA;<br>
+              - Добавлен раздел "Биография" с баннером и модальным окном "Обо мне".</p>
             <p class="text-xs mt-2">28 июля 2025 *NEW*</p>
           </div>
         </div>
@@ -821,6 +809,14 @@
       </div>
     </div>
 
+    <div id="bio-modal" class="modal" role="dialog" aria-labelledby="bio-modal-title">
+      <div class="modal-content">
+        <span class="close" aria-label="Закрыть модальное окно">&times;</span>
+        <h3 id="bio-modal-title" class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-2">О канале</h3>
+        <p class="text-base text-gray-700 dark:text-gray-300">Привет, я MortisPlay32! Начал свой путь в 2020 году с простых видео, а теперь создаю эпичные контенты и мемы. Люблю игры, юмор и общение с вами! 😎</p>
+      </div>
+    </div>
+
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
       <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 1.0.3</p>
     </footer>
@@ -889,6 +885,7 @@
     // Модальные окна
     const modal = document.getElementById('modal');
     const updateModal = document.getElementById('update-modal');
+    const bioModal = document.getElementById('bio-modal');
     const modalClose = document.getElementsByClassName('close');
     const notification = document.getElementById('notification');
 
@@ -897,6 +894,7 @@
         modalClose[i].addEventListener('click', () => {
           if (modal) modal.style.display = 'none';
           if (updateModal) updateModal.style.display = 'none';
+          if (bioModal) bioModal.style.display = 'none';
         });
       }
     }
@@ -904,6 +902,7 @@
     window.addEventListener('click', (event) => {
       if (modal && event.target == modal) modal.style.display = 'none';
       if (updateModal && event.target == updateModal) updateModal.style.display = 'none';
+      if (bioModal && event.target == bioModal) bioModal.style.display = 'none';
     });
 
     // Мобильное меню
@@ -1116,6 +1115,12 @@
       if (updateModal) updateModal.style.display = 'block';
     });
 
+    // Открытие модального окна биографии
+    document.querySelector('.open-bio-modal')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (bioModal) bioModal.style.display = 'block';
+    });
+
     // Логика Q&A с CAPTCHA, никнеймами, временными метками и лимитами
     (function() {
       const form = document.getElementById('qa-post-form');
@@ -1144,7 +1149,7 @@
             return;
           }
 
-          if (nickname.length < 3 || content.length < 10) {
+         if (nickname.length < 3 || content.length < 10) {
             alert('Никнейм должен быть минимум 3 символа, а вопрос — 10!');
             return;
           }
