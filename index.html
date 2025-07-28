@@ -282,6 +282,27 @@
     #qa.dev-mode #qa-post-form button:hover {
       background: linear-gradient(45deg, #76e4d3, #4fd1c5);
     }
+    /* Стили для отображения ответов */
+    #qa-answers .qa-item {
+      background: linear-gradient(90deg, #2d3748, #4a5d78);
+      border: 1px solid #a3e4db;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      transition: transform 0.3s ease;
+    }
+    #qa-answers .qa-item:hover {
+      transform: translateY(-5px);
+    }
+    #qa-answers .qa-question {
+      font-weight: bold;
+      color: #a3e4db;
+      margin-bottom: 0.5rem;
+    }
+    #qa-answers .qa-answer {
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body class="text-gray-800 font-sans">
@@ -606,6 +627,9 @@
         <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Отправить</button>
       </form>
     </div>
+
+    <!-- Контейнер для отображения ответов -->
+    <div id="qa-answers" class="mt-8 max-w-2xl mx-auto"></div>
 
     <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-6">Все вопросы будут проверены модератором перед публикацией ответа.</p>
   </div>
@@ -1016,73 +1040,97 @@
       if (updateModal) updateModal.style.display = 'block';
     });
 
-    // Логика Q&A с CAPTCHA
+    // Логика Q&A с CAPTCHA и отображением ответов
     (function() {
-  const form = document.getElementById('qa-post-form');
-  if (form && !form.dataset.qaHandlerAttached) {
-    // Обработчик кликов по темам
-    document.querySelectorAll('.topic-item').forEach(topic => {
-      topic.addEventListener('click', () => {
-        document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
-        topic.classList.add('selected');
+      const form = document.getElementById('qa-post-form');
+      const qaAnswers = document.getElementById('qa-answers');
+      if (form && !form.dataset.qaHandlerAttached) {
+        // Обработчик кликов по темам
+        document.querySelectorAll('.topic-item').forEach(topic => {
+          topic.addEventListener('click', () => {
+            document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
+            topic.classList.add('selected');
 
-        const title = topic.getAttribute('data-title');
-        const placeholder = topic.getAttribute('data-placeholder');
-        document.getElementById('post-title').value = `${title}: Вопрос`;
-        document.getElementById('post-content').value = '';
-        document.getElementById('post-content').placeholder = placeholder;
-      });
-    });
+            const title = topic.getAttribute('data-title');
+            const placeholder = topic.getAttribute('data-placeholder');
+            document.getElementById('post-title').value = `${title}: Вопрос`;
+            document.getElementById('post-content').value = '';
+            document.getElementById('post-content').placeholder = placeholder;
+          });
+        });
 
-    // Обработчик формы
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const title = document.getElementById('post-title').value.trim();
-      const content = document.getElementById('post-content').value.trim();
+        // Обработчик формы
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const title = document.getElementById('post-title').value.trim();
+          const content = document.getElementById('post-content').value.trim();
 
-      // Проверка reCAPTCHA
-      const recaptchaResponse = grecaptcha.getResponse();
-      if (!recaptchaResponse) {
-        alert('Пожалуйста, подтверди, что ты не робот!');
-        return;
+          // Проверка reCAPTCHA
+          const recaptchaResponse = grecaptcha.getResponse();
+          if (!recaptchaResponse) {
+            alert('Пожалуйста, подтверди, что ты не робот!');
+            return;
+          }
+
+          if (title.length < 5 || content.length < 10) {
+            alert('Заголовок должен быть минимум 5 символов, а вопрос — 10!');
+            return;
+          }
+
+          fetch('https://api.telegram.org/bot8376718026:AAE4I_ZH51z1cOe4pe6WXyuqwr8bfaX0gUE/sendMessage', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: 335236137,
+              text: `Новый вопрос:\nЗаголовок: ${title}\nВопрос: ${content}\nДата: ${new Date().toISOString()}`
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.ok) {
+              alert('Вопрос отправлен модератору!');
+              form.reset();
+              grecaptcha.reset(); // Сброс CAPTCHA после успешной отправки
+            } else {
+              alert('Ошибка при отправке. Проверь токен и Chat ID.');
+              console.error(data);
+            }
+          })
+          .catch(error => {
+            alert('Ошибка сети. Попробуй позже.');
+            console.error('Ошибка:', error);
+          });
+
+          form.dataset.qaHandlerAttached = 'true';
+        });
       }
 
-      console.log('Длина заголовка:', title.length, 'Текст:', title);
-      console.log('Длина вопроса:', content.length, 'Текст:', content);
+      // Данные вопросов и ответов (можно заменить на загрузку с сервера)
+      const qaData = [
+        { question: "Как связаться с тобой?", answer: "Пиши мне в Telegram: <a href='https://t.me/Mortisplay_YT' class='text-indigo-600 dark:text-indigo-400 underline'>MortisPlay</a>, или на email: <a href='mailto:mortisplay@mail.ru' class='text-indigo-600 dark:text-indigo-400 underline'>mortisplay@mail.ru</a>." },
+        { question: "Когда будут новые видео?", answer: "Новые видео появляются каждую неделю! Следи за новостями на сайте и в Telegram-канале!" }
+      ];
 
-      if (title.length < 5 || content.length < 10) {
-        alert('Заголовок должен быть минимум 5 символов, а вопрос — 10!');
-        return;
+      // Рендеринг ответов
+      function renderQA() {
+        qaAnswers.innerHTML = '';
+        qaData.forEach(item => {
+          const qaItem = document.createElement('div');
+          qaItem.className = 'qa-item fade-in';
+          qaItem.innerHTML = `
+            <div class="qa-question">${item.question}</div>
+            <div class="qa-answer">${item.answer}</div>
+          `;
+          qaAnswers.appendChild(qaItem);
+          observer.observe(qaItem); // Добавляем анимацию появления
+        });
       }
 
-      fetch('https://api.telegram.org/bot8376718026:AAE4I_ZH51z1cOe4pe6WXyuqwr8bfaX0gUE/sendMessage', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: 335236137,
-          text: `Новый вопрос:\nЗаголовок: ${title}\nВопрос: ${content}\nДата: ${new Date().toISOString()}`
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.ok) {
-          alert('Вопрос отправлен модератору!');
-          form.reset();
-          grecaptcha.reset(); // Сброс CAPTCHA после успешной отправки
-        } else {
-          alert('Ошибка при отправке. Проверь токен и Chat ID.');
-          console.error(data);
-        }
-      })
-      .catch(error => {
-        alert('Ошибка сети. Попробуй позже.');
-        console.error('Ошибка:', error);
-      });
-
-      form.dataset.qaHandlerAttached = 'true';
-    });
-  }
-})();
+      // Инициализация при загрузке
+      if (qaAnswers) {
+        renderQA();
+      }
+    })();
   </script>
 
   <style>
