@@ -85,6 +85,12 @@
     .video-container:hover {
       transform: scale(1.05);
     }
+    .video-error {
+      display: none;
+      color: #ff4500;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
     .play-button {
       margin-top: 0.5rem;
       text-align: center;
@@ -370,30 +376,31 @@
 
     <section id="about" class="section pb-16">
       <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
-        <video autoplay loop muted playsinline class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="/assets/photo.mp4" type="video/mp4" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <video autoplay loop muted playsinline class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" src="/assets/photo.mp4" type="video/mp4" aria-label="Аватар Mortis Play" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.nextElementSibling.nextElementSibling.style.display='block';">
           Твой браузер не поддерживает видео.
         </video>
         <img src="/assets/photo.jpg" alt="Аватарка" class="w-40 h-40 sm:w-48 sm:h-48 rounded-full border-4 border-indigo-200 mb-4 md:mb-0 md:mr-8 object-cover avatar" style="display: none;">
+        <p class="video-error" style="display: none;">Не удалось загрузить видео.</p>
         <div>
           <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">Информация</h2>
           <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300">
             Всем привет, с вами Mortisplay32. Настоящее имя — Дмитрий. На этом сайте ты найдёшь: любимые видео, полезную информацию, которую не расскажу нигде, мемы, воссозданные мной и другими авторами (скоро), и связь со мной. <i>Гений, миллиардер, плэйбой, филантроп</i>
           </p>
           <div class="mt-4 flex justify-center space-x-4">
-            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="social-icon">
-              <svg class="w-6 h-6 text-red-600 hover:text-red-700 transition-transform duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="social-icon" aria-label="YouTube Mortis Play">
+              <svg class="w-6 h-6 text-red-600 hover:text-red-700 transition-transform duration-300 hover:scale-110" fill="current.Infrastructure" viewBox="0 0 24 24">
                 <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505a3.017 3.017 0 0 0-2.122 2.136C0 8.127 0 12 0 12s0 3.873.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.377.505 9.377.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.873 24 12 24 12s0-3.873-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
               </svg>
             </a>
-            <a href="https://t.me/MortisPlayTG" target="_blank" class="social-icon">
+            <a href="https://t.me/MortisPlayTG" target="_blank" class="social-icon" aria-label="Telegram Mortis Play">
               <i class="fab fa-telegram-plane text-blue-600 hover:text-blue-700 transition-transform duration-300 hover:scale-110" style="font-size: 1.5rem;"></i>
             </a>
-            <a href="https://www.tiktok.com/@mortis.32?_t=ZM-8y9D60P1FQe&_r=1" target="_blank" class="social-icon">
+            <a href="https://www.tiktok.com/@mortis.32?_t=ZM-8y9D60P1FQe&_r=1" target="_blank" class="social-icon" aria-label="TikTok Mortis Play">
               <svg class="w-6 h-6 text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-transform duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 448 512">
                 <path d="M448 209.9a210.1 210.1 0 0 1-122.8-39.3V349.4A162.6 162.6 0 1 1 185 188.3V278.2a74.6 74.6 0 1 0 52.2 71.2V0l88 0a121.2 121.2 0 0 0 1.9 22.2h0A122.2 122.2 0 0 0 381 102.4a121.3 121.3 0 0 0 67 20.1z"/>
               </svg>
             </a>
-            <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="social-icon">
+            <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="social-icon" aria-label="Twitch Mortis Play">
               <svg class="w-6 h-6 text-purple-500 hover:text-purple-600 transition-transform duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M2.149 0l-1.612 4.119v16.836h5.731v3.045h3.224l3.045-3.045h4.657l6.269-6.269v-14.686h-21.314zm19.167 13.452l-3.045 3.045h-4.657l-3.045 3.045v-3.045h-3.731v-13.714h14.478v10.669zm-8.167-3.238h-2.238v4.952h2.238v-4.952zm5 0h-2.238v4.952h2.238v-4.952z"/>
               </svg>
@@ -407,7 +414,8 @@
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Мои истории</h2>
         <div class="video-container">
-          <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/9990b31904c4370f38188bd90a9e021a/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/9990b31904c4370f38188bd90a9e021a/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen aria-label="Видео: Эпик фейл" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"></iframe>
+          <p class="video-error" style="display: none;">Не удалось загрузить видео.</p>
           <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Эпик фейл</p>
         </div>
       </div>
@@ -418,23 +426,28 @@
         <h2 class="text-xl sm:text-2xl font-bold text-center text-indigo-700 dark:text-indigo-300 mb-8">Мои видео</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
-            <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen aria-label="Видео: Угар в Content Warning" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"></iframe>
+            <p class="video-error" style="display: none;">Не удалось загрузить видео.</p>
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Угар в Content Warning</p>
           </div>
           <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
-            <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen aria-label="Видео: УГАР В REPO" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"></iframe>
+            <p class="video-error" style="display: none;">Не удалось загрузить видео.</p>
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">УГАР В REPO</p>
           </div>
           <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
-            <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen aria-label="Видео: Игра CS2 (feat. Johnny Drill)" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"></iframe>
+            <p class="video-error" style="display: none;">Не удалось загрузить видео.</p>
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Игра CS2 (feat. Johnny Drill)</p>
           </div>
           <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
-            <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen aria-label="Видео: ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"></iframe>
+            <p class="video-error" style="display: none;">Не удалось загрузить видео.</p>
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!</p>
           </div>
           <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow text-center video-container">
-            <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <iframe class="w-full h-48 rounded" src="https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen aria-label="Видео: Mortisplay32 ИГРАЕТ В PEAK И ДОХОДЯТ ДО ВЕРШИНЫ" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"></iframe>
+            <p class="video-error" style="display: none;">Не удалось загрузить видео.</p>
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Mortisplay32 ИГРАЕТ В PEAK И ДОХОДЯТ ДО ВЕРШИНЫ (ft. Johnny_Drill, sayheyalldayman)</p>
           </div>
         </div>
@@ -449,13 +462,13 @@
         <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Мемы</h2>
         <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Идёт разработка мемов ...</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-6">
-          <img src="/assets/meme_fail.gif" alt="" class="rounded shadow" loading="lazy">
-          <img src="/assets/meme_ugly_dance.gif" alt="" class="rounded shadow" loading="lazy">
-          <img src="/assets/meme_stream_moment.gif" alt="" class="rounded shadow" loading="lazy">
-          <img src="/assets/meme_game_win.gif" alt="" class="rounded shadow" loading="lazy">
-          <img src="/assets/meme_funny_chat.gif" alt="" class="rounded shadow" loading="lazy">
-          <img src="/assets/meme_epic_fail2.gif" alt="" class="rounded shadow" loading="lazy">
-          <img src="/assets/meme_dance_party.gif" alt="" class="rounded shadow" loading="lazy">
+          <img src="/assets/meme_fail.gif" alt="Мем: Fail" class="rounded shadow" loading="lazy">
+          <img src="/assets/meme_ugly_dance.gif" alt="Мем: Ugly Dance" class="rounded shadow" loading="lazy">
+          <img src="/assets/meme_stream_moment.gif" alt="Мем: Stream Moment" class="rounded shadow" loading="lazy">
+          <img src="/assets/meme_game_win.gif" alt="Мем: Game Win" class="rounded shadow" loading="lazy">
+          <img src="/assets/meme_funny_chat.gif" alt="Мем: Funny Chat" class="rounded shadow" loading="lazy">
+          <img src="/assets/meme_epic_fail2.gif" alt="Мем: Epic Fail 2" class="rounded shadow" loading="lazy">
+          <img src="/assets/meme_dance_party.gif" alt="Мем: Dance Party" class="rounded shadow" loading="lazy">
         </div>
       </div>
     </section>
@@ -473,7 +486,7 @@
         </ul>
         <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Пока ждём первые шедевры! 🚀</p>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <img src="https://via.placeholder.com/300x200" alt="" class="rounded shadow" loading="lazy">
+          <img src="https://via.placeholder.com/300x200" alt="Пример мема от автора" class="rounded shadow" loading="lazy">
         </div>
       </div>
     </section>
@@ -490,14 +503,15 @@
             </div>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Прогресс: 0%</p>
           </div>
-          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow">
-            <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">1 сезон "Типичный случай"</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-300">Серия стримов с мемами и безумными челленджами.</p>
-            <div class="progress-bar mt-2">
-              <div class="progress-bar-fill" style="width: 50%;"></div>
-            </div>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Прогресс: 50%</p>
+          <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 Secondly, the progress-bar-fill animation has been added to the "Projects" section for version 1.0.3.
+        </div>
+        <div class="bg-gray-50 dark:bg-gray-700 rounded p-4 shadow">
+          <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">1 сезон "Типичный случай"</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300">Серия стримов с мемами и безумными челленджами.</p>
+          <div class="progress-bar mt-2">
+            <div class="progress-bar-fill" style="width: 50%;"></div>
           </div>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Прогресс: 50%</p>
         </div>
       </div>
     </section>
@@ -530,6 +544,12 @@
             <p class="text-xs mt-2">С любовью Mortis32 <3</p>
             <p class="text-xs mt-2">27 Июля 2025</p>
           </div>
+          <div class="news-card bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg p-6 shadow-lg text-white fade-in">
+            <h3 class="text-lg font-semibold mb-2">Запуск Q&A!</h3>
+            <p class="text-sm">В августе 2025 года запускается раздел Q&A! Теперь ты сможешь задавать свои вопросы, а лучшие из них будут опубликованы после модерации. Готовь свои идеи и врывайся! 😎</p>
+            <p class="text-xs mt-2">С любовью Mortis32 <3</p>
+            <p class="text-xs mt-2">28 июля 2025</p>
+          </div>
         </div>
       </div>
     </section>
@@ -555,7 +575,19 @@
           <div class="update-card bg-gradient-to-r from-red-500 to-green-500 rounded-lg p-6 shadow-lg text-white fade-in">
             <h3 class="text-lg font-semibold mb-2">Небольшое обновление или список изменений</h3>
             <p class="text-sm">Пофиксили баг в котором раздел "Мои истории" внезапно пропали после добавление иконок в разделе "Информация". Добавили подсветку вокруг аватарки для улучшения визуального стиля.</p>
-            <p class="text-xs mt-2">27 июля 2025 *NEW*</p>
+            <p class="text-xs mt-2">27 июля 2025</p>
+          </div>
+          <div class="update-card bg-gradient-to-r from-red-500 to-orange-500 rounded-lg p-6 shadow-lg text-white fade-in">
+            <h3 class="text-lg font-semibold mb-2">Небольшое обновление или список изменений</h3>
+            <p class="text-sm">Что нового в версии 1.0.3:<br>
+              - Завершена анимация на canvas с оптимизацией;<br>
+              - Добавлена обработка ошибок для видео и iframe;<br>
+              - Улучшена безопасность формы Q&A;<br>
+              - Обновлён Intersection Observer для новых вопросов;<br>
+              - Добавлены атрибуты доступности (a11y);<br>
+              - Анимированы прогресс-бары в "Проектах";<br>
+              - Добавлена проверка загрузки reCAPTCHA.</p>
+            <p class="text-xs mt-2">28 июля 2025 *NEW*</p>
           </div>
         </div>
       </div>
@@ -583,6 +615,7 @@
           <li>Версия 4.7.5 (19 июля 2025): Ссылки на TikTok и Telegram.</li>
           <li>Версия 1.0 (22 июля 2025): Сброс до 1.0, добавление 3 раздела.</li>
           <li>Версия 1.0.1 (26 июля 2025): Добавили объяснение почему форума больше не будет и вместо него добавили ссылку ведущая к телеграмм личку.</li>
+          <li>Версия 1.0.2 (27 июля 2025): Пофиксили баг "Мои истории", подсветка аватарки.</li>
         </ul>
       </div>
     </section>
@@ -614,14 +647,14 @@
         <!-- Форма для нового вопроса с никнеймом -->
         <div class="max-w-2xl mx-auto">
           <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-4">Задать вопрос</h3>
-          <form id="qa-post-form" class="bg-gray-50 dark:bg-gray-700 p-6 rounded shadow">
+          <form id="qa-post-form" class="bg-gray-50 dark:bg-gray-700 p-6 rounded shadow" data-submit-count="0">
             <div class="mb-4">
               <label for="post-nickname" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Ваш никнейм</label>
-              <input type="text" id="post-nickname" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="Введите ваш никнейм" required>
+              <input type="text" id="post-nickname" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="Введите ваш никнейм" required maxlength="20">
             </div>
             <div class="mb-4">
               <label for="post-content" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Ваш вопрос</label>
-              <textarea id="post-content" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" rows="4" placeholder="Введите текст" required></textarea>
+              <textarea id="post-content" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" rows="4" placeholder="Введите текст" required maxlength="500"></textarea>
             </div>
             <div class="mb-4">
               <div class="g-recaptcha" data-sitekey="6Le1hJArAAAAAKnJHHzVWqrqnioE736-NqC67oMR"></div>
@@ -733,6 +766,11 @@
               iframe.width = "100%";
               iframe.height = "100%";
               iframe.allowFullscreen = true;
+              iframe.setAttribute("aria-label", `Клип: ${item.title}`);
+              iframe.onerror = () => {
+                iframe.style.display = "none";
+                div.querySelector(".video-error").style.display = "block";
+              };
               div.appendChild(iframe);
             } else if (item.type === "highlight") {
               const iframe = document.createElement("iframe");
@@ -740,8 +778,19 @@
               iframe.width = "100%";
               iframe.height = "100%";
               iframe.allowFullscreen = true;
+              iframe.setAttribute("aria-label", `Выделенный момент: ${item.title}`);
+              iframe.onerror = () => {
+                iframe.style.display = "none";
+                div.querySelector(".video-error").style.display = "block";
+              };
               div.appendChild(iframe);
             }
+
+            const errorMsg = document.createElement("p");
+            errorMsg.className = "video-error";
+            errorMsg.textContent = "Не удалось загрузить видео.";
+            errorMsg.style.display = "none";
+            div.appendChild(errorMsg);
 
             const title = document.createElement("p");
             title.textContent = item.title;
@@ -754,21 +803,26 @@
       </div>
     </section>
 
-    <div id="update-modal" class="modal">
+    <div id="update-modal" class="modal" role="dialog" aria-labelledby="update-modal-title">
       <div class="modal-content">
-        <span class="close">×</span>
-        <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-2">Последние обновления</h3>
-        <p class="text-base text-gray-700 dark:text-gray-300">Версия 1.0.2 (27 июля 2025 *NEW*):</p>
-        <ul class="text-base text-gray-700 dark:text-gray-300 text-left ml-4">
-          <li>Пофиксили баг в котором раздел "Мои истории" внезапно пропали после добавление иконок в разделе "Информация"</li>
-          <li>Добавили подсветку вокруг аватарки для улучшения визуального стиля</li>
+        <span class="close" aria-label="Закрыть модальное окно">&times;</span>
+        <h3 id="update-modal-title" class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-2">Последние обновления</h3>
+        <p class="text-base text-gray-700 dark:text-gray-300">Версия 1.0.3 (28 июля 2025 *NEW*):</p>
+        <ul class="text-base text-gray-700 dark:text-gray-300 text-left ml-4 list-disc">
+          <li>Завершена анимация на canvas с оптимизацией</li>
+          <li>Добавлена обработка ошибок для видео и iframe</li>
+          <li>Улучшена безопасность формы Q&A</li>
+          <li>Обновлён Intersection Observer для новых вопросов</li>
+          <li>Добавлены атрибуты доступности (a11y)</li>
+          <li>Анимированы прогресс-бары в "Проектах"</li>
+          <li>Добавлена проверка загрузки reCAPTCHA</li>
         </ul>
         <p class="text-base text-gray-700 dark:text-gray-300 mt-2">Следи за новостями для следующих обновлений! 😎</p>
       </div>
     </div>
 
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
-      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 1.0.2</p>
+      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 1.0.3</p>
     </footer>
   </div>
 
@@ -863,7 +917,7 @@
 
     // Фон с canvas
     const canvas = document.getElementById('backgroundCanvas');
-    if (canvas) {
+    if (canvas && canvas.getContext) {
       const ctxCanvas = canvas.getContext('2d');
       let animationFrameId;
 
@@ -935,17 +989,34 @@
       }
       mediaQuery.addEventListener('change', handleMediaChange);
       handleMediaChange(mediaQuery);
+    } else {
+      console.warn('Canvas не поддерживается в этом браузере.');
+      canvas.style.display = 'none';
     }
 
-    // Intersection Observer для fade-in
+    // Intersection Observer для fade-in и динамических элементов
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          if (entry.target.closest('#qa-answers')) {
+            observer.unobserve(entry.target); // Отключаем наблюдение после появления
+          }
+        }
       });
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.fade-in').forEach(el => {
       if (el) observer.observe(el);
+    });
+
+    // Анимация прогресс-баров
+    document.querySelectorAll('.progress-bar-fill').forEach(bar => {
+      const width = bar.style.width;
+      bar.style.width = '0%';
+      setTimeout(() => {
+        bar.style.width = width;
+      }, 100);
     });
 
     // Темная тема
@@ -1045,7 +1116,7 @@
       if (updateModal) updateModal.style.display = 'block';
     });
 
-    // Логика Q&A с CAPTCHA, никнеймами и временными метками
+    // Логика Q&A с CAPTCHA, никнеймами, временными метками и лимитами
     (function() {
       const form = document.getElementById('qa-post-form');
       const qaAnswers = document.getElementById('qa-answers');
@@ -1065,6 +1136,7 @@
           e.preventDefault();
           const nickname = document.getElementById('post-nickname').value.trim();
           const content = document.getElementById('post-content').value.trim();
+          let submitCount = parseInt(form.dataset.submitCount) || 0;
 
           const recaptchaResponse = grecaptcha.getResponse();
           if (!recaptchaResponse) {
@@ -1077,6 +1149,11 @@
             return;
           }
 
+          if (submitCount >= 3) {
+            alert('Превышен лимит отправок (максимум 3 за сессию).');
+            return;
+          }
+
           const timestamp = new Date().toISOString().split('T')[0]; // Получаем дату в формате YYYY-MM-DD
 
           fetch('https://api.telegram.org/bot8376718026:AAE4I_ZH51z1cOe4pe6WXyuqwr8bfaX0gUE/sendMessage', {
@@ -1084,12 +1161,14 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: 335236137,
-              text: `Новый вопрос от ${nickname}:\nВопрос: ${content}\nДата: ${timestamp}`
+              text: `Новый вопрос от ${nickname.slice(0, 20)}:\nВопрос: ${content.slice(0, 500)}\nДата: ${timestamp}`
             })
           })
           .then(response => response.json())
           .then(data => {
             if (data.ok) {
+              submitCount++;
+              form.dataset.submitCount = submitCount;
               alert('Вопрос отправлен модератору!');
               form.reset();
               grecaptcha.reset();
@@ -1134,6 +1213,16 @@
       // Инициализация при загрузке
       if (qaAnswers) {
         renderQA();
+      }
+
+      // Обновление Intersection Observer для новых вопросов
+      const qaObserver = new MutationObserver(() => {
+        document.querySelectorAll('#qa-answers .qa-item:not(.visible)').forEach(item => {
+          observer.observe(item);
+        });
+      });
+      if (qaAnswers) {
+        qaObserver.observe(qaAnswers, { childList: true, subtree: true });
       }
     })();
   </script>
