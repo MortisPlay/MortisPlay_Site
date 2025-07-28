@@ -125,17 +125,19 @@
       z-index: 1000; 
     }
     .modal-content { 
-      background: white; 
-      color: #333; 
+      background: linear-gradient(135deg, #4b5e9e, #8b9dc3);
+      color: white;
       margin: 15% auto; 
       padding: 20px; 
       width: 70%; 
       max-width: 500px; 
-      border-radius: 5px; 
+      border-radius: 10px; 
       text-align: center; 
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+      animation: slideIn 0.5s ease-out;
     }
     body.dark .modal-content { 
-      background: #2d3748; 
+      background: linear-gradient(135deg, #2d3748, #4a5568);
       color: #e2e8f0; 
     }
     .modal-content a {
@@ -148,7 +150,7 @@
       float: right; 
       font-size: 20px; 
       cursor: pointer; 
-      color: #333; 
+      color: #fff; 
     }
     body.dark .close {
       color: #e2e8f0; 
@@ -670,6 +672,11 @@
         <p class="text-gray-600 dark:text-gray-300 mb-2">Telegram канал: <a href="https://t.me/MortisPlayTG" class="text-indigo-600 dark:text-indigo-400 underline main-telegram">@MortisPlayTG</a></p>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Частный канал: <a href="https://t.me/+VhpxzWl9ygYzMmFi" class="text-indigo-600 dark:text-indigo-400 underline private-telegram">t.me/+VhpxzWl9ygYzMmFi</a></p>
         <p class="text-gray-600 dark:text-gray-300 mb-2">Email: <a href="mailto:mortisplay@mail.ru" class="text-indigo-600 dark:text-indigo-400 underline">mortisplay@mail.ru</a></p>
+        <div class="mt-4 flex justify-center space-x-4">
+          <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-full font-semibold transition flex items-center"><i class="fab fa-youtube mr-2"></i>YouTube</a>
+          <a href="https://www.twitch.tv/mortis32" target="_blank" class="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-full font-semibold transition flex items-center"><i class="fab fa-twitch mr-2"></i>Twitch</a>
+          <a href="https://www.tiktok.com/@mortisplay32" target="_blank" class="bg-black hover:bg-gray-800 text-white py-2 px-4 rounded-full font-semibold transition flex items-center"><i class="fab fa-tiktok mr-2"></i>TikTok</a>
+        </div>
         <div class="mt-4">
           <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-full font-semibold transition donation-link">Поддержать проект! 💰</a>
         </div>
@@ -815,7 +822,8 @@
       <div class="modal-content">
         <span class="close" aria-label="Закрыть модальное окно">&times;</span>
         <h3 id="bio-modal-title" class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-2">О канале</h3>
-        <p class="text-base text-gray-700 dark:text-gray-300">Привет, я MortisPlay32! Начал свой путь в 2020 году с простых видео, а теперь создаю эпичные контенты и мемы. Люблю игры, юмор и общение с вами! 😎</p>
+        <img src="/assets/avatar.jpg" alt="Аватарка MortisPlay32" class="avatar mx-auto mb-4 fade-in w-32 h-32 rounded-full object-cover" loading="lazy">
+        <p class="text-base text-white dark:text-gray-300">Привет, я MortisPlay32! Начал свой путь в 2020 году с простых видео, а теперь создаю эпичные контенты и мемы. Люблю игры, юмор и общение с вами! 😎</p>
       </div>
     </div>
 
@@ -1078,7 +1086,7 @@
       }
     }
     animateValue("subscriberCount", 0, 420, 2000);
-    animateValue("viewCount", 0, 146, 2000);
+    animateValue("viewCount", 0, 147, 2000);
 
     // События для аналитики
     document.querySelector('.donation-link')?.addEventListener('click', () => {
