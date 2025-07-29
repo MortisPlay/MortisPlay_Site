@@ -876,9 +876,17 @@
     const navLinks = document.querySelectorAll('nav a');
     const mobileLinks = document.querySelectorAll('#mobile-menu a');
 
-    // Активация сайта
-    const openDate = new Date('2025-07-22T10:00:00+03:00');
-    if (new Date() >= openDate || isDev) {
+        // Активация сайта в режиме разработчика
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDev = true; // Принудительно включаем режим разработчика
+    const comingSoon = document.getElementById('coming-soon');
+    const fullSite = document.getElementById('full-site');
+    const navMenu = document.getElementById('nav-menu');
+    const qaSection = document.getElementById('qa');
+    const navLinks = document.querySelectorAll('nav a');
+    const mobileLinks = document.querySelectorAll('#mobile-menu a');
+
+    if (new Date() >= new Date('2025-07-22T10:00:00+03:00') || isDev) {
       if (comingSoon) comingSoon.style.display = 'none';
       if (fullSite) fullSite.style.display = 'block';
       if (navMenu) navMenu.style.display = 'block';
@@ -971,6 +979,7 @@
         for (let i = 0; i < particleCount; i++) {
           particles.push(new Particle());
         }
+        console.log('Canvas initialized with ' + particleCount + ' particles in dev mode');
       }
 
       function animate() {
@@ -1011,7 +1020,8 @@
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
           if (entry.target.closest('#qa-answers')) {
-            observer.unobserve(entry.target); // Отключаем наблюдение после появления
+            observer.unobserve(entry.target);
+            console.log('Section observed and animated: ' + entry.target.id);
           }
         }
       });
@@ -1050,6 +1060,7 @@
         mobileLinks.forEach(link => {
           if (link.getAttribute('href') === this.getAttribute('href')) link.classList.add('active');
         });
+        console.log('Navigated to section: ' + this.getAttribute('href'));
       });
     });
 
@@ -1093,24 +1104,29 @@
     // События для аналитики
     document.querySelector('.donation-link')?.addEventListener('click', () => {
       gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
+      console.log('Donation link clicked in dev mode');
     });
     document.querySelectorAll('.main-telegram').forEach(link => {
       link.addEventListener('click', () => {
         gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'MainTelegram' });
+        console.log('Main Telegram link clicked in dev mode');
       });
     });
     document.querySelectorAll('.private-telegram').forEach(link => {
       link.addEventListener('click', () => {
         gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PrivateTelegram' });
+        console.log('Private Telegram link clicked in dev mode');
       });
     });
     document.querySelectorAll('.personal-telegram').forEach(link => {
       link.addEventListener('click', () => {
         gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
+        console.log('Personal Telegram link clicked in dev mode');
       });
     });
     document.querySelector('.youtube-link')?.addEventListener('click', () => {
       gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
+      console.log('YouTube link clicked in dev mode');
     });
 
     // Уведомление
@@ -1125,12 +1141,14 @@
     document.querySelector('.open-update-modal')?.addEventListener('click', (e) => {
       e.preventDefault();
       if (updateModal) updateModal.style.display = 'block';
+      console.log('Update modal opened in dev mode');
     });
 
     // Открытие модального окна биографии
     document.querySelector('.open-bio-modal')?.addEventListener('click', (e) => {
       e.preventDefault();
       if (bioModal) bioModal.style.display = 'block';
+      console.log('Bio modal opened in dev mode');
     });
 
     // Логика Q&A с CAPTCHA, никнеймами, временными метками и лимитами
@@ -1145,6 +1163,7 @@
             topic.classList.add('selected');
             const placeholder = topic.getAttribute('data-placeholder');
             document.getElementById('post-content').placeholder = placeholder;
+            console.log('Topic selected: ' + topic.getAttribute('data-title'));
           });
         });
 
@@ -1161,7 +1180,7 @@
             return;
           }
 
-         if (nickname.length < 3 || content.length < 10) {
+          if (nickname.length < 3 || content.length < 10) {
             alert('Никнейм должен быть минимум 3 символа, а вопрос — 10!');
             return;
           }
@@ -1171,7 +1190,7 @@
             return;
           }
 
-          const timestamp = new Date().toISOString().split('T')[0]; // Получаем дату в формате YYYY-MM-DD
+          const timestamp = new Date().toISOString().split('T')[0];
 
           fetch('https://api.telegram.org/bot8376718026:AAE4I_ZH51z1cOe4pe6WXyuqwr8bfaX0gUE/sendMessage', {
             method: 'POST',
@@ -1189,6 +1208,7 @@
               alert('Вопрос отправлен модератору!');
               form.reset();
               grecaptcha.reset();
+              console.log('Q&A submitted successfully: ' + nickname + ', ' + content);
             } else {
               alert('Ошибка при отправке. Проверь токен и Chat ID.');
               console.error(data);
@@ -1223,8 +1243,9 @@
             <div class="qa-timestamp">Опубликовано: ${item.date}</div>
           `;
           qaAnswers.appendChild(qaItem);
-          observer.observe(qaItem); // Добавляем анимацию появления
+          observer.observe(qaItem);
         });
+        console.log('QA rendered with ' + approvedQA.length + ' items in dev mode');
       }
 
       // Инициализация при загрузке
@@ -1242,13 +1263,9 @@
         qaObserver.observe(qaAnswers, { childList: true, subtree: true });
       }
     })();
-  </script>
 
-  <style>
-    .topic-item.selected {
-      border: 2px solid #a3e4db;
-      background-color: rgba(163, 228, 219, 0.2);
-    }
-  </style>
+    // Завершение скрипта
+    console.log('Development mode fully loaded at ' + new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Berlin' }));
+  </script>
 </body>
 </html>
