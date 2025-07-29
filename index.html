@@ -6,6 +6,26 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Mortis Play</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <meta name="description" content="Добро пожаловать на официальный сайт Mortis Play! Эксклюзивные видео, мемы, новости и обновления от контент-мейкера. Присоединяйтесь к вайбу!">
+  <meta name="keywords" content="Mortis Play, видео, мемы, игры, контент, стримы, Twitch, YouTube, Telegram">
+  <meta name="author" content="Mortis Play">
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+
+  <!-- Open Graph метатеги для социальных сетей -->
+  <meta property="og:title" content="Mortis Play - Официальный сайт">
+  <meta property="og:description" content="Эпичные видео, мемы и новости от Mortis Play! Подписывайся и становись частью тусы!">
+  <meta property="og:image" content="/assets/og-image.jpg">
+  <meta property="og:url" content="https://mortisplay.com">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+
+  <!-- Twitter Card метатеги -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Mortis Play - Официальный сайт">
+  <meta name="twitter:description" content="Эксклюзивные видео, мемы и стримы от Mortis Play!">
+  <meta name="twitter:image" content="/assets/twitter-image.jpg">
+
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -109,6 +129,22 @@
     #welcome {
       padding: 6rem 0;
       margin-bottom: 3rem;
+      background: transparent;
+      position: relative;
+    }
+    #welcome::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      z-index: 0;
+    }
+    #welcome * {
+      position: relative;
+      z-index: 1;
     }
     #biography {
       padding: 6rem 0;
@@ -823,8 +859,8 @@
         <span class="close" aria-label="Закрыть модальное окно">&times;</span>
         <h3 id="bio-modal-title" class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-2">О канале</h3>
         <video class="avatar mx-auto mb-4 fade-in w-32 h-32 rounded-full object-cover" autoplay muted loop>
-  <source src="/assets/photo.mp4" type="video/mp4">
-</video>
+          <source src="/assets/photo.mp4" type="video/mp4">
+        </video>
         <p class="text-base text-white dark:text-gray-300">Привет, я MortisPlay32! Начал свой путь в 2020 году с простых видео, а теперь создаю эпичные контенты и мемы. Люблю игры, юмор и общение с вами! 😎</p>
       </div>
     </div>
@@ -867,16 +903,6 @@
     }
   </script>
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const isDev = urlParams.get('dev') === 'true';
-    const comingSoon = document.getElementById('coming-soon');
-    const fullSite = document.getElementById('full-site');
-    const navMenu = document.getElementById('nav-menu');
-    const qaSection = document.getElementById('qa');
-    const navLinks = document.querySelectorAll('nav a');
-    const mobileLinks = document.querySelectorAll('#mobile-menu a');
-
-        // Активация сайта в режиме разработчика
     const urlParams = new URLSearchParams(window.location.search);
     const isDev = true; // Принудительно включаем режим разработчика
     const comingSoon = document.getElementById('coming-soon');
