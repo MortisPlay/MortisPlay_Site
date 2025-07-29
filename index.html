@@ -389,49 +389,13 @@
       background-color: #4a5568;
     }
     /* Стили для биографии */
-    #biography .timeline {
-      position: relative;
-      max-width: 800px;
-      margin: 2rem auto;
+    #biography p {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #333;
     }
-    #biography .timeline-item {
-      padding: 1rem 2rem;
-      margin-bottom: 2rem;
-      background: linear-gradient(135deg, #4b5e9e, #8b9dc3);
-      color: white;
-      border-radius: 0.5rem;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      transition: transform 0.5s ease, box-shadow 0.5s ease;
-    }
-    #biography .timeline-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    }
-    #biography .timeline-item h3 {
-      font-size: 1.25rem;
-      margin-bottom: 0.5rem;
-    }
-    #biography .timeline-item p {
-      font-size: 1rem;
-    }
-    #biography .timeline::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 2px;
-      height: 100%;
-      background-color: #a3e4db;
-      transform: translateX(-50%);
-    }
-    @media (max-width: 640px) {
-      #biography .timeline::before {
-        left: 1rem;
-        transform: none;
-      }
-      #biography .timeline-item {
-        margin-left: 2rem;
-      }
+    body.dark #biography p {
+      color: #e2e8f0;
     }
   </style>
 </head>
@@ -500,28 +464,7 @@
 
     <section id="biography" class="section pb-16">
       <div class="container mx-auto px-4">
-        <div class="banner">
-          <h2 class="text-3xl font-bold">Биография</h2>
-        </div>
-        <div class="timeline">
-          <div class="timeline-item fade-in">
-            <h3>Рождение гениальности</h3>
-            <p>5 августа 2009 — Появление на свет будущего контент-мейкера с ярким вайбом! 😎</p>
-          </div>
-          <div class="timeline-item fade-in">
-            <h3>Старт пути</h3>
-            <p>2020 — Начало создания первых видео и мемов, которые покорили сердца зрителей.</p>
-          </div>
-          <div class="timeline-item fade-in">
-            <h3>Взлёт популярности</h3>
-            <p>2023 — Рост подписчиков и запуск эксклюзивного контента на сайте.</p>
-          </div>
-          <div class="timeline-item fade-in">
-            <h3>Будущее</h3>
-            <p>2025 и далее — Новые проекты, розыгрыши и ещё больше угара с фаном! 🚀</p>
-          </div>
-        </div>
-        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 text-center italic mt-4">Главная цитата: "Гений, миллиардер, плэйбой, филантроп 😎"</p>
+        <p>Привет! Я Mortis Play32, начал свой путь в 2020 году с простых видео и мемов. Теперь создаю эпичный контент, люблю игры, юмор и общение с вами! 😎 Главная цитата: "Гений, миллиардер, плэйбой, филантроп 😎"</p>
       </div>
     </section>
 
