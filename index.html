@@ -904,7 +904,7 @@
   </script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-const isDev = true; // Принудительно включаем режим разработчика для тестирования
+const isDev = urlParams.get('dev') === 'true'; // Устанавливаем режим разработчика через параметр URL (например, ?dev=true)
 const comingSoon = document.getElementById('coming-soon');
 const fullSite = document.getElementById('full-site');
 const navMenu = document.getElementById('nav-menu');
@@ -941,370 +941,371 @@ if (isDev) {
   }
 }
 
-    // Модальные окна
-    const modal = document.getElementById('modal');
-    const updateModal = document.getElementById('update-modal');
-    const bioModal = document.getElementById('bio-modal');
-    const modalClose = document.getElementsByClassName('close');
-    const notification = document.getElementById('notification');
+// Остальной код (модальные окна, canvas, навигация и т.д.) остаётся без изменений
+// Модальные окна
+const modal = document.getElementById('modal');
+const updateModal = document.getElementById('update-modal');
+const bioModal = document.getElementById('bio-modal');
+const modalClose = document.getElementsByClassName('close');
+const notification = document.getElementById('notification');
 
-    if (modalClose.length > 0) {
-      for (let i = 0; i < modalClose.length; i++) {
-        modalClose[i].addEventListener('click', () => {
-          if (modal) modal.style.display = 'none';
-          if (updateModal) updateModal.style.display = 'none';
-          if (bioModal) bioModal.style.display = 'none';
-        });
-      }
-    }
-
-    window.addEventListener('click', (event) => {
-      if (modal && event.target == modal) modal.style.display = 'none';
-      if (updateModal && event.target == updateModal) updateModal.style.display = 'none';
-      if (bioModal && event.target == bioModal) bioModal.style.display = 'none';
+if (modalClose.length > 0) {
+  for (let i = 0; i < modalClose.length; i++) {
+    modalClose[i].addEventListener('click', () => {
+      if (modal) modal.style.display = 'none';
+      if (updateModal) updateModal.style.display = 'none';
+      if (bioModal) bioModal.style.display = 'none';
     });
+  }
+}
 
-    // Мобильное меню
-    const burger = document.getElementById('burger');
-    if (burger) {
-      burger.addEventListener('click', () => {
-        const menu = document.getElementById('mobile-menu');
-        if (menu) menu.classList.toggle('hidden');
-      });
+window.addEventListener('click', (event) => {
+  if (modal && event.target == modal) modal.style.display = 'none';
+  if (updateModal && event.target == updateModal) updateModal.style.display = 'none';
+  if (bioModal && event.target == bioModal) bioModal.style.display = 'none';
+});
+
+// Мобильное меню
+const burger = document.getElementById('burger');
+if (burger) {
+  burger.addEventListener('click', () => {
+    const menu = document.getElementById('mobile-menu');
+    if (menu) menu.classList.toggle('hidden');
+  });
+}
+
+// Фон с canvas
+const canvas = document.getElementById('backgroundCanvas');
+if (canvas && canvas.getContext) {
+  const ctxCanvas = canvas.getContext('2d');
+  let animationFrameId;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  const emotes = [">:(", ">:D", ":)", ":/", ":P", "^_^", "-_-"];
+  const particles = [];
+
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 15 + 5;
+      this.speedX = Math.random() * 1 - 0.5;
+      this.speedY = Math.random() * 1 - 0.5;
+      this.emote = emotes[Math.floor(Math.random() * emotes.length)];
     }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+    }
+    draw() {
+      ctxCanvas.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.4)';
+      ctxCanvas.font = `${this.size}px Arial`;
+      ctxCanvas.fillText(this.emote, this.x, this.y);
+    }
+  }
 
-    // Фон с canvas
-    const canvas = document.getElementById('backgroundCanvas');
-    if (canvas && canvas.getContext) {
-      const ctxCanvas = canvas.getContext('2d');
-      let animationFrameId;
+  function init() {
+    const particleCount = window.innerWidth <= 640 ? 10 : 30;
+    particles.length = 0;
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+    console.log('Canvas initialized with ' + particleCount + ' particles in dev mode');
+  }
 
-      function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
+  function animate() {
+    if (ctxCanvas) {
+      ctxCanvas.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+      animationFrameId = requestAnimationFrame(animate);
+    }
+  }
 
-      window.addEventListener('resize', resizeCanvas);
-      resizeCanvas();
+  init();
+  animate();
 
-      const emotes = [">:(", ">:D", ":)", ":/", ":P", "^_^", "-_-"];
-      const particles = [];
-
-      class Particle {
-        constructor() {
-          this.x = Math.random() * canvas.width;
-          this.y = Math.random() * canvas.height;
-          this.size = Math.random() * 15 + 5;
-          this.speedX = Math.random() * 1 - 0.5;
-          this.speedY = Math.random() * 1 - 0.5;
-          this.emote = emotes[Math.floor(Math.random() * emotes.length)];
-        }
-        update() {
-          this.x += this.speedX;
-          this.y += this.speedY;
-          if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-          if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-        }
-        draw() {
-          ctxCanvas.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.4)';
-          ctxCanvas.font = `${this.size}px Arial`;
-          ctxCanvas.fillText(this.emote, this.x, this.y);
-        }
-      }
-
-      function init() {
-        const particleCount = window.innerWidth <= 640 ? 10 : 30;
-        particles.length = 0;
-        for (let i = 0; i < particleCount; i++) {
-          particles.push(new Particle());
-        }
-        console.log('Canvas initialized with ' + particleCount + ' particles in dev mode');
-      }
-
-      function animate() {
-        if (ctxCanvas) {
-          ctxCanvas.clearRect(0, 0, canvas.width, canvas.height);
-          particles.forEach(particle => {
-            particle.update();
-            particle.draw();
-          });
-          animationFrameId = requestAnimationFrame(animate);
-        }
-      }
-
+  const mediaQuery = window.matchMedia('(max-width: 640px)');
+  function handleMediaChange(e) {
+    if (e.matches) {
+      cancelAnimationFrame(animationFrameId);
+      canvas.style.display = 'none';
+    } else {
+      canvas.style.display = 'block';
       init();
       animate();
+    }
+  }
+  mediaQuery.addEventListener('change', handleMediaChange);
+  handleMediaChange(mediaQuery);
+} else {
+  console.warn('Canvas не поддерживается в этом браузере.');
+  canvas.style.display = 'none';
+}
 
-      const mediaQuery = window.matchMedia('(max-width: 640px)');
-      function handleMediaChange(e) {
-        if (e.matches) {
-          cancelAnimationFrame(animationFrameId);
-          canvas.style.display = 'none';
+// Intersection Observer для fade-in и динамических элементов
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      if (entry.target.closest('#qa-answers')) {
+        observer.unobserve(entry.target);
+        console.log('Section observed and animated: ' + entry.target.id);
+      }
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => {
+  if (el) observer.observe(el);
+});
+
+// Анимация прогресс-баров
+document.querySelectorAll('.progress-bar-fill').forEach(bar => {
+  const width = bar.style.width;
+  bar.style.width = '0%';
+  setTimeout(() => {
+    bar.style.width = width;
+  }, 100);
+});
+
+// Темная тема
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  document.body.classList.add('dark');
+}
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+  document.body.classList.toggle('dark', e.matches);
+});
+
+// Навигация и фикс подсветки
+document.querySelectorAll('nav a').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    mobileLinks.forEach(a => a.classList.remove('active'));
+    this.classList.add('active');
+    mobileLinks.forEach(link => {
+      if (link.getAttribute('href') === this.getAttribute('href')) link.classList.add('active');
+    });
+    console.log('Navigated to section: ' + this.getAttribute('href'));
+  });
+});
+
+window.addEventListener('scroll', () => {
+  const sections = document.querySelectorAll('section');
+  let currentSection = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    const sectionBottom = sectionTop + section.offsetHeight;
+    if (scrollY >= sectionTop - 100 && scrollY < sectionBottom - 100) {
+      currentSection = section.getAttribute('id');
+    }
+  });
+  document.querySelectorAll('nav a').forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
+  });
+  mobileLinks.forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
+  });
+});
+
+// Анимация значений
+function animateValue(id, start, end, duration) {
+  const element = document.getElementById(id);
+  if (element) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      element.textContent = Math.floor(progress * (end - start) + start) + (id === 'viewCount' ? 'K' : '');
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+}
+animateValue("subscriberCount", 0, 420, 2000);
+animateValue("viewCount", 0, 147, 2000);
+
+// События для аналитики
+document.querySelector('.donation-link')?.addEventListener('click', () => {
+  gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
+  console.log('Donation link clicked in dev mode');
+});
+document.querySelectorAll('.main-telegram').forEach(link => {
+  link.addEventListener('click', () => {
+    gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'MainTelegram' });
+    console.log('Main Telegram link clicked in dev mode');
+  });
+});
+document.querySelectorAll('.private-telegram').forEach(link => {
+  link.addEventListener('click', () => {
+    gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PrivateTelegram' });
+    console.log('Private Telegram link clicked in dev mode');
+  });
+});
+document.querySelectorAll('.personal-telegram').forEach(link => {
+  link.addEventListener('click', () => {
+    gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
+    console.log('Personal Telegram link clicked in dev mode');
+  });
+});
+document.querySelector('.youtube-link')?.addEventListener('click', () => {
+  gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
+  console.log('YouTube link clicked in dev mode');
+});
+
+// Уведомление
+if (notification && !localStorage.getItem('notificationShown')) {
+  notification.style.display = 'block';
+  setTimeout(() => {
+    localStorage.setItem('notificationShown', 'true');
+  }, 4500);
+}
+
+// Открытие модального окна обновлений
+document.querySelector('.open-update-modal')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  if (updateModal) updateModal.style.display = 'block';
+  console.log('Update modal opened in dev mode');
+});
+
+// Открытие модального окна биографии
+document.querySelector('.open-bio-modal')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  if (bioModal) bioModal.style.display = 'block';
+  console.log('Bio modal opened in dev mode');
+});
+
+// Логика Q&A с CAPTCHA, никнеймами, временными метками и лимитами
+(function() {
+  const form = document.getElementById('qa-post-form');
+  const qaAnswers = document.getElementById('qa-answers');
+  if (form && !form.dataset.qaHandlerAttached) {
+    // Обработчик кликов по темам
+    document.querySelectorAll('.topic-item').forEach(topic => {
+      topic.addEventListener('click', () => {
+        document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
+        topic.classList.add('selected');
+        const placeholder = topic.getAttribute('data-placeholder');
+        document.getElementById('post-content').placeholder = placeholder;
+        console.log('Topic selected: ' + topic.getAttribute('data-title'));
+      });
+    });
+
+    // Обработчик формы
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nickname = document.getElementById('post-nickname').value.trim();
+      const content = document.getElementById('post-content').value.trim();
+      let submitCount = parseInt(form.dataset.submitCount) || 0;
+
+      const recaptchaResponse = grecaptcha.getResponse();
+      if (!recaptchaResponse) {
+        alert('Пожалуйста, подтверди, что ты не робот!');
+        return;
+      }
+
+      if (nickname.length < 3 || content.length < 10) {
+        alert('Никнейм должен быть минимум 3 символа, а вопрос — 10!');
+        return;
+      }
+
+      if (submitCount >= 3) {
+        alert('Превышен лимит отправок (максимум 3 за сессию).');
+        return;
+      }
+
+      const timestamp = new Date().toISOString().split('T')[0];
+
+      fetch('https://api.telegram.org/bot8376718026:AAE4I_ZH51z1cOe4pe6WXyuqwr8bfaX0gUE/sendMessage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: 335236137,
+          text: `Новый вопрос от ${nickname.slice(0, 20)}:\nВопрос: ${content.slice(0, 500)}\nДата: ${timestamp}`
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.ok) {
+          submitCount++;
+          form.dataset.submitCount = submitCount;
+          alert('Вопрос отправлен модератору!');
+          form.reset();
+          grecaptcha.reset();
+          console.log('Q&A submitted successfully: ' + nickname + ', ' + content);
         } else {
-          canvas.style.display = 'block';
-          init();
-          animate();
+          alert('Ошибка при отправке. Проверь токен и Chat ID.');
+          console.error(data);
         }
-      }
-      mediaQuery.addEventListener('change', handleMediaChange);
-      handleMediaChange(mediaQuery);
-    } else {
-      console.warn('Canvas не поддерживается в этом браузере.');
-      canvas.style.display = 'none';
-    }
-
-    // Intersection Observer для fade-in и динамических элементов
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          if (entry.target.closest('#qa-answers')) {
-            observer.unobserve(entry.target);
-            console.log('Section observed and animated: ' + entry.target.id);
-          }
-        }
+      })
+      .catch(error => {
+        alert('Ошибка сети. Попробуй позже.');
+        console.error('Ошибка:', error);
       });
-    }, { threshold: 0.1 });
 
-    document.querySelectorAll('.fade-in').forEach(el => {
-      if (el) observer.observe(el);
+      form.dataset.qaHandlerAttached = 'true';
     });
+  }
 
-    // Анимация прогресс-баров
-    document.querySelectorAll('.progress-bar-fill').forEach(bar => {
-      const width = bar.style.width;
-      bar.style.width = '0%';
-      setTimeout(() => {
-        bar.style.width = width;
-      }, 100);
+  // Данные вопросов и ответов (добавляйте вручную)
+  const qaData = [
+    { nickname: "User1", question: "Как связаться с тобой?", answer: "Пиши мне в Telegram: <a href='https://t.me/Mortisplay_YT' class='text-indigo-600 dark:text-indigo-400 underline'>MortisPlay</a>, или на email: <a href='mailto:mortisplay@mail.ru' class='text-indigo-600 dark:text-indigo-400 underline'>mortisplay@mail.ru</a>.", date: "2025-07-27", approved: true },
+    { nickname: "User2", question: "Когда будут новые видео?", answer: "Новые видео появляются каждую неделю! Следи за новостями на сайте и в Telegram-канале!", date: "2025-07-26", approved: true },
+    { nickname: "User3", question: "Как добавить свой мем?", answer: "Перейди в раздел 'Мемы от авторов', следуй правилам и отправь мем в Telegram!", date: "2025-07-25", approved: true }
+  ];
+
+  // Рендеринг ответов с никнеймами и временными метками
+  function renderQA() {
+    qaAnswers.innerHTML = '';
+    const approvedQA = qaData.filter(item => item.approved);
+    approvedQA.forEach(item => {
+      const qaItem = document.createElement('div');
+      qaItem.className = 'qa-item fade-in';
+      qaItem.innerHTML = `
+        <div class="qa-question"><strong>${item.nickname}</strong>: ${item.question}</div>
+        <div class="qa-answer">${item.answer}</div>
+        <div class="qa-timestamp">Опубликовано: ${item.date}</div>
+      `;
+      qaAnswers.appendChild(qaItem);
+      observer.observe(qaItem);
     });
+    console.log('QA rendered with ' + approvedQA.length + ' items in dev mode');
+  }
 
-    // Темная тема
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.body.classList.add('dark');
-    }
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-      document.body.classList.toggle('dark', e.matches);
+  // Инициализация при загрузке
+  if (qaAnswers) {
+    renderQA();
+  }
+
+  // Обновление Intersection Observer для новых вопросов
+  const qaObserver = new MutationObserver(() => {
+    document.querySelectorAll('#qa-answers .qa-item:not(.visible)').forEach(item => {
+      observer.observe(item);
     });
+  });
+  if (qaAnswers) {
+    qaObserver.observe(qaAnswers, { childList: true, subtree: true });
+  }
+})();
 
-    // Навигация и фикс подсветки
-    document.querySelectorAll('nav a').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) target.scrollIntoView({ behavior: 'smooth' });
-        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-        mobileLinks.forEach(a => a.classList.remove('active'));
-        this.classList.add('active');
-        mobileLinks.forEach(link => {
-          if (link.getAttribute('href') === this.getAttribute('href')) link.classList.add('active');
-        });
-        console.log('Navigated to section: ' + this.getAttribute('href'));
-      });
-    });
-
-    window.addEventListener('scroll', () => {
-      const sections = document.querySelectorAll('section');
-      let currentSection = '';
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionBottom = sectionTop + section.offsetHeight;
-        if (scrollY >= sectionTop - 100 && scrollY < sectionBottom - 100) {
-          currentSection = section.getAttribute('id');
-        }
-      });
-      document.querySelectorAll('nav a').forEach(a => {
-        a.classList.remove('active');
-        if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
-      });
-      mobileLinks.forEach(a => {
-        a.classList.remove('active');
-        if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
-      });
-    });
-
-    // Анимация значений
-    function animateValue(id, start, end, duration) {
-      const element = document.getElementById(id);
-      if (element) {
-        let startTimestamp = null;
-        const step = (timestamp) => {
-          if (!startTimestamp) startTimestamp = timestamp;
-          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-          element.textContent = Math.floor(progress * (end - start) + start) + (id === 'viewCount' ? 'K' : '');
-          if (progress < 1) requestAnimationFrame(step);
-        };
-        requestAnimationFrame(step);
-      }
-    }
-    animateValue("subscriberCount", 0, 420, 2000);
-    animateValue("viewCount", 0, 147, 2000);
-
-    // События для аналитики
-    document.querySelector('.donation-link')?.addEventListener('click', () => {
-      gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
-      console.log('Donation link clicked in dev mode');
-    });
-    document.querySelectorAll('.main-telegram').forEach(link => {
-      link.addEventListener('click', () => {
-        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'MainTelegram' });
-        console.log('Main Telegram link clicked in dev mode');
-      });
-    });
-    document.querySelectorAll('.private-telegram').forEach(link => {
-      link.addEventListener('click', () => {
-        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PrivateTelegram' });
-        console.log('Private Telegram link clicked in dev mode');
-      });
-    });
-    document.querySelectorAll('.personal-telegram').forEach(link => {
-      link.addEventListener('click', () => {
-        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
-        console.log('Personal Telegram link clicked in dev mode');
-      });
-    });
-    document.querySelector('.youtube-link')?.addEventListener('click', () => {
-      gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
-      console.log('YouTube link clicked in dev mode');
-    });
-
-    // Уведомление
-    if (notification && !localStorage.getItem('notificationShown')) {
-      notification.style.display = 'block';
-      setTimeout(() => {
-        localStorage.setItem('notificationShown', 'true');
-      }, 4500);
-    }
-
-    // Открытие модального окна обновлений
-    document.querySelector('.open-update-modal')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (updateModal) updateModal.style.display = 'block';
-      console.log('Update modal opened in dev mode');
-    });
-
-    // Открытие модального окна биографии
-    document.querySelector('.open-bio-modal')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (bioModal) bioModal.style.display = 'block';
-      console.log('Bio modal opened in dev mode');
-    });
-
-    // Логика Q&A с CAPTCHA, никнеймами, временными метками и лимитами
-    (function() {
-      const form = document.getElementById('qa-post-form');
-      const qaAnswers = document.getElementById('qa-answers');
-      if (form && !form.dataset.qaHandlerAttached) {
-        // Обработчик кликов по темам
-        document.querySelectorAll('.topic-item').forEach(topic => {
-          topic.addEventListener('click', () => {
-            document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
-            topic.classList.add('selected');
-            const placeholder = topic.getAttribute('data-placeholder');
-            document.getElementById('post-content').placeholder = placeholder;
-            console.log('Topic selected: ' + topic.getAttribute('data-title'));
-          });
-        });
-
-        // Обработчик формы
-        form.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const nickname = document.getElementById('post-nickname').value.trim();
-          const content = document.getElementById('post-content').value.trim();
-          let submitCount = parseInt(form.dataset.submitCount) || 0;
-
-          const recaptchaResponse = grecaptcha.getResponse();
-          if (!recaptchaResponse) {
-            alert('Пожалуйста, подтверди, что ты не робот!');
-            return;
-          }
-
-          if (nickname.length < 3 || content.length < 10) {
-            alert('Никнейм должен быть минимум 3 символа, а вопрос — 10!');
-            return;
-          }
-
-          if (submitCount >= 3) {
-            alert('Превышен лимит отправок (максимум 3 за сессию).');
-            return;
-          }
-
-          const timestamp = new Date().toISOString().split('T')[0];
-
-          fetch('https://api.telegram.org/bot8376718026:AAE4I_ZH51z1cOe4pe6WXyuqwr8bfaX0gUE/sendMessage', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: 335236137,
-              text: `Новый вопрос от ${nickname.slice(0, 20)}:\nВопрос: ${content.slice(0, 500)}\nДата: ${timestamp}`
-            })
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (data.ok) {
-              submitCount++;
-              form.dataset.submitCount = submitCount;
-              alert('Вопрос отправлен модератору!');
-              form.reset();
-              grecaptcha.reset();
-              console.log('Q&A submitted successfully: ' + nickname + ', ' + content);
-            } else {
-              alert('Ошибка при отправке. Проверь токен и Chat ID.');
-              console.error(data);
-            }
-          })
-          .catch(error => {
-            alert('Ошибка сети. Попробуй позже.');
-            console.error('Ошибка:', error);
-          });
-
-          form.dataset.qaHandlerAttached = 'true';
-        });
-      }
-
-      // Данные вопросов и ответов (добавляйте вручную)
-      const qaData = [
-        { nickname: "User1", question: "Как связаться с тобой?", answer: "Пиши мне в Telegram: <a href='https://t.me/Mortisplay_YT' class='text-indigo-600 dark:text-indigo-400 underline'>MortisPlay</a>, или на email: <a href='mailto:mortisplay@mail.ru' class='text-indigo-600 dark:text-indigo-400 underline'>mortisplay@mail.ru</a>.", date: "2025-07-27", approved: true },
-        { nickname: "User2", question: "Когда будут новые видео?", answer: "Новые видео появляются каждую неделю! Следи за новостями на сайте и в Telegram-канале!", date: "2025-07-26", approved: true },
-        { nickname: "User3", question: "Как добавить свой мем?", answer: "Перейди в раздел 'Мемы от авторов', следуй правилам и отправь мем в Telegram!", date: "2025-07-25", approved: true }
-      ];
-
-      // Рендеринг ответов с никнеймами и временными метками
-      function renderQA() {
-        qaAnswers.innerHTML = '';
-        const approvedQA = qaData.filter(item => item.approved);
-        approvedQA.forEach(item => {
-          const qaItem = document.createElement('div');
-          qaItem.className = 'qa-item fade-in';
-          qaItem.innerHTML = `
-            <div class="qa-question"><strong>${item.nickname}</strong>: ${item.question}</div>
-            <div class="qa-answer">${item.answer}</div>
-            <div class="qa-timestamp">Опубликовано: ${item.date}</div>
-          `;
-          qaAnswers.appendChild(qaItem);
-          observer.observe(qaItem);
-        });
-        console.log('QA rendered with ' + approvedQA.length + ' items in dev mode');
-      }
-
-      // Инициализация при загрузке
-      if (qaAnswers) {
-        renderQA();
-      }
-
-      // Обновление Intersection Observer для новых вопросов
-      const qaObserver = new MutationObserver(() => {
-        document.querySelectorAll('#qa-answers .qa-item:not(.visible)').forEach(item => {
-          observer.observe(item);
-        });
-      });
-      if (qaAnswers) {
-        qaObserver.observe(qaAnswers, { childList: true, subtree: true });
-      }
-    })();
-
-    // Завершение скрипта
-    console.log('Development mode fully loaded at ' + new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Berlin' }));
+// Завершение скрипта
+console.log('Development mode fully loaded at ' + new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Berlin' }));
   </script>
 </body>
 </html>
