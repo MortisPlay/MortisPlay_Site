@@ -962,65 +962,65 @@
     }
   </script>
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const isDev = urlParams.get('dev') === 'true';
-    const comingSoon = document.getElementById('coming-soon');
-    const fullSite = document.getElementById('full-site');
-    const navMenu = document.getElementById('nav-menu');
-    const qaSection = document.getElementById('_mkqa');
-    const faqSection = document.getElementById('faq');
-    const navLinks = document.querySelectorAll('nav a');
-    const mobileLinks = document.querySelectorAll('#mobile-menu a');
+  const urlParams = new URLSearchParams(window.location.search);
+  const isDev = urlParams.get('dev') === 'true';
+  const comingSoon = document.getElementById('coming-soon');
+  const fullSite = document.getElementById('full-site');
+  const navMenu = document.getElementById('nav-menu');
+  const qaSection = document.getElementById('qa'); // Исправлен идентификатор с '_mkqa' на 'qa'
+  const faqSection = document.getElementById('faq');
+  const navLinks = document.querySelectorAll('nav a');
+  const mobileLinks = document.querySelectorAll('#mobile-menu a');
 
-    if (isDev) {
-      if (comingSoon) comingSoon.style.display = 'none';
-      if (fullSite) fullSite.style.display = 'block';
-      if (navMenu) navMenu.style.display = 'block';
-      if (qaSection) {
-        qaSection.style.display = 'block';
-        qaSection.classList.add('dev-mode');
-        navLinks.forEach(link => {
-          if (link.getAttribute('href') === '#qa') link.style.display = 'inline';
-        });
-        mobileLinks.forEach(link => {
-          if (link.getAttribute('href') === '#qa') link.style.display = 'block';
-        });
-      }
-      if (faqSection) {
-        faqSection.style.display = 'block';
-        document.querySelectorAll('.faq-hidden').forEach(item => item.style.display = 'block');
-        navLinks.forEach(link => {
-          if (link.getAttribute('href') === '#faq') link.style.display = 'inline';
-        });
-        mobileLinks.forEach(link => {
-          if (link.getAttribute('href') === '#faq') link.style.display = 'block';
-        });
-      }
-    } else {
-      if (comingSoon) comingSoon.style.display = 'none';
-      if (fullSite) fullSite.style.display = 'block';
-      if (navMenu) navMenu.style.display = 'block';
-      if (qaSection) {
-        qaSection.style.display = 'none';
-        navLinks.forEach(link => {
-          if (link.getAttribute('href') === '#qa') link.style.display = 'none';
-        });
-        mobileLinks.forEach(link => {
-          if (link.getAttribute('href') === '#qa') link.style.display = 'none';
-        });
-      }
-      if (faqSection) {
-        faqSection.style.display = 'block';
-        document.querySelectorAll('.faq-open').forEach(item => item.style.display = 'block');
-        document.querySelectorAll('.faq-hidden').forEach(item => item.style.display = 'none');
-        navLinks.forEach(link => {
-          if (link.getAttribute('href') === '#faq') link.style.display = 'inline';
-        });
-        mobileLinks.forEach(link => {
-          if (link.getAttribute('href') === '#faq') link.style.display = 'block';
-        });
-      }
+  if (isDev) {
+    if (comingSoon) comingSoon.style.display = 'none';
+    if (fullSite) fullSite.style.display = 'block';
+    if (navMenu) navMenu.style.display = 'block';
+    if (qaSection) {
+      qaSection.style.display = 'block';
+      qaSection.classList.add('dev-mode');
+      navLinks.forEach(link => {
+        if (link.getAttribute('href') === '#qa') link.style.display = 'inline';
+      });
+      mobileLinks.forEach(link => {
+        if (link.getAttribute('href') === '#qa') link.style.display = 'block';
+      });
     }
+    if (faqSection) {
+      faqSection.style.display = 'block';
+      document.querySelectorAll('.faq-hidden').forEach(item => item.style.display = 'block');
+      navLinks.forEach(link => {
+        if (link.getAttribute('href') === '#faq') link.style.display = 'inline';
+      });
+      mobileLinks.forEach(link => {
+        if (link.getAttribute('href') === '#faq') link.style.display = 'block';
+      });
+    }
+  } else {
+    if (comingSoon) comingSoon.style.display = 'none';
+    if (fullSite) fullSite.style.display = 'block';
+    if (navMenu) navMenu.style.display = 'block';
+    if (qaSection) {
+      qaSection.style.display = 'none';
+      navLinks.forEach(link => {
+        if (link.getAttribute('href') === '#qa') link.style.display = 'none';
+      });
+      mobileLinks.forEach(link => {
+        if (link.getAttribute('href') === '#qa') link.style.display = 'none';
+      });
+    }
+    if (faqSection) {
+      faqSection.style.display = 'block';
+      document.querySelectorAll('.faq-open').forEach(item => item.style.display = 'block');
+      document.querySelectorAll('.faq-hidden').forEach(item => item.style.display = 'none');
+      navLinks.forEach(link => {
+        if (link.getAttribute('href') === '#faq') link.style.display = 'inline';
+      });
+      mobileLinks.forEach(link => {
+        if (link.getAttribute('href') === '#faq') link.style.display = 'block';
+      });
+    }
+  }
 
     const modal = document.getElementById('modal');
     const updateModal = document.getElementById('update-modal');
