@@ -149,6 +149,16 @@
     #biography {
       padding: 6rem 0;
       margin-bottom: 3rem;
+      transition: background-color 0.3s ease;
+    }
+    #biography .banner {
+      transition: background-color 0.3s ease;
+    }
+    .dark #biography {
+      background-color: #1a1a1a;
+    }
+    .dark #biography .banner {
+      background-color: #4b5cc4;
     }
     .modal { 
       display: none; 
@@ -364,6 +374,14 @@
       font-size: 2rem;
       text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
     }
+    /* Стили для кнопки "Обновление" */
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
   </style>
 </head>
 <body class="text-gray-800 font-sans">
@@ -418,6 +436,9 @@
         <p>Подписчиков: <span id="subscriberCount">420</span></p>
         <p>Просмотров: <span id="viewCount">147K</span></p>
       </div>
+      <button id="update-button" class="bg-yellow-400 text-black font-bold py-2 px-4 rounded hover:bg-yellow-500 transition duration-300 animate-pulse hidden">
+        Обновление! Что нового? 👀
+      </button>
       <div class="mt-6 flex justify-center space-x-4">
         <a href="#stories" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Смотреть истории</a>
         <a href="#" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition open-update-modal">Обновление</a>
@@ -425,15 +446,31 @@
       </div>
     </section>
 
-    <section id="biography" class="section pb-16">
+    <section id="biography" class="section pb-16" style="background-color: #1a1a1a; color: #ffffff;">
       <div class="container mx-auto px-4">
-        <div class="banner">
-          <h2 class="text-3xl font-bold">Биография</h2>
+        <div class="banner" style="background-color: #4b5cc4; padding: 1rem; border-radius: 8px;">
+          <h2 class="text-3xl font-bold text-white">Биография</h2>
         </div>
-        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 text-center mb-4">Имя - ???</p>
-        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 text-center mb-4">Дата рождения: 5 августа 2009</p>
-        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 text-center mb-4">Увлечения: Игры, создание мемов, контент мейкер</p>
-        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 text-center italic mb-4">Главная цитата: "Гений, миллиардер, плэйбой, филантроп 😎"</p>
+        <div class="text-center">
+          <p class="text-base sm:text-lg text-gray-200 mb-4">
+            <span class="font-semibold">Имя:</span> ???
+          </p>
+          <p class="text-base sm:text-lg text-gray-200 mb-4">
+            <span class="font-semibold">Дата рождения:</span> 5 августа 2009 🎂
+          </p>
+          <p class="text-base sm:text-lg text-gray-200 mb-4">
+            <span class="font-semibold">Возраст:</span> 15 лет
+          </p>
+          <p class="text-base sm:text-lg text-gray-200 mb-4">
+            <span class="font-semibold">Увлечения:</span> Игры 🎮, создание мемов 😂, контент-мейкинг 📹
+          </p>
+          <p class="text-base sm:text-lg text-gray-200 mb-4">
+            <span class="font-semibold">Путь:</span> Начал в 2020 с простых видео, а теперь взрываю вайб мемами и стримами! 🚀 Горжусь первым вирусным мемом и сезоном "Бароны".
+          </p>
+          <p class="text-base sm:text-lg text-gray-200 italic mb-4">
+            <span class="font-semibold">Главная цитата:</span> "Гений, миллиардер, плэйбой, филантроп 😎"
+          </p>
+        </div>
       </div>
     </section>
 
@@ -596,7 +633,7 @@
           <div class="update-card bg-gradient-to-r from-red-500 to-green-500 rounded-lg p-6 shadow-lg text-white fade-in">
             <h3 class="text-lg font-semibold mb-2">Небольшое обновление или список изменений</h3>
             <p class="text-sm">Добавили объяснение почему форума больше не будет и вместо него добавили ссылку ведущая к телеграмм личку.</p>
-            <p class="text-xs mt-2">26 июля 2025 *NEW*</p>
+            <p class="text-xs mt-2">26 июля 2025</p>
           </div>
           <div class="update-card bg-gradient-to-r from-red-500 to-green-500 rounded-lg p-6 shadow-lg text-white fade-in">
             <h3 class="text-lg font-semibold mb-2">Небольшое обновление или список изменений</h3>
@@ -614,7 +651,7 @@
               - Анимированы прогресс-бары в "Проектах";<br>
               - Добавлена проверка загрузки reCAPTCHA;<br>
               - Добавлен раздел "Биография" с баннером и модальным окном "Обо мне".</p>
-            <p class="text-xs mt-2">28 июля 2025 *NEW*</p>
+            <p class="text-xs mt-2">28 июля 2025</p>
           </div>
         </div>
       </div>
@@ -643,62 +680,63 @@
           <li>Версия 1.0 (22 июля 2025): Сброс до 1.0, добавление 3 раздела.</li>
           <li>Версия 1.0.1 (26 июля 2025): Добавили объяснение почему форума больше не будет и вместо него добавили ссылку ведущая к телеграмм личку.</li>
           <li>Версия 1.0.2 (27 июля 2025): Пофиксили баг "Мои истории", подсветка аватарки.</li>
+          <li>Версия 1.0.3 (28 июля 2025): Завершена анимация на canvas с оптимизацией, Анимированы прогресс-бары в "Проектах, Добавлен раздел "Биография" с баннером и модальным окном "Обо мне". </li>
         </ul>
       </div>
     </section>
 
     <section id="qa" class="section bg-white dark:bg-gray-800 py-16" style="display: none;">
-  <div class="container mx-auto px-4 text-center">
-    <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Q&A (Вопросы и ответы)</h2>
-    <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Задавай свои вопросы! Ответы появятся после проверки модератором. Запуск в августе с новым дизайном! 😎</p>
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Q&A (Вопросы и ответы)</h2>
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-6">Задавай свои вопросы! Ответы появятся после проверки модератором. Запуск в августе с новым дизайном! 😎</p>
 
-    <!-- Список тем -->
-    <div class="mb-8 text-left max-w-3xl mx-auto">
-      <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-4">Категории вопросов</h3>
-      <div class="space-y-4" id="qa-topics">
-        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Идеи для контента" data-placeholder="Опиши свою идею для видео или мема!">
-          <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Идеи для контента</h4>
-          <p class="text-sm text-gray-600 dark:text-gray-300">Предложи идеи для видео или мемов!</p>
+        <!-- Список тем -->
+        <div class="mb-8 text-left max-w-3xl mx-auto">
+          <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-4">Категории вопросов</h3>
+          <div class="space-y-4" id="qa-topics">
+            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Идеи для контента" data-placeholder="Опиши свою идею для видео или мема!">
+              <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Идеи для контента</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">Предложи идеи для видео или мемов!</p>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Технические вопросы" data-placeholder="Опиши проблему или вопрос про сайт!">
+              <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Технические вопросы</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">Задай вопрос про сайт или стримы.</p>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Обратная связь" data-placeholder="Поделись впечатлениями или предложениями!">
+              <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Обратная связь</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">Поделись впечатлениями о сайте!</p>
+            </div>
+          </div>
         </div>
-        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Технические вопросы" data-placeholder="Опиши проблему или вопрос про сайт!">
-          <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Технические вопросы</h4>
-          <p class="text-sm text-gray-600 dark:text-gray-300">Задай вопрос про сайт или стримы.</p>
+
+        <!-- Форма для нового вопроса с никнеймом -->
+        <div class="max-w-2xl mx-auto">
+          <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-4">Задать вопрос</h3>
+          <form id="qa-post-form" class="bg-gray-50 dark:bg-gray-700 p-6 rounded shadow" data-submit-count="0">
+            <div class="mb-4">
+              <label for="post-nickname" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Ваш никнейм</label>
+              <input type="text" id="post-nickname" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="Введите ваш никнейм" required maxlength="20">
+            </div>
+            <div class="mb-4">
+              <label for="post-content" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Ваш вопрос</label>
+              <textarea id="post-content" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" rows="4" placeholder="Введите текст" required maxlength="500"></textarea>
+            </div>
+            <div class="mb-4">
+              <div class="g-recaptcha" data-sitekey="6Le1hJArAAAAAKnJHHzVWqrqnioE736-NqC67oMR"></div>
+            </div>
+            <div class="mb-4 text-left text-gray-600 dark:text-gray-400">
+              <p>Примечание: Подтверди, что ты не робот, с помощью CAPTCHA.</p>
+            </div>
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Отправить</button>
+          </form>
         </div>
-        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded shadow hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 cursor-pointer topic-item" data-title="Обратная связь" data-placeholder="Поделись впечатлениями или предложениями!">
-          <h4 class="font-medium text-indigo-700 dark:text-indigo-300">Обратная связь</h4>
-          <p class="text-sm text-gray-600 dark:text-gray-300">Поделись впечатлениями о сайте!</p>
-        </div>
+
+        <!-- Контейнер для отображения ответов -->
+        <div id="qa-answers" class="mt-8 max-w-2xl mx-auto"></div>
+
+        <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-6">Все вопросы будут проверены модератором перед публикацией ответа.</p>
       </div>
-    </div>
-
-    <!-- Форма для нового вопроса с никнеймом -->
-    <div class="max-w-2xl mx-auto">
-      <h3 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-4">Задать вопрос</h3>
-      <form id="qa-post-form" class="bg-gray-50 dark:bg-gray-700 p-6 rounded shadow" data-submit-count="0">
-        <div class="mb-4">
-          <label for="post-nickname" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Ваш никнейм</label>
-          <input type="text" id="post-nickname" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="Введите ваш никнейм" required maxlength="20">
-        </div>
-        <div class="mb-4">
-          <label for="post-content" class="block text-left text-gray-700 dark:text-gray-300 mb-2">Ваш вопрос</label>
-          <textarea id="post-content" class="w-full p-2 border rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" rows="4" placeholder="Введите текст" required maxlength="500"></textarea>
-        </div>
-        <div class="mb-4">
-          <div class="g-recaptcha" data-sitekey="6Le1hJArAAAAAKnJHHzVWqrqnioE736-NqC67oMR"></div>
-        </div>
-        <div class="mb-4 text-left text-gray-600 dark:text-gray-400">
-          <p>Примечание: Подтверди, что ты не робот, с помощью CAPTCHA.</p>
-        </div>
-        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-full font-semibold transition">Отправить</button>
-      </form>
-    </div>
-
-    <!-- Контейнер для отображения ответов -->
-    <div id="qa-answers" class="mt-8 max-w-2xl mx-auto"></div>
-
-    <p class="text-base sm:text-lg text-gray-700 dark:text-gray-300 mt-6">Все вопросы будут проверены модератором перед публикацией ответа.</p>
-  </div>
-</section>
+    </section>
 
     <section id="contact" class="section py-16">
       <div class="container mx-auto px-4 text-center">
@@ -720,48 +758,48 @@
     </section>
 
     <section id="faq" class="section bg-white dark:bg-gray-800 py-16" style="display: none;">
-  <div class="container mx-auto px-4 text-center">
-    <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Часто задаваемые вопросы (FAQ)</h2>
-    <div class="max-w-2xl mx-auto">
-      <div class="faq-item">
-        <div class="faq-question faq-open" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Как связаться с тобой?</div>
-        <div class="faq-answer">Пиши мне в Telegram: <a href="https://t.me/Mortisplay_YT" class="text-indigo-600 dark:text-indigo-400 underline">MortisPlay</a>, или на email: <a href="mailto:mortisplay@mail.ru" class="text-indigo-600 dark:text-indigo-400 underline">mortisplay@mail.ru</a>.</div>
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Часто задаваемые вопросы (FAQ)</h2>
+        <div class="max-w-2xl mx-auto">
+          <div class="faq-item">
+            <div class="faq-question faq-open" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Как связаться с тобой?</div>
+            <div class="faq-answer">Пиши мне в Telegram: <a href="https://t.me/Mortisplay_YT" class="text-indigo-600 dark:text-indigo-400 underline">MortisPlay</a>, или на email: <a href="mailto:mortisplay@mail.ru" class="text-indigo-600 dark:text-indigo-400 underline">mortisplay@mail.ru</a>.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question faq-open" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Где найти эксклюзивные видео и всякие контенты?</div>
+            <div class="faq-answer">Эксклюзивы доступны только на этом сайте и в частном Telegram-канале после подписки.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question faq-open" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Как мне участвовать в мемах от автора?</div>
+            <div class="faq-answer">Всё просто! Переходите в раздел "Мемы от автора", читаете правила, затем мне присылаете мем соблюдая правилам (18+ нельзя!) и в итоге я могу как одобрить мем соответсвующему правилу так и отклонить. И если вам одобрят мем его добавят на наш сайт) А если отклонят, ничего страшного вы можете быть лучше! *При одобрении не забудьте подписать свой ник либо в картинке либо я добавлю его вручную.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question faq-open" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Когда вернут форум?</div>
+            <div class="faq-answer">Планируем вернуть его в августе. А пока на данный момент находится в разработке.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question faq-hidden" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Как участвовать в розыгрышах?</div>
+            <div class="faq-answer">Следи за разделом "Розыгрыш" на сайте и новостями в Telegram-канале (@MortisPlayTG). Условия участия будут анонсированы перед каждым розыгрышем, обычно это подписка или выполнение простых задач. Удачи, и да пребудет с тобой вайб! 😎</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question faq-hidden" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Где найти архив старых обновлений?</div>
+            <div class="faq-answer">Все изменения хранятся в разделе "Архив обновлений". Там собрана история версий с июля 2025 года — от дизайна до новых функций. Погружайся в историю сайта! 🚀</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question faq-hidden" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Почему видео иногда не загружаются?</div>
+            <div class="faq-answer">Это может быть связано с временными проблемами на серверах RuTube или Twitch. Попробуй обновить страницу или проверить интернет-соединение. Если проблема сохраняется, напиши мне в Telegram (@MortisPlay), и мы разберёмся! 😄</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question faq-hidden" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Как предложить идею для видео или стрима?</div>
+            <div class="faq-answer">Да, конечно! Перейди в раздел Q&A, выбери категорию "Идеи для контента" и отправь свою идею. Лучшие предложения могут попасть в мои будущие работы — твоя креативность в деле! 🎥</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question faq-hidden" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Что делать, если мой мем не одобрили?</div>
+            <div class="faq-answer">Не переживай! Возможно, мем не соответствовал правилам (например, 18+ или оффтопик). Попробуй улучшить идею и отправить снова, следуя инструкциям в разделе "Мемы от авторов". Я верю в тебя! 👍</div>
+          </div>
+        </div>
       </div>
-      <div class="faq-item">
-        <div class="faq-question faq-open" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Где найти эксклюзивные видео и всякие контенты?</div>
-        <div class="faq-answer">Эксклюзивы доступны только на этом сайте и в частном Telegram-канале после подписки.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question faq-open" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Как мне участвовать в мемах от автора?</div>
-        <div class="faq-answer">Всё просто! Переходите в раздел "Мемы от автора", читаете правила, затем мне присылаете мем соблюдая правилам (18+ нельзя!) и в итоге я могу как одобрить мем соответсвующему правилу так и отклонить. И если вам одобрят мем его добавят на наш сайт) А если отклонят, ничего страшного вы можете быть лучше! *При одобрении не забудьте подписать свой ник либо в картинке либо я добавлю его вручную.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question faq-open" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Когда вернут форум?</div>
-        <div class="faq-answer">Планируем вернуть его в августе. А пока на данный момент находится в разработке.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question faq-hidden" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Как участвовать в розыгрышах?</div>
-        <div class="faq-answer">Следи за разделом "Розыгрыш" на сайте и новостями в Telegram-канале (@MortisPlayTG). Условия участия будут анонсированы перед каждым розыгрышем, обычно это подписка или выполнение простых задач. Удачи, и да пребудет с тобой вайб! 😎</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question faq-hidden" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Где найти архив старых обновлений?</div>
-        <div class="faq-answer">Все изменения хранятся в разделе "Архив обновлений". Там собрана история версий с июля 2025 года — от дизайна до новых функций. Погружайся в историю сайта! 🚀</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question faq-hidden" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Почему видео иногда не загружаются?</div>
-        <div class="faq-answer">Это может быть связано с временными проблемами на серверах RuTube или Twitch. Попробуй обновить страницу или проверить интернет-соединение. Если проблема сохраняется, напиши мне в Telegram (@MortisPlay), и мы разберёмся! 😄</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question faq-hidden" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Как предложить идею для видео или стрима?</div>
-        <div class="faq-answer">Да, конечно! Перейди в раздел Q&A, выбери категорию "Идеи для контента" и отправь свою идею. Лучшие предложения могут попасть в мои будущие работы — твоя креативность в деле! 🎥</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question faq-hidden" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">Что делать, если мой мем не одобрили?</div>
-        <div class="faq-answer">Не переживай! Возможно, мем не соответствовал правилам (например, 18+ или оффтопик). Попробуй улучшить идею и отправить снова, следуя инструкциям в разделе "Мемы от авторов". Я верю в тебя! 👍</div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
     <section id="twitch-section" class="section bg-white dark:bg-gray-800 py-16">
       <div class="container mx-auto px-4 text-center">
@@ -859,16 +897,13 @@
       <div class="modal-content">
         <span class="close" aria-label="Закрыть модальное окно">&times;</span>
         <h3 id="update-modal-title" class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-2">Последние обновления</h3>
-        <p class="text-base text-gray-700 dark:text-gray-300">Версия 1.0.3 (28 июля 2025 *NEW*):</p>
+        <p class="text-base text-gray-700 dark:text-gray-300">Версия 1.0.4 (30 июля 2025 *NEW*):</p>
         <ul class="text-base text-gray-700 dark:text-gray-300 text-left ml-4 list-disc">
-          <li>Завершена анимация на canvas с оптимизацией</li>
-          <li>Добавлена обработка ошибок для видео и iframe</li>
-          <li>Улучшена безопасность формы Q&A</li>
-          <li>Обновлён Intersection Observer для новых вопросов</li>
-          <li>Добавлены атрибуты доступности (a11y)</li>
-          <li>Анимированы прогресс-бары в "Проектах"</li>
-          <li>Добавлена проверка загрузки reCAPTCHA</li>
-          <li>Добавлен раздел "Биография" с баннером и модальным окном "Обо мне".</li>
+          <li>Добавлена иконка сайта (favicon) для узнаваемости во вкладках браузера.</li>
+          <li>Обновлён раздел "Биография": добавлен возраст (15 лет) и цветной баннер в стиле аватарки.</li>
+          <li>Добавлена кнопка "Обновление" на главной странице с эффектом мигания, которая останавливается после клика.</li>
+          <li>Улучшена навигация и стили для тёмной темы.</li>
+          <li>Исправлены мелкие баги и улучшена производительность.</li>
         </ul>
         <p class="text-base text-gray-700 dark:text-gray-300 mt-2">Следи за новостями для следующих обновлений! 😎</p>
       </div>
@@ -886,7 +921,7 @@
     </div>
 
     <footer class="bg-indigo-900 dark:bg-gray-900 text-white text-center py-4">
-      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 1.0.3</p>
+      <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 1.0.4</p>
     </footer>
   </div>
 
@@ -924,432 +959,433 @@
   </script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-const isDev = urlParams.get('dev') === 'true'; // Режим разработчика через ?dev=true
-const comingSoon = document.getElementById('coming-soon');
-const fullSite = document.getElementById('full-site');
-const navMenu = document.getElementById('nav-menu');
-const qaSection = document.getElementById('qa');
-const faqSection = document.getElementById('faq');
-const navLinks = document.querySelectorAll('nav a');
-const mobileLinks = document.querySelectorAll('#mobile-menu a');
+    const isDev = urlParams.get('dev') === 'true';
+    const comingSoon = document.getElementById('coming-soon');
+    const fullSite = document.getElementById('full-site');
+    const navMenu = document.getElementById('nav-menu');
+    const qaSection = document.getElementById('_mkqa');
+    const faqSection = document.getElementById('faq');
+    const navLinks = document.querySelectorAll('nav a');
+    const mobileLinks = document.querySelectorAll('#mobile-menu a');
 
-if (isDev) {
-  if (comingSoon) comingSoon.style.display = 'none';
-  if (fullSite) fullSite.style.display = 'block';
-  if (navMenu) navMenu.style.display = 'block';
-  if (qaSection) {
-    qaSection.style.display = 'block';
-    qaSection.classList.add('dev-mode');
-    navLinks.forEach(link => {
-      if (link.getAttribute('href') === '#qa') link.style.display = 'inline';
-    });
-    mobileLinks.forEach(link => {
-      if (link.getAttribute('href') === '#qa') link.style.display = 'block';
-    });
-  }
-  if (faqSection) {
-    faqSection.style.display = 'block';
-    document.querySelectorAll('.faq-hidden').forEach(item => item.style.display = 'block'); // Показываем все вопросы в режиме разработчика
-    navLinks.forEach(link => {
-      if (link.getAttribute('href') === '#faq') link.style.display = 'inline';
-    });
-    mobileLinks.forEach(link => {
-      if (link.getAttribute('href') === '#faq') link.style.display = 'block';
-    });
-  }
-} else {
-  if (comingSoon) comingSoon.style.display = 'none';
-  if (fullSite) fullSite.style.display = 'block';
-  if (navMenu) navMenu.style.display = 'block';
-  if (qaSection) {
-    qaSection.style.display = 'none';
-    navLinks.forEach(link => {
-      if (link.getAttribute('href') === '#qa') link.style.display = 'none';
-    });
-    mobileLinks.forEach(link => {
-      if (link.getAttribute('href') === '#qa') link.style.display = 'none';
-    });
-  }
-  if (faqSection) {
-    faqSection.style.display = 'block'; // Показываем FAQ в полной версии
-    document.querySelectorAll('.faq-open').forEach(item => item.style.display = 'block'); // Показываем только первые 4 вопроса
-    document.querySelectorAll('.faq-hidden').forEach(item => item.style.display = 'none'); // Скрываем остальные
-    navLinks.forEach(link => {
-      if (link.getAttribute('href') === '#faq') link.style.display = 'inline';
-    });
-    mobileLinks.forEach(link => {
-      if (link.getAttribute('href') === '#faq') link.style.display = 'block';
-    });
-  }
-}
-
-// Остальной код (модальные окна, canvas, навигация и т.д.) остаётся без изменений
-// [Вставь остальной JavaScript из предыдущего ответа здесь]
-
-// Модальные окна
-const modal = document.getElementById('modal');
-const updateModal = document.getElementById('update-modal');
-const bioModal = document.getElementById('bio-modal');
-const modalClose = document.getElementsByClassName('close');
-const notification = document.getElementById('notification');
-
-if (modalClose.length > 0) {
-  for (let i = 0; i < modalClose.length; i++) {
-    modalClose[i].addEventListener('click', () => {
-      if (modal) modal.style.display = 'none';
-      if (updateModal) updateModal.style.display = 'none';
-      if (bioModal) bioModal.style.display = 'none';
-    });
-  }
-}
-
-window.addEventListener('click', (event) => {
-  if (modal && event.target == modal) modal.style.display = 'none';
-  if (updateModal && event.target == updateModal) updateModal.style.display = 'none';
-  if (bioModal && event.target == bioModal) bioModal.style.display = 'none';
-});
-
-// Мобильное меню
-const burger = document.getElementById('burger');
-if (burger) {
-  burger.addEventListener('click', () => {
-    const menu = document.getElementById('mobile-menu');
-    if (menu) menu.classList.toggle('hidden');
-  });
-}
-
-// Фон с canvas
-const canvas = document.getElementById('backgroundCanvas');
-if (canvas && canvas.getContext) {
-  const ctxCanvas = canvas.getContext('2d');
-  let animationFrameId;
-
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-
-  const emotes = [">:(", ">:D", ":)", ":/", ":P", "^_^", "-_-"];
-  const particles = [];
-
-  class Particle {
-    constructor() {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.size = Math.random() * 15 + 5;
-      this.speedX = Math.random() * 1 - 0.5;
-      this.speedY = Math.random() * 1 - 0.5;
-      this.emote = emotes[Math.floor(Math.random() * emotes.length)];
-    }
-    update() {
-      this.x += this.speedX;
-      this.y += this.speedY;
-      if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-      if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-    }
-    draw() {
-      ctxCanvas.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.4)';
-      ctxCanvas.font = `${this.size}px Arial`;
-      ctxCanvas.fillText(this.emote, this.x, this.y);
-    }
-  }
-
-  function init() {
-    const particleCount = window.innerWidth <= 640 ? 10 : 30;
-    particles.length = 0;
-    for (let i = 0; i < particleCount; i++) {
-      particles.push(new Particle());
-    }
-    console.log('Canvas initialized with ' + particleCount + ' particles in dev mode');
-  }
-
-  function animate() {
-    if (ctxCanvas) {
-      ctxCanvas.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(particle => {
-        particle.update();
-        particle.draw();
-      });
-      animationFrameId = requestAnimationFrame(animate);
-    }
-  }
-
-  init();
-  animate();
-
-  const mediaQuery = window.matchMedia('(max-width: 640px)');
-  function handleMediaChange(e) {
-    if (e.matches) {
-      cancelAnimationFrame(animationFrameId);
-      canvas.style.display = 'none';
+    if (isDev) {
+      if (comingSoon) comingSoon.style.display = 'none';
+      if (fullSite) fullSite.style.display = 'block';
+      if (navMenu) navMenu.style.display = 'block';
+      if (qaSection) {
+        qaSection.style.display = 'block';
+        qaSection.classList.add('dev-mode');
+        navLinks.forEach(link => {
+          if (link.getAttribute('href') === '#qa') link.style.display = 'inline';
+        });
+        mobileLinks.forEach(link => {
+          if (link.getAttribute('href') === '#qa') link.style.display = 'block';
+        });
+      }
+      if (faqSection) {
+        faqSection.style.display = 'block';
+        document.querySelectorAll('.faq-hidden').forEach(item => item.style.display = 'block');
+        navLinks.forEach(link => {
+          if (link.getAttribute('href') === '#faq') link.style.display = 'inline';
+        });
+        mobileLinks.forEach(link => {
+          if (link.getAttribute('href') === '#faq') link.style.display = 'block';
+        });
+      }
     } else {
-      canvas.style.display = 'block';
+      if (comingSoon) comingSoon.style.display = 'none';
+      if (fullSite) fullSite.style.display = 'block';
+      if (navMenu) navMenu.style.display = 'block';
+      if (qaSection) {
+        qaSection.style.display = 'none';
+        navLinks.forEach(link => {
+          if (link.getAttribute('href') === '#qa') link.style.display = 'none';
+        });
+        mobileLinks.forEach(link => {
+          if (link.getAttribute('href') === '#qa') link.style.display = 'none';
+        });
+      }
+      if (faqSection) {
+        faqSection.style.display = 'block';
+        document.querySelectorAll('.faq-open').forEach(item => item.style.display = 'block');
+        document.querySelectorAll('.faq-hidden').forEach(item => item.style.display = 'none');
+        navLinks.forEach(link => {
+          if (link.getAttribute('href') === '#faq') link.style.display = 'inline';
+        });
+        mobileLinks.forEach(link => {
+          if (link.getAttribute('href') === '#faq') link.style.display = 'block';
+        });
+      }
+    }
+
+    const modal = document.getElementById('modal');
+    const updateModal = document.getElementById('update-modal');
+    const bioModal = document.getElementById('bio-modal');
+    const modalClose = document.getElementsByClassName('close');
+    const notification = document.getElementById('notification');
+
+    if (modalClose.length > 0) {
+      for (let i = 0; i < modalClose.length; i++) {
+        modalClose[i].addEventListener('click', () => {
+          if (modal) modal.style.display = 'none';
+          if (updateModal) updateModal.style.display = 'none';
+          if (bioModal) bioModal.style.display = 'none';
+        });
+      }
+    }
+
+    window.addEventListener('click', (event) => {
+      if (modal && event.target == modal) modal.style.display = 'none';
+      if (updateModal && event.target == updateModal) updateModal.style.display = 'none';
+      if (bioModal && event.target == bioModal) bioModal.style.display = 'none';
+    });
+
+    const burger = document.getElementById('burger');
+    if (burger) {
+      burger.addEventListener('click', () => {
+        const menu = document.getElementById('mobile-menu');
+        if (menu) menu.classList.toggle('hidden');
+      });
+    }
+
+    const canvas = document.getElementById('backgroundCanvas');
+    if (canvas && canvas.getContext) {
+      const ctxCanvas = canvas.getContext('2d');
+      let animationFrameId;
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      const emotes = [">:(", ">:D", ":)", ":/", ":P", "^_^", "-_-"];
+      const particles = [];
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 15 + 5;
+          this.speedX = Math.random() * 1 - 0.5;
+          this.speedY = Math.random() * 1 - 0.5;
+          this.emote = emotes[Math.floor(Math.random() * emotes.length)];
+        }
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+          if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        }
+        draw() {
+          ctxCanvas.fillStyle = document.body.classList.contains('dark') ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.4)';
+          ctxCanvas.font = `${this.size}px Arial`;
+          ctxCanvas.fillText(this.emote, this.x, this.y);
+        }
+      }
+
+      function init() {
+        const particleCount = window.innerWidth <= 640 ? 10 : 30;
+        particles.length = 0;
+        for (let i = 0; i < particleCount; i++) {
+          particles.push(new Particle());
+        }
+        console.log('Canvas initialized with ' + particleCount + ' particles in dev mode');
+      }
+
+      function animate() {
+        if (ctxCanvas) {
+          ctxCanvas.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach(particle => {
+            particle.update();
+            particle.draw();
+          });
+          animationFrameId = requestAnimationFrame(animate);
+        }
+      }
+
       init();
       animate();
-    }
-  }
-  mediaQuery.addEventListener('change', handleMediaChange);
-  handleMediaChange(mediaQuery);
-} else {
-  console.warn('Canvas не поддерживается в этом браузере.');
-  canvas.style.display = 'none';
-}
 
-// Intersection Observer для fade-in и динамических элементов
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      if (entry.target.closest('#qa-answers')) {
-        observer.unobserve(entry.target);
-        console.log('Section observed and animated: ' + entry.target.id);
-      }
-    }
-  });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.fade-in').forEach(el => {
-  if (el) observer.observe(el);
-});
-
-// Анимация прогресс-баров
-document.querySelectorAll('.progress-bar-fill').forEach(bar => {
-  const width = bar.style.width;
-  bar.style.width = '0%';
-  setTimeout(() => {
-    bar.style.width = width;
-  }, 100);
-});
-
-// Темная тема
-if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-  document.body.classList.add('dark');
-}
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-  document.body.classList.toggle('dark', e.matches);
-});
-
-// Навигация и фикс подсветки
-document.querySelectorAll('nav a').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) target.scrollIntoView({ behavior: 'smooth' });
-    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-    mobileLinks.forEach(a => a.classList.remove('active'));
-    this.classList.add('active');
-    mobileLinks.forEach(link => {
-      if (link.getAttribute('href') === this.getAttribute('href')) link.classList.add('active');
-    });
-    console.log('Navigated to section: ' + this.getAttribute('href'));
-  });
-});
-
-window.addEventListener('scroll', () => {
-  const sections = document.querySelectorAll('section');
-  let currentSection = '';
-  sections.forEach(section => {
-    const sectionTop = section.offsetTop;
-    const sectionBottom = sectionTop + section.offsetHeight;
-    if (scrollY >= sectionTop - 100 && scrollY < sectionBottom - 100) {
-      currentSection = section.getAttribute('id');
-    }
-  });
-  document.querySelectorAll('nav a').forEach(a => {
-    a.classList.remove('active');
-    if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
-  });
-  mobileLinks.forEach(a => {
-    a.classList.remove('active');
-    if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
-  });
-});
-
-// Анимация значений
-function animateValue(id, start, end, duration) {
-  const element = document.getElementById(id);
-  if (element) {
-    let startTimestamp = null;
-    const step = (timestamp) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      element.textContent = Math.floor(progress * (end - start) + start) + (id === 'viewCount' ? 'K' : '');
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }
-}
-animateValue("subscriberCount", 0, 420, 2000);
-animateValue("viewCount", 0, 147, 2000);
-
-// События для аналитики
-document.querySelector('.donation-link')?.addEventListener('click', () => {
-  gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
-  console.log('Donation link clicked in dev mode');
-});
-document.querySelectorAll('.main-telegram').forEach(link => {
-  link.addEventListener('click', () => {
-    gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'MainTelegram' });
-    console.log('Main Telegram link clicked in dev mode');
-  });
-});
-document.querySelectorAll('.private-telegram').forEach(link => {
-  link.addEventListener('click', () => {
-    gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PrivateTelegram' });
-    console.log('Private Telegram link clicked in dev mode');
-  });
-});
-document.querySelectorAll('.personal-telegram').forEach(link => {
-  link.addEventListener('click', () => {
-    gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
-    console.log('Personal Telegram link clicked in dev mode');
-  });
-});
-document.querySelector('.youtube-link')?.addEventListener('click', () => {
-  gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
-  console.log('YouTube link clicked in dev mode');
-});
-
-// Уведомление
-if (notification && !localStorage.getItem('notificationShown')) {
-  notification.style.display = 'block';
-  setTimeout(() => {
-    localStorage.setItem('notificationShown', 'true');
-  }, 4500);
-}
-
-// Открытие модального окна обновлений
-document.querySelector('.open-update-modal')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  if (updateModal) updateModal.style.display = 'block';
-  console.log('Update modal opened in dev mode');
-});
-
-// Открытие модального окна биографии
-document.querySelector('.open-bio-modal')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  if (bioModal) bioModal.style.display = 'block';
-  console.log('Bio modal opened in dev mode');
-});
-
-// Логика Q&A с CAPTCHA, никнеймами, временными метками и лимитами
-(function() {
-  const form = document.getElementById('qa-post-form');
-  const qaAnswers = document.getElementById('qa-answers');
-  if (form && !form.dataset.qaHandlerAttached) {
-    // Обработчик кликов по темам
-    document.querySelectorAll('.topic-item').forEach(topic => {
-      topic.addEventListener('click', () => {
-        document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
-        topic.classList.add('selected');
-        const placeholder = topic.getAttribute('data-placeholder');
-        document.getElementById('post-content').placeholder = placeholder;
-        console.log('Topic selected: ' + topic.getAttribute('data-title'));
-      });
-    });
-
-    // Обработчик формы
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const nickname = document.getElementById('post-nickname').value.trim();
-      const content = document.getElementById('post-content').value.trim();
-      let submitCount = parseInt(form.dataset.submitCount) || 0;
-
-      const recaptchaResponse = grecaptcha.getResponse();
-      if (!recaptchaResponse) {
-        alert('Пожалуйста, подтверди, что ты не робот!');
-        return;
-      }
-
-      if (nickname.length < 3 || content.length < 10) {
-        alert('Никнейм должен быть минимум 3 символа, а вопрос — 10!');
-        return;
-      }
-
-      if (submitCount >= 3) {
-        alert('Превышен лимит отправок (максимум 3 за сессию).');
-        return;
-      }
-
-      const timestamp = new Date().toISOString().split('T')[0];
-
-      fetch('https://api.telegram.org/bot8376718026:AAE4I_ZH51z1cOe4pe6WXyuqwr8bfaX0gUE/sendMessage', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: 335236137,
-          text: `Новый вопрос от ${nickname.slice(0, 20)}:\nВопрос: ${content.slice(0, 500)}\nДата: ${timestamp}`
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.ok) {
-          submitCount++;
-          form.dataset.submitCount = submitCount;
-          alert('Вопрос отправлен модератору!');
-          form.reset();
-          grecaptcha.reset();
-          console.log('Q&A submitted successfully: ' + nickname + ', ' + content);
+      const mediaQuery = window.matchMedia('(max-width: 640px)');
+      function handleMediaChange(e) {
+        if (e.matches) {
+          cancelAnimationFrame(animationFrameId);
+          canvas.style.display = 'none';
         } else {
-          alert('Ошибка при отправке. Проверь токен и Chat ID.');
-          console.error(data);
+          canvas.style.display = 'block';
+          init();
+          animate();
         }
-      })
-      .catch(error => {
-        alert('Ошибка сети. Попробуй позже.');
-        console.error('Ошибка:', error);
+      }
+      mediaQuery.addEventListener('change', handleMediaChange);
+      handleMediaChange(mediaQuery);
+    } else {
+      console.warn('Canvas не поддерживается в этом браузере.');
+      canvas.style.display = 'none';
+    }
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          if (entry.target.closest('#qa-answers')) {
+            observer.unobserve(entry.target);
+            console.log('Section observed and animated: ' + entry.target.id);
+          }
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      if (el) observer.observe(el);
+    });
+
+    document.querySelectorAll('.progress-bar-fill').forEach(bar => {
+      const width = bar.style.width;
+      bar.style.width = '0%';
+      setTimeout(() => {
+        bar.style.width = width;
+      }, 100);
+    });
+
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.body.classList.add('dark');
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      document.body.classList.toggle('dark', e.matches);
+    });
+
+    document.querySelectorAll('nav a').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        mobileLinks.forEach(a => a.classList.remove('active'));
+        this.classList.add('active');
+        mobileLinks.forEach(link => {
+          if (link.getAttribute('href') === this.getAttribute('href')) link.classList.add('active');
+        });
+        console.log('Navigated to section: ' + this.getAttribute('href'));
+      });
+    });
+
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('section');
+      let currentSection = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionBottom = sectionTop + section.offsetHeight;
+        if (scrollY >= sectionTop - 100 && scrollY < sectionBottom - 100) {
+          currentSection = section.getAttribute('id');
+        }
+      });
+      document.querySelectorAll('nav a').forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
+      });
+      mobileLinks.forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === `#${currentSection}`) a.classList.add('active');
+      });
+    });
+
+    function animateValue(id, start, end, duration) {
+      const element = document.getElementById(id);
+      if (element) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+          element.textContent = Math.floor(progress * (end - start) + start) + (id === 'viewCount' ? 'K' : '');
+          if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }
+    }
+    animateValue("subscriberCount", 0, 420, 2000);
+    animateValue("viewCount", 0, 147, 2000);
+
+    document.querySelector('.donation-link')?.addEventListener('click', () => {
+      gtag('event', 'click_donation', { 'event_category': 'Engagement', 'event_label': 'DonationAlerts' });
+      console.log('Donation link clicked in dev mode');
+    });
+    document.querySelectorAll('.main-telegram').forEach(link => {
+      link.addEventListener('click', () => {
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'MainTelegram' });
+        console.log('Main Telegram link clicked in dev mode');
+      });
+    });
+    document.querySelectorAll('.private-telegram').forEach(link => {
+      link.addEventListener('click', () => {
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PrivateTelegram' });
+        console.log('Private Telegram link clicked in dev mode');
+      });
+    });
+    document.querySelectorAll('.personal-telegram').forEach(link => {
+      link.addEventListener('click', () => {
+        gtag('event', 'click_telegram', { 'event_category': 'Engagement', 'event_label': 'PersonalTelegram' });
+        console.log('Personal Telegram link clicked in dev mode');
+      });
+    });
+    document.querySelector('.youtube-link')?.addEventListener('click', () => {
+      gtag('event', 'click_youtube', { 'event_category': 'Engagement', 'event_label': 'YouTubeChannel' });
+      console.log('YouTube link clicked in dev mode');
+    });
+
+    if (notification && !localStorage.getItem('notificationShown')) {
+      notification.style.display = 'block';
+      setTimeout(() => {
+        localStorage.setItem('notificationShown', 'true');
+      }, 4500);
+    }
+
+    document.querySelector('.open-update-modal')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (updateModal) updateModal.style.display = 'block';
+      console.log('Update modal opened in dev mode');
+    });
+
+    document.querySelector('.open-bio-modal')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (bioModal) bioModal.style.display = 'block';
+      console.log('Bio modal opened in dev mode');
+    });
+
+    (function() {
+      const form = document.getElementById('qa-post-form');
+      const qaAnswers = document.getElementById('qa-answers');
+      if (form && !form.dataset.qaHandlerAttached) {
+        document.querySelectorAll('.topic-item').forEach(topic => {
+          topic.addEventListener('click', () => {
+            document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('selected'));
+            topic.classList.add('selected');
+            const placeholder = topic.getAttribute('data-placeholder');
+            document.getElementById('post-content').placeholder = placeholder;
+            console.log('Topic selected: ' + topic.getAttribute('data-title'));
+          });
+        });
+
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const nickname = document.getElementById('post-nickname').value.trim();
+          const content = document.getElementById('post-content').value.trim();
+          let submitCount = parseInt(form.dataset.submitCount) || 0;
+
+          const recaptchaResponse = grecaptcha.getResponse();
+          if (!recaptchaResponse) {
+            alert('Пожалуйста, подтверди, что ты не робот!');
+            return;
+          }
+
+          if (nickname.length < 3 || content.length < 10) {
+            alert('Никнейм должен быть минимум 3 символа, а вопрос — 10!');
+            return;
+          }
+
+          if (submitCount >= 3) {
+            alert('Превышен лимит отправок (максимум 3 за сессию).');
+            return;
+          }
+
+          const timestamp = new Date().toISOString().split('T')[0];
+
+          fetch('https://api.telegram.org/bot8376718026:AAE4I_ZH51z1cOe4pe6WXyuqwr8bfaX0gUE/sendMessage', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: 335236137,
+              text: `Новый вопрос от ${nickname.slice(0, 20)}:\nВопрос: ${content.slice(0, 500)}\nДата: ${timestamp}`
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.ok) {
+              submitCount++;
+              form.dataset.submitCount = submitCount;
+              alert('Вопрос отправлен модератору!');
+              form.reset();
+              grecaptcha.reset();
+              console.log('Q&A submitted successfully: ' + nickname + ', ' + content);
+            } else {
+              alert('Ошибка при отправке. Проверь токен и Chat ID.');
+              console.error(data);
+            }
+          })
+          .catch(error => {
+            alert('Ошибка сети. Попробуй позже.');
+            console.error('Ошибка:', error);
+          });
+
+          form.dataset.qaHandlerAttached = 'true';
+        });
+      }
+
+      const qaData = [
+        { nickname: "User1", question: "Как связаться с тобой?", answer: "Пиши мне в Telegram: <a href='https://t.me/Mortisplay_YT' class='text-indigo-600 dark:text-indigo-400 underline'>MortisPlay</a>, или на email: <a href='mailto:mortisplay@mail.ru' class='text-indigo-600 dark:text-indigo-400 underline'>mortisplay@mail.ru</a>.", date: "2025-07-27", approved: true },
+        { nickname: "User2", question: "Когда будут новые видео?", answer: "Новые видео появляются каждую неделю! Следи за новостями на сайте и в Telegram-канале!", date: "2025-07-26", approved: true },
+        { nickname: "User3", question: "Как добавить свой мем?", answer: "Перейди в раздел 'Мемы от авторов', следуй правилам и отправь мем в Telegram!", date: "2025-07-25", approved: true }
+      ];
+
+      function renderQA() {
+        qaAnswers.innerHTML = '';
+        const approvedQA = qaData.filter(item => item.approved);
+        approvedQA.forEach(item => {
+          const qaItem = document.createElement('div');
+          qaItem.className = 'qa-item fade-in';
+          qaItem.innerHTML = `
+            <div class="qa-question"><strong>${item.nickname}</strong>: ${item.question}</div>
+            <div class="qa-answer">${item.answer}</div>
+            <div class="qa-timestamp">Опубликовано: ${item.date}</div>
+          `;
+          qaAnswers.appendChild(qaItem);
+          observer.observe(qaItem);
+        });
+        console.log('QA rendered with ' + approvedQA.length + ' items in dev mode');
+      }
+
+      if (qaAnswers) {
+        renderQA();
+      }
+
+      const qaObserver = new MutationObserver(() => {
+        document.querySelectorAll('#qa-answers .qa-item:not(.visible)').forEach(item => {
+          observer.observe(item);
+        });
+      });
+      if (qaAnswers) {
+        qaObserver.observe(qaAnswers, { childList: true, subtree: true });
+      }
+    })();
+
+    // Кнопка "Обновление"
+    const updateButton = document.getElementById('update-button');
+    let hasUpdate = true; // Установи true для тестирования, перед релизом можно сменить на false
+
+    if (hasUpdate) {
+      updateButton.classList.remove('hidden');
+      updateButton.classList.add('animate-pulse');
+
+      updateButton.addEventListener('click', () => {
+        updateButton.classList.remove('animate-pulse');
+        updateButton.classList.add('bg-green-400', 'hover:bg-green-500');
+        updateButton.textContent = 'Посмотреть обновления';
+        const updateModal = document.getElementById('update-modal');
+        if (updateModal) updateModal.style.display = 'block';
       });
 
-      form.dataset.qaHandlerAttached = 'true';
-    });
-  }
+      setTimeout(() => {
+        if (updateButton.classList.contains('animate-pulse')) {
+          updateButton.classList.add('hidden');
+          hasUpdate = false;
+        }
+      }, 10000);
+    }
 
-  // Данные вопросов и ответов (добавляйте вручную)
-  const qaData = [
-    { nickname: "User1", question: "Как связаться с тобой?", answer: "Пиши мне в Telegram: <a href='https://t.me/Mortisplay_YT' class='text-indigo-600 dark:text-indigo-400 underline'>MortisPlay</a>, или на email: <a href='mailto:mortisplay@mail.ru' class='text-indigo-600 dark:text-indigo-400 underline'>mortisplay@mail.ru</a>.", date: "2025-07-27", approved: true },
-    { nickname: "User2", question: "Когда будут новые видео?", answer: "Новые видео появляются каждую неделю! Следи за новостями на сайте и в Telegram-канале!", date: "2025-07-26", approved: true },
-    { nickname: "User3", question: "Как добавить свой мем?", answer: "Перейди в раздел 'Мемы от авторов', следуй правилам и отправь мем в Telegram!", date: "2025-07-25", approved: true }
-  ];
-
-  // Рендеринг ответов с никнеймами и временными метками
-  function renderQA() {
-    qaAnswers.innerHTML = '';
-    const approvedQA = qaData.filter(item => item.approved);
-    approvedQA.forEach(item => {
-      const qaItem = document.createElement('div');
-      qaItem.className = 'qa-item fade-in';
-      qaItem.innerHTML = `
-        <div class="qa-question"><strong>${item.nickname}</strong>: ${item.question}</div>
-        <div class="qa-answer">${item.answer}</div>
-        <div class="qa-timestamp">Опубликовано: ${item.date}</div>
-      `;
-      qaAnswers.appendChild(qaItem);
-      observer.observe(qaItem);
-    });
-    console.log('QA rendered with ' + approvedQA.length + ' items in dev mode');
-  }
-
-  // Инициализация при загрузке
-  if (qaAnswers) {
-    renderQA();
-  }
-
-  // Обновление Intersection Observer для новых вопросов
-  const qaObserver = new MutationObserver(() => {
-    document.querySelectorAll('#qa-answers .qa-item:not(.visible)').forEach(item => {
-      observer.observe(item);
-    });
-  });
-  if (qaAnswers) {
-    qaObserver.observe(qaAnswers, { childList: true, subtree: true });
-  }
-})();
-
-// Завершение скрипта
-console.log('Development mode fully loaded at ' + new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Berlin' }));
+    console.log('Development mode fully loaded at ' + new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Berlin' }));
   </script>
 </body>
 </html>
