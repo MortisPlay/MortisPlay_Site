@@ -39,7 +39,7 @@
   <style>
     html { scroll-behavior: smooth; }
     body {
-      background: #1a1a1a; /* Простой цвет вместо градиента */
+      background: #1a1a1a;
       color: #e2e8f0;
       overflow-x: hidden;
       position: relative;
@@ -161,7 +161,7 @@
       z-index: 1000; 
     }
     .modal-content { 
-      background: #4b5e9e; /* Упрощённый цвет вместо градиента */
+      background: #4b5e9e;
       color: white;
       margin: 15% auto; 
       padding: 20px; 
@@ -173,7 +173,7 @@
       animation: slideIn 0.5s ease-out;
     }
     body.dark .modal-content { 
-      background: #2d3748; /* Упрощённый цвет */
+      background: #2d3748;
       color: #e2e8f0; 
     }
     .modal-content a {
@@ -202,7 +202,7 @@
       margin-bottom: 1rem;
     }
     .faq-question {
-      background: #4b5e9e; /* Упрощённый цвет */
+      background: #4b5e9e;
       color: white;
       padding: 1rem;
       border-radius: 0.5rem;
@@ -230,7 +230,7 @@
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: #ff6f61; /* Упрощённый цвет */
+      background: #ff6f61;
       color: white;
       padding: 1rem 2rem;
       border-radius: 0.5rem;
@@ -285,7 +285,7 @@
     }
     /* Стили для Q&A в режиме разработчика */
     #qa.dev-mode {
-      background: #1e293b; /* Упрощённый цвет */
+      background: #1e293b;
       border-radius: 1rem;
       padding: 2rem;
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
@@ -295,7 +295,7 @@
       text-shadow: 0 0 5px rgba(163, 228, 219, 0.7);
     }
     #qa.dev-mode .topic-item {
-      background: #2d3748; /* Упрощённый цвет */
+      background: #2d3748;
       border: 1px solid #a3e4db;
       border-radius: 0.5rem;
       transition: transform 0.3s, background 0.3s;
@@ -320,7 +320,7 @@
       color: #e2e8f0;
     }
     #qa.dev-mode #qa-post-form button {
-      background: #4fd1c5; /* Упрощённый цвет */
+      background: #4fd1c5;
       border: none;
     }
     #qa.dev-mode #qa-post-form button:hover {
@@ -328,7 +328,7 @@
     }
     /* Стили для отображения ответов */
     #qa-answers .qa-item {
-      background: #2d3748; /* Упрощённый цвет */
+      background: #2d3748;
       border: 1px solid #a3e4db;
       border-radius: 0.5rem;
       padding: 1rem;
@@ -353,7 +353,7 @@
       margin-top: 0.5rem;
     }
     .banner {
-      background: #ff4500; /* Упрощённый цвет */
+      background: #ff4500;
       padding: 2rem;
       border-radius: 0.5rem;
       text-align: center;
@@ -371,6 +371,19 @@
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
+    }
+    /* Кнопка переключения темы */
+    .theme-toggle {
+      background: #4fd1c5;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .theme-toggle:hover {
+      background: #76e4d3;
     }
   </style>
 </head>
@@ -396,6 +409,7 @@
         <a href="#contact" class="hover:text-indigo-300">Контакты</a>
         <a href="#faq" class="hover:text-indigo-300">FAQ</a>
         <a href="#twitch-section" class="hover:text-indigo-300">Twitch</a>
+        <button class="theme-toggle" id="theme-toggle">Тема</button>
       </div>
       <button id="burger" class="md:hidden text-2xl">☰</button>
       <div id="mobile-menu" class="hidden md:hidden flex-col absolute top-16 left-0 w-full bg-indigo-900 dark:bg-gray-900 text-white p-4">
@@ -414,6 +428,7 @@
         <a href="#contact" class="py-2 hover:text-indigo-300">Контакты</a>
         <a href="#faq" class="py-2 hover:text-indigo-300">FAQ</a>
         <a href="#twitch-section" class="py-2 hover:text-indigo-300">Twitch</a>
+        <button class="theme-toggle mt-2" id="mobile-theme-toggle">Тема</button>
       </div>
     </div>
   </nav>
@@ -914,6 +929,8 @@
       <p class="text-sm">© 2025 Mortis Play. Все права защищены. Версия 1.0.4</p>
     </footer>
   </div>
+
+  <div id="notification" class="notification">Ваш вопрос отправлен! Ожидайте модерации.</div>
 
   <script type="text/javascript">
     var gk_isXlsx = false;
