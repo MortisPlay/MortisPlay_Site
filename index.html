@@ -116,6 +116,17 @@
     #updateModal.hidden {
       display: none !important;
     }
+
+    /* Улучшение размера Twitch клипов на ПК */
+    @media (min-width: 1024px) {
+      #twitchGrid > div {
+        min-width: 400px;
+        max-width: 600px;
+      }
+      #twitchGrid iframe {
+        min-height: 225px;
+      }
+    }
   </style>
 </head>
 
@@ -284,11 +295,11 @@
           <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
             <div class="flex items-center justify-between">
               <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">3 сезон «Бароны»</h3>
-              <span class="text-xs px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700">1%</span>
+              <span class="text-xs px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700">0%</span>
             </div>
             <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Готовлю контент для настоящих бойцов!</p>
             <div class="mt-3 h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700">
-              <div class="h-full w-0 rounded-full bg-indigo-600" data-progress="1"></div>
+              <div class="h-full w-0 rounded-full bg-indigo-600" data-progress="0"></div>
             </div>
           </div>
           <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
@@ -313,33 +324,28 @@
           <!-- Карточки новостей -->
           <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-indigo-500 to-purple-500">
             <h3 class="text-lg font-semibold">Добро пожаловать!</h3>
-            <p class="mt-2 text-sm opacity-90">Итак, добро пожаловать на наш первый сайт! Готовим для вас море эпичного контента: новые видео, мемы и эксклюзивные истории. Следите за обновлениями и присоединяйтесь к нашей тусовке — впереди нас ждёт взрывной вайб! 😎</p>
+            <p class="mt-2 text-sm opacity-90">Итак, добро пожаловать на наш первый сайт! Готовим море эпичного контента.</p>
             <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 16 июля 2025</p>
           </article>
           <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-blue-500 to-green-500">
             <h3 class="text-lg font-semibold">Новые мемы!</h3>
-            <p class="mt-2 text-sm opacity-90">Хотите провести время с юмором? Сайт Mortis Play к вашим услугам! Мы завезли 7 новых мемов! И они будут со временем дополняться! Удивите кого то этим мемов 😋 *Если же вы хотите увидеть свои мемы на нашем сайте, перейдите к разделу "Мемы от авторов" и прочитайте условия! Хорошего времяпровождения 👌</p>
+            <p class="mt-2 text-sm opacity-90">Завезли 7 новых мемов! Раздел дополняется.</p>
             <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 16 июля 2025</p>
           </article>
           <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-pink-500 to-red-500">
             <h3 class="text-lg font-semibold">Ранний доступ vs полная версия</h3>
-            <p class="mt-2 text-sm opacity-90">Итак, на сегодня поговорим именно на эту тему, чем будет отличаться от открытого доступа до полной версии? Отвечаем: В полной версии будет новый раздел и до сих пор будут дополняться (в планах добавить розыгрыш, новый форум), новые уникальные фоны на различные тематики, ЗАСЕКРЕЧЕННЫЕ ПОСТЫ В частном канале 😎 и многое другое. Пока ассоциируемся на новые разделы и на фоны тематики, на все остальное будут в 4 квартале или в 2026 году. И если вы не видели что за изменения, гляньте раздел "Обновление" вам надеюсь оно понравится)</p>
+            <p class="mt-2 text-sm opacity-90">В полной версии — новые разделы, уникальные фоны и секретные посты.</p>
             <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 17 июля 2025</p>
           </article>
           <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-pink-500 to-red-500">
             <h3 class="text-lg font-semibold">Про форум</h3>
-            <p class="mt-2 text-sm opacity-90">Сегодня такую тему затронем про форум. Дело в том что на нас напал спам бот который испортил весь форум, и мы ВРЕМЕННО решили убрать форум чтобы таких инцидентов не происходило. Пока что сделали возможность отправлять всякие вопросы в личку Telegram. Итак теперь вопрос, есть ли шансы на возвращение форума? Да. есть, но мы его планируем вернуть уже в августе поэтому наблюдайте за изменениями сайта и будет новый уникальный дизайн форума)👍</p>
+            <p class="mt-2 text-sm opacity-90">Форум временно отключён из‑за спама. Пишем в Telegram, возвращение — в августе.</p>
             <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 27 июля 2025</p>
           </article>
           <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-teal-500 to-cyan-500">
             <h3 class="text-lg font-semibold">Запуск Q&A!</h3>
-            <p class="mt-2 text-sm opacity-90">В августе 2025 года запускается раздел Q&A! Теперь ты сможешь задавать свои вопросы, а лучшие из них будут опубликованы после модерации. Готовь свои идеи и врывайся! 😎</p>
+            <p class="mt-2 text-sm opacity-90">Лучшие вопросы публикуем после модерации. Готовь идеи!</p>
             <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 28 июля 2025</p>
-          </article>
-         <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-teal-500 to-cyan-500">
-            <h3 class="text-lg font-semibold">РЕДИЗАЙН САЙТА!!!</h3>
-            <p class="mt-2 text-sm opacity-90">Опа, а это что за сайт? А это все тот же сайт, только обновленный дизайн сайта! Мы все время думали когда это делать, вот и решили это сделать! А пока что можете оценить новый дизайн сайта, он: красивый, уникален, обновленный и многое другое! Дерзаем >:D</p>
-            <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 19 августа 2025</p>
           </article>
         </div>
       </div>
@@ -355,11 +361,6 @@
             <h3 class="text-lg font-semibold">Обычное обновление</h3>
             <p class="mt-2 text-sm opacity-90">Включён раздел Q&A в полную версию. Удалены «Мои истории», «Мемы от авторов», «Розыгрыш». Добавлены вопросы в FAQ.</p>
             <p class="mt-3 text-xs opacity-90">4 августа 2025</p>
-          </article>
-         <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-blue-500 to-green-500">
-            <h3 class="text-lg font-semibold">КРУПНОЕ ОБНОВЛЕНИЕ</h3>
-            <p class="mt-2 text-sm opacity-90">Изменен дизайн сайта, исправлен различные баги.</p>
-            <p class="mt-3 text-xs opacity-90">19 августа 2025</p>
           </article>
           <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-blue-500 to-green-500">
             <h3 class="text-lg font-semibold">Небольшое обновление</h3>
@@ -551,12 +552,11 @@
           <h3 id="updateTitle" class="text-lg font-bold">Последние обновления</h3>
           <button class="rounded-lg px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800" data-close-modal aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <p class="mt-3 text-sm">Версия 1.15 (19 августа 2025):</p>
+        <p class="mt-3 text-sm">Версия 1.10 (4 августа 2025):</p>
         <ul class="mt-2 list-disc ml-5 text-sm text-slate-700 dark:text-slate-300">
-          <li>Обновлен дизайн сайта</li>
-          <li>Исправлена ошибка в котором модальное окно не убирается при открытии сайта</li>
-          <li>Добалвен кнопка о получении новых видео на сайте.</li>
-          <li>Убраны цветовые диапозоны кнопок в разделе "Контакты"</li>
+          <li>Раздел Q&A включён в полную версию.</li>
+          <li>Удалены «Мои истории», «Мемы от авторов», «Розыгрыш».</li>
+          <li>Добавлены новые вопросы в FAQ.</li>
         </ul>
         <div class="mt-4 text-right">
           <button data-close-modal class="glass-button">Ок</button>
@@ -574,7 +574,7 @@
     <!-- Футер -->
     <footer class="border-t border-slate-200/60 dark:border-slate-700/60 py-8">
       <div class="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-sm opacity-80">© 2025 Mortis Play. Все права защищены. Версия 1.15</p>
+        <p class="text-sm opacity-80">© 2025 Mortis Play. Все права защищены. Версия 1.10</p>
       </div>
     </footer>
   </div> <!-- /#siteContent -->
@@ -643,32 +643,32 @@
     document.querySelectorAll('.fade-in, section').forEach(el => io.observe(el));
 
     // Видео (RuTube ids)
-const videoData = [
-  { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning' },
-  { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO' },
-  { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
-  { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
-  { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK (ft. Johnny_Drill, sayheyalldayman)' }
-];
-const grid = document.querySelector('#videos .mt-8'); // Уточняем селектор
-const tpl = document.getElementById('ytCardTpl');
-if (grid && tpl) {
-  videoData.forEach(v => {
-    const node = tpl.content.cloneNode(true);
-    const iframe = node.querySelector('iframe');
-    const title = node.querySelector('p');
-    if (iframe && title) {
-      iframe.src = v.src;
-      iframe.setAttribute('title', `Видео: ${v.title}`);
-      title.textContent = v.title;
-      grid.appendChild(node);
+    const videoData = [
+      { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning' },
+      { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO' },
+      { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
+      { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
+      { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK (ft. Johnny_Drill, sayheyalldayman)' }
+    ];
+    const grid = document.querySelector('#videos .mt-8'); // Уточняем селектор
+    const tpl = document.getElementById('ytCardTpl');
+    if (grid && tpl) {
+      videoData.forEach(v => {
+        const node = tpl.content.cloneNode(true);
+        const iframe = node.querySelector('iframe');
+        const title = node.querySelector('p');
+        if (iframe && title) {
+          iframe.src = v.src;
+          iframe.setAttribute('title', `Видео: ${v.title}`);
+          title.textContent = v.title;
+          grid.appendChild(node);
+        } else {
+          console.log('Ошибка: iframe или title не найдены в шаблоне');
+        }
+      });
     } else {
-      console.log('Ошибка: iframe или title не найдены в шаблоне');
+      console.log('Ошибка: grid или tpl не найдены');
     }
-  });
-} else {
-  console.log('Ошибка: grid или tpl не найдены');
-}
 
     // Twitch
     const twitchContent = [
@@ -706,22 +706,46 @@ if (grid && tpl) {
       twitchGrid.appendChild(box);
     });
 
-    // Q&A демо-публикация в DOM (без отправки на сервер)
+    // Q&A отправка в Telegram
     const qaForm = document.getElementById('qaForm');
-    const qaAnswers = document.getElementById('qaAnswers');
     qaForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const name = qaForm.nickname.value.trim();
       const text = qaForm.question.value.trim();
-      if (!name || !text) return;
-      const item = document.createElement('div');
-      item.className = 'rounded-xl p-4 ring-1 ring-slate-200 dark:ring-slate-700 bg-white dark:bg-slate-800';
-      item.innerHTML = `<div class="font-semibold text-indigo-600 dark:text-indigo-400">${name}</div>
-        <div class="mt-1 text-sm text-slate-700 dark:text-slate-300">${text}</div>
-        <div class="mt-2 text-xs text-slate-500">Отправлено · модерация</div>`;
-      qaAnswers.prepend(item);
-      qaForm.reset();
-      // TODO: здесь может быть реальный POST на бэкенд
+      const recaptchaResponse = grecaptcha.getResponse();
+      if (!name || !text) {
+        alert('Заполните никнейм и вопрос!');
+        return;
+      }
+      if (!recaptchaResponse) {
+        alert('Подтвердите, что вы не робот!');
+        return;
+      }
+      const timestamp = new Date().toISOString().slice(0, 10);
+      fetch('https://api.telegram.org/bot8376718026:AAE4I_ZH51z1cOe4pe6WXyuqwr8bfaX0gUE/sendMessage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: 335236137,
+          text: `Новый вопрос от ${name}:\nВопрос: ${text}\nДата: ${timestamp}`
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.ok) {
+          alert('Вопрос отправлен модератору!');
+          qaForm.reset();
+          grecaptcha.reset();
+          console.log('Q&A отправлено в Telegram: ' + name + ', ' + text);
+        } else {
+          alert('Ошибка отправки. Проверь токен или Chat ID.');
+          console.error(data);
+        }
+      })
+      .catch(error => {
+        alert('Ошибка сети. Попробуй позже.');
+        console.error('Ошибка:', error);
+      });
     });
 
     // Подписка на уведомления
