@@ -643,24 +643,32 @@
     document.querySelectorAll('.fade-in, section').forEach(el => io.observe(el));
 
     // Видео (RuTube ids)
-    const videoData = [
-      { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning' },
-      { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO' },
-      { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
-      { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
-      { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK (ft. Johnny_Drill, sayheyalldayman)' }
-    ];
-    const grid = document.querySelector('#videos .grid');
-    const tpl = document.getElementById('ytCardTpl');
-    videoData.forEach(v => {
-      const node = tpl.content.cloneNode(true);
-      const iframe = node.querySelector('iframe');
-      const title = node.querySelector('p');
+const videoData = [
+  { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning' },
+  { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO' },
+  { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
+  { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
+  { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK (ft. Johnny_Drill, sayheyalldayman)' }
+];
+const grid = document.querySelector('#videos .mt-8'); // Уточняем селектор
+const tpl = document.getElementById('ytCardTpl');
+if (grid && tpl) {
+  videoData.forEach(v => {
+    const node = tpl.content.cloneNode(true);
+    const iframe = node.querySelector('iframe');
+    const title = node.querySelector('p');
+    if (iframe && title) {
       iframe.src = v.src;
       iframe.setAttribute('title', `Видео: ${v.title}`);
       title.textContent = v.title;
       grid.appendChild(node);
-    });
+    } else {
+      console.log('Ошибка: iframe или title не найдены в шаблоне');
+    }
+  });
+} else {
+  console.log('Ошибка: grid или tpl не найдены');
+}
 
     // Twitch
     const twitchContent = [
