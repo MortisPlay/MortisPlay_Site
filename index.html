@@ -90,6 +90,11 @@
         font-size: 0.9rem;
       }
     }
+    @media (max-width: 640px) {
+  #qaForm { padding: 1rem; }
+  .glass-button { padding: 0.5rem 1rem; font-size: 0.9rem; }
+  #qaStatus, #qaAnswers { margin-top: 1rem; }
+}
 
     @supports not (backdrop-filter: blur(10px)) {
       .glass-button {
@@ -225,9 +230,9 @@
           </div>
 
           <div class="relative">
-            <video class="w-full max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" autoplay muted loop playsinline aria-label="Аватар канала">
-              <source src="/assets/photo.mp4" type="video/mp4" />
-            </video>
+            <video class="w-full max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала">
+  <source src="/assets/photo.mp4" type="video/mp4" />
+</video>
             <div class="absolute -bottom-4 -right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover animate-[floaty_5s_ease-in-out_infinite]">
               <p class="text-xs text-slate-600 dark:text-slate-300">Гений, миллиардер, плейбой, филантроп 😎</p>
             </div>
@@ -431,7 +436,13 @@
     <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Задавай вопросы — публикуем лучшие после модерации.</p>
 
     <!-- Форма -->
-    <form id="qaForm" class="mt-8 space-y-4 rounded-2xl p-6 bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700" data-submit-count="0">
+    <form id="qaForm" action="https://formspree.io/f/mrblwjva" method="POST" class="mt-8 space-y-4 rounded-2xl p-6 bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700" data-submit-count="0">
+      <input type="hidden" name="_subject" value="Новый вопрос на сайте Mortis Play">
+      <input type="hidden" name="_captcha" value="false">
+      <div style="display:none;" class="honeypot-field">
+        <label for="honeypot">Оставь пустым (для ботов)</label>
+        <input name="honeypot" type="text">
+      </div>
       <div>
         <label for="nickname" class="block text-sm font-medium">Никнейм (мин. 3 символа)</label>
         <input id="nickname" name="nickname" type="text" maxlength="20" required class="mt-1 w-full rounded-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2">
@@ -442,17 +453,18 @@
       </div>
       <div>
         <div class="g-recaptcha" data-sitekey="6Le1hJArAAAAAKnJHHzVWqrqnioE736-NqC67oMR"></div>
-        <p class="mt-2 text-xs text-slate-500">Подтверди, что ты не робот.</p>
+        <p class="mt-2 text-xs text-slate-600">Подтверди, что ты не робот.</p>
       </div>
       <button type="submit" class="glass-button">
         <i class="fa-solid fa-paper-plane"></i> Отправить
       </button>
+      <div id="formStatus" class="mt-2 text-sm text-red-600"></div> <!-- Для сообщений об ошибке -->
     </form>
 
     <!-- Статус вопросов -->
     <div id="qaStatus" class="mt-8 space-y-4">
       <h3 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">Статус ваших вопросов</h3>
-      <p class="text-sm text-slate-600 dark:text-slate-300">Проверьте статус по вашему уникальному ID (получите его после отправки).</p>
+      <p class="text-sm text-slate-600 dark:text-slate-300">Проверьте статус по вашему уникальному ID.</p>
       <div id="statusList" class="mt-2 space-y-2"></div>
     </div>
 
@@ -576,7 +588,7 @@
     </footer>
   </div> <!-- /#siteContent -->
 
-  <!-- Скрипты -->
+    <!-- Скрипты -->
   <script>
     // Автоматическая тема по системным настройкам
     const root = document.documentElement;
@@ -694,109 +706,82 @@
       box.appendChild(cap);
       twitchGrid.appendChild(box);
     });
-    
 
-    // Q&A отправка в Telegram с отслеживанием статуса и лимитами
-  const qaForm = document.getElementById('qaForm');
-  const qaStatus = document.getElementById('qaStatus');
-  const statusList = document.getElementById('statusList');
-  const qaAnswers = document.getElementById('qaAnswers').querySelector('div');
+    // Скрипт для Q&A
+    <script defer>
+      document.addEventListener('DOMContentLoaded', () => {
+        const qaForm = document.getElementById('qaForm');
+        const statusList = document.getElementById('statusList');
+        const qaAnswers = document.getElementById('qaAnswers').querySelector('div');
+        const formStatus = document.getElementById('formStatus');
 
-  qaForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = qaForm.nickname.value.trim();
-    const text = qaForm.question.value.trim();
-    const recaptchaResponse = grecaptcha.getResponse();
+        qaForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const name = qaForm.nickname.value.trim();
+          const text = qaForm.question.value.trim();
+          const honeypot = qaForm.honeypot.value.trim();
 
-    // Проверка лимитов
-    if (name.length < 3) {
-      alert('Никнейм должен содержать минимум 3 символа!');
-      return;
-    }
-    if (text.length < 10) {
-      alert('Вопрос должен содержать минимум 10 символов!');
-      return;
-    }
-    if (!name || !text) {
-      alert('Заполните никнейм и вопрос!');
-      return;
-    }
-    if (!recaptchaResponse) {
-      alert('Подтвердите, что вы не робот!');
-      return;
-    }
+          if (honeypot) return;
+          if (name.length < 3 || text.length < 10 || !name || !text) {
+            formStatus.textContent = 'Заполните никнейм (мин. 3 символа) и вопрос (мин. 10 символов)!';
+            return;
+          }
 
-    // Генерация уникального ID и времени
-    const questionId = `Q${Date.now()}`;
-    const timeSent = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          const questionId = `Q${Date.now()}`;
+          const timeSent = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-    // Добавление статуса в интерфейс
-    const statusEntry = document.createElement('div');
-    statusEntry.className = 'p-3 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
-    statusEntry.innerHTML = `
-      <p class="text-sm text-slate-600 dark:text-slate-300">ID: ${questionId} | Никнейм: ${name}</p>
-      <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Статус: <span id="status-${questionId}" class="font-medium">Отправлен</span></p>
-    `;
-    statusList.appendChild(statusEntry);
+          const statusEntry = document.createElement('div');
+          statusEntry.className = 'p-3 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
+          statusEntry.innerHTML = `
+            <p class="text-sm text-slate-600 dark:text-slate-300">ID: ${questionId} | Никнейм: ${name}</p>
+            <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Статус: <span id="status-${questionId}" class="font-medium">Отправлен</span></p>
+          `;
+          statusList.appendChild(statusEntry);
 
-    // Отправка в Telegram с временем
-    fetch('https://api.telegram.org/bot8376718026:AAEAiNl7lXxuLQghKC6DH0LgbrlhULmANBU/sendMessage', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: 335236137,
-        text: `Новый вопрос от ${name} (ID: ${questionId}):\nВопрос: ${text}\nВремя отправки: ${timeSent}\nДата: ${new Date().toISOString().slice(0, 10)}`
-      })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.ok) {
-        alert(`Вопрос отправлен! Ваш ID: ${questionId}. Проверьте статус ниже.`);
-        qaForm.reset();
-        grecaptcha.reset();
-        console.log(`Q&A отправлено в Telegram: ${name}, ${text}, ID: ${questionId}, Время: ${timeSent}`);
-      } else {
-        alert('Ошибка отправки. Проверь токен или Chat ID.');
-        document.getElementById(`status-${questionId}`).textContent = 'Ошибка отправки';
-        console.error(data);
-      }
-    })
-    .catch(error => {
-      alert('Ошибка сети. Попробуй позже.');
-      document.getElementById(`status-${questionId}`).textContent = 'Ошибка сети';
-      console.error('Ошибка:', error);
-    });
+          // Отправка формы через Formspree с обработкой
+          qaForm.querySelector('input[name="_gotcha"]').value = honeypot;
+          fetch(qaForm.action, {
+            method: 'POST',
+            body: new FormData(qaForm),
+            mode: 'no-cors' // Formspree не возвращает данные, поэтому no-cors
+          }).then(() => {
+            formStatus.textContent = 'Вопрос отправлен! Ваш ID: ' + questionId;
+            formStatus.classList.remove('text-red-600');
+            formStatus.classList.add('text-green-600');
+            qaForm.reset();
+          }).catch(() => {
+            formStatus.textContent = 'Ошибка отправки. Попробуйте снова.';
+            document.getElementById(`status-${questionId}`).textContent = 'Ошибка';
+          });
+        });
 
-    // Функция для обновления статуса (вручную модератором)
-    window.updateQaStatus = (id, status) => {
-      const statusElement = document.getElementById(`status-${id}`);
-      if (statusElement) {
-        statusElement.textContent = status;
-      }
-    };
-  });
+        window.updateQaStatus = (id, status) => {
+          const statusElement = document.getElementById(`status-${id}`);
+          if (statusElement) statusElement.textContent = status;
+        };
 
-  // Пример добавления ответа (модератор может вызвать в консоли)
-  function addQaAnswer(name, question, answer) {
-    const div = document.createElement('div');
-    div.className = 'p-4 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
-    div.innerHTML = `
-      <p class="text-sm text-slate-600 dark:text-slate-300"><strong>Никнейм:</strong> ${name}</p>
-      <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Вопрос: ${question}</p>
-      <p class="mt-2 text-sm text-indigo-600 dark:text-indigo-400">Ответ: ${answer}</p>
-    `;
-    qaAnswers.appendChild(div);
-  }
+        function addQaAnswer(name, question, answer) {
+          const div = document.createElement('div');
+          div.className = 'p-4 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
+          div.innerHTML = `
+            <p class="text-sm text-slate-600 dark:text-slate-300"><strong>Никнейм:</strong> ${name}</p>
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Вопрос: ${question}</p>
+            <p class="mt-2 text-sm text-indigo-600 dark:text-indigo-400">Ответ: ${answer}</p>
+          `;
+          qaAnswers.appendChild(div);
+        }
+      });
+
     // Лоадер: скрываем после полной загрузки
     window.addEventListener('load', () => {
-      const loader = document.getElementById('loader');
-      const site = document.getElementById('siteContent');
-      loader.classList.add('opacity-0','transition','duration-700');
-      setTimeout(()=>{
-        loader.style.display='none';
-        site.classList.remove('hidden');
-      },700);
-    });
+  const loader = document.getElementById('loader');
+  const site = document.getElementById('siteContent');
+  loader.classList.add('opacity-0', 'transition', 'duration-700');
+  loader.addEventListener('transitionend', () => {
+    loader.style.display = 'none';
+    site.classList.remove('hidden');
+  });
+});
   </script>
 </body>
 </html>
