@@ -472,8 +472,7 @@
     <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Задавай вопросы — публикуем лучшие после модерации.</p>
 
     <!-- Форма -->
-    <form id="qaForm" action="https://formspree.io/f/mrblwjva" method="POST" class="mt-8 space-y-4 rounded-2xl p-6 bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700" data-submit-count="0">
-      <input type="hidden" name="_subject" value="Новый вопрос на сайте Mortis Play">
+    <form id="qaForm" class="mt-8 space-y-4 rounded-2xl p-6 bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700" data-submit-count="0">
       <input type="hidden" name="_gotcha" value="false">
       <div style="display:none;" class="honeypot-field">
         <label for="honeypot">Оставь пустым (для ботов)</label>
@@ -487,7 +486,9 @@
         <label for="question" class="block text-sm font-medium">Вопрос (мин. 10 символов)</label>
         <textarea id="question" name="question" rows="4" maxlength="500" required class="mt-1 w-full rounded-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2" placeholder="Введите текст"></textarea>
       </div>
-      <button type="submit" class="glass-button">
+      <!-- reCAPTCHA -->
+      <div id="recaptcha-container" class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY" data-callback="onRecaptchaSuccess" data-action="submit"></div>
+      <button type="submit" class="glass-button" id="submitBtn" disabled>
         <i class="fa-solid fa-paper-plane"></i> Отправить
       </button>
       <div id="formStatus" class="mt-2 text-sm text-red-600"></div>
@@ -504,6 +505,9 @@
     </div>
   </div>
 </section>
+
+<!-- Подключение reCAPTCHA -->
+<script src="https://www.google.com/recaptcha/api.js?render=6LfLNq4rAAAAAIOf3SUV4rGurxT1kdmwqOuTID2u" async defer></script>
 
     <!-- Контакты -->
     <section id="contact" class="py-16 bg-slate-50 dark:bg-slate-900/40">
@@ -777,6 +781,7 @@
     const qaAnswers = document.getElementById('qaAnswers');
     qaAnswers.innerHTML = '<h3 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">Лучшие вопросы</h3><div class="grid grid-cols-1 gap-4 mt-2"></div>';
     const formStatus = document.getElementById('formStatus');
+    const submitBtn = document.getElementById('submitBtn');
 
     const savedStatuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
     qaSection.insertBefore(qaModeration, qaAnswers.nextSibling);
@@ -793,44 +798,42 @@
       return true;
     }
 
+    // Обработчик reCAPTCHA
+    window.onRecaptchaSuccess = (token) => {
+      submitBtn.disabled = false;
+    };
+
     qaForm.addEventListener('submit', (e) => {
-      e.preventDefault(); // Блокируем стандартную отправку
+      e.preventDefault();
       if (!checkSubmitLimit()) return;
 
       const name = qaForm.nickname.value.trim();
       const text = qaForm.question.value.trim();
       const honeypot = qaForm.honeypot.value.trim();
+      const token = grecaptcha.getResponse();
 
       if (honeypot) return;
       if (name.length < 3 || text.length < 10 || !name || !text) {
         formStatus.textContent = 'Заполните никнейм (мин. 3 символа) и вопрос (мин. 10 символов)!';
         return;
       }
+      if (!token) {
+        formStatus.textContent = 'Пройдите проверку reCAPTCHA!';
+        return;
+      }
 
       const questionId = `Q${Date.now()}`;
       savedStatuses[questionId] = { nickname: name, status: 'Ожидает модерации', question: text };
       localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
-      localStorage.setItem('lastQaSubmit', Date.now()); // Устанавливаем время отправки
+      localStorage.setItem('lastQaSubmit', Date.now());
 
       addQaAnswer(qaModeration.querySelector('div'), name, text, 'Ожидает модерации', questionId);
-      formStatus.textContent = `Вопрос отправлен! Ваш ID: ${questionId}. Подтверждение в новой вкладке.`;
+      formStatus.textContent = `Вопрос отправлен! Ваш ID: ${questionId}. Ожидайте модерацию.`;
       formStatus.classList.remove('text-red-600');
       formStatus.classList.add('text-green-600');
 
-      // Отправка данных через fetch и открытие новой вкладки
-      const formData = new FormData(qaForm);
-      fetch(qaForm.action, {
-        method: 'POST',
-        body: formData,
-        mode: 'no-cors'
-      }).then(() => {
-        // Открываем страницу Formspree в новой вкладке (пример URL)
-        window.open('https://formspree.io/thanks', '_blank', 'width=400,height=600,left=' + (window.screen.width - 400) + ',top=100');
-      }).catch(error => {
-        formStatus.textContent = 'Ошибка отправки на сервер, но вопрос сохранён локально.';
-        formStatus.classList.add('text-red-600');
-      });
-
+      // Сброс reCAPTCHA
+      grecaptcha.reset();
       qaForm.reset();
     });
 
