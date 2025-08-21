@@ -754,6 +754,9 @@
 
     const savedStatuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
 
+    // Вывод всех ID в консоль для отладки
+    console.log('Список всех сохранённых вопросов с ID:', savedStatuses);
+
     qaForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const name = qaForm.nickname.value.trim();
@@ -795,11 +798,9 @@
       if (!statuses[id]) return;
 
       if (action === 'approve') {
-        // Добавляем вопрос в интерфейс с статусом "Одобрен"
         addQaAnswer(statuses[id].nickname, statuses[id].question, 'Одобрен');
         statuses[id].status = 'Одобрен';
       } else if (action === 'reject') {
-        // Удаляем вопрос из интерфейса и localStorage
         const questionDiv = qaAnswers.querySelector(`[data-id="${id}"]`);
         if (questionDiv) questionDiv.remove();
         delete statuses[id];
