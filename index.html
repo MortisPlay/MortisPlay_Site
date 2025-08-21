@@ -637,6 +637,10 @@
     setTheme(e.matches ? 'dark' : 'light');
   });
 
+  // Проверка режима разработчика
+  const urlParams = new URLSearchParams(window.location.search);
+  const isDevMode = urlParams.get('dev') === 'true';
+
   // Выдвижное меню
   const menuToggle = document.getElementById('menuToggle');
   const sidebarMenu = document.getElementById('sidebarMenu');
@@ -698,7 +702,7 @@
     });
   }
 
-  // Twitch клипы
+  // Twitch клипы (удаляем на мобильных)
   const twitchContent = [
     { type: 'clip', id: 'OutstandingSmallPeachOneHand-34JGV7ccc7luTPSc', title: 'Отдали раунд на халяву XD' },
     { type: 'clip', id: 'ResoluteFlaccidFrogTF2John-Rsv5zTsbJDJvqnwD', title: 'XD' },
@@ -708,9 +712,7 @@
     { type: 'highlight', videoId: '2475851398', startTime: '00:01:52', title: 'На контентик)' }
   ];
   const twitchGrid = document.getElementById('twitchGrid');
-  if (!twitchGrid) {
-    console.error('Элемент twitchGrid не найден в DOM');
-  } else {
+  if (twitchGrid && window.matchMedia('(min-width: 641px)').matches) { // Показываем только на десктопе
     twitchContent.forEach(item => {
       try {
         const wrap = document.createElement('div');
@@ -748,6 +750,17 @@
 
   // Q&A
   document.addEventListener('DOMContentLoaded', () => {
+    const qaSection = document.getElementById('qa');
+    if (!isDevMode) {
+      qaSection.innerHTML = `
+        <div class="mx-auto max-w-5xl px-4 py-16 text-center">
+          <h2 class="text-2xl md:text-3xl font-bold text-red-600 dark:text-red-400">Q&A временно закрыт</h2>
+          <p class="mt-2 text-slate-600 dark:text-slate-300">Раздел находится на доработке. Следите за новостями! Используйте режим разработчика (?dev=true) для тестирования.</p>
+        </div>
+      `;
+      return; // Прерываем выполнение, если не dev-режим
+    }
+
     const qaForm = document.getElementById('qaForm');
     const qaAnswers = document.getElementById('qaAnswers').querySelector('div');
     const formStatus = document.getElementById('formStatus');
@@ -767,31 +780,27 @@
       }
 
       const questionId = `Q${Date.now()}`;
-      savedStatuses[questionId] = { nickname: name, status: 'Ожидает модерации' };
+      savedStatuses[questionId] = { nickname: name, status: 'Ожидает модерации', question: text };
       localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
 
-      // Добавляем вопрос в интерфейс
-      addQaAnswer(name, text, 'Ожидает модерации');
+      addQaAnswer(name, text, 'Ожидает модерации', questionId);
 
       const gotchaField = qaForm.querySelector('input[name="_gotcha"]');
       if (gotchaField) gotchaField.value = honeypot;
       fetch(qaForm.action, {
         method: 'POST',
         body: new FormData(qaForm),
-        mode: 'no-cors' // Устанавливаем no-cors для предотвращения обработки редиректа
+        mode: 'no-cors'
       }).then(response => {
-        if (response.ok) {
-          formStatus.textContent = 'Вопрос отправлен! Ваш ID: ' + questionId;
-          formStatus.classList.remove('text-red-600');
-          formStatus.classList.add('text-green-600');
-          qaForm.reset();
-        } else {
-          throw new Error('Ошибка сервера: ' + response.statusText);
-        }
+        formStatus.textContent = 'Вопрос отправлен! Ваш ID: ' + questionId;
+        formStatus.classList.remove('text-red-600');
+        formStatus.classList.add('text-green-600');
+        qaForm.reset();
       }).catch(error => {
         formStatus.textContent = 'Ошибка отправки: ' + error.message;
         const answerDiv = qaAnswers.querySelector(`[data-id="${questionId}"]`);
-        if (answerDiv) answerDiv.remove(); // Удаляем вопрос при ошибке
+        if (answerDiv) answerDiv.remove();
+        delete savedStatuses[questionId];
         localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
       });
     });
@@ -802,14 +811,15 @@
         statusElement.textContent = `Статус: ${status}`;
         savedStatuses[id].status = status;
         localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
+      } else if (savedStatuses[id]) {
+        addQaAnswer(savedStatuses[id].nickname, savedStatuses[id].question, status, id);
       }
     };
 
-    function addQaAnswer(name, question, answer) {
-      const questionId = `Q${Date.now()}`; // Уникальный ID
+    function addQaAnswer(name, question, answer, id) {
       const div = document.createElement('div');
       div.className = 'p-4 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
-      div.setAttribute('data-id', questionId); // Добавляем идентификатор
+      div.setAttribute('data-id', id || `Q${Date.now()}`);
       div.innerHTML = `
         <p class="text-sm text-slate-600 dark:text-slate-300"><strong>Никнейм:</strong> ${name}</p>
         <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Вопрос: ${question}</p>
@@ -820,7 +830,9 @@
 
     // Отображаем сохранённые вопросы
     for (let id in savedStatuses) {
-      addQaAnswer(savedStatuses[id].nickname, 'Вопрос (не отображается)', savedStatuses[id].status);
+      if (savedStatuses[id].status !== 'Ожидает модерации') {
+        addQaAnswer(savedStatuses[id].nickname, savedStatuses[id].question, savedStatuses[id].status, id);
+      }
     }
   });
 
