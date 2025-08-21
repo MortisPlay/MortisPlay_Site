@@ -660,7 +660,7 @@ document.addEventListener('click', (e) => {
     // Обновления (модал) и кнопка «Что нового» (единожды)
     const whatsNewBtn = document.getElementById('whatsNewBtn');
     const updateModal = document.getElementById('updateModal');
-    const UPDATE_KEY = 'mp_update_seen_1_16';
+    const UPDATE_KEY = 'mp_update_seen_1_17';
     const seen = localStorage.getItem(UPDATE_KEY) === '1';
     if (seen) whatsNewBtn.classList.add('hidden');
     whatsNewBtn.addEventListener('click', () => {
