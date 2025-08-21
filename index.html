@@ -11,8 +11,8 @@
   <!-- Open Graph -->
   <meta property="og:title" content="Mortis Play — официальный сайт" />
   <meta property="og:description" content="Эксклюзивы, мемы, новости и клипы." />
-  <meta property="og:image" content="/assets/og-image.jpg" />
-  <meta property="og:url" content="https://mortisplay.com" />
+  <meta property="og:image" content="https://mortisplay.ru/assets/og-image.jpg" />
+  <meta property="og:url" content="https://mortisplay.ru" />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="ru_RU" />
 
@@ -20,7 +20,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Mortis Play — официальный сайт" />
   <meta name="twitter:description" content="Эксклюзивы, мемы, новости и клипы." />
-  <meta name="twitter:image" content="/assets/twitter-image.jpg" />
+  <meta name="twitter:image" content="https://mortisplay.ru/assets/twitter-image.jpg" />
 
   <!-- Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
@@ -100,14 +100,44 @@
     }
 
     @supports not (backdrop-filter: blur(10px)) {
-      .glass-button {
-        background: rgba(255, 255, 255, 0.5);
-        box-shadow: none;
-      }
-      .dark .glass-button {
-        background: rgba(50, 50, 50, 0.5);
-      }
-    }
+  .glass {
+    background: rgba(255, 255, 255, 0.8);
+  }
+  .dark .glass {
+    background: rgba(17, 24, 39, 0.8);
+  }
+  .glass-button {
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: none;
+  }
+  .dark .glass-button {
+    background: rgba(50, 50, 50, 0.5);
+  }
+}
+    #twitchGrid {
+  grid-template-columns: repeat(1, 1fr); /* По умолчанию 1 колонка */
+}
+@media (min-width: 640px) {
+  #twitchGrid {
+    grid-template-columns: repeat(2, 1fr); /* 2 колонки на sm и выше */
+  }
+}
+@media (min-width: 1024px) {
+  #twitchGrid {
+    grid-template-columns: repeat(3, 1fr); /* 3 колонки на lg и выше */
+  }
+}
+#twitchGrid .aspect-video {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+}
+#twitchGrid iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 
     /* Модальное окно по центру */
     #updateModal {
@@ -189,7 +219,7 @@
         <i class="fa-solid fa-xmark"></i>
       </button>
       <div class="flex items-center gap-2 mb-6">
-        <img src="/assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover">
+        <img src="/assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='/assets/fallback.jpg';">
         <span class="font-semibold tracking-tight text-slate-900 dark:text-white">Mortis Play</span>
       </div>
       <nav class="space-y-2">
@@ -241,7 +271,7 @@
           </div>
 
           <div class="relative">
-            <video class="w-full max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала">
+            <video class="w-full max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала" onerror="this.src='/assets/fallback.mp4';">
   <source src="/assets/photo.mp4" type="video/mp4" />
 </video>
             <div class="absolute -bottom-4 -right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover animate-[floaty_5s_ease-in-out_infinite]">
@@ -583,13 +613,12 @@
       <h3 id="updateTitle" class="text-lg font-bold">Последние обновления</h3>
       <button class="rounded-lg px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800" data-close-modal aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <p class="mt-3 text-sm">Версия 1.17 (21 августа 2025):</p>
+    <p class="mt-3 text-sm">Версия 1.17.1 (21 августа 2025):</p>
     <ul class="mt-2 list-disc ml-5 text-sm text-slate-700 dark:text-slate-300">
-      <li>Удалена секция «Статус ваших вопросов».</li>
-      <li>Добавлено выдвижное меню для мобильной версии.</li>
-      <li>Обновлён логотип на изображение в главном меню.</li>
-      <li>Обновлён интерфейс и улучшена адаптивность.</li>
-      <li>Был убран CAPTCHA из Q&A и заменили встроенную капчу направляюущую на сайт. БЫЛО СДЕЛАНО В КАЧЕСТВЕ БЕЗОПАСНОТИ!</li>
+      <li>Исправлена ошибка мобильного меню.</li>
+      <li>Исправлена ошибка когда Q&A внутри дублировался.</li>
+      <li>Исправлена ошибка с несоответсвиями мета тегами.</li>
+      <li>Исправлена ошибка когда раздел "Клипы Twitch" на пк версии несоотвествовал размерам.</li>
     </ul>
     <div class="mt-4 text-right">
       <button data-close-modal class="glass-button">Ок</button>
@@ -600,7 +629,7 @@
     <!-- Футер -->
     <footer class="border-t border-slate-200/60 dark:border-slate-700/60 py-8">
       <div class="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-sm opacity-80">© 2025 Mortis Play. Все права защищены. Версия 1.17</p>
+        <p class="text-sm opacity-80">© 2025 Mortis Play. Все права защищены. Версия 1.17.1</p>
       </div>
     </footer>
   </div> <!-- /#siteContent -->
@@ -629,14 +658,6 @@
       setTheme(e.matches ? 'dark' : 'light');
     });
 
-    // Мобильное меню
-    const navToggle = document.getElementById('navToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    navToggle?.addEventListener('click', () => {
-      const expanded = navToggle.getAttribute('aria-expanded') === 'true';
-      navToggle.setAttribute('aria-expanded', String(!expanded));
-      mobileMenu.classList.toggle('hidden');
-    });
     // Выдвижное меню
 const menuToggle = document.getElementById('menuToggle');
 const sidebarMenu = document.getElementById('sidebarMenu');
@@ -660,7 +681,7 @@ document.addEventListener('click', (e) => {
     // Обновления (модал) и кнопка «Что нового» (единожды)
     const whatsNewBtn = document.getElementById('whatsNewBtn');
     const updateModal = document.getElementById('updateModal');
-    const UPDATE_KEY = 'mp_update_seen_1_17';
+    const UPDATE_KEY = 'mp_update_seen_1_17_1';
     const seen = localStorage.getItem(UPDATE_KEY) === '1';
     if (seen) whatsNewBtn.classList.add('hidden');
     whatsNewBtn.addEventListener('click', () => {
@@ -688,60 +709,68 @@ document.addEventListener('click', (e) => {
       { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
       { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK (ft. Johnny_Drill, sayheyalldayman)' }
     ];
-    const grid = document.querySelector('#videos .mt-8');
-    const tpl = document.getElementById('ytCardTpl');
-    if (grid && tpl) {
-      videoData.forEach(v => {
-        const node = tpl.content.cloneNode(true);
-        const iframe = node.querySelector('iframe');
-        const title = node.querySelector('p');
-        if (iframe && title) {
-          iframe.src = v.src;
-          iframe.setAttribute('title', `Видео: ${v.title}`);
-          title.textContent = v.title;
-          grid.appendChild(node);
-        } else {
-          console.log('Ошибка: iframe или title не найдены в шаблоне');
-        }
-      });
-    } else {
-      console.log('Ошибка: grid или tpl не найдены');
-    }
+    videoData.forEach(v => {
+  const node = tpl.content.cloneNode(true);
+  const iframe = node.querySelector('iframe');
+  const title = node.querySelector('p');
+  if (iframe && title) {
+    iframe.src = v.src;
+    iframe.setAttribute('title', `Видео: ${v.title}`);
+    title.textContent = v.title;
+    grid.appendChild(node);
+  } else {
+    console.error('Ошибка: шаблон видео повреждён');
+  }
+});
 
     // Twitch
     const twitchContent = [
-      { type: 'clip', id: 'OutstandingSmallPeachOneHand-34JGV7ccc7luTPSc', title: 'Отдали раунд на халяву XD' },
-      { type: 'clip', id: 'ResoluteFlaccidFrogTF2John-Rsv5zTsbJDJvqnwD', title: 'XD' },
-      { type: 'clip', id: 'GlutenFreeShortJuiceEleGiggle-Z5e2rv159RqomWb4', title: 'Да что она мне сделает?' },
-      { type: 'clip', id: 'WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3', title: 'ПУНЬК' },
-      { type: 'clip', id: 'CuteCuteOrangeLitFam-IsbKNAtJlF0qnbAE', title: 'Крик помощи' },
-      { type: 'highlight', videoId: '2475851398', startTime: '00:01:52', title: 'На контентик)' }
-    ];
-    const twitchGrid = document.getElementById('twitchGrid');
-    const parentHost = location.hostname || 'localhost';
-    twitchContent.forEach(item => {
+  { type: 'clip', id: 'OutstandingSmallPeachOneHand-34JGV7ccc7luTPSc', title: 'Отдали раунд на халяву XD' },
+  { type: 'clip', id: 'ResoluteFlaccidFrogTF2John-Rsv5zTsbJDJvqnwD', title: 'XD' },
+  { type: 'clip', id: 'GlutenFreeShortJuiceEleGiggle-Z5e2rv159RqomWb4', title: 'Да что она мне сделает?' },
+  { type: 'clip', id: 'WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3', title: 'ПУНЬК' },
+  { type: 'clip', id: 'CuteCuteOrangeLitFam-IsbKNAtJlF0qnbAE', title: 'Крик помощи' },
+  { type: 'highlight', videoId: '2475851398', startTime: '00:01:52', title: 'На контентик)' }
+];
+
+const twitchGrid = document.getElementById('twitchGrid');
+if (!twitchGrid) {
+  console.error('Элемент twitchGrid не найден в DOM');
+} else {
+  twitchContent.forEach(item => {
+    try {
       const wrap = document.createElement('div');
-      wrap.className = 'rounded-xl overflow-hidden ring-1 ring-slate-200 dark:ring-slate-700';
+      wrap.className = 'rounded-xl overflow-hidden ring-1 ring-slate-200 dark:ring-slate-700 aspect-video relative'; // Добавлен aspect-video
       const iframe = document.createElement('iframe');
       iframe.width = '100%';
       iframe.height = '100%';
       iframe.allowFullscreen = true;
       iframe.title = item.title;
       iframe.loading = 'lazy';
+      iframe.onerror = () => console.error(`Ошибка загрузки ${item.title}`);
+      const parentHost = location.hostname === 'localhost' ? 'localhost' : 'mortisplay.ru';
       if (item.type === 'clip') {
         iframe.src = `https://clips.twitch.tv/embed?clip=${item.id}&parent=${parentHost}`;
       } else {
         iframe.src = `https://player.twitch.tv/?video=${item.videoId}&parent=${parentHost}&t=${item.startTime}`;
       }
+      iframe.style.position = 'absolute';
+      iframe.style.top = '0';
+      iframe.style.left = '0';
       wrap.appendChild(iframe);
       const cap = document.createElement('p');
       cap.className = 'px-2 py-1 text-xs text-slate-600 dark:text-slate-300';
       cap.textContent = item.title;
       const box = document.createElement('div');
+      box.className = 'space-y-2';
       box.appendChild(wrap);
       box.appendChild(cap);
       twitchGrid.appendChild(box);
-    });
+    } catch (e) {
+      console.error(`Ошибка загрузки Twitch контента: ${item.title}`, e);
+    }
+  });
+}
   </script>
 
   <script defer>
@@ -749,11 +778,11 @@ document.addEventListener('click', (e) => {
     <script defer>
   document.addEventListener('DOMContentLoaded', () => {
     const qaForm = document.getElementById('qaForm');
-    const statusList = document.getElementById('statusList');
+    const statusList = document.getElementById('statusList'); // Убедись, что этот элемент есть в HTML
     const qaAnswers = document.getElementById('qaAnswers').querySelector('div');
     const formStatus = document.getElementById('formStatus');
 
-    // Восстановление сохранённых статусов
+    // Восстановление сохранённых статусов (но statusList удалён из HTML)
     const savedStatuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
     for (const [id, status] of Object.entries(savedStatuses)) {
       const statusEntry = document.createElement('div');
@@ -762,7 +791,7 @@ document.addEventListener('click', (e) => {
         <p class="text-sm text-slate-600 dark:text-slate-300">ID: ${id} | Никнейм: ${status.nickname}</p>
         <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Статус: <span id="status-${id}" class="font-medium">${status.status}</span></p>
       `;
-      statusList.appendChild(statusEntry);
+      // statusList.appendChild(statusEntry); // Комментарий, так как statusList отсутствует
     }
 
     qaForm.addEventListener('submit', (e) => {
@@ -780,31 +809,19 @@ document.addEventListener('click', (e) => {
       const questionId = `Q${Date.now()}`;
       const timeSent = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-      const statusEntry = document.createElement('div');
-      statusEntry.className = 'p-3 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
-      statusEntry.innerHTML = `
-        <p class="text-sm text-slate-600 dark:text-slate-300">ID: ${questionId} | Никнейм: ${name}</p>
-        <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Статус: <span id="status-${questionId}" class="font-medium">Отправлен</span></p>
-      `;
-      statusList.appendChild(statusEntry);
-
-      // Сохранение статуса
+      // Сохранение статуса (но без отображения, так как statusList нет)
       savedStatuses[questionId] = { nickname: name, status: 'Отправлен' };
       localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
 
       // Отправка формы
       const gotchaField = qaForm.querySelector('input[name="_gotcha"]');
-      if (gotchaField) {
-        gotchaField.value = honeypot;
-      }
+      if (gotchaField) gotchaField.value = honeypot;
       fetch(qaForm.action, {
         method: 'POST',
         body: new FormData(qaForm),
         mode: 'cors'
       }).then(response => {
-        if (!response.ok) {
-          throw new Error('Ошибка сети или сервера');
-        }
+        if (!response.ok) throw new Error('Ошибка сети или сервера');
         return response.text();
       }).then(() => {
         formStatus.textContent = 'Вопрос отправлен! Ваш ID: ' + questionId;
@@ -813,20 +830,17 @@ document.addEventListener('click', (e) => {
         qaForm.reset();
       }).catch(error => {
         formStatus.textContent = 'Ошибка отправки: ' + error.message;
-        document.getElementById(`status-${questionId}`).textContent = 'Ошибка';
-        savedStatuses[questionId].status = 'Ошибка';
+        // savedStatuses[questionId].status = 'Ошибка'; // Без statusList это не отображается
         localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
       });
     });
 
     window.updateQaStatus = (id, status) => {
       const statusElement = document.getElementById(`status-${id}`);
-      if (statusElement) {
+      if (statusElement && savedStatuses[id]) {
         statusElement.textContent = status;
-        if (savedStatuses[id]) {
-          savedStatuses[id].status = status;
-          localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
-        }
+        savedStatuses[id].status = status;
+        localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
       }
     };
 
@@ -846,14 +860,24 @@ document.addEventListener('click', (e) => {
   <script>
     // Лоадер: скрываем после полной загрузки
     window.addEventListener('load', () => {
-      const loader = document.getElementById('loader');
-      const site = document.getElementById('siteContent');
-      loader.classList.add('opacity-0', 'transition', 'duration-700');
-      loader.addEventListener('transitionend', () => {
-        loader.style.display = 'none';
-        site.classList.remove('hidden');
-      });
-    });
+  const loader = document.getElementById('loader');
+  const site = document.getElementById('siteContent');
+  loader.classList.add('opacity-0', 'transition', 'duration-700');
+  loader.addEventListener('transitionend', () => {
+    loader.style.display = 'none';
+    site.classList.remove('hidden');
+  });
+});
+
+// Таймаут на случай ошибок
+setTimeout(() => {
+  const loader = document.getElementById('loader');
+  const site = document.getElementById('siteContent');
+  if (loader && site) {
+    loader.style.display = 'none';
+    site.classList.remove('hidden');
+  }
+}, 10000); // 10 секунд максимум
   </script>
 </body>
 </html>
