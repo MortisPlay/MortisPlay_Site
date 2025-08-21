@@ -775,18 +775,15 @@
       fetch(qaForm.action, {
         method: 'POST',
         body: new FormData(qaForm),
-        mode: 'no-cors' // Устанавливаем no-cors для предотвращения обработки редиректа
-      }).then(response => {
-        if (response.ok) {
-          formStatus.textContent = 'Вопрос отправлен! Ваш ID: ' + questionId;
-          formStatus.classList.remove('text-red-600');
-          formStatus.classList.add('text-green-600');
-          qaForm.reset();
-        } else {
-          throw new Error('Ошибка сервера: ' + response.statusText);
-        }
+        mode: 'no-cors'
+      }).then(() => {
+        // Успех определяется только по завершению запроса
+        formStatus.textContent = 'Вопрос отправлен! Ваш ID: ' + questionId;
+        formStatus.classList.remove('text-red-600');
+        formStatus.classList.add('text-green-600');
+        qaForm.reset();
       }).catch(error => {
-        formStatus.textContent = 'Ошибка отправки: ' + error.message;
+        formStatus.textContent = 'Ошибка отправки: Проверьте подключение или попробуйте позже';
         const answerDiv = qaAnswers.querySelector(`[data-id="${questionId}"]`);
         if (answerDiv) answerDiv.remove(); // Удаляем вопрос при ошибке
         localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
