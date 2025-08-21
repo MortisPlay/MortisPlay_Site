@@ -442,29 +442,25 @@
 
     <!-- Форма -->
     <form id="qaForm" action="https://formspree.io/f/mrblwjva" method="POST" class="mt-8 space-y-4 rounded-2xl p-6 bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700" data-submit-count="0">
-      <input type="hidden" name="_subject" value="Новый вопрос на сайте Mortis Play">
-      <input type="hidden" name="_captcha" value="false">
-      <div style="display:none;" class="honeypot-field">
-        <label for="honeypot">Оставь пустым (для ботов)</label>
-        <input name="honeypot" type="text">
-      </div>
-      <div>
-        <label for="nickname" class="block text-sm font-medium">Никнейм (мин. 3 символа)</label>
-        <input id="nickname" name="nickname" type="text" maxlength="20" required class="mt-1 w-full rounded-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2">
-      </div>
-      <div>
-        <label for="question" class="block text-sm font-medium">Вопрос (мин. 10 символов)</label>
-        <textarea id="question" name="question" rows="4" maxlength="500" required class="mt-1 w-full rounded-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2" placeholder="Введите текст"></textarea>
-      </div>
-      <div>
-        <div class="g-recaptcha" data-sitekey="6Le1hJArAAAAAKnJHHzVWqrqnioE736-NqC67oMR"></div>
-        <p class="mt-2 text-xs text-slate-600">Подтверди, что ты не робот.</p>
-      </div>
-      <button type="submit" class="glass-button">
-        <i class="fa-solid fa-paper-plane"></i> Отправить
-      </button>
-      <div id="formStatus" class="mt-2 text-sm text-red-600"></div> <!-- Для сообщений об ошибке -->
-    </form>
+  <input type="hidden" name="_subject" value="Новый вопрос на сайте Mortis Play">
+  <input type="hidden" name="_gotcha" value="false">
+  <div style="display:none;" class="honeypot-field">
+    <label for="honeypot">Оставь пустым (для ботов)</label>
+    <input name="honeypot" type="text">
+  </div>
+  <div>
+    <label for="nickname" class="block text-sm font-medium">Никнейм (мин. 3 символа)</label>
+    <input id="nickname" name="nickname" type="text" maxlength="20" required class="mt-1 w-full rounded-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2">
+  </div>
+  <div>
+    <label for="question" class="block text-sm font-medium">Вопрос (мин. 10 символов)</label>
+    <textarea id="question" name="question" rows="4" maxlength="500" required class="mt-1 w-full rounded-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2" placeholder="Введите текст"></textarea>
+  </div>
+  <button type="submit" class="glass-button">
+    <i class="fa-solid fa-paper-plane"></i> Отправить
+  </button>
+  <div id="formStatus" class="mt-2 text-sm text-red-600"></div>
+</form>
 
     <!-- Статус вопросов -->
     <div id="qaStatus" class="mt-8 space-y-4">
@@ -722,6 +718,18 @@
     const qaAnswers = document.getElementById('qaAnswers').querySelector('div');
     const formStatus = document.getElementById('formStatus');
 
+    // Восстановление сохранённых статусов
+    const savedStatuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
+    for (const [id, status] of Object.entries(savedStatuses)) {
+      const statusEntry = document.createElement('div');
+      statusEntry.className = 'p-3 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
+      statusEntry.innerHTML = `
+        <p class="text-sm text-slate-600 dark:text-slate-300">ID: ${id} | Никнейм: ${status.nickname}</p>
+        <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Статус: <span id="status-${id}" class="font-medium">${status.status}</span></p>
+      `;
+      statusList.appendChild(statusEntry);
+    }
+
     qaForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const name = qaForm.nickname.value.trim();
@@ -745,7 +753,11 @@
       `;
       statusList.appendChild(statusEntry);
 
-      // Исправленная отправка формы
+      // Сохранение статуса
+      savedStatuses[questionId] = { nickname: name, status: 'Отправлен' };
+      localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
+
+      // Отправка формы
       const gotchaField = qaForm.querySelector('input[name="_gotcha"]');
       if (gotchaField) {
         gotchaField.value = honeypot;
@@ -767,12 +779,20 @@
       }).catch(error => {
         formStatus.textContent = 'Ошибка отправки: ' + error.message;
         document.getElementById(`status-${questionId}`).textContent = 'Ошибка';
+        savedStatuses[questionId].status = 'Ошибка';
+        localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
       });
     });
 
     window.updateQaStatus = (id, status) => {
       const statusElement = document.getElementById(`status-${id}`);
-      if (statusElement) statusElement.textContent = status;
+      if (statusElement) {
+        statusElement.textContent = status;
+        if (savedStatuses[id]) {
+          savedStatuses[id].status = status;
+          localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
+        }
+      }
     };
 
     function addQaAnswer(name, question, answer) {
