@@ -754,9 +754,6 @@
 
     const savedStatuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
 
-    // Вывод всех ID в консоль для отладки
-    console.log('Список всех сохранённых вопросов с ID:', savedStatuses);
-
     qaForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const name = qaForm.nickname.value.trim();
@@ -770,43 +767,34 @@
       }
 
       const questionId = `Q${Date.now()}`;
-      savedStatuses[questionId] = { nickname: name, status: 'Отправлен', question: text };
+      savedStatuses[questionId] = { nickname: name, status: 'Ожидает модерации' };
       localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
+
+      // Добавляем вопрос в интерфейс
+      addQaAnswer(name, text, 'Ожидает модерации');
 
       const gotchaField = qaForm.querySelector('input[name="_gotcha"]');
       if (gotchaField) gotchaField.value = honeypot;
       fetch(qaForm.action, {
         method: 'POST',
         body: new FormData(qaForm),
-        mode: 'no-cors'
+        mode: 'no-cors' // Устанавливаем no-cors для предотвращения обработки редиректа
       }).then(response => {
-        console.log('Fetch completed, response:', response);
-        formStatus.textContent = 'Вопрос отправлен! Ваш ID: ' + questionId;
-        formStatus.classList.remove('text-red-600');
-        formStatus.classList.add('text-green-600');
-        qaForm.reset();
+        if (response.ok) {
+          formStatus.textContent = 'Вопрос отправлен! Ваш ID: ' + questionId;
+          formStatus.classList.remove('text-red-600');
+          formStatus.classList.add('text-green-600');
+          qaForm.reset();
+        } else {
+          throw new Error('Ошибка сервера: ' + response.statusText);
+        }
       }).catch(error => {
-        console.error('Fetch error:', error);
-        formStatus.textContent = 'Ошибка отправки: Проверьте подключение или попробуйте позже';
-        delete savedStatuses[questionId];
+        formStatus.textContent = 'Ошибка отправки: ' + error.message;
+        const answerDiv = qaAnswers.querySelector(`[data-id="${questionId}"]`);
+        if (answerDiv) answerDiv.remove(); // Удаляем вопрос при ошибке
         localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
       });
     });
-
-    window.moderateQuestion = (id, action) => {
-      const statuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
-      if (!statuses[id]) return;
-
-      if (action === 'approve') {
-        addQaAnswer(statuses[id].nickname, statuses[id].question, 'Одобрен');
-        statuses[id].status = 'Одобрен';
-      } else if (action === 'reject') {
-        const questionDiv = qaAnswers.querySelector(`[data-id="${id}"]`);
-        if (questionDiv) questionDiv.remove();
-        delete statuses[id];
-      }
-      localStorage.setItem('qaStatuses', JSON.stringify(statuses));
-    };
 
     window.updateQaStatus = (id, status) => {
       const statusElement = qaAnswers.querySelector(`[data-id="${id}"] p:last-child`);
@@ -814,15 +802,14 @@
         statusElement.textContent = `Статус: ${status}`;
         savedStatuses[id].status = status;
         localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
-      } else if (savedStatuses[id]) {
-        addQaAnswer(savedStatuses[id].nickname, savedStatuses[id].question, status);
       }
     };
 
     function addQaAnswer(name, question, answer) {
+      const questionId = `Q${Date.now()}`; // Уникальный ID
       const div = document.createElement('div');
       div.className = 'p-4 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
-      div.setAttribute('data-id', Object.keys(savedStatuses).find(k => savedStatuses[k].nickname === name && savedStatuses[k].question === question) || `Q${Date.now()}`);
+      div.setAttribute('data-id', questionId); // Добавляем идентификатор
       div.innerHTML = `
         <p class="text-sm text-slate-600 dark:text-slate-300"><strong>Никнейм:</strong> ${name}</p>
         <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Вопрос: ${question}</p>
@@ -831,11 +818,9 @@
       qaAnswers.appendChild(div);
     }
 
-    // Отображаем только модерированные вопросы из сохранённых
+    // Отображаем сохранённые вопросы
     for (let id in savedStatuses) {
-      if (savedStatuses[id].status !== 'Отправлен') {
-        addQaAnswer(savedStatuses[id].nickname, savedStatuses[id].question, savedStatuses[id].status);
-      }
+      addQaAnswer(savedStatuses[id].nickname, 'Вопрос (не отображается)', savedStatuses[id].status);
     }
   });
 
