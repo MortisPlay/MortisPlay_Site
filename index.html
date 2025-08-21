@@ -583,7 +583,7 @@
     </footer>
   </div> <!-- /#siteContent -->
 
-    <!-- Скрипты -->
+      <!-- Скрипты -->
   <script>
     // Автоматическая тема по системным настройкам
     const root = document.documentElement;
@@ -766,17 +766,18 @@
           qaAnswers.appendChild(div);
         }
       });
+    </script>
 
     // Лоадер: скрываем после полной загрузки
     window.addEventListener('load', () => {
-  const loader = document.getElementById('loader');
-  const site = document.getElementById('siteContent');
-  loader.classList.add('opacity-0', 'transition', 'duration-700');
-  loader.addEventListener('transitionend', () => {
-    loader.style.display = 'none';
-    site.classList.remove('hidden');
-  });
-});
+      const loader = document.getElementById('loader');
+      const site = document.getElementById('siteContent');
+      loader.classList.add('opacity-0', 'transition', 'duration-700');
+      loader.addEventListener('transitionend', () => {
+        loader.style.display = 'none';
+        site.classList.remove('hidden');
+      });
+    });
   </script>
 </body>
 </html>
