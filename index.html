@@ -583,7 +583,7 @@
     </footer>
   </div> <!-- /#siteContent -->
 
-      <!-- Скрипты -->
+        <!-- Скрипты -->
   <script>
     // Автоматическая тема по системным настройкам
     const root = document.documentElement;
@@ -647,7 +647,7 @@
       { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
       { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK (ft. Johnny_Drill, sayheyalldayman)' }
     ];
-    const grid = document.querySelector('#videos .mt-8'); // Уточняем селектор
+    const grid = document.querySelector('#videos .mt-8');
     const tpl = document.getElementById('ytCardTpl');
     if (grid && tpl) {
       videoData.forEach(v => {
@@ -701,72 +701,75 @@
       box.appendChild(cap);
       twitchGrid.appendChild(box);
     });
+  </script>
 
+  <script defer>
     // Скрипт для Q&A
-    <script defer>
-      document.addEventListener('DOMContentLoaded', () => {
-        const qaForm = document.getElementById('qaForm');
-        const statusList = document.getElementById('statusList');
-        const qaAnswers = document.getElementById('qaAnswers').querySelector('div');
-        const formStatus = document.getElementById('formStatus');
+    document.addEventListener('DOMContentLoaded', () => {
+      const qaForm = document.getElementById('qaForm');
+      const statusList = document.getElementById('statusList');
+      const qaAnswers = document.getElementById('qaAnswers').querySelector('div');
+      const formStatus = document.getElementById('formStatus');
 
-        qaForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const name = qaForm.nickname.value.trim();
-          const text = qaForm.question.value.trim();
-          const honeypot = qaForm.honeypot.value.trim();
+      qaForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = qaForm.nickname.value.trim();
+        const text = qaForm.question.value.trim();
+        const honeypot = qaForm.honeypot.value.trim();
 
-          if (honeypot) return;
-          if (name.length < 3 || text.length < 10 || !name || !text) {
-            formStatus.textContent = 'Заполните никнейм (мин. 3 символа) и вопрос (мин. 10 символов)!';
-            return;
-          }
-
-          const questionId = `Q${Date.now()}`;
-          const timeSent = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-          const statusEntry = document.createElement('div');
-          statusEntry.className = 'p-3 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
-          statusEntry.innerHTML = `
-            <p class="text-sm text-slate-600 dark:text-slate-300">ID: ${questionId} | Никнейм: ${name}</p>
-            <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Статус: <span id="status-${questionId}" class="font-medium">Отправлен</span></p>
-          `;
-          statusList.appendChild(statusEntry);
-
-          // Отправка формы через Formspree с обработкой
-          qaForm.querySelector('input[name="_gotcha"]').value = honeypot;
-          fetch(qaForm.action, {
-            method: 'POST',
-            body: new FormData(qaForm),
-            mode: 'no-cors' // Formspree не возвращает данные, поэтому no-cors
-          }).then(() => {
-            formStatus.textContent = 'Вопрос отправлен! Ваш ID: ' + questionId;
-            formStatus.classList.remove('text-red-600');
-            formStatus.classList.add('text-green-600');
-            qaForm.reset();
-          }).catch(() => {
-            formStatus.textContent = 'Ошибка отправки. Попробуйте снова.';
-            document.getElementById(`status-${questionId}`).textContent = 'Ошибка';
-          });
-        });
-
-        window.updateQaStatus = (id, status) => {
-          const statusElement = document.getElementById(`status-${id}`);
-          if (statusElement) statusElement.textContent = status;
-        };
-
-        function addQaAnswer(name, question, answer) {
-          const div = document.createElement('div');
-          div.className = 'p-4 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
-          div.innerHTML = `
-            <p class="text-sm text-slate-600 dark:text-slate-300"><strong>Никнейм:</strong> ${name}</p>
-            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Вопрос: ${question}</p>
-            <p class="mt-2 text-sm text-indigo-600 dark:text-indigo-400">Ответ: ${answer}</p>
-          `;
-          qaAnswers.appendChild(div);
+        if (honeypot) return;
+        if (name.length < 3 || text.length < 10 || !name || !text) {
+          formStatus.textContent = 'Заполните никнейм (мин. 3 символа) и вопрос (мин. 10 символов)!';
+          return;
         }
+
+        const questionId = `Q${Date.now()}`;
+        const timeSent = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        const statusEntry = document.createElement('div');
+        statusEntry.className = 'p-3 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
+        statusEntry.innerHTML = `
+          <p class="text-sm text-slate-600 dark:text-slate-300">ID: ${questionId} | Никнейм: ${name}</p>
+          <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Статус: <span id="status-${questionId}" class="font-medium">Отправлен</span></p>
+        `;
+        statusList.appendChild(statusEntry);
+
+        // Отправка формы через Formspree с обработкой
+        qaForm.querySelector('input[name="_gotcha"]').value = honeypot;
+        fetch(qaForm.action, {
+          method: 'POST',
+          body: new FormData(qaForm),
+          mode: 'no-cors' // Formspree не возвращает данные, поэтому no-cors
+        }).then(() => {
+          formStatus.textContent = 'Вопрос отправлен! Ваш ID: ' + questionId;
+          formStatus.classList.remove('text-red-600');
+          formStatus.classList.add('text-green-600');
+          qaForm.reset();
+        }).catch(() => {
+          formStatus.textContent = 'Ошибка отправки. Попробуйте снова.';
+          document.getElementById(`status-${questionId}`).textContent = 'Ошибка';
+        });
       });
 
+      window.updateQaStatus = (id, status) => {
+        const statusElement = document.getElementById(`status-${id}`);
+        if (statusElement) statusElement.textContent = status;
+      };
+
+      function addQaAnswer(name, question, answer) {
+        const div = document.createElement('div');
+        div.className = 'p-4 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
+        div.innerHTML = `
+          <p class="text-sm text-slate-600 dark:text-slate-300"><strong>Никнейм:</strong> ${name}</p>
+          <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Вопрос: ${question}</p>
+          <p class="mt-2 text-sm text-indigo-600 dark:text-indigo-400">Ответ: ${answer}</p>
+        `;
+        qaAnswers.appendChild(div);
+      }
+    });
+  </script>
+
+  <script>
     // Лоадер: скрываем после полной загрузки
     window.addEventListener('load', () => {
       const loader = document.getElementById('loader');
