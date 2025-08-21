@@ -701,7 +701,13 @@ document.addEventListener('click', (e) => {
     }, { threshold: .1 });
     document.querySelectorAll('.fade-in, section').forEach(el => io.observe(el));
 
-    // Видео (RuTube ids)
+    <script>
+  // Инициализация RuTube видео
+  const tpl = document.getElementById('ytCardTpl');
+  const grid = document.querySelector('#videos .mt-8.grid');
+  if (!tpl || !grid) {
+    console.error('Шаблон ytCardTpl или контейнер grid не найдены');
+  } else {
     const videoData = [
       { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning' },
       { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO' },
@@ -710,68 +716,69 @@ document.addEventListener('click', (e) => {
       { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK (ft. Johnny_Drill, sayheyalldayman)' }
     ];
     videoData.forEach(v => {
-  const node = tpl.content.cloneNode(true);
-  const iframe = node.querySelector('iframe');
-  const title = node.querySelector('p');
-  if (iframe && title) {
-    iframe.src = v.src;
-    iframe.setAttribute('title', `Видео: ${v.title}`);
-    title.textContent = v.title;
-    grid.appendChild(node);
-  } else {
-    console.error('Ошибка: шаблон видео повреждён');
-  }
-});
-
-    // Twitch
-    const twitchContent = [
-  { type: 'clip', id: 'OutstandingSmallPeachOneHand-34JGV7ccc7luTPSc', title: 'Отдали раунд на халяву XD' },
-  { type: 'clip', id: 'ResoluteFlaccidFrogTF2John-Rsv5zTsbJDJvqnwD', title: 'XD' },
-  { type: 'clip', id: 'GlutenFreeShortJuiceEleGiggle-Z5e2rv159RqomWb4', title: 'Да что она мне сделает?' },
-  { type: 'clip', id: 'WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3', title: 'ПУНЬК' },
-  { type: 'clip', id: 'CuteCuteOrangeLitFam-IsbKNAtJlF0qnbAE', title: 'Крик помощи' },
-  { type: 'highlight', videoId: '2475851398', startTime: '00:01:52', title: 'На контентик)' }
-];
-
-const twitchGrid = document.getElementById('twitchGrid');
-if (!twitchGrid) {
-  console.error('Элемент twitchGrid не найден в DOM');
-} else {
-  twitchContent.forEach(item => {
-    try {
-      const wrap = document.createElement('div');
-      wrap.className = 'rounded-xl overflow-hidden ring-1 ring-slate-200 dark:ring-slate-700 aspect-video relative'; // Добавлен aspect-video
-      const iframe = document.createElement('iframe');
-      iframe.width = '100%';
-      iframe.height = '100%';
-      iframe.allowFullscreen = true;
-      iframe.title = item.title;
-      iframe.loading = 'lazy';
-      iframe.onerror = () => console.error(`Ошибка загрузки ${item.title}`);
-      const parentHost = location.hostname === 'localhost' ? 'localhost' : 'mortisplay.ru';
-      if (item.type === 'clip') {
-        iframe.src = `https://clips.twitch.tv/embed?clip=${item.id}&parent=${parentHost}`;
+      const node = tpl.content.cloneNode(true);
+      const iframe = node.querySelector('iframe');
+      const title = node.querySelector('p');
+      if (iframe && title) {
+        iframe.src = v.src;
+        iframe.setAttribute('title', `Видео: ${v.title}`);
+        title.textContent = v.title;
+        grid.appendChild(node);
       } else {
-        iframe.src = `https://player.twitch.tv/?video=${item.videoId}&parent=${parentHost}&t=${item.startTime}`;
+        console.error('Ошибка: шаблон видео повреждён');
       }
-      iframe.style.position = 'absolute';
-      iframe.style.top = '0';
-      iframe.style.left = '0';
-      wrap.appendChild(iframe);
-      const cap = document.createElement('p');
-      cap.className = 'px-2 py-1 text-xs text-slate-600 dark:text-slate-300';
-      cap.textContent = item.title;
-      const box = document.createElement('div');
-      box.className = 'space-y-2';
-      box.appendChild(wrap);
-      box.appendChild(cap);
-      twitchGrid.appendChild(box);
-    } catch (e) {
-      console.error(`Ошибка загрузки Twitch контента: ${item.title}`, e);
-    }
-  });
-}
-  </script>
+    });
+  }
+
+  // Twitch клипы (уже есть, но проверим)
+  const twitchContent = [
+    { type: 'clip', id: 'OutstandingSmallPeachOneHand-34JGV7ccc7luTPSc', title: 'Отдали раунд на халяву XD' },
+    { type: 'clip', id: 'ResoluteFlaccidFrogTF2John-Rsv5zTsbJDJvqnwD', title: 'XD' },
+    { type: 'clip', id: 'GlutenFreeShortJuiceEleGiggle-Z5e2rv159RqomWb4', title: 'Да что она мне сделает?' },
+    { type: 'clip', id: 'WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3', title: 'ПУНЬК' },
+    { type: 'clip', id: 'CuteCuteOrangeLitFam-IsbKNAtJlF0qnbAE', title: 'Крик помощи' },
+    { type: 'highlight', videoId: '2475851398', startTime: '00:01:52', title: 'На контентик)' }
+  ];
+
+  const twitchGrid = document.getElementById('twitchGrid');
+  if (!twitchGrid) {
+    console.error('Элемент twitchGrid не найден в DOM');
+  } else {
+    twitchContent.forEach(item => {
+      try {
+        const wrap = document.createElement('div');
+        wrap.className = 'rounded-xl overflow-hidden ring-1 ring-slate-200 dark:ring-slate-700 aspect-video relative';
+        const iframe = document.createElement('iframe');
+        iframe.width = '100%';
+        iframe.height = '100%';
+        iframe.allowFullscreen = true;
+        iframe.title = item.title;
+        iframe.loading = 'lazy';
+        iframe.onerror = () => console.error(`Ошибка загрузки ${item.title}`);
+        const parentHost = location.hostname === 'localhost' ? 'localhost' : 'mortisplay.ru';
+        if (item.type === 'clip') {
+          iframe.src = `https://clips.twitch.tv/embed?clip=${item.id}&parent=${parentHost}`;
+        } else {
+          iframe.src = `https://player.twitch.tv/?video=${item.videoId}&parent=${parentHost}&t=${item.startTime}`;
+        }
+        iframe.style.position = 'absolute';
+        iframe.style.top = '0';
+        iframe.style.left = '0';
+        wrap.appendChild(iframe);
+        const cap = document.createElement('p');
+        cap.className = 'px-2 py-1 text-xs text-slate-600 dark:text-slate-300';
+        cap.textContent = item.title;
+        const box = document.createElement('div');
+        box.className = 'space-y-2';
+        box.appendChild(wrap);
+        box.appendChild(cap);
+        twitchGrid.appendChild(box);
+      } catch (e) {
+        console.error(`Ошибка загрузки Twitch контента: ${item.title}`, e);
+      }
+    });
+  }
+</script>
 
   <script defer>
     // Скрипт для Q&A
