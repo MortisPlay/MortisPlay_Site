@@ -648,7 +648,7 @@
   // Проверка режима разработчика и администратора
   const urlParams = new URLSearchParams(window.location.search);
   const isDevMode = urlParams.get('dev') === 'true';
-  const isAdmin = urlParams.get('admin') === 'true'; // Добавляем параметр для админа
+  const isAdmin = urlParams.get('admin') === 'true';
 
   // Выдвижное меню
   const menuToggle = document.getElementById('menuToggle');
@@ -781,16 +781,22 @@
     const savedStatuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
     qaSection.insertBefore(qaModeration, qaAnswers.nextSibling);
 
-    // Проверка лимита отправки
-    const lastSubmit = localStorage.getItem('lastQaSubmit');
-    const now = Date.now();
-    if (lastSubmit && (now - lastSubmit < 3 * 60 * 1000)) {
-      formStatus.textContent = `Подождите ${Math.ceil((3 * 60 * 1000 - (now - lastSubmit)) / 1000)} секунд перед следующей отправкой!`;
-      return;
+    // Функция проверки лимита
+    function checkSubmitLimit() {
+      const lastSubmit = localStorage.getItem('lastQaSubmit');
+      const now = Date.now();
+      if (lastSubmit && (now - lastSubmit < 3 * 60 * 1000)) {
+        const timeLeft = Math.ceil((3 * 60 * 1000 - (now - lastSubmit)) / 1000);
+        formStatus.textContent = `Подождите ${timeLeft} секунд перед следующей отправкой!`;
+        return false;
+      }
+      return true;
     }
 
     qaForm.addEventListener('submit', (e) => {
       e.preventDefault(); // Блокируем стандартную отправку
+      if (!checkSubmitLimit()) return;
+
       const name = qaForm.nickname.value.trim();
       const text = qaForm.question.value.trim();
       const honeypot = qaForm.honeypot.value.trim();
@@ -804,14 +810,14 @@
       const questionId = `Q${Date.now()}`;
       savedStatuses[questionId] = { nickname: name, status: 'Ожидает модерации', question: text };
       localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
-      localStorage.setItem('lastQaSubmit', now); // Устанавливаем время последней отправки
+      localStorage.setItem('lastQaSubmit', Date.now()); // Устанавливаем время отправки
 
       addQaAnswer(qaModeration.querySelector('div'), name, text, 'Ожидает модерации', questionId);
       formStatus.textContent = `Вопрос отправлен! Ваш ID: ${questionId}. Ожидайте модерацию.`;
       formStatus.classList.remove('text-red-600');
       formStatus.classList.add('text-green-600');
 
-      // Отправка данных через fetch
+      // Отправка данных через fetch без редиректа
       const formData = new FormData(qaForm);
       fetch(qaForm.action, {
         method: 'POST',
@@ -826,7 +832,7 @@
     });
 
     window.moderateQuestion = (id, action) => {
-      if (!isAdmin) return; // Ограничиваем модерацию только для админа
+      if (!isAdmin) return;
       const statuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
       if (!statuses[id]) return;
 
