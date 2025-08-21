@@ -766,12 +766,12 @@
     const qaModeration = document.createElement('div');
     qaModeration.id = 'qaModeration';
     qaModeration.innerHTML = '<h3 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">На модерации</h3><div class="grid grid-cols-1 gap-4 mt-2"></div>';
-    const qaAnswers = document.getElementById('qaAnswers').querySelector('div');
+    const qaAnswers = document.getElementById('qaAnswers');
     qaAnswers.innerHTML = '<h3 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">Лучшие вопросы</h3><div class="grid grid-cols-1 gap-4 mt-2"></div>';
     const formStatus = document.getElementById('formStatus');
 
     const savedStatuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
-    qaSection.insertBefore(qaModeration, qaAnswers);
+    qaSection.insertBefore(qaModeration, qaAnswers.nextSibling); // Убеждаемся, что вставка корректна
 
     qaForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -805,21 +805,22 @@
       const answerDiv = moderationDiv.querySelector(`[data-id="${id}"]`);
 
       if (action === 'approve') {
-        statuses[id].status = 'Одобрен';
         if (answerDiv) {
-          answerDiv.querySelector('p:last-child').textContent = 'Статус: Одобрен';
+          statuses[id].status = 'Одобрен';
+          const statusElement = answerDiv.querySelector('p:last-child');
+          if (statusElement) statusElement.textContent = 'Статус: Одобрен';
           answerDiv.querySelectorAll('button').forEach(btn => btn.remove());
           answersDiv.appendChild(answerDiv);
           formStatus.textContent = `Вопрос с ID ${id} одобрен и добавлен в "Лучшие вопросы"!`;
           formStatus.classList.add('text-green-600');
-          setTimeout(() => formStatus.textContent = '', 5000); // Убираем уведомление через 5 секунд
+          setTimeout(() => formStatus.textContent = '', 5000);
         }
       } else if (action === 'reject') {
         if (answerDiv) answerDiv.remove();
         delete statuses[id];
         formStatus.textContent = `Вопрос с ID ${id} отклонён.`;
         formStatus.classList.add('text-red-600');
-        setTimeout(() => formStatus.textContent = '', 5000); // Убираем уведомление через 5 секунд
+        setTimeout(() => formStatus.textContent = '', 5000);
       }
       localStorage.setItem('qaStatuses', JSON.stringify(statuses));
     };
