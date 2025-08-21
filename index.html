@@ -773,12 +773,14 @@
         method: 'POST',
         body: new FormData(qaForm),
         mode: 'no-cors'
-      }).then(() => {
+      }).then(response => {
+        console.log('Fetch completed, response:', response); // Отладка
         formStatus.textContent = 'Вопрос отправлен! Ваш ID: ' + questionId;
         formStatus.classList.remove('text-red-600');
         formStatus.classList.add('text-green-600');
         qaForm.reset();
       }).catch(error => {
+        console.error('Fetch error:', error); // Отладка
         formStatus.textContent = 'Ошибка отправки: Проверьте подключение или попробуйте позже';
         delete savedStatuses[questionId]; // Удаляем запись при ошибке
         localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
