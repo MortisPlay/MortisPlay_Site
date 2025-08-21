@@ -813,16 +813,19 @@
       localStorage.setItem('lastQaSubmit', Date.now()); // Устанавливаем время отправки
 
       addQaAnswer(qaModeration.querySelector('div'), name, text, 'Ожидает модерации', questionId);
-      formStatus.textContent = `Вопрос отправлен! Ваш ID: ${questionId}. Ожидайте модерацию.`;
+      formStatus.textContent = `Вопрос отправлен! Ваш ID: ${questionId}. Подтверждение в новой вкладке.`;
       formStatus.classList.remove('text-red-600');
       formStatus.classList.add('text-green-600');
 
-      // Отправка данных через fetch без редиректа
+      // Отправка данных через fetch и открытие новой вкладки
       const formData = new FormData(qaForm);
       fetch(qaForm.action, {
         method: 'POST',
         body: formData,
         mode: 'no-cors'
+      }).then(() => {
+        // Открываем страницу Formspree в новой вкладке (пример URL)
+        window.open('https://formspree.io/thanks', '_blank', 'width=400,height=600,left=' + (window.screen.width - 400) + ',top=100');
       }).catch(error => {
         formStatus.textContent = 'Ошибка отправки на сервер, но вопрос сохранён локально.';
         formStatus.classList.add('text-red-600');
