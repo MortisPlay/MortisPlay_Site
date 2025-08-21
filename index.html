@@ -764,11 +764,8 @@
       }
 
       const questionId = `Q${Date.now()}`;
-      savedStatuses[questionId] = { nickname: name, status: 'Ожидает модерации' };
+      savedStatuses[questionId] = { nickname: name, status: 'Отправлен' };
       localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
-
-      // Добавляем вопрос в интерфейс
-      addQaAnswer(name, text, 'Ожидает модерации');
 
       const gotchaField = qaForm.querySelector('input[name="_gotcha"]');
       if (gotchaField) gotchaField.value = honeypot;
@@ -777,15 +774,13 @@
         body: new FormData(qaForm),
         mode: 'no-cors'
       }).then(() => {
-        // Успех определяется только по завершению запроса
         formStatus.textContent = 'Вопрос отправлен! Ваш ID: ' + questionId;
         formStatus.classList.remove('text-red-600');
         formStatus.classList.add('text-green-600');
         qaForm.reset();
       }).catch(error => {
         formStatus.textContent = 'Ошибка отправки: Проверьте подключение или попробуйте позже';
-        const answerDiv = qaAnswers.querySelector(`[data-id="${questionId}"]`);
-        if (answerDiv) answerDiv.remove(); // Удаляем вопрос при ошибке
+        delete savedStatuses[questionId]; // Удаляем запись при ошибке
         localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
       });
     });
@@ -796,11 +791,14 @@
         statusElement.textContent = `Статус: ${status}`;
         savedStatuses[id].status = status;
         localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
+      } else if (savedStatuses[id]) {
+        // Добавляем вопрос только если его ещё нет
+        addQaAnswer(savedStatuses[id].nickname, 'Вопрос (не отображается)', status);
       }
     };
 
     function addQaAnswer(name, question, answer) {
-      const questionId = `Q${Date.now()}`; // Уникальный ID
+      const questionId = `Q${Date.now()}`; // Уникальный ID (используем для модерации)
       const div = document.createElement('div');
       div.className = 'p-4 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
       div.setAttribute('data-id', questionId); // Добавляем идентификатор
@@ -812,9 +810,11 @@
       qaAnswers.appendChild(div);
     }
 
-    // Отображаем сохранённые вопросы
+    // Отображаем только модерированные вопросы из сохранённых
     for (let id in savedStatuses) {
-      addQaAnswer(savedStatuses[id].nickname, 'Вопрос (не отображается)', savedStatuses[id].status);
+      if (savedStatuses[id].status !== 'Отправлен') {
+        addQaAnswer(savedStatuses[id].nickname, 'Вопрос (не отображается)', savedStatuses[id].status);
+      }
     }
   });
 
