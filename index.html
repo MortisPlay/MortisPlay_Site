@@ -645,9 +645,10 @@
     setTheme(e.matches ? 'dark' : 'light');
   });
 
-  // Проверка режима разработчика
+  // Проверка режима разработчика и администратора
   const urlParams = new URLSearchParams(window.location.search);
   const isDevMode = urlParams.get('dev') === 'true';
+  const isAdmin = urlParams.get('admin') === 'true'; // Добавляем параметр для админа
 
   // Выдвижное меню
   const menuToggle = document.getElementById('menuToggle');
@@ -763,7 +764,7 @@
       qaSection.innerHTML = `
         <div class="mx-auto max-w-5xl px-4 py-16 text-center">
           <h2 class="text-2xl md:text-3xl font-bold text-red-600 dark:text-red-400">Q&A временно закрыт</h2>
-          <p class="mt-2 text-slate-600 dark:text-slate-300">Раздел находится на доработке. Следите за новостями!</p>
+          <p class="mt-2 text-slate-600 dark:text-slate-300">Раздел находится на доработке. Следите за новостями! Используйте режим разработчика (?dev=true) для тестирования.</p>
         </div>
       `;
       return;
@@ -780,8 +781,16 @@
     const savedStatuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
     qaSection.insertBefore(qaModeration, qaAnswers.nextSibling);
 
+    // Проверка лимита отправки
+    const lastSubmit = localStorage.getItem('lastQaSubmit');
+    const now = Date.now();
+    if (lastSubmit && (now - lastSubmit < 3 * 60 * 1000)) {
+      formStatus.textContent = `Подождите ${Math.ceil((3 * 60 * 1000 - (now - lastSubmit)) / 1000)} секунд перед следующей отправкой!`;
+      return;
+    }
+
     qaForm.addEventListener('submit', (e) => {
-      e.preventDefault(); // Предотвращаем стандартную отправку формы
+      e.preventDefault(); // Блокируем стандартную отправку
       const name = qaForm.nickname.value.trim();
       const text = qaForm.question.value.trim();
       const honeypot = qaForm.honeypot.value.trim();
@@ -795,18 +804,19 @@
       const questionId = `Q${Date.now()}`;
       savedStatuses[questionId] = { nickname: name, status: 'Ожидает модерации', question: text };
       localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
+      localStorage.setItem('lastQaSubmit', now); // Устанавливаем время последней отправки
 
       addQaAnswer(qaModeration.querySelector('div'), name, text, 'Ожидает модерации', questionId);
       formStatus.textContent = `Вопрос отправлен! Ваш ID: ${questionId}. Ожидайте модерацию.`;
       formStatus.classList.remove('text-red-600');
       formStatus.classList.add('text-green-600');
 
-      // Отправка данных через fetch без редиректа
+      // Отправка данных через fetch
       const formData = new FormData(qaForm);
       fetch(qaForm.action, {
         method: 'POST',
         body: formData,
-        mode: 'no-cors' // Фоновая отправка без обработки ответа
+        mode: 'no-cors'
       }).catch(error => {
         formStatus.textContent = 'Ошибка отправки на сервер, но вопрос сохранён локально.';
         formStatus.classList.add('text-red-600');
@@ -816,6 +826,7 @@
     });
 
     window.moderateQuestion = (id, action) => {
+      if (!isAdmin) return; // Ограничиваем модерацию только для админа
       const statuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
       if (!statuses[id]) return;
 
@@ -852,10 +863,7 @@
         <p class="text-sm text-slate-600 dark:text-slate-300"><strong>Никнейм:</strong> ${name}</p>
         <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Вопрос: ${question}</p>
         <p class="mt-2 text-sm text-indigo-600 dark:text-indigo-400">Статус: ${answer}</p>
-        <div class="mt-2 flex gap-2">
-          <button onclick="moderateQuestion('${id}', 'approve')" class="glass-button px-3 py-1 text-xs">Одобрить</button>
-          <button onclick="moderateQuestion('${id}', 'reject')" class="glass-button px-3 py-1 text-xs">Отклонить</button>
-        </div>
+        ${isAdmin ? '<div class="mt-2 flex gap-2"><button onclick="moderateQuestion(\'' + id + '\', \'approve\')" class="glass-button px-3 py-1 text-xs">Одобрить</button><button onclick="moderateQuestion(\'' + id + '\', \'reject\')" class="glass-button px-3 py-1 text-xs">Отклонить</button></div>' : ''}
       `;
       container.appendChild(div);
     }
