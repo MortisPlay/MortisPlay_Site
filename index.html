@@ -487,6 +487,9 @@
     <label for="question" class="block text-sm font-medium">Вопрос (мин. 10 символов)</label>
     <textarea id="question" name="question" rows="4" maxlength="500" required class="mt-1 w-full rounded-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2" placeholder="Введите текст"></textarea>
   </div>
+  <!-- Добавляем reCAPTCHA -->
+  <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <button type="submit" class="glass-button">
     <i class="fa-solid fa-paper-plane"></i> Отправить
   </button>
@@ -764,7 +767,7 @@
       }
 
       const questionId = `Q${Date.now()}`;
-      savedStatuses[questionId] = { nickname: name, status: 'Отправлен' };
+      savedStatuses[questionId] = { nickname: name, status: 'Отправлен', question: text };
       localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
 
       const gotchaField = qaForm.querySelector('input[name="_gotcha"]');
@@ -774,18 +777,35 @@
         body: new FormData(qaForm),
         mode: 'no-cors'
       }).then(response => {
-        console.log('Fetch completed, response:', response); // Отладка
+        console.log('Fetch completed, response:', response);
         formStatus.textContent = 'Вопрос отправлен! Ваш ID: ' + questionId;
         formStatus.classList.remove('text-red-600');
         formStatus.classList.add('text-green-600');
         qaForm.reset();
       }).catch(error => {
-        console.error('Fetch error:', error); // Отладка
+        console.error('Fetch error:', error);
         formStatus.textContent = 'Ошибка отправки: Проверьте подключение или попробуйте позже';
-        delete savedStatuses[questionId]; // Удаляем запись при ошибке
+        delete savedStatuses[questionId];
         localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
       });
     });
+
+    window.moderateQuestion = (id, action) => {
+      const statuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
+      if (!statuses[id]) return;
+
+      if (action === 'approve') {
+        // Добавляем вопрос в интерфейс с статусом "Одобрен"
+        addQaAnswer(statuses[id].nickname, statuses[id].question, 'Одобрен');
+        statuses[id].status = 'Одобрен';
+      } else if (action === 'reject') {
+        // Удаляем вопрос из интерфейса и localStorage
+        const questionDiv = qaAnswers.querySelector(`[data-id="${id}"]`);
+        if (questionDiv) questionDiv.remove();
+        delete statuses[id];
+      }
+      localStorage.setItem('qaStatuses', JSON.stringify(statuses));
+    };
 
     window.updateQaStatus = (id, status) => {
       const statusElement = qaAnswers.querySelector(`[data-id="${id}"] p:last-child`);
@@ -794,16 +814,14 @@
         savedStatuses[id].status = status;
         localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
       } else if (savedStatuses[id]) {
-        // Добавляем вопрос только если его ещё нет
-        addQaAnswer(savedStatuses[id].nickname, 'Вопрос (не отображается)', status);
+        addQaAnswer(savedStatuses[id].nickname, savedStatuses[id].question, status);
       }
     };
 
     function addQaAnswer(name, question, answer) {
-      const questionId = `Q${Date.now()}`; // Уникальный ID (используем для модерации)
       const div = document.createElement('div');
       div.className = 'p-4 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
-      div.setAttribute('data-id', questionId); // Добавляем идентификатор
+      div.setAttribute('data-id', Object.keys(savedStatuses).find(k => savedStatuses[k].nickname === name && savedStatuses[k].question === question) || `Q${Date.now()}`);
       div.innerHTML = `
         <p class="text-sm text-slate-600 dark:text-slate-300"><strong>Никнейм:</strong> ${name}</p>
         <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Вопрос: ${question}</p>
@@ -815,7 +833,7 @@
     // Отображаем только модерированные вопросы из сохранённых
     for (let id in savedStatuses) {
       if (savedStatuses[id].status !== 'Отправлен') {
-        addQaAnswer(savedStatuses[id].nickname, 'Вопрос (не отображается)', savedStatuses[id].status);
+        addQaAnswer(savedStatuses[id].nickname, savedStatuses[id].question, savedStatuses[id].status);
       }
     }
   });
