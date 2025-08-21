@@ -771,10 +771,10 @@
     const formStatus = document.getElementById('formStatus');
 
     const savedStatuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
-    qaSection.insertBefore(qaModeration, qaAnswers.nextSibling); // Убеждаемся, что вставка корректна
+    qaSection.insertBefore(qaModeration, qaAnswers.nextSibling);
 
     qaForm.addEventListener('submit', (e) => {
-      e.preventDefault();
+      e.preventDefault(); // Предотвращаем стандартную отправку формы
       const name = qaForm.nickname.value.trim();
       const text = qaForm.question.value.trim();
       const honeypot = qaForm.honeypot.value.trim();
@@ -793,6 +793,18 @@
       formStatus.textContent = `Вопрос отправлен! Ваш ID: ${questionId}. Ожидайте модерацию.`;
       formStatus.classList.remove('text-red-600');
       formStatus.classList.add('text-green-600');
+
+      // Отправка данных через fetch без редиректа
+      const formData = new FormData(qaForm);
+      fetch(qaForm.action, {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors' // Фоновая отправка без обработки ответа
+      }).catch(error => {
+        formStatus.textContent = 'Ошибка отправки на сервер, но вопрос сохранён локально.';
+        formStatus.classList.add('text-red-600');
+      });
+
       qaForm.reset();
     });
 
