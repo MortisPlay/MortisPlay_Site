@@ -491,8 +491,8 @@
         <label for="question" class="block text-sm font-medium">Вопрос (мин. 10 символов)</label>
         <textarea id="question" name="question" rows="4" maxlength="500" required class="mt-1 w-full rounded-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2" placeholder="Введите текст"></textarea>
       </div>
-      <!-- reCAPTCHA v2 -->
-      <div class="g-recaptcha" data-sitekey="6LeOTa4rAAAAAHoa6EQL0zS3OrAj8dsyM92IcFNb"></div>
+      <!-- reCAPTCHA v2 с callback -->
+      <div class="g-recaptcha" data-sitekey="6LeOTa4rAAAAAHoa6EQL0zS3OrAj8dsyM92IcFNb" data-callback="onRecaptchaSuccess"></div>
       <button type="submit" class="glass-button" id="submitBtn" disabled>
         <i class="fa-solid fa-paper-plane"></i> Отправить
       </button>
@@ -513,6 +513,7 @@
 
 <!-- Подключение reCAPTCHA -->
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <!-- Контакты -->
     <section id="contact" class="py-16 bg-slate-50 dark:bg-slate-900/40">
       <div class="mx-auto max-w-5xl px-4">
@@ -788,7 +789,7 @@
     const formStatus = document.getElementById('formStatus');
     const submitBtn = document.getElementById('submitBtn');
 
-    // Обработчик reCAPTCHA v2 (автоматически активируется после выбора)
+    // Обработчик reCAPTCHA v2
     window.onRecaptchaSuccess = (token) => {
       submitBtn.disabled = false;
       console.log('reCAPTCHA v2 token получен:', token); // Для отладки
