@@ -464,26 +464,25 @@
     <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Задавай вопросы — публикуем лучшие после модерации.</p>
 
     <!-- Форма -->
-    <form id="qaForm" class="mt-8 space-y-4 rounded-2xl p-6 bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700" data-submit-count="0">
+    <form id="qaForm" action="javascript:void(0);" onsubmit="handleSubmit(event)" class="mt-8 space-y-4 rounded-2xl p-6 bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700">
       <input type="hidden" name="_gotcha" value="false">
       <div style="display:none;" class="honeypot-field">
         <label for="honeypot">Оставь пустым (для ботов)</label>
         <input name="honeypot" type="text">
       </div>
       <div>
-        <label for="nickname" class="block text-sm font-medium">Никнейм (мин. 3 символа)</label>
+        <label for="nickname" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Никнейм (мин. 3 символа)</label>
         <input id="nickname" name="nickname" type="text" maxlength="20" required class="mt-1 w-full rounded-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2">
       </div>
       <div>
-        <label for="question" class="block text-sm font-medium">Вопрос (мин. 10 символов)</label>
+        <label for="question" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Вопрос (мин. 10 символов)</label>
         <textarea id="question" name="question" rows="4" maxlength="500" required class="mt-1 w-full rounded-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-3 py-2" placeholder="Введите текст"></textarea>
       </div>
-      <!-- reCAPTCHA v2 с callback -->
       <div class="g-recaptcha" data-sitekey="6LeOTa4rAAAAAHoa6EQL0zS3OrAj8dsyM92IcFNb" data-callback="onRecaptchaSuccess"></div>
-      <button type="submit" class="glass-button" id="submitBtn" disabled>
+      <div id="formStatus" class="mt-2 text-sm text-red-600 dark:text-red-400"></div>
+      <button type="submit" id="submitBtn" class="glass-button w-full" disabled>
         <i class="fa-solid fa-paper-plane"></i> Отправить
       </button>
-      <div id="formStatus" class="mt-2 text-sm text-red-600"></div>
     </form>
 
     <!-- Секции ответов -->
@@ -497,9 +496,6 @@
     </div>
   </div>
 </section>
-
-<!-- Подключение reCAPTCHA -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <!-- Контакты -->
     <section id="contact" class="py-16 bg-slate-50 dark:bg-slate-900/40">
@@ -758,9 +754,74 @@
   }
 
   // Q&A
+  function handleSubmit(event) {
+    event.preventDefault(); // Блокируем перезагрузку
+    console.log('Форма отправляется...'); // Отладка
+
+    const form = document.getElementById('qaForm');
+    const formStatus = document.getElementById('formStatus');
+    const submitBtn = document.getElementById('submitBtn');
+    const name = form.nickname.value.trim();
+    const text = form.question.value.trim();
+    const honeypot = form.honeypot.value.trim();
+    const response = grecaptcha.getResponse();
+
+    if (honeypot) return;
+    if (name.length < 3 || text.length < 10 || !name || !text) {
+      formStatus.textContent = 'Заполните никнейм (мин. 3 символа) и вопрос (мин. 10 символов)!';
+      return;
+    }
+    if (!response) {
+      formStatus.textContent = 'Пройдите проверку reCAPTCHA!';
+      return;
+    }
+
+    const questionId = `Q${Date.now()}`;
+    const savedStatuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
+    savedStatuses[questionId] = { nickname: name, status: 'Ожидает модерации', question: text };
+    localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
+    localStorage.setItem('lastQaSubmit', Date.now());
+
+    const qaModeration = document.querySelector('#qaModeration div');
+    if (qaModeration) {
+      const div = document.createElement('div');
+      div.className = 'p-4 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
+      div.setAttribute('data-id', questionId);
+      div.innerHTML = `
+        <p class="text-sm text-slate-600 dark:text-slate-300"><strong>Никнейм:</strong> ${name}</p>
+        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Вопрос: ${text}</p>
+        <p class="mt-2 text-sm text-indigo-600 dark:text-indigo-400">Статус: Ожидает модерации</p>
+      `;
+      qaModeration.appendChild(div);
+    }
+
+    formStatus.textContent = `Вопрос отправлен! Ваш ID: ${questionId}. Ожидайте модерацию.`;
+    formStatus.classList.remove('text-red-600');
+    formStatus.classList.add('text-green-600');
+
+    console.log('Вопрос сохранён, ID:', questionId); // Отладка
+
+    // Сохранение режима разработчика
+    if (isDevMode) {
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set('dev', 'true');
+      window.history.pushState({}, document.title, currentUrl.toString());
+    }
+
+    // Сброс формы и reCAPTCHA
+    grecaptcha.reset();
+    form.reset();
+    submitBtn.disabled = true;
+  }
+
+  window.onRecaptchaSuccess = (token) => {
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = false;
+    console.log('reCAPTCHA v2 token получен:', token); // Отладка
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     const qaSection = document.getElementById('qa');
-    console.log('Проверка Q&A:', { isDevMode, qaClosed }); // Отладка
     if (!isDevMode && qaClosed) {
       qaSection.innerHTML = `
         <div class="mx-auto max-w-5xl px-4 py-16 text-center">
@@ -771,154 +832,22 @@
       return;
     }
 
-    const qaForm = document.getElementById('qaForm');
-    const qaModeration = document.createElement('div');
-    qaModeration.id = 'qaModeration';
-    qaModeration.innerHTML = '<h3 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">На модерации</h3><div class="grid grid-cols-1 gap-4 mt-2"></div>';
-    const qaAnswers = document.getElementById('qaAnswers');
-    qaAnswers.innerHTML = '<h3 class="text-xl font-semibold text-indigo-600 dark:text-indigo-400">Лучшие вопросы</h3><div class="grid grid-cols-1 gap-4 mt-2"></div>';
-    const formStatus = document.getElementById('formStatus');
-    const submitBtn = document.getElementById('submitBtn');
-
-    // Обработчик reCAPTCHA v2
-    window.onRecaptchaSuccess = (token) => {
-      submitBtn.disabled = false;
-      console.log('reCAPTCHA v2 token получен:', token); // Для отладки
-    };
-
     const savedStatuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
-    qaSection.insertBefore(qaModeration, qaAnswers.nextSibling);
-
-    // Функция проверки лимита
-    function checkSubmitLimit() {
-      const lastSubmit = localStorage.getItem('lastQaSubmit');
-      const now = Date.now();
-      if (lastSubmit && (now - lastSubmit < 3 * 60 * 1000)) {
-        const timeLeft = Math.ceil((3 * 60 * 1000 - (now - lastSubmit)) / 1000);
-        formStatus.textContent = `Подождите ${timeLeft} секунд перед следующей отправкой!`;
-        return false;
-      }
-      return true;
-    }
-
-    qaForm.addEventListener('submit', (e) => {
-      e.preventDefault(); // Блокируем перезагрузку
-      console.log('Форма отправляется...'); // Отладка
-
-      if (!checkSubmitLimit()) return;
-
-      const name = qaForm.nickname.value.trim();
-      const text = qaForm.question.value.trim();
-      const honeypot = qaForm.honeypot.value.trim();
-      const response = grecaptcha.getResponse();
-
-      console.log('Данные формы:', { name, text, honeypot, response }); // Отладка
-
-      if (honeypot) return;
-      if (name.length < 3 || text.length < 10 || !name || !text) {
-        formStatus.textContent = 'Заполните никнейм (мин. 3 символа) и вопрос (мин. 10 символов)!';
-        return;
-      }
-      if (!response) {
-        formStatus.textContent = 'Пройдите проверку reCAPTCHA!';
-        return;
-      }
-
-      const questionId = `Q${Date.now()}`;
-      savedStatuses[questionId] = { nickname: name, status: 'Ожидает модерации', question: text };
-      localStorage.setItem('qaStatuses', JSON.stringify(savedStatuses));
-      localStorage.setItem('lastQaSubmit', Date.now());
-
-      addQaAnswer(qaModeration.querySelector('div'), name, text, 'Ожидает модерации', questionId);
-      formStatus.textContent = `Вопрос отправлен! Ваш ID: ${questionId}. Ожидайте модерацию.`;
-      formStatus.classList.remove('text-red-600');
-      formStatus.classList.add('text-green-600');
-
-      console.log('Вопрос сохранён, ID:', questionId); // Отладка
-
-      // Сохранение режима разработчика в URL
-      const currentUrl = new URL(window.location.href);
-      if (isDevMode) {
-        currentUrl.searchParams.set('dev', 'true');
-        window.history.pushState({}, document.title, currentUrl.toString());
-      }
-
-      // Сброс reCAPTCHA и формы
-      grecaptcha.reset();
-      qaForm.reset();
-
-      // Вариант 2: Автоматическая синхронизация в режиме разработчика
-      if (isDevMode && isAdmin) {
-        const devModeration = document.querySelector('#qaModeration div');
-        if (devModeration) {
-          addQaAnswer(devModeration, name, text, 'Ожидает модерации', questionId);
-        }
-      }
-    });
-
-    window.moderateQuestion = (id, action) => {
-      if (!isAdmin) return;
-      const statuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
-      if (!statuses[id]) return;
-
-      const moderationDiv = document.querySelector('#qaModeration div');
-      const answersDiv = document.querySelector('#qaAnswers div');
-      const answerDiv = moderationDiv.querySelector(`[data-id="${id}"]`);
-
-      if (action === 'approve') {
-        if (answerDiv) {
-          statuses[id].status = 'Одобрен';
-          const statusElement = answerDiv.querySelector('p:last-child');
-          if (statusElement) statusElement.textContent = 'Статус: Одобрен';
-          answerDiv.querySelectorAll('button').forEach(btn => btn.remove());
-          answersDiv.appendChild(answerDiv);
-          formStatus.textContent = `Вопрос с ID ${id} одобрен и добавлен в "Лучшие вопросы"!`;
-          formStatus.classList.add('text-green-600');
-          setTimeout(() => formStatus.textContent = '', 5000);
-        }
-      } else if (action === 'reject') {
-        if (answerDiv) {
-          answerDiv.remove();
-          delete statuses[id];
-          formStatus.textContent = `Вопрос с ID ${id} отклонён.`;
-          formStatus.classList.add('text-red-600');
-          setTimeout(() => formStatus.textContent = '', 5000);
-        }
-      }
-      localStorage.setItem('qaStatuses', JSON.stringify(statuses));
-    };
-
-    // Вариант 1: Ручная проверка ID в консоли
-    window.checkQuestionById = (id) => {
-      if (!isAdmin || !isDevMode) return;
-      const statuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
-      const question = statuses[id];
-      if (question) {
-        const moderationDiv = document.querySelector('#qaModeration div');
-        addQaAnswer(moderationDiv, question.nickname, question.question, question.status, id);
-        console.log(`Вопрос с ID ${id} добавлен в модерацию.`);
-      } else {
-        console.log(`Вопрос с ID ${id} не найден.`);
-      }
-    };
-
-    function addQaAnswer(container, name, question, answer, id) {
-      const div = document.createElement('div');
-      div.className = 'p-4 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
-      div.setAttribute('data-id', id);
-      div.innerHTML = `
-        <p class="text-sm text-slate-600 dark:text-slate-300"><strong>Никнейм:</strong> ${name}</p>
-        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Вопрос: ${question}</p>
-        <p class="mt-2 text-sm text-indigo-600 dark:text-indigo-400">Статус: ${answer}</p>
-        ${isAdmin ? '<div class="mt-2 flex gap-2"><button onclick="moderateQuestion(\'' + id + '\', \'approve\')" class="glass-button px-3 py-1 text-xs">Принять</button><button onclick="moderateQuestion(\'' + id + '\', \'reject\')" class="glass-button px-3 py-1 text-xs">Отклонить</button></div>' : ''}
-      `;
-      container.appendChild(div);
-    }
-
-    // Отображаем сохранённые вопросы
+    const qaModeration = document.querySelector('#qaModeration div');
+    const qaAnswers = document.querySelector('#qaAnswers div');
     for (let id in savedStatuses) {
-      const container = savedStatuses[id].status === 'Ожидает модерации' ? qaModeration.querySelector('div') : qaAnswers.querySelector('div');
-      addQaAnswer(container, savedStatuses[id].nickname, savedStatuses[id].question, savedStatuses[id].status, id);
+      const container = savedStatuses[id].status === 'Ожидает модерации' ? qaModeration : qaAnswers;
+      if (container) {
+        const div = document.createElement('div');
+        div.className = 'p-4 rounded-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
+        div.setAttribute('data-id', id);
+        div.innerHTML = `
+          <p class="text-sm text-slate-600 dark:text-slate-300"><strong>Никнейм:</strong> ${savedStatuses[id].nickname}</p>
+          <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Вопрос: ${savedStatuses[id].question}</p>
+          <p class="mt-2 text-sm text-indigo-600 dark:text-indigo-400">Статус: ${savedStatuses[id].status}</p>
+        `;
+        container.appendChild(div);
+      }
     }
   });
 
