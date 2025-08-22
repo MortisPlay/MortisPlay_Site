@@ -770,7 +770,7 @@
     });
   }
 
-  // Q&A
+    // Q&A
   document.addEventListener('DOMContentLoaded', () => {
     const qaSection = document.getElementById('qa');
     console.log('Проверка Q&A:', { isDevMode, qaClosed }); // Отладка
@@ -848,6 +848,13 @@
       formStatus.classList.add('text-green-600');
 
       console.log('Вопрос сохранён, ID:', questionId); // Отладка
+
+      // Сохранение режима разработчика в URL
+      const currentUrl = new URL(window.location.href);
+      if (isDevMode) {
+        currentUrl.searchParams.set('dev', 'true');
+        window.history.pushState({}, document.title, currentUrl.toString());
+      }
 
       // Сброс reCAPTCHA и формы
       grecaptcha.reset();
