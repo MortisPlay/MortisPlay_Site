@@ -609,7 +609,7 @@
   // Модал обновлений
   const whatsNewBtn = document.getElementById('whatsNewBtn');
   const updateModal = document.getElementById('updateModal');
-  const UPDATE_KEY = 'mp_update_seen_1_18_3';
+  const UPDATE_KEY = 'mp_update_seen_1_18_2';
   if (localStorage.getItem(UPDATE_KEY) === '1') whatsNewBtn.classList.add('hidden');
   whatsNewBtn?.addEventListener('click', () => updateModal.classList.remove('hidden'));
   updateModal?.addEventListener('click', e => {
@@ -656,7 +656,8 @@
   }
 
   // Twitch клипы (только в режиме разработчика)
-  function renderTwitchClips() {    
+  function renderTwitchClips() {
+    if (!isDevMode) return;
     const faqSection = document.querySelector('#faq');
     if (!faqSection) return;
     const faqTitle = faqSection.querySelector('h2'); // Заголовок FAQ
