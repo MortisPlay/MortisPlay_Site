@@ -662,17 +662,26 @@
     });
   }
 
-    // Twitch клипы (только в режиме разработчика)
+      // Twitch клипы (только в режиме разработчика)
   function renderTwitchClips() {
     if (!isDevMode) return;
     const faqSection = document.querySelector('#faq');
     if (!faqSection) return;
-    const faqTitle = faqSection.querySelector('h2'); // Находим заголовок FAQ
+    const faqTitle = faqSection.querySelector('h2'); // Заголовок FAQ
     if (!faqTitle) return;
+
+    // Добавляем заголовок "Клипы Twitch" под FAQ
+    const twitchTitle = document.createElement('h3');
+    twitchTitle.textContent = 'Клипы Twitch';
+    twitchTitle.className = 'text-xl font-semibold text-slate-900 dark:text-white mt-4'; // Стиль заголовка
+    faqSection.insertBefore(twitchTitle, faqTitle.nextSibling);
+
+    // Добавляем контейнер для клипов
     const twitchGrid = document.createElement('div');
     twitchGrid.id = 'twitchGrid';
-    twitchGrid.className = 'mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'; // Адаптивный grid
-    faqSection.appendChild(twitchGrid); // Простая вставка в конец секции FAQ
+    twitchGrid.className = 'mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+    faqSection.insertBefore(twitchGrid, twitchTitle.nextSibling); // Клипы под новым заголовком
+
     if (window.innerWidth >= 640) {
       const twitchContent = [
         { type: 'clip', id: 'OutstandingSmallPeachOneHand-34JGV7ccc7luTPSc', title: 'Отдали раунд на халяву XD' },
@@ -684,7 +693,7 @@
       ];
       twitchContent.forEach(item => {
         try {
-          const iframe = document.createElement('iframe'); // Прямой iframe
+          const iframe = document.createElement('iframe');
           iframe.width = '100%';
           iframe.height = '300px';
           iframe.allowFullscreen = true;
@@ -697,7 +706,7 @@
           const cap = document.createElement('p');
           cap.className = 'px-2 py-1 text-xs text-slate-600 dark:text-slate-300';
           cap.textContent = item.title;
-          const box = document.createElement('div'); // Минимальная обёртка без стилей
+          const box = document.createElement('div');
           box.appendChild(iframe);
           box.appendChild(cap);
           twitchGrid.appendChild(box);
