@@ -657,7 +657,6 @@
 
   // Twitch клипы (только в режиме разработчика)
   function renderTwitchClips() {
-    if (!isDevMode) return;
     const faqSection = document.querySelector('#faq');
     if (!faqSection) return;
     const faqTitle = faqSection.querySelector('h2'); // Заголовок FAQ
