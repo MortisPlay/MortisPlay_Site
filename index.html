@@ -626,9 +626,21 @@
     }
   });
 
-  // Fade-in
-  new IntersectionObserver(entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('is-visible')), { threshold: 0.1 })
-    .observe(document.querySelectorAll('.fade-in, section'));
+  // Fade-in с проверкой
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('is-visible');
+    });
+  }, { threshold: 0.1 });
+  const fadeElements = document.querySelectorAll('.fade-in, section');
+  if (fadeElements.length > 0) {
+    fadeElements.forEach(el => {
+      if (el instanceof Element) io.observe(el); // Проверяем, что элемент валиден
+      else console.warn('Невалидный элемент для fade-in:', el);
+    });
+  } else {
+    console.warn('Нет элементов для fade-in');
+  }
 
   // RuTube видео
   const tpl = document.getElementById('ytCardTpl');
@@ -675,7 +687,7 @@
           wrap.className = 'rounded-xl overflow-hidden ring-1 ring-slate-200 dark:ring-slate-700 relative';
           const iframe = document.createElement('iframe');
           iframe.width = '100%';
-          iframe.height = '300px'; // Увеличим высоту
+          iframe.height = '300px';
           iframe.allowFullscreen = true;
           iframe.title = item.title;
           iframe.loading = 'lazy';
@@ -699,7 +711,7 @@
     }
   }
 
-  // Лоадер с отладкой
+  // Лоадер
   window.addEventListener('load', () => {
     console.log('Загрузка завершена'); // Отладка
     const loader = document.getElementById('loader');
@@ -727,7 +739,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     if (isDevMode) {
       console.log('Режим разработчика активен');
-      renderTwitchClips();
+      try { renderTwitchClips(); } catch (e) { console.error('Ошибка в Twitch-клипах:', e); }
     }
   });
 </script>
