@@ -585,7 +585,7 @@
   </div> <!-- /#siteContent -->
 
         <!-- Скрипты -->
-  <script nonce="${nonce}">
+ <script nonce="${nonce}">
   // Автоматическая тема по системным настройкам
   const root = document.documentElement;
   const setTheme = (theme) => {
@@ -627,7 +627,7 @@
   // Обновления (модал) и кнопка «Что нового»
   const whatsNewBtn = document.getElementById('whatsNewBtn');
   const updateModal = document.getElementById('updateModal');
-  const UPDATE_KEY = 'mp_update_seen_1_18_1';
+  const UPDATE_KEY = 'mp_update_seen_1_18_2';
   const seen = localStorage.getItem(UPDATE_KEY) === '1';
   if (seen) whatsNewBtn.classList.add('hidden');
   whatsNewBtn.addEventListener('click', () => updateModal.classList.remove('hidden'));
@@ -673,7 +673,7 @@
     });
   }
 
-  // Twitch клипы (удаляем на мобильных)
+  // Twitch клипы (только в режиме разработчика для теста)
   const twitchContent = [
     { type: 'clip', id: 'OutstandingSmallPeachOneHand-34JGV7ccc7luTPSc', title: 'Отдали раунд на халяву XD' },
     { type: 'clip', id: 'ResoluteFlaccidFrogTF2John-Rsv5zTsbJDJvqnwD', title: 'XD' },
@@ -682,41 +682,45 @@
     { type: 'clip', id: 'CuteCuteOrangeLitFam-IsbKNAtJlF0qnbAE', title: 'Крик помощи' },
     { type: 'highlight', videoId: '2475851398', startTime: '00:01:52', title: 'На контентик)' }
   ];
-  const twitchGrid = document.getElementById('twitchGrid');
-  if (twitchGrid && window.innerWidth >= 641) {
-    twitchContent.forEach(item => {
-      try {
-        const wrap = document.createElement('div');
-        wrap.className = 'rounded-xl overflow-hidden ring-1 ring-slate-200 dark:ring-slate-700 aspect-video relative';
-        const iframe = document.createElement('iframe');
-        iframe.width = '100%';
-        iframe.height = '100%';
-        iframe.allowFullscreen = true;
-        iframe.title = item.title;
-        iframe.loading = 'lazy';
-        iframe.onerror = () => console.error(`Ошибка загрузки ${item.title}`);
-        const parentHost = location.hostname === 'localhost' ? 'localhost' : 'mortisplay.ru';
-        if (item.type === 'clip') {
-          iframe.src = `https://clips.twitch.tv/embed?clip=${item.id}&parent=${parentHost}`;
-        } else {
-          iframe.src = `https://player.twitch.tv/?video=${item.videoId}&parent=${parentHost}&t=${item.startTime}`;
+  function renderTwitchClips() {
+    if (!isDevMode) return; // Отключаем в основной версии до теста
+    const twitchGrid = document.getElementById('twitchGrid');
+    if (twitchGrid && window.innerWidth >= 640) { // Убираем на мобильных (<640px)
+      twitchGrid.classList.add('grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3', 'gap-6'); // Делаем шире
+      twitchContent.forEach(item => {
+        try {
+          const wrap = document.createElement('div');
+          wrap.className = 'rounded-xl overflow-hidden ring-1 ring-slate-200 dark:ring-slate-700 aspect-video relative';
+          const iframe = document.createElement('iframe');
+          iframe.width = '100%';
+          iframe.height = '100%';
+          iframe.allowFullscreen = true;
+          iframe.title = item.title;
+          iframe.loading = 'lazy';
+          iframe.onerror = () => console.error(`Ошибка загрузки ${item.title}`);
+          const parentHost = location.hostname === 'localhost' ? 'localhost' : 'mortisplay.ru';
+          if (item.type === 'clip') {
+            iframe.src = `https://clips.twitch.tv/embed?clip=${item.id}&parent=${parentHost}`;
+          } else {
+            iframe.src = `https://player.twitch.tv/?video=${item.videoId}&parent=${parentHost}&t=${item.startTime}`;
+          }
+          iframe.style.position = 'absolute';
+          iframe.style.top = '0';
+          iframe.style.left = '0';
+          wrap.appendChild(iframe);
+          const cap = document.createElement('p');
+          cap.className = 'px-2 py-1 text-xs text-slate-600 dark:text-slate-300';
+          cap.textContent = item.title;
+          const box = document.createElement('div');
+          box.className = 'space-y-2';
+          box.appendChild(wrap);
+          box.appendChild(cap);
+          twitchGrid.appendChild(box);
+        } catch (e) {
+          console.error(`Ошибка загрузки Twitch контента: ${item.title}`, e);
         }
-        iframe.style.position = 'absolute';
-        iframe.style.top = '0';
-        iframe.style.left = '0';
-        wrap.appendChild(iframe);
-        const cap = document.createElement('p');
-        cap.className = 'px-2 py-1 text-xs text-slate-600 dark:text-slate-300';
-        cap.textContent = item.title;
-        const box = document.createElement('div');
-        box.className = 'space-y-2';
-        box.appendChild(wrap);
-        box.appendChild(cap);
-        twitchGrid.appendChild(box);
-      } catch (e) {
-        console.error(`Ошибка загрузки Twitch контента: ${item.title}`, e);
-      }
-    });
+      });
+    }
   }
 
   // Лоадер
@@ -742,21 +746,10 @@
   function showDevContent() {
     if (!isDevMode) return;
     console.log('Режим разработчика активен, отображаю тестовый контент');
-
-    // Пример: добавим тестовый раздел (убери или замени на реальный)
-    const devSection = document.createElement('section');
-    devSection.id = 'devTest';
-    devSection.className = 'py-16 bg-yellow-50 dark:bg-yellow-900/40';
-    devSection.innerHTML = `
-      <div class="mx-auto max-w-5xl px-4 text-center">
-        <h2 class="text-2xl md:text-3xl font-bold text-yellow-600 dark:text-yellow-300">Тестовый раздел (Dev Mode)</h2>
-        <p class="mt-2 text-slate-600 dark:text-slate-300">Это видно только в режиме разработчика (?dev=true)!</p>
-      </div>
-    `;
-    document.getElementById('siteContent').appendChild(devSection);
+    renderTwitchClips(); // Тестим Twitch-клипы
   }
 
-  // Вызов функции после загрузки
+  // Вызов функций после загрузки
   document.addEventListener('DOMContentLoaded', showDevContent);
 </script>
 </body>
