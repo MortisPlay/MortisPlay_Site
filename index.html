@@ -849,6 +849,16 @@
         container.appendChild(div);
       }
     }
+
+    // Инициализация reCAPTCHA
+    if (!grecaptcha || typeof grecaptcha.render !== 'function') {
+      console.error('reCAPTCHA библиотека не загрузилась. Проверь подключение.');
+      return;
+    }
+    grecaptcha.render('g-recaptcha', {
+      sitekey: '6LeOTa4rAAAAAHoa6EQL0zS3OrAj8dsyM92IcFNb',
+      callback: 'onRecaptchaSuccess'
+    });
   });
 
   // Лоадер
