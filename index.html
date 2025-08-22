@@ -155,6 +155,10 @@
     }
   });
 </script>
+   <!-- В <head> -->
+<!-- Подключение reCAPTCHA -->
+<script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer>
+</script>
 </head>
 
 <body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100 selection:bg-indigo-200 selection:text-slate-900">
@@ -466,6 +470,7 @@
     </section>
 
     <!-- Q&A -->
+<!-- В <section id="qa"> -->
 <section id="qa" class="py-16">
   <div class="mx-auto max-w-5xl px-4">
     <h2 class="text-center text-2xl md:text-3xl font-bold">Q&A (Вопросы и ответы)</h2>
@@ -505,9 +510,6 @@
     </div>
   </div>
 </section>
-
-<!-- Подключение reCAPTCHA -->
-<script src="https://www.google.com/recaptcha/api.js?render=6LeGOq4rAAAAAHCGQio9UAAKDdFFYZ9g0WbHME-n" async defer></script>
     <!-- Контакты -->
     <section id="contact" class="py-16 bg-slate-50 dark:bg-slate-900/40">
       <div class="mx-auto max-w-5xl px-4">
@@ -783,6 +785,21 @@
     const formStatus = document.getElementById('formStatus');
     const submitBtn = document.getElementById('submitBtn');
 
+    // Инициализация reCAPTCHA
+    window.onRecaptchaLoad = () => {
+      grecaptcha.render('recaptcha-container', {
+        'sitekey': '6LeGOq4rAAAAAHCGQio9UAAKDdFFYZ9g0WbHME-n',
+        'callback': 'onRecaptchaSuccess',
+        'action': 'submit'
+      });
+    };
+
+    // Обработчик reCAPTCHA
+    window.onRecaptchaSuccess = (token) => {
+      submitBtn.disabled = false;
+      console.log('reCAPTCHA token получен:', token); // Для отладки
+    };
+
     const savedStatuses = JSON.parse(localStorage.getItem('qaStatuses') || '{}');
     qaSection.insertBefore(qaModeration, qaAnswers.nextSibling);
 
@@ -797,11 +814,6 @@
       }
       return true;
     }
-
-    // Обработчик reCAPTCHA
-    window.onRecaptchaSuccess = (token) => {
-      submitBtn.disabled = false;
-    };
 
     qaForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -920,6 +932,13 @@
       loader.style.display = 'none';
       site.classList.remove('hidden');
     });
+
+    // Инициализация reCAPTCHA после загрузки
+    if (typeof grecaptcha !== 'undefined') {
+      window.onRecaptchaLoad();
+    } else {
+      console.error('reCAPTCHA не загружен. Проверь подключение к сети или ключ.');
+    }
   });
   setTimeout(() => {
     const loader = document.getElementById('loader');
