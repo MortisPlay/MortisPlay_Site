@@ -639,6 +639,7 @@
   // Автоматическая тема по системным настройкам
   const root = document.documentElement;
   const setTheme = (theme) => {
+    console.log('Установка темы:', theme); // Отладка
     localStorage.setItem('theme', theme);
     root.classList.toggle('dark', theme === 'dark');
   };
@@ -651,6 +652,7 @@
     setTheme('light');
   }
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    console.log('Смена системной темы:', e.matches ? 'dark' : 'light'); // Отладка
     setTheme(e.matches ? 'dark' : 'light');
   });
 
@@ -659,6 +661,7 @@
   const isDevMode = urlParams.get('dev') === 'true';
   const isAdmin = urlParams.get('admin') === 'true';
   const qaClosed = localStorage.getItem('qaClosed') === 'true'; // Флаг закрытия Q&A
+  console.log('Режимы:', { isDevMode, isAdmin, qaClosed }); // Отладка
 
   // Выдвижное меню
   const menuToggle = document.getElementById('menuToggle');
@@ -770,6 +773,7 @@
   // Q&A
   document.addEventListener('DOMContentLoaded', () => {
     const qaSection = document.getElementById('qa');
+    console.log('Проверка Q&A:', { isDevMode, qaClosed }); // Отладка
     if (!isDevMode && qaClosed) {
       qaSection.innerHTML = `
         <div class="mx-auto max-w-5xl px-4 py-16 text-center">
@@ -811,13 +815,17 @@
     }
 
     qaForm.addEventListener('submit', (e) => {
-      e.preventDefault();
+      e.preventDefault(); // Блокируем перезагрузку
+      console.log('Форма отправляется...'); // Отладка
+
       if (!checkSubmitLimit()) return;
 
       const name = qaForm.nickname.value.trim();
       const text = qaForm.question.value.trim();
       const honeypot = qaForm.honeypot.value.trim();
       const response = grecaptcha.getResponse();
+
+      console.log('Данные формы:', { name, text, honeypot, response }); // Отладка
 
       if (honeypot) return;
       if (name.length < 3 || text.length < 10 || !name || !text) {
@@ -838,6 +846,8 @@
       formStatus.textContent = `Вопрос отправлен! Ваш ID: ${questionId}. Ожидайте модерацию.`;
       formStatus.classList.remove('text-red-600');
       formStatus.classList.add('text-green-600');
+
+      console.log('Вопрос сохранён, ID:', questionId); // Отладка
 
       // Сброс reCAPTCHA и формы
       grecaptcha.reset();
@@ -906,7 +916,7 @@
         <p class="text-sm text-slate-600 dark:text-slate-300"><strong>Никнейм:</strong> ${name}</p>
         <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Вопрос: ${question}</p>
         <p class="mt-2 text-sm text-indigo-600 dark:text-indigo-400">Статус: ${answer}</p>
-        ${isAdmin ? '<div class="mt-2 flex gap-2"><button onclick="moderateQuestion(\'' + id + '\', \'approve\')" class="glass-button px-3 py-1 text-xs">Принять</button><button onclick="moderateQuestion(\'' + id + '\', \'reject\')" class="glass-button px-3 py-1 text-xs">Отклонить</button></div>' : ''}
+        ${isAdmin ? '<div class="mt-2 flex gap-2'><button onclick="moderateQuestion(\'' + id + '\', \'approve\')" class="glass-button px-3 py-1 text-xs">Принять</button><button onclick="moderateQuestion(\'' + id + '\', \'reject\')" class="glass-button px-3 py-1 text-xs">Отклонить</button></div>' : ''}
       `;
       container.appendChild(div);
     }
