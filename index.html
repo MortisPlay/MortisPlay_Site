@@ -25,10 +25,15 @@
   <!-- Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
   <!-- Генерация nonce -->
-  <script>
-    const nonce = crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '');
-    document.write(`<script nonce="${nonce}" id="gtagScript">window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-W7QBLDDSSK');</script>`);
-  </script>
+  <!-- Генерация nonce и подключение Google Analytics -->
+<script>
+  const nonce = crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '');
+  const script = document.createElement('script');
+  script.nonce = nonce;
+  script.id = 'gtagScript';
+  script.innerHTML = `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-W7QBLDDSSK');`;
+  document.head.appendChild(script);
+</script>
 
   <!-- UI -->
   <script src="https://cdn.tailwindcss.com" defer></script>
