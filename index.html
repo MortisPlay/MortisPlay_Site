@@ -602,7 +602,7 @@
   // Модал обновлений
   const whatsNewBtn = document.getElementById('whatsNewBtn');
   const updateModal = document.getElementById('updateModal');
-  const UPDATE_KEY = 'mp_update_seen_1_18_2';
+  const UPDATE_KEY = 'mp_update_seen_1_18_3';
   if (localStorage.getItem(UPDATE_KEY) === '1') whatsNewBtn.classList.add('hidden');
   whatsNewBtn?.addEventListener('click', () => updateModal.classList.remove('hidden'));
   updateModal?.addEventListener('click', e => {
