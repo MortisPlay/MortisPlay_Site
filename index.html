@@ -546,13 +546,6 @@
             </summary>
             <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Перейди в Q&A и отправь свой вопрос.</div>
           </details>
-          <details class="group p-5">
-            <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-              Куда подевались Клипы с Twittch на мобильной версии?
-              <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-            </summary>
-            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Дело в том чтобы не нагружать ваш телефон, мы их убрали. На ПК Версии мы оставили эту возможность но сейчас она работает не так как нужно, в будущих обновлениях мы это исправим:)</div>
-          </details>
         </div>
       </div>
     </section>
@@ -565,11 +558,11 @@
       <h3 id="updateTitle" class="text-lg font-bold">Последние обновления</h3>
       <button class="rounded-lg px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800" data-close-modal aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <p class="mt-3 text-sm">Версия 1.18.1 (22 августа 2025):</p>
+    <p class="mt-3 text-sm">Версия 1.18.3 (22 августа 2025):</p>
     <ul class="mt-2 list-disc ml-5 text-sm text-slate-700 dark:text-slate-300">
-      <li>Удалён раздел Q&A.</li>
-      <li>Исправлена ошибка с отображением Twitch-клипов на ПК.</li>
-      <li>Исправлен баг с символом "`);`".</li>
+      <li>Перенесён раздел "Клипы с Twitch" под FAQ.</li>
+      <li>Исправлена ошибка из за которого клипы не работали стабильно</li>
+      <li>Вернули клипы на мобильной версии</li>
     </ul>
     <div class="mt-4 text-right">
       <button data-close-modal class="glass-button">Ок</button>
@@ -580,7 +573,7 @@
     <!-- Футер -->
     <footer class="border-t border-slate-200/60 dark:border-slate-700/60 py-8">
       <div class="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-sm opacity-80">© 2025 Mortis Play. Все права защищены. Версия 1.18.1</p>
+        <p class="text-sm opacity-80">© 2025 Mortis Play. Все права защищены. Версия 1.18.3</p>
       </div>
     </footer>
   </div> <!-- /#siteContent -->
@@ -616,7 +609,7 @@
   // Модал обновлений
   const whatsNewBtn = document.getElementById('whatsNewBtn');
   const updateModal = document.getElementById('updateModal');
-  const UPDATE_KEY = 'mp_update_seen_1_18_2';
+  const UPDATE_KEY = 'mp_update_seen_1_18_3';
   if (localStorage.getItem(UPDATE_KEY) === '1') whatsNewBtn.classList.add('hidden');
   whatsNewBtn?.addEventListener('click', () => updateModal.classList.remove('hidden'));
   updateModal?.addEventListener('click', e => {
@@ -663,8 +656,7 @@
   }
 
   // Twitch клипы (только в режиме разработчика)
-  function renderTwitchClips() {
-    if (!isDevMode) return;
+  function renderTwitchClips() {    
     const faqSection = document.querySelector('#faq');
     if (!faqSection) return;
     const faqTitle = faqSection.querySelector('h2'); // Заголовок FAQ
