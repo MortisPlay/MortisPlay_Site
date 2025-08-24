@@ -81,13 +81,9 @@
   #loginModal {
     display: none;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) !important; /* Принудительное применение */
+    inset: 0; /* Заменяем top/left/width/height на inset для полноты */
     background: rgba(0, 0, 0, 0.5);
     z-index: 10000;
-    width: 100vw; /* Полная ширина экрана */
-    height: 100vh; /* Полная высота экрана */
     outline: 1px solid red; /* Отладка: видимая граница */
   }
 
@@ -107,6 +103,7 @@
     max-width: 400px;
     color: #ffffff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translate(-50%, -50%); /* Переносим трансформацию сюда */
   }
 
   .dark #loginModal .modal-content {
@@ -114,6 +111,7 @@
     border-color: rgba(200, 200, 200, 0.2);
   }
 
+  /* Остальные стили для .modal-content и вкладок остаются без изменений */
   #loginModal .modal-content input {
     width: 100%;
     padding: 0.5rem;
