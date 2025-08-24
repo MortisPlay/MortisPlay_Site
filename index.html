@@ -79,6 +79,7 @@
     justify-content: center;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
+    padding: 0; /* Убираем лишние отступы */
   }
 
   #loginModal.active {
@@ -95,6 +96,8 @@
     max-width: 400px;
     color: #ffffff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 0 auto; /* Центрирование по горизонтали */
+    transform: translateY(0); /* Убираем смещение по вертикали */
   }
 
   .dark #loginModal .modal-content {
@@ -270,7 +273,7 @@
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
         </div>
         <!-- Обновлённая кнопка профиля (только в dev-режиме) -->
-<div class="profile-button" id="profileButton" style="display: none;" data-dev-only>
+<div class="profile-button" id="profileButton" style="display: none; right: 1rem; top: 1rem;" data-dev-only>
   <button class="glass-button" id="profileAction">
     <i class="fa-solid fa-user-circle"></i> Профиль
   </button>
@@ -906,7 +909,6 @@ if (isDevMode) {
     }
   });
 }
-
     // В скрипте после загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM загружен, запуск клипов');
