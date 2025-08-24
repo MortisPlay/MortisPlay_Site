@@ -63,27 +63,38 @@
     }
 
     /* Кнопка профиля */
+  .profile-button {
+    position: fixed; /* Изменено с absolute на fixed */
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+  }
+
+  @media (max-width: 640px) {
     .profile-button {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      z-index: 10;
+      top: 0.5rem;
+      right: 0.5rem;
     }
+  }
 
     /* Модальное окно для входа/регистрации */
   #loginModal {
     display: none;
     position: fixed;
-    inset: 0;
-    align-items: center;
-    justify-content: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
-    padding: 0; /* Убираем лишние отступы */
+    padding: 0;
+    width: 100%;
+    height: 100%;
   }
 
   #loginModal.active {
     display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #loginModal .modal-content {
@@ -96,8 +107,6 @@
     max-width: 400px;
     color: #ffffff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 0 auto; /* Центрирование по горизонтали */
-    transform: translateY(0); /* Убираем смещение по вертикали */
   }
 
   .dark #loginModal .modal-content {
@@ -273,15 +282,16 @@
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
         </div>
         <!-- Обновлённая кнопка профиля (только в dev-режиме) -->
-<div class="profile-button" id="profileButton" style="display: none; right: 1rem; top: 1rem;" data-dev-only>
+<!-- Обновлённая кнопка профиля (только в dev-режиме) -->
+<div class="profile-button" id="profileButton" style="display: none;" data-dev-only>
   <button class="glass-button" id="profileAction">
     <i class="fa-solid fa-user-circle"></i> Профиль
   </button>
 </div>
       </nav>
        <!-- Модальное окно для входа/регистрации -->
-<div id="loginModal" class="fixed inset-0 hidden items-center justify-center p-4 bg-black/50 z-[60]" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-  <div class="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 p-6 shadow-2xl">
+<div id="loginModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <div class="modal-content">
     <div class="flex items-center justify-between">
       <h3 id="loginTitle" class="text-lg font-bold">Вход/Регистрация</h3>
       <button class="rounded-lg px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800" id="closeLoginModal" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
