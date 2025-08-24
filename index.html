@@ -81,9 +81,12 @@
   #loginModal {
     display: none;
     position: fixed;
-    inset: 0; /* Полный экран */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Явно задаём ширину */
+    height: 100vh; /* Явно задаём высоту */
     background: rgba(0, 0, 0, 0.5);
-    z-index: 100000; /* Увеличен для приоритета */
+    z-index: 100000;
     outline: 1px solid red; /* Отладка */
   }
 
@@ -110,6 +113,7 @@
     border-color: rgba(200, 200, 200, 0.2);
   }
 
+  /* Остальные стили остаются без изменений */
   #loginModal .modal-content input {
     width: 100%;
     padding: 0.5rem;
@@ -656,24 +660,7 @@
       </div>
     </section>
 
-    <!-- Модальное окно по центру -->
-    <div id="updateModal" class="fixed inset-0 hidden items-center justify-center p-4 bg-black/50 z-[60]" role="dialog" aria-modal="true" aria-labelledby="updateTitle">
-      <div class="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 p-6 shadow-2xl">
-        <div class="flex items-center justify-between">
-          <h3 id="updateTitle" class="text-lg font-bold">Последние обновления</h3>
-          <button class="rounded-lg px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800" data-close-modal aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <p class="mt-3 text-sm">Версия 1.18.3 (22 августа 2025):</p>
-        <ul class="mt-2 list-disc ml-5 text-sm text-slate-700 dark:text-slate-300">
-          <li>Перенесён раздел "Клипы с Twitch" под FAQ.</li>
-          <li>Исправлена ошибка из за которого клипы не работали стабильно</li>
-          <li>Вернули клипы на мобильной версии</li>
-        </ul>
-        <div class="mt-4 text-right">
-          <button data-close-modal class="glass-button">Ок</button>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- Футер -->
     <footer class="border-t border-slate-200/60 dark:border-slate-700/60 py-8">
@@ -711,19 +698,7 @@
         document.getElementById('sidebarMenu').classList.remove('open');
     });
 
-    // Модал обновлений
-    const whatsNewBtn = document.getElementById('whatsNewBtn');
-    const updateModal = document.getElementById('updateModal');
-    const UPDATE_KEY = 'mp_update_seen_1_18_3';
-    if (localStorage.getItem(UPDATE_KEY) === '1') whatsNewBtn.classList.add('hidden');
-    whatsNewBtn?.addEventListener('click', () => updateModal.classList.remove('hidden'));
-    updateModal?.addEventListener('click', e => {
-      if (e.target === updateModal || e.target.closest('[data-close-modal]')) {
-        updateModal.classList.add('hidden');
-        localStorage.setItem(UPDATE_KEY, '1');
-        whatsNewBtn.classList.add('hidden');
-      }
-    });
+    
 
     // Fade-in с проверкой
     const io = new IntersectionObserver(entries => {
