@@ -88,12 +88,15 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 100000;
     outline: 1px solid red; /* Отладка */
+    opacity: 0; /* Начальная прозрачность */
+    transition: opacity 0.3s ease; /* Плавная анимация */
   }
 
   #loginModal.active {
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 1; /* Конечная прозрачность */
   }
 
   #loginModal .modal-content {
@@ -356,9 +359,6 @@
                 <i class="fa-solid fa-user"></i>
                 Обо мне
               </a>
-              <button id="whatsNewBtn" class="animate-pulse glass-button">
-                <i class="fa-solid fa-sparkles"></i> Обновление! Что нового?
-              </button>
             </div>
 
             <div class="mt-6 flex items-center gap-6 text-sm text-slate-600 dark:text-slate-300">
