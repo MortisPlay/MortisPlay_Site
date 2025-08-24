@@ -79,7 +79,6 @@
 
   /* Модальное окно для входа/регистрации */
   #loginModal {
-    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -89,14 +88,16 @@
     z-index: 100000;
     outline: 1px solid red; /* Отладка */
     opacity: 0; /* Начальная прозрачность */
+    visibility: hidden; /* Скрытие без удаления из потока */
     transition: opacity 0.3s ease; /* Плавная анимация */
   }
 
   #loginModal.active {
-    display: flex;
+    visibility: visible; /* Показываем элемент */
+    opacity: 1; /* Конечная прозрачность */
+    display: flex; /* Включаем flex после показа */
     align-items: center;
     justify-content: center;
-    opacity: 1; /* Конечная прозрачность */
   }
 
   #loginModal .modal-content {
@@ -848,10 +849,11 @@
     profileAction?.addEventListener('click', () => {
       console.log('Клик по кнопке профиля, открываем модальное окно');
       if (loginModal) {
-        const modalContent = loginModal.querySelector('.modal-content');
-        if (!modalContent) console.error('Элемент .modal-content не найден внутри #loginModal');
         loginModal.classList.add('active');
-        console.log('Класс .active добавлен, стили:', window.getComputedStyle(loginModal).transform);
+        // Небольшая задержка для плавности (опционально)
+        setTimeout(() => {
+          console.log('Класс .active добавлен, стили:', window.getComputedStyle(loginModal).transform);
+        }, 10);
       } else {
         console.error('Элемент #loginModal не найден');
       }
