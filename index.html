@@ -64,9 +64,56 @@
 
     /* Кнопка профиля */
   .profile-button {
-    position: static; /* Снимаем fixed/absolute */
+    position: static;
     z-index: 10;
-    margin-left: auto; /* Пушим кнопку вправо */
+    margin-left: auto;
+  }
+
+  .profile-button .glass-button {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .profile-button .glass-button.login {
+    background: rgba(255, 0, 0, 0.2); /* Красный фон для "Войти" */
+    border-color: rgba(255, 0, 0, 0.5);
+  }
+
+  .profile-button .glass-button.profile {
+    background: rgba(128, 128, 128, 0.2); /* Серый фон для "Профиль" */
+    border-color: rgba(128, 128, 128, 0.5);
+  }
+
+  .profile-button .glass-button:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+  }
+
+  .profile-button .glass-button:active {
+    transform: scale(0.98);
+  }
+
+  .dark .profile-button .glass-button {
+    background: rgba(50, 50, 50, 0.15);
+    border-color: rgba(200, 200, 200, 0.2);
+  }
+
+  .dark .profile-button .glass-button.login {
+    background: rgba(255, 0, 0, 0.2);
+    border-color: rgba(255, 0, 0, 0.5);
+  }
+
+  .dark .profile-button .glass-button.profile {
+    background: rgba(128, 128, 128, 0.2);
+    border-color: rgba(128, 128, 128, 0.5);
   }
 
   @media (max-width: 640px) {
@@ -75,89 +122,126 @@
       top: 0.5rem;
       right: 0.5rem;
     }
+    .profile-button .glass-button {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
   }
 
- /* Модальное окно для входа/регистрации */
+  /* Модальное окно для входа/регистрации */
   #loginModal {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw; /* Явно задаём ширину */
-    height: 100vh; /* Явно задаём высоту */
+    width: 100vw;
+    height: 100vh;
     background: rgba(0, 0, 0, 0.5);
     z-index: 100000;
-    opacity: 0; /* Начальная прозрачность */
-    visibility: hidden; /* Скрытие без удаления из потока */
-    transition: opacity 0.3s ease; /* Плавная анимация (оставляем на случай, если передумаешь) */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
   }
 
   #loginModal.active {
-    visibility: visible; /* Показываем элемент */
-    opacity: 1; /* Конечная прозрачность */
-    display: flex; /* Включаем flex после показа */
+    visibility: visible;
+    opacity: 1;
+    display: flex;
     align-items: center;
     justify-content: center;
   }
 
   #loginModal .modal-content {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 0.75rem;
-    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(0, 123, 255, 0.2), rgba(0, 123, 255, 0.1));
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(0, 123, 255, 0.4);
+    border-radius: 1rem;
+    padding: 2rem;
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     color: #ffffff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    overflow-y: auto;
+    max-height: 80vh;
   }
 
   .dark #loginModal .modal-content {
-    background: rgba(50, 50, 50, 0.15);
-    border-color: rgba(200, 200, 200, 0.2);
+    background: linear-gradient(135deg, rgba(0, 80, 160, 0.2), rgba(0, 80, 160, 0.1));
+    border-color: rgba(0, 80, 160, 0.4);
   }
 
-  /* Остальные стили остаются без изменений */
+  #loginModal .modal-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  #loginModal .modal-content .tab-content {
+    margin-top: 1rem;
+  }
+
   #loginModal .modal-content input {
     width: 100%;
-    padding: 0.5rem;
-    margin: 0.5rem 0;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.75rem;
+    margin: 0.75rem 0;
+    border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 0.5rem;
     background: rgba(255, 255, 255, 0.1);
     color: #ffffff;
+    transition: border-color 0.3s ease;
+  }
+
+  #loginModal .modal-content input:focus {
+    border-color: rgba(0, 123, 255, 0.7);
+    outline: none;
   }
 
   #loginModal .modal-content input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.7);
   }
 
   #loginModal .modal-content button {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
     width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background: rgba(0, 123, 255, 0.3);
+    border: none;
+    color: #ffffff;
+    transition: background 0.3s ease;
+  }
+
+  #loginModal .modal-content button:hover {
+    background: rgba(0, 123, 255, 0.5);
   }
 
   #loginModal .tab-buttons {
     display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
   }
 
   #loginModal .tab-buttons button {
     flex: 1;
-    padding: 0.5rem;
+    padding: 0.75rem;
     border: none;
     border-radius: 0.5rem;
     background: rgba(255, 255, 255, 0.2);
     cursor: pointer;
+    transition: background 0.3s ease;
   }
 
   #loginModal .tab-buttons button.active {
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(0, 123, 255, 0.3);
+  }
+
+  #loginModal .tab-buttons button:hover {
+    background: rgba(255, 255, 255, 0.3);
   }
 
   @media (max-width: 640px) {
     #loginModal .modal-content {
-      padding: 1rem;
+      padding: 1.5rem;
+      max-width: 90%;
     }
   }
 
@@ -308,12 +392,11 @@
       <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
       <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
     </div>
-    <!-- Обновлённая кнопка профиля (только в dev-режиме) -->
     <div class="profile-button" id="profileButton" style="display: none;" data-dev-only>
-      <button class="glass-button" id="profileAction">
-        <i class="fa-solid fa-user-circle"></i> Профиль
-      </button>
-    </div>
+  <button class="glass-button" id="profileAction">
+    <i class="fa-solid fa-user-circle"></i> <span id="profileText">Войти</span>
+  </button>
+</div>
   </nav>
   <!-- Выдвижное меню -->
   <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 sm:hidden glass">
@@ -832,6 +915,7 @@
     console.log('Режим разработчика активен');
     const profileButton = document.getElementById('profileButton');
     const profileAction = document.getElementById('profileAction');
+    const profileText = document.getElementById('profileText');
     const loginModal = document.getElementById('loginModal');
     const closeLoginModal = document.getElementById('closeLoginModal');
     const loginTab = document.getElementById('loginTab');
@@ -839,20 +923,62 @@
     const loginSubmit = document.getElementById('loginSubmit');
     const registerSubmit = document.getElementById('registerSubmit');
     const tabButtons = document.querySelectorAll('.tab-buttons button');
+    let userData = JSON.parse(localStorage.getItem('userData')) || null; // Проверяем данные пользователя
+
+    // Устанавливаем начальное состояние кнопки
+    function updateProfileButton() {
+      if (!userData) {
+        profileAction.classList.add('login');
+        profileAction.classList.remove('profile');
+        profileText.textContent = 'Войти';
+      } else {
+        profileAction.classList.add('profile');
+        profileAction.classList.remove('login');
+        profileText.textContent = 'Профиль';
+      }
+    }
 
     if (profileButton) {
       console.log('Кнопка профиля найдена, включаем');
       profileButton.style.display = 'block';
+      updateProfileButton(); // Устанавливаем состояние при загрузке
     }
 
     profileAction?.addEventListener('click', () => {
       console.log('Клик по кнопке профиля, открываем модальное окно');
       if (loginModal) {
         loginModal.classList.add('active');
-        // Небольшая задержка для плавности (опционально)
-        setTimeout(() => {
-          console.log('Класс .active добавлен, стили:', window.getComputedStyle(loginModal).transform);
-        }, 10);
+        if (userData) {
+          // Показываем настройки профиля
+          loginTab.innerHTML = `
+            <h3>Настройки профиля</h3>
+            <p class="mt-2">Привет, ${userData.username}! <img src="${userData.avatar || '/assets/photo.jpg'}" alt="Аватар" class="h-16 w-16 rounded-full inline-block"></p>
+            <input type="text" placeholder="Имя" id="profileUsername" value="${userData.username}" class="mt-2" />
+            <input type="email" placeholder="Email" id="profileEmail" value="${userData.email || ''}" class="mt-2" />
+            <input type="text" placeholder="Ссылка на аватар" id="profileAvatar" value="${userData.avatar || '/assets/photo.jpg'}" class="mt-2" />
+            <button class="glass-button mt-4" id="saveProfile">Сохранить</button>
+            <button class="glass-button mt-2" id="logoutBtn">Выйти</button>
+          `;
+          const saveProfile = document.getElementById('saveProfile');
+          const logoutBtn = document.getElementById('logoutBtn');
+          saveProfile?.addEventListener('click', () => {
+            const newUsername = document.getElementById('profileUsername').value;
+            const newEmail = document.getElementById('profileEmail').value;
+            const newAvatar = document.getElementById('profileAvatar').value;
+            userData = { ...userData, username: newUsername, email: newEmail, avatar: newAvatar };
+            localStorage.setItem('userData', JSON.stringify(userData));
+            alert('Профиль сохранён!');
+            loginModal.classList.remove('active');
+            updateProfileButton();
+          });
+          logoutBtn?.addEventListener('click', () => {
+            userData = null;
+            localStorage.removeItem('userData');
+            loginModal.classList.remove('active');
+            updateProfileButton();
+          });
+        }
+        console.log('Класс .active добавлен');
       } else {
         console.error('Элемент #loginModal не найден');
       }
@@ -884,8 +1010,11 @@
       const password = document.getElementById('loginPassword').value;
       if (username && password) {
         console.log('Вход:', { username, password });
+        userData = { username, avatar: '/assets/photo.jpg' };
+        localStorage.setItem('userData', JSON.stringify(userData));
         alert(`Добро пожаловать, ${username}! (Тестовый вход)`);
         loginModal.classList.remove('active');
+        updateProfileButton();
       } else {
         alert('Введите логин и пароль.');
       }
@@ -897,8 +1026,11 @@
       const email = document.getElementById('registerEmail').value;
       if (username && password && email) {
         console.log('Регистрация:', { username, password, email });
+        userData = { username, email, avatar: '/assets/photo.jpg' };
+        localStorage.setItem('userData', JSON.stringify(userData));
         alert(`Регистрация успешна, ${username}! (Тестовая)`);
         loginModal.classList.remove('active');
+        updateProfileButton();
       } else {
         alert('Введите все данные.');
       }
