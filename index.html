@@ -85,7 +85,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    z-index: 10000; /* Повышенный z-index для приоритета */
     width: 100%;
     height: 100%;
   }
@@ -288,29 +288,29 @@
     </div>
   </nav>
   <!-- Модальное окно для входа/регистрации -->
-  <div id="loginModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-    <div class="modal-content">
-      <div class="flex items-center justify-between">
-        <h3 id="loginTitle" class="text-lg font-bold">Вход/Регистрация</h3>
-        <button class="rounded-lg px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800" id="closeLoginModal" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="tab-buttons">
-        <button class="active" data-tab="login">Вход</button>
-        <button data-tab="register">Регистрация</button>
-      </div>
-      <div id="loginTab" class="tab-content">
-        <input type="text" placeholder="Логин" id="loginUsername" class="mt-4" />
-        <input type="password" placeholder="Пароль" id="loginPassword" />
-        <button class="glass-button mt-4" id="loginSubmit">Войти</button>
-      </div>
-      <div id="registerTab" class="tab-content hidden">
-        <input type="text" placeholder="Логин" id="registerUsername" class="mt-4" />
-        <input type="password" placeholder="Пароль" id="registerPassword" />
-        <input type="email" placeholder="Email" id="registerEmail" />
-        <button class="glass-button mt-4" id="registerSubmit">Зарегистрироваться</button>
-      </div>
+<div id="loginModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <div class="modal-content">
+    <div class="flex items-center justify-between">
+      <h3 id="loginTitle" class="text-lg font-bold">Вход/Регистрация</h3>
+      <button class="rounded-lg px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800" id="closeLoginModal" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="tab-buttons">
+      <button class="active" data-tab="login">Вход</button>
+      <button data-tab="register">Регистрация</button>
+    </div>
+    <div id="loginTab" class="tab-content">
+      <input type="text" placeholder="Логин" id="loginUsername" class="mt-4" />
+      <input type="password" placeholder="Пароль" id="loginPassword" />
+      <button class="glass-button mt-4" id="loginSubmit">Войти</button>
+    </div>
+    <div id="registerTab" class="tab-content hidden">
+      <input type="text" placeholder="Логин" id="registerUsername" class="mt-4" />
+      <input type="password" placeholder="Пароль" id="registerPassword" />
+      <input type="email" placeholder="Email" id="registerEmail" />
+      <button class="glass-button mt-4" id="registerSubmit">Зарегистрироваться</button>
     </div>
   </div>
+</div>
   <!-- Выдвижное меню -->
   <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 sm:hidden glass">
     <div class="p-4">
@@ -856,67 +856,74 @@
     }, 10000);
 
     // Профиль
-if (isDevMode) {
-  const profileButton = document.getElementById('profileButton');
-  const profileAction = document.getElementById('profileAction');
-  const loginModal = document.getElementById('loginModal');
-  const closeLoginModal = document.getElementById('closeLoginModal');
-  const loginTab = document.getElementById('loginTab');
-  const registerTab = document.getElementById('registerTab');
-  const loginSubmit = document.getElementById('loginSubmit');
-  const registerSubmit = document.getElementById('registerSubmit');
-  const tabButtons = document.querySelectorAll('.tab-buttons button');
+  if (isDevMode) {
+    console.log('Режим разработчика активен');
+    const profileButton = document.getElementById('profileButton');
+    const profileAction = document.getElementById('profileAction');
+    const loginModal = document.getElementById('loginModal');
+    const closeLoginModal = document.getElementById('closeLoginModal');
+    const loginTab = document.getElementById('loginTab');
+    const registerTab = document.getElementById('registerTab');
+    const loginSubmit = document.getElementById('loginSubmit');
+    const registerSubmit = document.getElementById('registerSubmit');
+    const tabButtons = document.querySelectorAll('.tab-buttons button');
 
-  if (profileButton) profileButton.style.display = 'block';
+    if (profileButton) {
+      console.log('Кнопка профиля найдена, включаем');
+      profileButton.style.display = 'block';
+    }
 
-  profileAction?.addEventListener('click', () => {
-    loginModal.classList.add('active');
-  });
+    profileAction?.addEventListener('click', () => {
+      console.log('Клик по кнопке профиля, открываем модальное окно');
+      loginModal.classList.add('active');
+    });
 
-  closeLoginModal?.addEventListener('click', () => {
-    loginModal.classList.remove('active');
-  });
+    closeLoginModal?.addEventListener('click', () => {
+      console.log('Клик по закрытию модального окна');
+      loginModal.classList.remove('active');
+    });
 
-  tabButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      tabButtons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-      const tab = button.getAttribute('data-tab');
-      if (tab === 'login') {
-        loginTab.classList.remove('hidden');
-        registerTab.classList.add('hidden');
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        console.log('Переключение вкладки:', button.getAttribute('data-tab'));
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        const tab = button.getAttribute('data-tab');
+        if (tab === 'login') {
+          loginTab.classList.remove('hidden');
+          registerTab.classList.add('hidden');
+        } else {
+          loginTab.classList.add('hidden');
+          registerTab.classList.remove('hidden');
+        }
+      });
+    });
+
+    loginSubmit?.addEventListener('click', () => {
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+      if (username && password) {
+        console.log('Вход:', { username, password });
+        alert(`Добро пожаловать, ${username}! (Тестовый вход)`);
+        loginModal.classList.remove('active');
       } else {
-        loginTab.classList.add('hidden');
-        registerTab.classList.remove('hidden');
+        alert('Введите логин и пароль.');
       }
     });
-  });
 
-  loginSubmit?.addEventListener('click', () => {
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
-    if (username && password) {
-      console.log('Вход:', { username, password });
-      alert(`Добро пожаловать, ${username}! (Тестовый вход)`);
-      loginModal.classList.remove('active');
-    } else {
-      alert('Введите логин и пароль.');
-    }
-  });
-
-  registerSubmit?.addEventListener('click', () => {
-    const username = document.getElementById('registerUsername').value;
-    const password = document.getElementById('registerPassword').value;
-    const email = document.getElementById('registerEmail').value;
-    if (username && password && email) {
-      console.log('Регистрация:', { username, password, email });
-      alert(`Регистрация успешна, ${username}! (Тестовая)`);
-      loginModal.classList.remove('active');
-    } else {
-      alert('Введите все данные.');
-    }
-  });
-}
+    registerSubmit?.addEventListener('click', () => {
+      const username = document.getElementById('registerUsername').value;
+      const password = document.getElementById('registerPassword').value;
+      const email = document.getElementById('registerEmail').value;
+      if (username && password && email) {
+        console.log('Регистрация:', { username, password, email });
+        alert(`Регистрация успешна, ${username}! (Тестовая)`);
+        loginModal.classList.remove('active');
+      } else {
+        alert('Введите все данные.');
+      }
+    });
+  }
     // В скрипте после загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM загружен, запуск клипов');
