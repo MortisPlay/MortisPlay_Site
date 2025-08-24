@@ -70,6 +70,82 @@
       z-index: 10;
     }
 
+    /* Модальное окно для входа/регистрации */
+  #loginModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+
+  #loginModal.active {
+    display: flex;
+  }
+
+  #loginModal .modal-content {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 400px;
+    color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark #loginModal .modal-content {
+    background: rgba(50, 50, 50, 0.15);
+    border-color: rgba(200, 200, 200, 0.2);
+  }
+
+  #loginModal .modal-content input {
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+
+  #loginModal .modal-content input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  #loginModal .modal-content button {
+    margin-top: 1rem;
+    width: 100%;
+  }
+
+  #loginModal .tab-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  #loginModal .tab-buttons button {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+  }
+
+  #loginModal .tab-buttons button.active {
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  @media (max-width: 640px) {
+    #loginModal .modal-content {
+      padding: 1rem;
+    }
+  }
+
     /* Улучшенный glassmorphism для кнопок с глубиной */
     .glass-button {
       background: rgba(255, 255, 255, 0.15);
@@ -193,13 +269,37 @@
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
         </div>
-        <!-- Кнопка профиля (только в dev-режиме) -->
-        <div class="profile-button" id="profileButton" style="display: none;" data-dev-only>
-          <button class="glass-button" id="loginButton">
-            <i class="fa-solid fa-user"></i> Вход/Регистрация
-          </button>
-        </div>
+        <!-- Обновлённая кнопка профиля (только в dev-режиме) -->
+<div class="profile-button" id="profileButton" style="display: none;" data-dev-only>
+  <button class="glass-button" id="profileAction">
+    <i class="fa-solid fa-user-circle"></i> Профиль
+  </button>
+</div>
       </nav>
+       <!-- Модальное окно для входа/регистрации -->
+<div id="loginModal" class="fixed inset-0 hidden items-center justify-center p-4 bg-black/50 z-[60]" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <div class="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 p-6 shadow-2xl">
+    <div class="flex items-center justify-between">
+      <h3 id="loginTitle" class="text-lg font-bold">Вход/Регистрация</h3>
+      <button class="rounded-lg px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800" id="closeLoginModal" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="tab-buttons">
+      <button class="active" data-tab="login">Вход</button>
+      <button data-tab="register">Регистрация</button>
+    </div>
+    <div id="loginTab" class="tab-content">
+      <input type="text" placeholder="Логин" id="loginUsername" class="mt-4" />
+      <input type="password" placeholder="Пароль" id="loginPassword" />
+      <button class="glass-button mt-4" id="loginSubmit">Войти</button>
+    </div>
+    <div id="registerTab" class="tab-content hidden">
+      <input type="text" placeholder="Логин" id="registerUsername" class="mt-4" />
+      <input type="password" placeholder="Пароль" id="registerPassword" />
+      <input type="email" placeholder="Email" id="registerEmail" />
+      <button class="glass-button mt-4" id="registerSubmit">Зарегистрироваться</button>
+    </div>
+  </div>
+</div>
       <!-- Выдвижное меню -->
       <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 sm:hidden glass">
         <div class="p-4">
@@ -745,43 +845,78 @@
     }, 10000);
 
     // Профиль
-    if (isDevMode) {
-      const profileButton = document.getElementById('profileButton');
-      const loginButton = document.getElementById('loginButton');
-      if (profileButton) profileButton.style.display = 'block';
-      loginButton?.addEventListener('click', () => {
-        console.log('Кнопка входа/регистрации нажата');
-        const action = confirm('Выберите действие: Нажмите OK для входа, Отмена для регистрации');
-        if (action) {
-          // Логика входа
-          const username = prompt('Введите логин:');
-          const password = prompt('Введите пароль:');
-          if (username && password) {
-            console.log('Вход:', { username, password });
-            alert(`Добро пожаловать, ${username}! (Тестовый вход)`);
-          } else {
-            alert('Вход отменён или данные не введены.');
-          }
-        } else {
-          // Логика регистрации
-          const newUsername = prompt('Введите новый логин:');
-          const newPassword = prompt('Введите новый пароль:');
-          const email = prompt('Введите email:');
-          if (newUsername && newPassword && email) {
-            console.log('Регистрация:', { newUsername, newPassword, email });
-            alert(`Регистрация успешна, ${newUsername}! (Тестовая)`);
-          } else {
-            alert('Регистрация отменена или данные не введены.');
-          }
-        }
-      });
-    }
+if (isDevMode) {
+  const profileButton = document.getElementById('profileButton');
+  const profileAction = document.getElementById('profileAction');
+  const loginModal = document.getElementById('loginModal');
+  const closeLoginModal = document.getElementById('closeLoginModal');
+  const loginTab = document.getElementById('loginTab');
+  const registerTab = document.getElementById('registerTab');
+  const loginSubmit = document.getElementById('loginSubmit');
+  const registerSubmit = document.getElementById('registerSubmit');
+  const tabButtons = document.querySelectorAll('.tab-buttons button');
 
-    // Запуск Twitch-клипов после загрузки DOM
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log('DOM загружен, запуск клипов');
-      renderTwitchClips();
+  if (profileButton) profileButton.style.display = 'block';
+
+  profileAction?.addEventListener('click', () => {
+    loginModal.classList.add('active');
+  });
+
+  closeLoginModal?.addEventListener('click', () => {
+    loginModal.classList.remove('active');
+  });
+
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      const tab = button.getAttribute('data-tab');
+      if (tab === 'login') {
+        loginTab.classList.remove('hidden');
+        registerTab.classList.add('hidden');
+      } else {
+        loginTab.classList.add('hidden');
+        registerTab.classList.remove('hidden');
+      }
     });
+  });
+
+  loginSubmit?.addEventListener('click', () => {
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    if (username && password) {
+      console.log('Вход:', { username, password });
+      alert(`Добро пожаловать, ${username}! (Тестовый вход)`);
+      loginModal.classList.remove('active');
+    } else {
+      alert('Введите логин и пароль.');
+    }
+  });
+
+  registerSubmit?.addEventListener('click', () => {
+    const username = document.getElementById('registerUsername').value;
+    const password = document.getElementById('registerPassword').value;
+    const email = document.getElementById('registerEmail').value;
+    if (username && password && email) {
+      console.log('Регистрация:', { username, password, email });
+      alert(`Регистрация успешна, ${username}! (Тестовая)`);
+      loginModal.classList.remove('active');
+    } else {
+      alert('Введите все данные.');
+    }
+  });
+}
+
+    // В скрипте после загрузки DOM
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM загружен, запуск клипов');
+  renderTwitchClips();
+  if (isDevMode) {
+    const memesSection = document.getElementById('memes');
+    if (memesSection) memesSection.remove();
+    console.log('Раздел "Мемы" удалён в режиме разработчика');
+  }
+});
   </script>
 </body>
 </html>
