@@ -64,20 +64,20 @@
 
     /* Кнопка профиля */
   .profile-button {
-    position: fixed; /* Изменено с absolute на fixed */
-    top: 1rem;
-    right: 1rem;
+    position: static; /* Снимаем fixed/absolute */
     z-index: 10;
+    margin-left: auto; /* Пушим кнопку вправо */
   }
 
   @media (max-width: 640px) {
     .profile-button {
+      position: fixed;
       top: 0.5rem;
       right: 0.5rem;
     }
   }
 
-    /* Модальное окно для входа/регистрации */
+   /* Модальное окно для входа/регистрации */
   #loginModal {
     display: none;
     position: fixed;
@@ -86,7 +86,6 @@
     transform: translate(-50%, -50%);
     background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
-    padding: 0;
     width: 100%;
     height: 100%;
   }
@@ -259,83 +258,82 @@
   <!-- ВЕСЬ САЙТ -->
   <div id="siteContent" class="hidden">
     <!-- Навигация -->
-    <header class="sticky top-0 z-50 border-b border-slate-200/60 dark:border-slate-700/60 bg-white/80 dark:bg-slate-900/80 glass">
-      <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative" aria-label="Главная навигация">
-        <div class="flex items-center gap-2">
-          <button id="menuToggle" class="inline-flex sm:hidden items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium ring-1 ring-slate-300/70 dark:ring-slate-600" aria-controls="sidebarMenu" aria-expanded="false">
-            <span>Меню</span>
-            <i class="fa-solid fa-bars"></i>
-          </button>
-          <a href="#welcome" class="flex items-center gap-2 font-semibold tracking-tight text-slate-900 dark:text-white">
-            <img src="/assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover">
-            <span class="hidden sm:inline">Mortis Play</span>
-          </a>
-        </div>
-        <div class="hidden sm:flex items-center gap-2">
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#biography">Биография</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#videos">Видео</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#projects">Проекты</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#updates">Обновления</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
-        </div>
-        <!-- Обновлённая кнопка профиля (только в dev-режиме) -->
-<!-- Обновлённая кнопка профиля (только в dev-режиме) -->
-<div class="profile-button" id="profileButton" style="display: none;" data-dev-only>
-  <button class="glass-button" id="profileAction">
-    <i class="fa-solid fa-user-circle"></i> Профиль
-  </button>
-</div>
-      </nav>
-       <!-- Модальное окно для входа/регистрации -->
-<div id="loginModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-  <div class="modal-content">
-    <div class="flex items-center justify-between">
-      <h3 id="loginTitle" class="text-lg font-bold">Вход/Регистрация</h3>
-      <button class="rounded-lg px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800" id="closeLoginModal" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+<header class="sticky top-0 z-50 border-b border-slate-200/60 dark:border-slate-700/60 bg-white/80 dark:bg-slate-900/80 glass">
+  <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative" aria-label="Главная навигация">
+    <div class="flex items-center gap-2">
+      <button id="menuToggle" class="inline-flex sm:hidden items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium ring-1 ring-slate-300/70 dark:ring-slate-600" aria-controls="sidebarMenu" aria-expanded="false">
+        <span>Меню</span>
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <a href="#welcome" class="flex items-center gap-2 font-semibold tracking-tight text-slate-900 dark:text-white">
+        <img src="/assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover">
+        <span class="hidden sm:inline">Mortis Play</span>
+      </a>
     </div>
-    <div class="tab-buttons">
-      <button class="active" data-tab="login">Вход</button>
-      <button data-tab="register">Регистрация</button>
+    <div class="hidden sm:flex items-center gap-2">
+      <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
+      <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#biography">Биография</a>
+      <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#videos">Видео</a>
+      <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#projects">Проекты</a>
+      <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
+      <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#updates">Обновления</a>
+      <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
+      <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
     </div>
-    <div id="loginTab" class="tab-content">
-      <input type="text" placeholder="Логин" id="loginUsername" class="mt-4" />
-      <input type="password" placeholder="Пароль" id="loginPassword" />
-      <button class="glass-button mt-4" id="loginSubmit">Войти</button>
+    <!-- Обновлённая кнопка профиля (только в dev-режиме) -->
+    <div class="profile-button" id="profileButton" style="display: none;" data-dev-only>
+      <button class="glass-button" id="profileAction">
+        <i class="fa-solid fa-user-circle"></i> Профиль
+      </button>
     </div>
-    <div id="registerTab" class="tab-content hidden">
-      <input type="text" placeholder="Логин" id="registerUsername" class="mt-4" />
-      <input type="password" placeholder="Пароль" id="registerPassword" />
-      <input type="email" placeholder="Email" id="registerEmail" />
-      <button class="glass-button mt-4" id="registerSubmit">Зарегистрироваться</button>
+  </nav>
+  <!-- Модальное окно для входа/регистрации -->
+  <div id="loginModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="modal-content">
+      <div class="flex items-center justify-between">
+        <h3 id="loginTitle" class="text-lg font-bold">Вход/Регистрация</h3>
+        <button class="rounded-lg px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800" id="closeLoginModal" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="tab-buttons">
+        <button class="active" data-tab="login">Вход</button>
+        <button data-tab="register">Регистрация</button>
+      </div>
+      <div id="loginTab" class="tab-content">
+        <input type="text" placeholder="Логин" id="loginUsername" class="mt-4" />
+        <input type="password" placeholder="Пароль" id="loginPassword" />
+        <button class="glass-button mt-4" id="loginSubmit">Войти</button>
+      </div>
+      <div id="registerTab" class="tab-content hidden">
+        <input type="text" placeholder="Логин" id="registerUsername" class="mt-4" />
+        <input type="password" placeholder="Пароль" id="registerPassword" />
+        <input type="email" placeholder="Email" id="registerEmail" />
+        <button class="glass-button mt-4" id="registerSubmit">Зарегистрироваться</button>
+      </div>
     </div>
   </div>
-</div>
-      <!-- Выдвижное меню -->
-      <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 sm:hidden glass">
-        <div class="p-4">
-          <button id="closeMenu" class="absolute top-4 right-4 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-          <div class="flex items-center gap-2 mb-6">
-            <img src="/assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='/assets/fallback.jpg';">
-            <span class="font-semibold tracking-tight text-slate-900 dark:text-white">Mortis Play</span>
-          </div>
-          <nav class="space-y-2">
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#biography">Биография</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#videos">Видео</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#projects">Проекты</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#updates">Обновления</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
-          </nav>
-        </div>
+  <!-- Выдвижное меню -->
+  <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 sm:hidden glass">
+    <div class="p-4">
+      <button id="closeMenu" class="absolute top-4 right-4 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="flex items-center gap-2 mb-6">
+        <img src="/assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='/assets/fallback.jpg';">
+        <span class="font-semibold tracking-tight text-slate-900 dark:text-white">Mortis Play</span>
       </div>
-    </header>
+      <nav class="space-y-2">
+        <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
+        <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#biography">Биография</a>
+        <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#videos">Видео</a>
+        <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#projects">Проекты</a>
+        <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
+        <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#updates">Обновления</a>
+        <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
+        <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
+      </nav>
+    </div>
+  </div>
+</header>
 
     <!-- Hero -->
     <section id="welcome" class="relative overflow-hidden">
