@@ -445,15 +445,10 @@
             </div>
 
             <div class="mt-6 flex items-center gap-6 text-sm text-slate-600 dark:text-slate-300">
-  <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">420</span></div>
-  <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
-</div>
-
-<!-- Ссылки только в режиме разработчика -->
-<div id="devLinks" class="mt-6" style="display: none;">
-  <p><a href="/profile.html" class="glass-button">Перейти в профиль</a></p>
-  <p><a href="/qa.html" class="glass-button">Перейти к Q&A</a></p>
-</div>
+              <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">420</span></div>
+              <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
+            </div>
+          </div>
 
           <div class="relative">
             <video class="w-full max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала" onerror="this.src='/assets/fallback.mp4';">
@@ -777,11 +772,6 @@
     const urlParams = new URLSearchParams(window.location.search);
     const isDevMode = urlParams.get('dev') === 'true';
     console.log('Режим:', { isDevMode });
-    // Показываем ссылки в режиме разработчика
-const devLinks = document.getElementById('devLinks');
-if (isDevMode && devLinks) {
-  devLinks.style.display = 'block';
-}
 
     // Меню
     document.getElementById('menuToggle')?.addEventListener('click', () => document.getElementById('sidebarMenu').classList.add('open'));
@@ -935,20 +925,16 @@ if (isDevMode && devLinks) {
 
     // Устанавливаем начальное состояние кнопки
     function updateProfileButton() {
-  if (!userData) {
-    profileAction.classList.add('login');
-    profileAction.classList.remove('profile');
-    profileText.textContent = 'Войти';
-  } else {
-    profileAction.classList.add('profile');
-    profileAction.classList.remove('login');
-    profileText.textContent = 'Профиль';
-    // Переход на профиль только в режиме разработчика
-    if (isDevMode) {
-      profileAction.onclick = () => window.location.href = '/profile.html';
+      if (!userData) {
+        profileAction.classList.add('login');
+        profileAction.classList.remove('profile');
+        profileText.textContent = 'Войти';
+      } else {
+        profileAction.classList.add('profile');
+        profileAction.classList.remove('login');
+        profileText.textContent = 'Профиль';
+      }
     }
-  }
-}
 
     if (profileButton) {
       console.log('Кнопка профиля найдена, включаем');
