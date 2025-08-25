@@ -910,7 +910,7 @@
       }
     }, 10000);
 
-    // Профиль
+   // Профиль
   if (isDevMode) {
     console.log('Режим разработчика активен');
     const profileButton = document.getElementById('profileButton');
@@ -920,8 +920,6 @@
     const closeLoginModal = document.getElementById('closeLoginModal');
     const loginTab = document.getElementById('loginTab');
     const registerTab = document.getElementById('registerTab');
-    const loginSubmit = document.getElementById('loginSubmit');
-    const registerSubmit = document.getElementById('registerSubmit');
     const tabButtons = document.querySelectorAll('.tab-buttons button');
     let userData = JSON.parse(localStorage.getItem('userData')) || null; // Проверяем данные пользователя
 
@@ -958,6 +956,7 @@
             <button class="glass-button mt-4" id="saveProfile">Сохранить</button>
             <button class="glass-button mt-2" id="logoutBtn">Выйти</button>
           `;
+          document.querySelector('.tab-buttons').style.display = 'none'; // Скрываем кнопки
           const saveProfile = document.getElementById('saveProfile');
           const logoutBtn = document.getElementById('logoutBtn');
           saveProfile?.addEventListener('click', () => {
@@ -979,19 +978,20 @@
           // Показываем форму входа
           loginTab.innerHTML = `
             <h3>Вход</h3>
-            <input type="text" placeholder="Логин" id="loginUsername" class="mt-2" />
-            <input type="password" placeholder="Пароль" id="loginPassword" />
+            <input type="text" placeholder="Логин" id="loginUsername" class="mt-2" value="${userData?.username || ''}" />
+            <input type="password" placeholder="Пароль" id="loginPassword" value="${userData?.password || ''}" />
             <button class="glass-button mt-4" id="loginSubmit">Войти</button>
           `;
           registerTab.innerHTML = `
             <h3>Регистрация</h3>
-            <input type="text" placeholder="Логин" id="registerUsername" class="mt-2" />
-            <input type="password" placeholder="Пароль" id="registerPassword" />
-            <input type="email" placeholder="Email" id="registerEmail" />
+            <input type="text" placeholder="Логин" id="registerUsername" class="mt-2" value="${userData?.username || ''}" />
+            <input type="password" placeholder="Пароль" id="registerPassword" value="${userData?.password || ''}" />
+            <input type="email" placeholder="Email" id="registerEmail" value="${userData?.email || ''}" />
             <button class="glass-button mt-4" id="registerSubmit">Зарегистрироваться</button>
           `;
-          loginSubmit = document.getElementById('loginSubmit');
-          registerSubmit = document.getElementById('registerSubmit');
+          document.querySelector('.tab-buttons').style.display = 'flex'; // Показываем кнопки
+          setupLoginSubmit();
+          setupRegisterSubmit();
         }
         console.log('Класс .active добавлен');
       } else {
@@ -1026,36 +1026,48 @@
       }
     });
 
-    loginSubmit?.addEventListener('click', () => {
-      const username = document.getElementById('loginUsername').value;
-      const password = document.getElementById('loginPassword').value;
-      if (username && password) {
-        console.log('Вход:', { username, password });
-        userData = { username, email: '', avatar: '/assets/photo.jpg' };
-        localStorage.setItem('userData', JSON.stringify(userData));
-        alert(`Добро пожаловать, ${username}! (Тестовый вход)`);
-        loginModal.classList.remove('active');
-        updateProfileButton();
-      } else {
-        alert('Введите логин и пароль.');
-      }
-    });
+    function setupLoginSubmit() {
+      loginSubmit = document.getElementById('loginSubmit');
+      loginSubmit?.addEventListener('click', () => {
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        if (username && password) {
+          console.log('Вход:', { username, password });
+          userData = { username, password, email: userData?.email || '', avatar: '/assets/photo.jpg' };
+          localStorage.setItem('userData', JSON.stringify(userData));
+          alert(`Добро пожаловать, ${username}! (Тестовый вход)`);
+          loginModal.classList.remove('active');
+          updateProfileButton();
+        } else {
+          alert('Введите логин и пароль.');
+        }
+      });
+    }
 
-    registerSubmit?.addEventListener('click', () => {
-      const username = document.getElementById('registerUsername').value;
-      const password = document.getElementById('registerPassword').value;
-      const email = document.getElementById('registerEmail').value;
-      if (username && password && email) {
-        console.log('Регистрация:', { username, password, email });
-        userData = { username, email, avatar: '/assets/photo.jpg' };
-        localStorage.setItem('userData', JSON.stringify(userData));
-        alert(`Регистрация успешна, ${username}! (Тестовая)`);
-        loginModal.classList.remove('active');
-        updateProfileButton();
-      } else {
-        alert('Введите все данные.');
-      }
-    });
+    function setupRegisterSubmit() {
+      registerSubmit = document.getElementById('registerSubmit');
+      registerSubmit?.addEventListener('click', () => {
+        const username = document.getElementById('registerUsername').value;
+        const password = document.getElementById('registerPassword').value;
+        const email = document.getElementById('registerEmail').value;
+        if (username && password && email) {
+          console.log('Регистрация:', { username, password, email });
+          userData = { username, password, email, avatar: '/assets/photo.jpg' };
+          localStorage.setItem('userData', JSON.stringify(userData));
+          alert(`Регистрация успешна, ${username}! (Тестовая)`);
+          loginModal.classList.remove('active');
+          updateProfileButton();
+        } else {
+          alert('Введите все данные.');
+        }
+      });
+    }
+
+    // Инициализация обработчиков при загрузке
+    if (!userData) {
+      setupLoginSubmit();
+      setupRegisterSubmit();
+    }
   }
     // В скрипте после загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
