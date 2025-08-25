@@ -955,7 +955,6 @@
             <p class="mt-2">Привет, ${userData.username}! <img src="${userData.avatar || '/assets/photo.jpg'}" alt="Аватар" class="h-16 w-16 rounded-full inline-block"></p>
             <input type="text" placeholder="Имя" id="profileUsername" value="${userData.username}" class="mt-2" />
             <input type="email" placeholder="Email" id="profileEmail" value="${userData.email || ''}" class="mt-2" />
-            <input type="text" placeholder="Ссылка на аватар" id="profileAvatar" value="${userData.avatar || '/assets/photo.jpg'}" class="mt-2" />
             <button class="glass-button mt-4" id="saveProfile">Сохранить</button>
             <button class="glass-button mt-2" id="logoutBtn">Выйти</button>
           `;
@@ -964,8 +963,7 @@
           saveProfile?.addEventListener('click', () => {
             const newUsername = document.getElementById('profileUsername').value;
             const newEmail = document.getElementById('profileEmail').value;
-            const newAvatar = document.getElementById('profileAvatar').value;
-            userData = { ...userData, username: newUsername, email: newEmail, avatar: newAvatar };
+            userData = { ...userData, username: newUsername, email: newEmail, avatar: userData.avatar || '/assets/photo.jpg' };
             localStorage.setItem('userData', JSON.stringify(userData));
             alert('Профиль сохранён!');
             loginModal.classList.remove('active');
@@ -977,6 +975,23 @@
             loginModal.classList.remove('active');
             updateProfileButton();
           });
+        } else {
+          // Показываем форму входа
+          loginTab.innerHTML = `
+            <h3>Вход</h3>
+            <input type="text" placeholder="Логин" id="loginUsername" class="mt-2" />
+            <input type="password" placeholder="Пароль" id="loginPassword" />
+            <button class="glass-button mt-4" id="loginSubmit">Войти</button>
+          `;
+          registerTab.innerHTML = `
+            <h3>Регистрация</h3>
+            <input type="text" placeholder="Логин" id="registerUsername" class="mt-2" />
+            <input type="password" placeholder="Пароль" id="registerPassword" />
+            <input type="email" placeholder="Email" id="registerEmail" />
+            <button class="glass-button mt-4" id="registerSubmit">Зарегистрироваться</button>
+          `;
+          loginSubmit = document.getElementById('loginSubmit');
+          registerSubmit = document.getElementById('registerSubmit');
         }
         console.log('Класс .active добавлен');
       } else {
@@ -995,14 +1010,20 @@
         tabButtons.forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
         const tab = button.getAttribute('data-tab');
-        if (tab === 'login') {
+        if (tab === 'login' && !userData) {
           loginTab.classList.remove('hidden');
           registerTab.classList.add('hidden');
-        } else {
+        } else if (tab === 'register' && !userData) {
           loginTab.classList.add('hidden');
           registerTab.classList.remove('hidden');
         }
       });
+    });
+
+    loginModal?.addEventListener('click', (e) => {
+      if (e.target === loginModal) {
+        loginModal.classList.remove('active');
+      }
     });
 
     loginSubmit?.addEventListener('click', () => {
@@ -1010,7 +1031,7 @@
       const password = document.getElementById('loginPassword').value;
       if (username && password) {
         console.log('Вход:', { username, password });
-        userData = { username, avatar: '/assets/photo.jpg' };
+        userData = { username, email: '', avatar: '/assets/photo.jpg' };
         localStorage.setItem('userData', JSON.stringify(userData));
         alert(`Добро пожаловать, ${username}! (Тестовый вход)`);
         loginModal.classList.remove('active');
