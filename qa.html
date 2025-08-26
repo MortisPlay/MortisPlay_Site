@@ -1,113 +1,88 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <title>Q&A - MortisPlay (Dev Mode)</title>
-    <link rel="stylesheet" href="/styles.css"> <!-- Подключим стили позже -->
-    <style>
-        body {
-            min-height: 100vh;
-            background: linear-gradient(to bottom right, #f0f0f0, #e0e0e0);
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        h1 {
-            color: #ff4500;
-            font-size: 2rem;
-        }
-        #questionsList p {
-            margin: 10px 0;
-            text-align: left;
-        }
-        #qaForm {
-            margin-top: 20px;
-        }
-        #qaForm textarea {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        #qaForm button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background: #ff4500;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #qaForm button:hover {
-            background: #e03a00;
-        }
-        #response {
-            margin-top: 10px;
-            color: green;
-        }
-        .glass-button {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 0.75rem;
-            padding: 0.75rem 1.5rem;
-            color: #ffffff;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-        .glass-button:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: scale(1.05);
-        }
-        .dark .container {
-            background: rgba(50, 50, 50, 0.15);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Mortis Play — Q&A</title>
+  <link rel="icon" href="/images/favicon.ico" />
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
+  <style>
+    /* Копируем стили из index.html для единообразия */
+    .glass-button {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      color: #ffffff;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .glass-button:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05);
+    }
+    .dark .glass-button {
+      background: rgba(50, 50, 50, 0.15);
+      border-color: rgba(200, 200, 200, 0.2);
+    }
+  </style>
 </head>
-<body class="dark:bg-gradient-to-br dark:from-slate-900 dark:to-indigo-950">
-    <div class="container">
-        <h1>Раздел Q&A (Dev Mode)</h1>
-        <div id="questionsList"></div>
-        <form id="qaForm">
-            <textarea id="question" rows="4" cols="50" placeholder="Введите ваш вопрос..."></textarea><br>
-            <button type="submit">Отправить</button>
-        </form>
-        <div id="response"></div>
-        <a href="/profile.html" class="glass-button mt-4">Перейти в профиль</a>
+<body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100">
+  <div class="mx-auto max-w-7xl px-4 py-16">
+    <h1 class="text-3xl font-bold text-center text-slate-900 dark:text-white">Q&A с Mortis Play</h1>
+    <p class="mt-4 text-center text-slate-600 dark:text-slate-300">Задавай вопросы — лучшие попадут в раздел после модерации!</p>
+
+    <!-- Форма для вопросов -->
+    <div class="mt-8 max-w-lg mx-auto">
+      <form id="qaForm" class="space-y-4">
+        <input type="text" id="questionInput" placeholder="Твой вопрос..." class="w-full p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100" required />
+        <button type="submit" class="glass-button w-full">Отправить</button>
+      </form>
+      <p id="submitStatus" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300"></p>
     </div>
 
-    <script>
-        async function loadQuestions() {
-            const res = await fetch('http://localhost:3000/api/questions');
-            const questions = await res.json();
-            const list = document.getElementById('questionsList');
-            list.innerHTML = questions.map(q => `<p>${q.text}</p>`).join('');
-        }
+    <!-- Список вопросов -->
+    <div id="qaList" class="mt-12 space-y-4">
+      <p class="text-center text-slate-600 dark:text-slate-300">Пока вопросов нет — будь первым!</p>
+    </div>
+  </div>
 
-        document.getElementById('qaForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const question = document.getElementById('question').value;
-            await fetch('http://localhost:3000/api/questions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text: question })
-            });
-            document.getElementById('response').innerText = 'Вопрос добавлен!';
-            document.getElementById('question').value = '';
-            loadQuestions();
-        });
+  <script>
+    // Локальное хранение вопросов (для теста)
+    let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
 
-        window.onload = loadQuestions;
-    </script>
+    // Обработка формы
+    document.getElementById('qaForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const question = document.getElementById('questionInput').value.trim();
+      if (question) {
+        questions.push({ text: question, date: new Date().toISOString(), approved: false });
+        localStorage.setItem('qaQuestions', JSON.stringify(questions));
+        document.getElementById('questionInput').value = '';
+        document.getElementById('submitStatus').textContent = 'Вопрос отправлен на модерацию!';
+        updateQAList();
+      }
+    });
+
+    // Обновление списка вопросов
+    function updateQAList() {
+      const qaList = document.getElementById('qaList');
+      qaList.innerHTML = '';
+      questions.filter(q => q.approved).forEach(q => {
+        const div = document.createElement('div');
+        div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow';
+        div.innerHTML = `<p class="text-slate-900 dark:text-slate-100">${q.text}</p><p class="text-xs text-slate-500 dark:text-slate-400">${new Date(q.date).toLocaleDateString()}</p>`;
+        qaList.appendChild(div);
+      });
+      if (!questions.some(q => q.approved)) {
+        qaList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Пока вопросов нет — будь первым!</p>';
+      }
+    }
+
+    // Инициализация
+    updateQAList();
+  </script>
 </body>
 </html>
