@@ -3,18 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <title>Профиль - MortisPlay (Dev Mode)</title>
+    <link rel="stylesheet" href="/styles.css"> <!-- Подключим стили позже -->
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f0f0f0; text-align: center; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1 { color: #ff4500; }
-        p { font-size: 16px; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(to bottom right, #f0f0f0, #e0e0e0);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #ff4500;
+            font-size: 2rem;
+        }
+        .glass-button {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: #ffffff;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+        .dark .container {
+            background: rgba(50, 50, 50, 0.15);
+        }
+        #userInfo {
+            margin: 20px 0;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
-<body>
+<body class="dark:bg-gradient-to-br dark:from-slate-900 dark:to-indigo-950">
     <div class="container">
         <h1>Ваш профиль (Dev Mode)</h1>
-        <p id="userInfo">Информация о пользователе загрузится после входа...</p>
-        <p><a href="/qa.html">Вернуться к Q&A</a></p>
+        <div id="userInfo">Информация о пользователе загрузится после входа...</div>
+        <a href="/qa.html" class="glass-button mt-4">Перейти к Q&A</a>
     </div>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
