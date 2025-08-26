@@ -314,6 +314,23 @@
     #updateModal.hidden {
       display: none !important;
     }
+     /* Резервные стили для Tailwind */
+.bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, #fff5f5, #ffffff, #e0f2fe);
+}
+.dark .bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #4b5bd1);
+}
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+.grid {
+  display: grid;
+}
+.lg\:grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 
     /* Оптимизация для мобильных */
     @media (max-width: 640px) {
@@ -424,48 +441,45 @@
 
     <!-- Hero -->
     <section id="welcome" class="relative overflow-hidden">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-        <div class="grid lg:grid-cols-2 gap-10 items-center">
-          <div>
-            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">
-              Йоу, это <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-fuchsia-600">Mortis Play</span>!
-            </h1>
-            <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-prose">
-              Эксклюзивные видео, мемы, новости и апдейты. Врывайся — дальше только громче 😎
-            </p>
-            <div class="mt-6 flex flex-wrap gap-3">
-              <a href="#updates" class="glass-button">
-                <i class="fa-solid fa-bolt"></i>
-                Что нового
-              </a>
-              <a href="#biography" class="glass-button">
-                <i class="fa-solid fa-user"></i>
-                Обо мне
-              </a>
-            </div>
-
-            <div class="mt-6 flex items-center gap-6 text-sm text-slate-600 dark:text-slate-300">
-  <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">420</span></div>
-  <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
-</div>
-
-<!-- Ссылки только в режиме разработчика -->
-<div id="devLinks" class="mt-6" style="display: none;">
-  <p><a href="/profile.html" class="glass-button">Перейти в профиль</a></p>
-  <p><a href="/qa.html" class="glass-button">Перейти к Q&A</a></p>
-</div>
-
-          <div class="relative">
-            <video class="w-full max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала" onerror="this.src='/assets/fallback.mp4';">
-              <source src="/assets/photo.mp4" type="video/mp4" />
-            </video>
-            <div class="absolute -bottom-4 -right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover animate-[floaty_5s_ease-in-out_infinite]">
-              <p class="text-xs text-slate-600 dark:text-slate-300">Гений, миллиардер, плейбой, филантроп 😎</p>
-            </div>
-          </div>
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+    <div class="grid lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">
+          Йоу, это <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-fuchsia-600">Mortis Play</span>!
+        </h1>
+        <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-prose">
+          Эксклюзивные видео, мемы, новости и апдейты. Врывайся — дальше только громче 😎
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="#updates" class="glass-button">
+            <i class="fa-solid fa-bolt"></i>
+            Что нового
+          </a>
+          <a href="#biography" class="glass-button">
+            <i class="fa-solid fa-user"></i>
+            Обо мне
+          </a>
+        </div>
+        <div class="mt-6 flex items-center gap-6 text-sm text-slate-600 dark:text-slate-300">
+          <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">420</span></div>
+          <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
+        </div>
+        <div id="devLinks" class="mt-6" style="display: none;">
+          <p><a href="/profile.html" class="glass-button">Перейти в профиль</a></p>
+          <p><a href="/qa.html" class="glass-button">Перейти к Q&A</a></p>
         </div>
       </div>
-    </section>
+      <div class="relative">
+        <video class="w-full max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала" onerror="this.src='/assets/fallback.mp4';">
+          <source src="/assets/photo.mp4" type="video/mp4" />
+        </video>
+        <div class="absolute -bottom-4 -right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover animate-[floaty_5s_ease-in-out_infinite]">
+          <p class="text-xs text-slate-600 dark:text-slate-300">Гений, миллиардер, плейбой, филантроп 😎</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
     <!-- Биография -->
     <section id="biography" class="py-16 bg-gradient-to-b from-transparent to-indigo-50 dark:to-slate-900">
@@ -1076,6 +1090,18 @@ if (isDevMode && devLinks) {
         }
       });
     }
+
+     // Для секции welcome
+     const fadeElements = document.querySelectorAll('.fade-in, section');
+console.log('Элементы для fade-in:', fadeElements);
+if (fadeElements.length > 0) {
+  fadeElements.forEach(el => {
+    if (el instanceof Element) io.observe(el);
+    else console.warn('Невалидный элемент:', el);
+  });
+} else {
+  console.warn('Нет элементов для fade-in');
+}
 
     // Инициализация обработчиков при загрузке
     if (!userData) {
