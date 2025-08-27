@@ -167,9 +167,6 @@ function checkDailyLimit() {
         timerElement = null;
     }
 
-    if (todayCount >= dailyLimit) {
-        return `Достигнут лимит в ${dailyLimit} вопросов за день! Сброс через: `;
-    }
     dailyStats[today] = todayCount;
     localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
     return null;
@@ -181,7 +178,7 @@ function updateTimer(seconds) {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    timerElement.textContent = `Сброс через ${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    timerElement.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     if (seconds > 0) setTimeout(() => updateTimer(seconds - 1), 1000);
     else {
         const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
@@ -219,13 +216,18 @@ document.getElementById('qaForm')?.addEventListener('submit', (e) => {
 
     const limitError = checkDailyLimit();
     if (limitError) {
-        submitStatus.innerHTML = limitError + (timerElement ? timerElement.outerHTML : '');
+        submitStatus.innerHTML = '';
         submitStatus.classList.add('error-message');
         return;
     }
 
     const today = new Date().toLocaleDateString();
     let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+    if (dailyStats[today] >= dailyLimit) {
+        submitStatus.textContent = 'Достигнут лимит в 5 вопросов за день!';
+        submitStatus.classList.add('error-message');
+        return;
+    }
     dailyStats[today] = (dailyStats[today] || 0) + 1;
     localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
 
