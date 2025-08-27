@@ -42,6 +42,12 @@
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+.blink { 
+  animation: blink 1s step-end infinite; 
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
 @media (max-width: 640px) { 
   .glass-button { 
     padding: 0.5rem 1rem; 
@@ -63,6 +69,18 @@ textarea:focus, input:focus {
 .dark textarea:focus, .dark input:focus {
   border-color: #60a5fa; 
 }
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1000;
+  display: none;
+}
 </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100">
@@ -76,19 +94,23 @@ textarea:focus, input:focus {
     <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">
     <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"></textarea>
     <button type="submit" class="glass-button">Отправить</button>
+    <div id="questionLimit" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300"></div>
     <div id="submitStatus" class="mt-2 text-center"></div>
 </form>
 </div>
 
 <!-- Панель модерации -->
 <div id="moderationPanel" class="mt-8 max-w-lg mx-auto fade-in hidden">
-<h2 class="text-xl font-semibold text-center text-slate-900 dark:text-white">Модерация вопросов</h2>
+<h2 class="text-xl font-semibold text-center text-slate-900 dark:text-white">Модерация вопросов <span id="pendingCount" class="blink text-red-500"></span></h2>
 <ul id="pendingQuestions" class="mt-4 space-y-2"></ul>
 <button id="clearApproved" class="glass-button mt-4 w-full">Очистить одобренные</button>
 </div>
 
 <!-- Список одобренных вопросов -->
 <div id="qaList" class="mt-12 space-y-4 fade-in"></div>
+
+<!-- Уведомление для пользователя -->
+<div id="userNotification" class="notification"></div>
 </div>
 
 <script>
@@ -100,6 +122,11 @@ let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
 const dailyLimit = 5;
 const blackList = ['мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак']; // Черный список слов
 
+// Элементы интерфейса
+const questionLimit = document.getElementById('questionLimit');
+const pendingCount = document.getElementById('pendingCount');
+const userNotification = document.getElementById('userNotification');
+
 // Проверка лимитов и черного списка
 function validateInput(nickname, question) {
     if (nickname.length < 3 || nickname.length > 20) return 'Никнейм должен быть от 3 до 20 символов!';
@@ -110,15 +137,48 @@ function validateInput(nickname, question) {
     return null;
 }
 
-// Проверка дневного лимита
+// Проверка дневного лимита и таймер сброса
 function checkDailyLimit() {
     const today = new Date().toLocaleDateString();
     const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
     const todayCount = dailyStats[today] || 0;
-    if (todayCount >= dailyLimit) return `Достигнут лимит в ${dailyLimit} вопросов за день!`;
+    const remaining = dailyLimit - todayCount;
+    questionLimit.textContent = `Осталось: ${remaining} из ${dailyLimit}`;
+
+    // Таймер сброса
+    const now = new Date();
+    const endOfDay = new Date(now);
+    endOfDay.setHours(23, 59, 59, 999);
+    const timeLeft = Math.floor((endOfDay - now) / 1000); // В секундах
+    updateTimer(timeLeft);
+
+    if (todayCount >= dailyLimit) return `Достигнут лимит в ${dailyLimit} вопросов за день! Сброс через: <span id="timer"></span>`;
     dailyStats[today] = todayCount + 1;
     localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
     return null;
+}
+
+// Обновление таймера
+function updateTimer(seconds) {
+    const timer = document.getElementById('timer');
+    if (!timer) {
+        const span = document.createElement('span');
+        span.id = 'timer';
+        questionLimit.appendChild(span);
+    }
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    timer.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    if (seconds > 0) setTimeout(() => updateTimer(seconds - 1), 1000);
+}
+
+// Показ уведомления пользователю
+function showNotification(message, isSuccess = true) {
+    userNotification.textContent = message;
+    userNotification.className = 'notification ' + (isSuccess ? 'bg-green-600' : 'bg-red-600');
+    userNotification.style.display = 'block';
+    setTimeout(() => userNotification.style.display = 'none', 3000);
 }
 
 // Обработка формы
@@ -132,7 +192,7 @@ document.getElementById('qaForm')?.addEventListener('submit', (e) => {
 
     const limitError = checkDailyLimit();
     if (limitError) {
-        submitStatus.textContent = limitError;
+        submitStatus.innerHTML = limitError;
         submitStatus.classList.add('error-message');
         return;
     }
@@ -166,7 +226,7 @@ function addQuestionToList(nickname, question, date) {
     div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow question-slide';
     div.innerHTML = `<p class="question-text">${nickname}: ${question} <span class="text-xs text-slate-500 dark:text-slate-400">(${date})</span></p>`;
     qaList.insertBefore(div, qaList.firstChild);
-    setTimeout(() => div.classList.add('is-visible'), 10); // Запускаем анимацию
+    setTimeout(() => div.classList.add('is-visible'), 10);
 }
 
 // Обновление списка одобренных вопросов
@@ -187,12 +247,13 @@ function updateQAList() {
     }
 }
 
-// Обновление списка ожидающих вопросов
+// Обновление списка ожидающих вопросов и счётчика
 function updatePendingQuestions() {
     if (!isDevMode) return;
     const pendingList = document.getElementById('pendingQuestions');
     pendingList.innerHTML = '';
     const pendingQuestions = questions.filter(q => !q.approved);
+    pendingCount.textContent = pendingQuestions.length > 0 ? `(Ожидает: ${pendingQuestions.length})` : '';
     if (pendingQuestions.length > 0) {
         pendingQuestions.forEach((q, index) => {
             const li = document.createElement('li');
@@ -217,13 +278,16 @@ function approveQuestion(index) {
     localStorage.setItem('qaQuestions', JSON.stringify(questions));
     updateQAList();
     updatePendingQuestions();
+    showNotification(`Ваш вопрос "${questions[index].text}" одобрен!`, true);
 }
 
 // Отклонение вопроса
 function rejectQuestion(index) {
+    const rejectedQuestion = questions[index].text;
     questions.splice(index, 1);
     localStorage.setItem('qaQuestions', JSON.stringify(questions));
     updatePendingQuestions();
+    showNotification(`Ваш вопрос "${rejectedQuestion}" отклонён.`, false);
 }
 
 // Очистка одобренных вопросов
@@ -241,6 +305,7 @@ const io = new IntersectionObserver(entries => {
 document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
 // Инициализация
+checkDailyLimit(); // Устанавливаем начальный счётчик и таймер
 updateQAList();
 if (isDevMode) updatePendingQuestions();
 </script>
