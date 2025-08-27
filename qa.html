@@ -94,7 +94,7 @@ textarea:focus, input:focus {
     <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">
     <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"></textarea>
     <button type="submit" class="glass-button">Отправить</button>
-    <div id="questionLimit" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300"></div>
+    <div id="questionLimit" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300"><span id="timer">00:00:00</span></div>
     <div id="submitStatus" class="mt-2 text-center"></div>
 </form>
 </div>
@@ -126,6 +126,7 @@ const blackList = ['мат', 'оскорбление', 'спам', 'бот', 'ч
 const questionLimit = document.getElementById('questionLimit');
 const pendingCount = document.getElementById('pendingCount');
 const userNotification = document.getElementById('userNotification');
+const timerElement = document.getElementById('timer');
 
 // Проверка лимитов и черного списка
 function validateInput(nickname, question) {
@@ -143,7 +144,7 @@ function checkDailyLimit() {
     const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
     const todayCount = dailyStats[today] || 0;
     const remaining = dailyLimit - todayCount;
-    questionLimit.textContent = `Осталось: ${remaining} из ${dailyLimit}`;
+    questionLimit.textContent = `Осталось: ${remaining} из ${dailyLimit} `;
 
     // Таймер сброса
     const now = new Date();
@@ -152,7 +153,7 @@ function checkDailyLimit() {
     const timeLeft = Math.floor((endOfDay - now) / 1000); // В секундах
     updateTimer(timeLeft);
 
-    if (todayCount >= dailyLimit) return `Достигнут лимит в ${dailyLimit} вопросов за день! Сброс через: <span id="timer"></span>`;
+    if (todayCount >= dailyLimit) return `Достигнут лимит в ${dailyLimit} вопросов за день! Сброс через: `;
     dailyStats[today] = todayCount + 1;
     localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
     return null;
@@ -160,16 +161,10 @@ function checkDailyLimit() {
 
 // Обновление таймера
 function updateTimer(seconds) {
-    const timer = document.getElementById('timer');
-    if (!timer) {
-        const span = document.createElement('span');
-        span.id = 'timer';
-        questionLimit.appendChild(span);
-    }
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    timer.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    timerElement.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     if (seconds > 0) setTimeout(() => updateTimer(seconds - 1), 1000);
 }
 
