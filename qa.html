@@ -41,6 +41,12 @@
         font-size: 0.9rem;
       }
     }
+    .success-message {
+      color: #10b981;
+    }
+    .error-message {
+      color: #ef4444;
+    }
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100">
@@ -85,18 +91,47 @@
       e.preventDefault();
       const form = e.target;
       const formData = new FormData(form);
-      const response = await fetch(form.action, {
-        method: form.method,
-        body: formData
-      });
-      const result = await response.json();
-      document.getElementById('submitStatus').textContent = result.message || result.error || 'Ошибка отправки';
-      if (result.success) {
-        form.reset(); // Очистка формы
+      const date = new Date().toLocaleString('ru-RU');
+      formData.append('date', date); // Добавляем дату отправки
+
+      const submitStatus = document.getElementById('submitStatus');
+      submitStatus.textContent = 'Отправка...';
+      submitStatus.classList.remove('success-message', 'error-message');
+
+      try {
+        const response = await fetch(form.action, {
+          method: form.method,
+          body: formData
+        });
+        const result = await response.json();
+        if (result.success) {
+          submitStatus.textContent = result.message;
+          submitStatus.classList.add('success-message');
+          form.reset(); // Очистка формы
+          addQuestionToList(formData.get('nickname'), formData.get('question'), date);
+        } else {
+          submitStatus.textContent = result.error || 'Неизвестная ошибка';
+          submitStatus.classList.add('error-message');
+        }
+      } catch (error) {
+        submitStatus.textContent = 'Ошибка сети: ' + error.message;
+        submitStatus.classList.add('error-message');
       }
     });
 
-    // Локальное хранение вопросов (опционально для отображения)
+    // Добавление вопроса в список
+    function addQuestionToList(nickname, question, date) {
+      const qaList = document.getElementById('qaList');
+      const div = document.createElement('div');
+      div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow';
+      div.innerHTML = `<p class="question-text">${nickname}: ${question} <span class="text-xs text-slate-500 dark:text-slate-400">(${date})</span></p>`;
+      qaList.insertBefore(div, qaList.firstChild); // Добавляем сверху
+      questions.push({ text: question, date, approved: false });
+      localStorage.setItem('qaQuestions', JSON.stringify(questions));
+      if (isDevMode) updatePendingQuestions();
+    }
+
+    // Локальное хранение вопросов
     let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
 
     // Обновление списка одобренных вопросов
@@ -108,7 +143,7 @@
         approvedQuestions.forEach(q => {
           const div = document.createElement('div');
           div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow';
-          div.innerHTML = `<p class="text-slate-900 dark:text-slate-100">${q.text}</p><p class="text-xs text-slate-500 dark:text-slate-400">${new Date(q.date).toLocaleDateString()}</p>`;
+          div.innerHTML = `<p class="question-text">${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleDateString()})</span></p>`;
           qaList.appendChild(div);
         });
       } else {
@@ -128,10 +163,9 @@
           li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded';
           li.innerHTML = `
             <div class="flex justify-between items-center">
-              <span class="text-slate-900 dark:text-slate-100">${q.text}</span>
+              <span class="question-text">${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleDateString()})</span></span>
               <button class="glass-button text-xs px-2 py-1" onclick="approveQuestion(${index})">Одобрить</button>
             </div>
-            <p class="text-xs text-slate-500 dark:text-slate-400">${new Date(q.date).toLocaleDateString()}</p>
           `;
           pendingList.appendChild(li);
         });
