@@ -99,7 +99,7 @@ textarea:focus, input:focus {
     <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">
     <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"></textarea>
     <button type="submit" class="glass-button">Отправить</button>
-    <div id="questionLimit" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300"><span id="timer">00:00:00</span></div>
+    <div id="questionLimit" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300"></div>
     <div id="submitStatus" class="mt-2 text-center"></div>
 </form>
 </div>
@@ -131,7 +131,7 @@ const blackList = ['мат', 'оскорбление', 'спам', 'бот', 'ч
 const questionLimit = document.getElementById('questionLimit');
 const pendingCount = document.getElementById('pendingCount');
 const userNotification = document.getElementById('userNotification');
-const timerElement = document.getElementById('timer');
+let timerElement = null;
 
 // Проверка лимитов и черного списка
 function validateInput(nickname, question) {
@@ -146,33 +146,48 @@ function validateInput(nickname, question) {
 // Проверка дневного лимита и таймер сброса
 function checkDailyLimit() {
     const today = new Date().toLocaleDateString();
-    const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+    let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
     const todayCount = dailyStats[today] || 0;
     const remaining = dailyLimit - todayCount;
-    questionLimit.textContent = `Осталось: ${remaining} из ${dailyLimit} `;
+    questionLimit.textContent = `Осталось: ${remaining} из ${dailyLimit}`;
 
-    // Таймер сброса
-    const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(now.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
-    const timeLeft = Math.floor((tomorrow - now) / 1000); // В секундах до начала следующего дня
-    updateTimer(timeLeft, todayCount >= dailyLimit);
+    if (todayCount >= dailyLimit && !timerElement) {
+        timerElement = document.createElement('span');
+        timerElement.id = 'timer';
+        questionLimit.appendChild(timerElement);
+        const now = new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(now.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);
+        const timeLeft = Math.floor((tomorrow - now) / 1000);
+        updateTimer(timeLeft);
+    } else if (todayCount < dailyLimit && timerElement) {
+        if (timerElement.parentNode) timerElement.parentNode.removeChild(timerElement);
+        timerElement = null;
+    }
 
-    return todayCount >= dailyLimit ? `Достигнут лимит в ${dailyLimit} вопросов за день! Сброс через: ` : null;
+    if (todayCount >= dailyLimit) {
+        return `Достигнут лимит в ${dailyLimit} вопросов за день! Сброс через: `;
+    }
+    dailyStats[today] = todayCount;
+    localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
+    return null;
 }
 
 // Обновление таймера
-function updateTimer(seconds, isLimitReached) {
+function updateTimer(seconds) {
+    if (!timerElement) return;
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
     timerElement.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    if (seconds > 0) setTimeout(() => updateTimer(seconds - 1, isLimitReached), 1000);
-    else if (isLimitReached) {
+    if (seconds > 0) setTimeout(() => updateTimer(seconds - 1), 1000);
+    else {
         const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
         delete dailyStats[new Date().toLocaleDateString()];
         localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
+        timerElement.parentNode.removeChild(timerElement);
+        timerElement = null;
         checkDailyLimit();
     }
 }
@@ -191,7 +206,7 @@ document.getElementById('qaForm')?.addEventListener('submit', (e) => {
     const form = e.target;
     const nickname = document.getElementById('nicknameInput').value.trim();
     const question = document.getElementById('questionInput').value.trim();
-    const date = new Date().toLocaleString('ru-RU');
+    const date = new Date().toISOString(); // Сохраняем в ISO формате для корректного парсинга
     const submitStatus = document.getElementById('submitStatus');
 
     const validationError = validateInput(nickname, question);
@@ -203,10 +218,15 @@ document.getElementById('qaForm')?.addEventListener('submit', (e) => {
 
     const limitError = checkDailyLimit();
     if (limitError) {
-        submitStatus.innerHTML = limitError + `<span id="timer">${timerElement.textContent}</span>`;
+        submitStatus.innerHTML = limitError + (timerElement ? timerElement.outerHTML : '');
         submitStatus.classList.add('error-message');
         return;
     }
+
+    const today = new Date().toLocaleDateString();
+    let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+    dailyStats[today] = (dailyStats[today] || 0) + 1;
+    localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
 
     submitStatus.textContent = 'Отправка...';
     submitStatus.classList.remove('success-message', 'error-message');
@@ -309,7 +329,7 @@ const io = new IntersectionObserver(entries => {
 document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
 // Инициализация
-checkDailyLimit(); // Устанавливаем начальный счётчик и таймер
+checkDailyLimit(); // Устанавливаем начальный счётчик
 updateQAList();
 if (isDevMode) updatePendingQuestions();
 </script>
