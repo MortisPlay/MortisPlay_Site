@@ -124,6 +124,7 @@ if (isDevMode) document.getElementById('moderationPanel').style.display = 'block
 
 // Локальное хранение
 let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
+const dailyLimit = 5;
 const blackList = ['мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак']; // Черный список слов
 
 // Элементы интерфейса
@@ -142,17 +143,38 @@ function validateInput(nickname, question) {
     return null;
 }
 
-// Таймер до конца дня
-function updateTimer() {
+// Проверка дневного лимита и таймер сброса
+function checkDailyLimit() {
+    const today = new Date().toLocaleDateString();
+    const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+    const todayCount = dailyStats[today] || 0;
+    const remaining = dailyLimit - todayCount;
+    questionLimit.textContent = `Осталось: ${remaining} из ${dailyLimit} `;
+
+    // Таймер сброса
     const now = new Date();
-    const endOfDay = new Date(now);
-    endOfDay.setHours(23, 59, 59, 999);
-    const timeLeft = Math.floor((endOfDay - now) / 1000); // В секундах
-    const hours = Math.floor(timeLeft / 3600);
-    const minutes = Math.floor((timeLeft % 3600) / 60);
-    const secs = timeLeft % 60;
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    const timeLeft = Math.floor((tomorrow - now) / 1000); // В секундах до начала следующего дня
+    updateTimer(timeLeft, todayCount >= dailyLimit);
+
+    return todayCount >= dailyLimit ? `Достигнут лимит в ${dailyLimit} вопросов за день! Сброс через: ` : null;
+}
+
+// Обновление таймера
+function updateTimer(seconds, isLimitReached) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
     timerElement.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    if (timeLeft > 0) setTimeout(updateTimer, 1000);
+    if (seconds > 0) setTimeout(() => updateTimer(seconds - 1, isLimitReached), 1000);
+    else if (isLimitReached) {
+        const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+        delete dailyStats[new Date().toLocaleDateString()];
+        localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
+        checkDailyLimit();
+    }
 }
 
 // Показ уведомления пользователю
@@ -175,6 +197,13 @@ document.getElementById('qaForm')?.addEventListener('submit', (e) => {
     const validationError = validateInput(nickname, question);
     if (validationError) {
         submitStatus.textContent = validationError;
+        submitStatus.classList.add('error-message');
+        return;
+    }
+
+    const limitError = checkDailyLimit();
+    if (limitError) {
+        submitStatus.innerHTML = limitError + `<span id="timer">${timerElement.textContent}</span>`;
         submitStatus.classList.add('error-message');
         return;
     }
@@ -280,7 +309,7 @@ const io = new IntersectionObserver(entries => {
 document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
 // Инициализация
-updateTimer(); // Запускаем таймер
+checkDailyLimit(); // Устанавливаем начальный счётчик и таймер
 updateQAList();
 if (isDevMode) updatePendingQuestions();
 </script>
