@@ -1,206 +1,156 @@
 <!DOCTYPE html>
 <html lang="ru" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Mortis Play — Q&A</title>
-  <link rel="icon" href="/images/favicon.ico" />
-  <script src="https://cdn.tailwindcss.com" defer></script>
-  <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
-  <style>
-    .glass-button {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 0.75rem;
-      padding: 0.75rem 1.5rem;
-      color: #ffffff;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-    .glass-button:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: scale(1.05);
-    }
-    .dark .glass-button {
-      background: rgba(50, 50, 50, 0.15);
-      border-color: rgba(200, 200, 200, 0.2);
-    }
-    .fade-in {
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .fade-in.is-visible {
-      opacity: 1;
-      transform: none;
-    }
-    @media (max-width: 640px) {
-      .glass-button {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-      }
-    }
-    .success-message {
-      color: #10b981;
-    }
-    .error-message {
-      color: #ef4444;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Mortis Play — Q&A</title>
+<link rel="icon" href="/images/favicon.ico" />
+<script src="https://cdn.tailwindcss.com" defer></script>
+<script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
+<style>
+.glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); border-radius: 0.75rem; padding:0.75rem 1.5rem; color:#fff; font-weight:600; transition:all 0.3s ease; }
+.glass-button:hover { background: rgba(255,255,255,0.25); transform: scale(1.05); }
+.dark .glass-button { background: rgba(50,50,50,0.15); border-color: rgba(200,200,200,0.2); }
+.fade-in { opacity:0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-in.is-visible { opacity:1; transform:none; }
+@media (max-width: 640px) { .glass-button { padding:0.5rem 1rem; font-size:0.9rem; } }
+.success-message { color:#10b981; }
+.error-message { color:#ef4444; }
+</style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100">
-  <div class="mx-auto max-w-7xl px-4 py-16">
-    <h1 class="text-3xl font-bold text-center text-slate-900 dark:text-white">Q&A с Mortis Play</h1>
-    <p class="mt-4 text-center text-slate-600 dark:text-slate-300">Задавай вопросы — лучшие попадут в раздел после модерации!</p>
+<div class="mx-auto max-w-7xl px-4 py-16">
+<h1 class="text-3xl font-bold text-center text-slate-900 dark:text-white">Q&A с Mortis Play</h1>
+<p class="mt-4 text-center text-slate-600 dark:text-slate-300">Задавай вопросы — лучшие попадут в раздел после модерации!</p>
 
-    <!-- Форма для вопросов с ID -->
-    <div class="mt-8 max-w-lg mx-auto fade-in" id="qaFormContainer">
-      <form id="qaForm" action="save_question.php" method="post">
-        <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded">
-        <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded"></textarea>
-        <button type="submit" class="glass-button">Отправить</button>
-        <div id="submitStatus" class="mt-2 text-center"></div>
-      </form>
-    </div>
+<!-- Форма -->
+<div class="mt-8 max-w-lg mx-auto fade-in" id="qaFormContainer">
+<form id="qaForm" action="" method="post">
+<input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded">
+<textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded"></textarea>
+<button type="submit" class="glass-button">Отправить</button>
+<div id="submitStatus" class="mt-2 text-center"></div>
+</form>
+</div>
 
-    <!-- Панель модерации (только в dev-режиме) -->
-    <div id="moderationPanel" class="mt-8 max-w-lg mx-auto fade-in hidden" style="display: none;">
-      <h2 class="text-xl font-semibold text-center text-slate-900 dark:text-white">Модерация вопросов</h2>
-      <ul id="pendingQuestions" class="mt-4 space-y-2">
-        <!-- Вопросы на модерацию -->
-      </ul>
-      <button id="clearApproved" class="glass-button mt-4 w-full">Очистить одобренные</button>
-    </div>
+<!-- Панель модерации -->
+<div id="moderationPanel" class="mt-8 max-w-lg mx-auto fade-in hidden" style="display: none;">
+<h2 class="text-xl font-semibold text-center text-slate-900 dark:text-white">Модерация вопросов</h2>
+<ul id="pendingQuestions" class="mt-4 space-y-2"></ul>
+<button id="clearApproved" class="glass-button mt-4 w-full">Очистить одобренные</button>
+</div>
 
-    <!-- Список одобренных вопросов -->
-    <div id="qaList" class="mt-12 space-y-4 fade-in">
-      <!-- Одобренные вопросы -->
-    </div>
-  </div>
+<!-- Список одобренных вопросов -->
+<div id="qaList" class="mt-12 space-y-4 fade-in"></div>
+</div>
 
-  <script>
-    // Проверка dev-режима
-    const isDevMode = new URLSearchParams(window.location.search).get('dev') === 'true';
-    if (isDevMode) {
-      document.getElementById('moderationPanel').style.display = 'block';
-    }
+<script>
+const isDevMode = new URLSearchParams(window.location.search).get('dev') === 'true';
+if (isDevMode) document.getElementById('moderationPanel').style.display = 'block';
 
-    // Обработка формы с отправкой на сервер
-    document.getElementById('qaForm')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
-      const date = new Date().toLocaleString('ru-RU');
-      formData.append('date', date); // Добавляем дату отправки
+// Обработка формы через fetch
+document.getElementById('qaForm')?.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const date = new Date().toLocaleString('ru-RU');
+    formData.append('date', date);
 
-      const submitStatus = document.getElementById('submitStatus');
-      submitStatus.textContent = 'Отправка...';
-      submitStatus.classList.remove('success-message', 'error-message');
+    const submitStatus = document.getElementById('submitStatus');
+    submitStatus.textContent='Отправка...';
+    submitStatus.classList.remove('success-message','error-message');
 
-      try {
-        const response = await fetch(form.action, {
-          method: form.method,
-          body: formData
-        });
+    try{
+        const response = await fetch('', {method:'POST', body:formData});
         const result = await response.json();
-        if (result.success) {
-          submitStatus.textContent = result.message;
-          submitStatus.classList.add('success-message');
-          form.reset(); // Очистка формы
-          addQuestionToList(formData.get('nickname'), formData.get('question'), date);
-        } else {
-          submitStatus.textContent = result.error || 'Неизвестная ошибка';
-          submitStatus.classList.add('error-message');
+        if(result.success){
+            submitStatus.textContent=result.message;
+            submitStatus.classList.add('success-message');
+            form.reset();
+            addQuestionToList(formData.get('nickname'), formData.get('question'), date);
+        }else{
+            submitStatus.textContent=result.error||'Неизвестная ошибка';
+            submitStatus.classList.add('error-message');
         }
-      } catch (error) {
-        submitStatus.textContent = 'Ошибка сети: ' + error.message;
+    }catch(err){
+        submitStatus.textContent='Ошибка сети: '+err.message;
         submitStatus.classList.add('error-message');
-      }
-    });
-
-    // Добавление вопроса в список
-    function addQuestionToList(nickname, question, date) {
-      const qaList = document.getElementById('qaList');
-      const div = document.createElement('div');
-      div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow';
-      div.innerHTML = `<p class="question-text">${nickname}: ${question} <span class="text-xs text-slate-500 dark:text-slate-400">(${date})</span></p>`;
-      qaList.insertBefore(div, qaList.firstChild); // Добавляем сверху
-      questions.push({ text: question, date, approved: false });
-      localStorage.setItem('qaQuestions', JSON.stringify(questions));
-      if (isDevMode) updatePendingQuestions();
     }
+});
 
-    // Локальное хранение вопросов
-    let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
+// Локальное хранение
+let questions = JSON.parse(localStorage.getItem('qaQuestions'))||[];
 
-    // Обновление списка одобренных вопросов
-    function updateQAList() {
-      const qaList = document.getElementById('qaList');
-      qaList.innerHTML = '';
-      const approvedQuestions = questions.filter(q => q.approved);
-      if (approvedQuestions.length > 0) {
-        approvedQuestions.forEach(q => {
-          const div = document.createElement('div');
-          div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow';
-          div.innerHTML = `<p class="question-text">${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleDateString()})</span></p>`;
-          qaList.appendChild(div);
+function addQuestionToList(nickname, question, date){
+    const qaList = document.getElementById('qaList');
+    const div=document.createElement('div');
+    div.className='p-4 bg-white dark:bg-slate-800 rounded-lg shadow';
+    div.innerHTML=`<p class="question-text">${nickname}: ${question} <span class="text-xs text-slate-500 dark:text-slate-400">(${date})</span></p>`;
+    qaList.insertBefore(div, qaList.firstChild);
+    questions.push({text:question,date,approved:false});
+    localStorage.setItem('qaQuestions',JSON.stringify(questions));
+    if(isDevMode) updatePendingQuestions();
+}
+
+function updateQAList(){
+    const qaList=document.getElementById('qaList');
+    qaList.innerHTML='';
+    const approvedQuestions=questions.filter(q=>q.approved);
+    if(approvedQuestions.length>0){
+        approvedQuestions.forEach(q=>{
+            const div=document.createElement('div');
+            div.className='p-4 bg-white dark:bg-slate-800 rounded-lg shadow';
+            div.innerHTML=`<p class="question-text">${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleDateString()})</span></p>`;
+            qaList.appendChild(div);
         });
-      } else {
-        qaList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Пока одобренных вопросов нет — ждём модерацию!</p>';
-      }
+    }else{
+        qaList.innerHTML='<p class="text-center text-slate-600 dark:text-slate-300">Пока одобренных вопросов нет — ждём модерацию!</p>';
     }
+}
 
-    // Обновление списка вопросов на модерации
-    function updatePendingQuestions() {
-      if (!isDevMode) return;
-      const pendingList = document.getElementById('pendingQuestions');
-      pendingList.innerHTML = '';
-      const pendingQuestions = questions.filter(q => !q.approved);
-      if (pendingQuestions.length > 0) {
-        pendingQuestions.forEach((q, index) => {
-          const li = document.createElement('li');
-          li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded';
-          li.innerHTML = `
-            <div class="flex justify-between items-center">
-              <span class="question-text">${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleDateString()})</span></span>
-              <button class="glass-button text-xs px-2 py-1" onclick="approveQuestion(${index})">Одобрить</button>
-            </div>
-          `;
-          pendingList.appendChild(li);
+function updatePendingQuestions(){
+    if(!isDevMode) return;
+    const pendingList=document.getElementById('pendingQuestions');
+    pendingList.innerHTML='';
+    const pendingQuestions=questions.filter(q=>!q.approved);
+    if(pendingQuestions.length>0){
+        pendingQuestions.forEach((q,index)=>{
+            const li=document.createElement('li');
+            li.className='p-2 bg-gray-100 dark:bg-gray-700 rounded';
+            li.innerHTML=`<div class="flex justify-between items-center">
+            <span class="question-text">${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleDateString()})</span></span>
+            <button class="glass-button text-xs px-2 py-1" onclick="approveQuestion(${index})">Одобрить</button>
+            </div>`;
+            pendingList.appendChild(li);
         });
-      } else {
-        pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
-      }
+    }else{
+        pendingList.innerHTML='<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
     }
+}
 
-    // Функция одобрения вопроса
-    function approveQuestion(index) {
-      questions[index].approved = true;
-      localStorage.setItem('qaQuestions', JSON.stringify(questions));
-      updateQAList();
-      updatePendingQuestions();
-    }
-
-    // Очистка одобренных вопросов
-    document.getElementById('clearApproved')?.addEventListener('click', () => {
-      questions = questions.filter(q => !q.approved);
-      localStorage.setItem('qaQuestions', JSON.stringify(questions));
-      updateQAList();
-      updatePendingQuestions();
-    });
-
-    // Анимация появления
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) e.target.classList.add('is-visible');
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
-
-    // Инициализация
+function approveQuestion(index){
+    questions[index].approved=true;
+    localStorage.setItem('qaQuestions',JSON.stringify(questions));
     updateQAList();
-    if (isDevMode) updatePendingQuestions();
-  </script>
+    updatePendingQuestions();
+}
+
+document.getElementById('clearApproved')?.addEventListener('click',()=>{
+    questions=questions.filter(q=>!q.approved);
+    localStorage.setItem('qaQuestions',JSON.stringify(questions));
+    updateQAList();
+    updatePendingQuestions();
+});
+
+// Анимация появления
+const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('is-visible');});
+},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(el=>io.observe(el));
+
+// Инициализация
+updateQAList();
+if(isDevMode) updatePendingQuestions();
+</script>
 </body>
 </html>
