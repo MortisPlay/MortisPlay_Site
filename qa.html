@@ -26,9 +26,10 @@
 <!-- Форма -->
 <div class="mt-8 max-w-lg mx-auto fade-in" id="qaFormContainer">
 <form id="qaForm" action="qa.php" method="post">
-    <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required>
-    <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required></textarea>
-    <button type="submit">Отправить</button>
+    <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded">
+    <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded"></textarea>
+    <button type="submit" class="glass-button">Отправить</button>
+    <div id="submitStatus" class="mt-2 text-center"></div>
 </form>
 </div>
 
@@ -48,7 +49,7 @@ const isDevMode = new URLSearchParams(window.location.search).get('dev') === 'tr
 if (isDevMode) document.getElementById('moderationPanel').style.display = 'block';
 
 // Обработка формы через fetch
-document.getElementById('qaForm')?.addEventListener('submit', async (e)=>{
+document.getElementById('qaForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
@@ -56,100 +57,100 @@ document.getElementById('qaForm')?.addEventListener('submit', async (e)=>{
     formData.append('date', date);
 
     const submitStatus = document.getElementById('submitStatus');
-    submitStatus.textContent='Отправка...';
-    submitStatus.classList.remove('success-message','error-message');
+    submitStatus.textContent = 'Отправка...';
+    submitStatus.classList.remove('success-message', 'error-message');
 
-    try{
-        const response = await fetch('', {method:'POST', body:formData});
+    try {
+        const response = await fetch('qa.php', { method: 'POST', body: formData });
         const result = await response.json();
-        if(result.success){
-            submitStatus.textContent=result.message;
+        if (result.success) {
+            submitStatus.textContent = result.message;
             submitStatus.classList.add('success-message');
             form.reset();
             addQuestionToList(formData.get('nickname'), formData.get('question'), date);
-        }else{
-            submitStatus.textContent=result.error||'Неизвестная ошибка';
+        } else {
+            submitStatus.textContent = result.error || 'Неизвестная ошибка';
             submitStatus.classList.add('error-message');
         }
-    }catch(err){
-        submitStatus.textContent='Ошибка сети: '+err.message;
+    } catch (err) {
+        submitStatus.textContent = 'Ошибка сети: ' + err.message;
         submitStatus.classList.add('error-message');
     }
 });
 
 // Локальное хранение
-let questions = JSON.parse(localStorage.getItem('qaQuestions'))||[];
+let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
 
-function addQuestionToList(nickname, question, date){
+function addQuestionToList(nickname, question, date) {
     const qaList = document.getElementById('qaList');
-    const div=document.createElement('div');
-    div.className='p-4 bg-white dark:bg-slate-800 rounded-lg shadow';
-    div.innerHTML=`<p class="question-text">${nickname}: ${question} <span class="text-xs text-slate-500 dark:text-slate-400">(${date})</span></p>`;
+    const div = document.createElement('div');
+    div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow';
+    div.innerHTML = `<p class="question-text">${nickname}: ${question} <span class="text-xs text-slate-500 dark:text-slate-400">(${date})</span></p>`;
     qaList.insertBefore(div, qaList.firstChild);
-    questions.push({text:question,date,approved:false});
-    localStorage.setItem('qaQuestions',JSON.stringify(questions));
-    if(isDevMode) updatePendingQuestions();
+    questions.push({ text: question, date, approved: false });
+    localStorage.setItem('qaQuestions', JSON.stringify(questions));
+    if (isDevMode) updatePendingQuestions();
 }
 
-function updateQAList(){
-    const qaList=document.getElementById('qaList');
-    qaList.innerHTML='';
-    const approvedQuestions=questions.filter(q=>q.approved);
-    if(approvedQuestions.length>0){
-        approvedQuestions.forEach(q=>{
-            const div=document.createElement('div');
-            div.className='p-4 bg-white dark:bg-slate-800 rounded-lg shadow';
-            div.innerHTML=`<p class="question-text">${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleDateString()})</span></p>`;
+function updateQAList() {
+    const qaList = document.getElementById('qaList');
+    qaList.innerHTML = '';
+    const approvedQuestions = questions.filter(q => q.approved);
+    if (approvedQuestions.length > 0) {
+        approvedQuestions.forEach(q => {
+            const div = document.createElement('div');
+            div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow';
+            div.innerHTML = `<p class="question-text">${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleDateString()})</span></p>`;
             qaList.appendChild(div);
         });
-    }else{
-        qaList.innerHTML='<p class="text-center text-slate-600 dark:text-slate-300">Пока одобренных вопросов нет — ждём модерацию!</p>';
+    } else {
+        qaList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Пока одобренных вопросов нет — ждём модерацию!</p>';
     }
 }
 
-function updatePendingQuestions(){
-    if(!isDevMode) return;
-    const pendingList=document.getElementById('pendingQuestions');
-    pendingList.innerHTML='';
-    const pendingQuestions=questions.filter(q=>!q.approved);
-    if(pendingQuestions.length>0){
-        pendingQuestions.forEach((q,index)=>{
-            const li=document.createElement('li');
-            li.className='p-2 bg-gray-100 dark:bg-gray-700 rounded';
-            li.innerHTML=`<div class="flex justify-between items-center">
+function updatePendingQuestions() {
+    if (!isDevMode) return;
+    const pendingList = document.getElementById('pendingQuestions');
+    pendingList.innerHTML = '';
+    const pendingQuestions = questions.filter(q => !q.approved);
+    if (pendingQuestions.length > 0) {
+        pendingQuestions.forEach((q, index) => {
+            const li = document.createElement('li');
+            li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded';
+            li.innerHTML = `<div class="flex justify-between items-center">
             <span class="question-text">${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleDateString()})</span></span>
             <button class="glass-button text-xs px-2 py-1" onclick="approveQuestion(${index})">Одобрить</button>
             </div>`;
             pendingList.appendChild(li);
         });
-    }else{
-        pendingList.innerHTML='<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
+    } else {
+        pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
     }
 }
 
-function approveQuestion(index){
-    questions[index].approved=true;
-    localStorage.setItem('qaQuestions',JSON.stringify(questions));
+function approveQuestion(index) {
+    questions[index].approved = true;
+    localStorage.setItem('qaQuestions', JSON.stringify(questions));
     updateQAList();
     updatePendingQuestions();
 }
 
-document.getElementById('clearApproved')?.addEventListener('click',()=>{
-    questions=questions.filter(q=>!q.approved);
-    localStorage.setItem('qaQuestions',JSON.stringify(questions));
+document.getElementById('clearApproved')?.addEventListener('click', () => {
+    questions = questions.filter(q => !q.approved);
+    localStorage.setItem('qaQuestions', JSON.stringify(questions));
     updateQAList();
     updatePendingQuestions();
 });
 
 // Анимация появления
-const io=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('is-visible');});
-},{threshold:0.1});
-document.querySelectorAll('.fade-in').forEach(el=>io.observe(el));
+const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
 // Инициализация
 updateQAList();
-if(isDevMode) updatePendingQuestions();
+if (isDevMode) updatePendingQuestions();
 </script>
 </body>
 </html>
