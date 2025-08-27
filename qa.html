@@ -85,6 +85,11 @@ textarea:focus, input:focus {
 </head>
 <body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100">
 <div class="mx-auto max-w-7xl px-4 py-16">
+  <!-- Кнопка "Вернуться на сайт" в шапке -->
+  <div class="text-right mb-4">
+    <a href="/index.html" class="glass-button">Вернуться на сайт</a>
+  </div>
+
 <h1 class="text-3xl font-bold text-center text-slate-900 dark:text-white">Q&A с Mortis Play</h1>
 <p class="mt-4 text-center text-slate-600 dark:text-slate-300">Задавай вопросы — лучшие попадут в раздел после модерации!</p>
 
@@ -96,7 +101,6 @@ textarea:focus, input:focus {
     <button type="submit" class="glass-button">Отправить</button>
     <div id="questionLimit" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300"><span id="timer">00:00:00</span></div>
     <div id="submitStatus" class="mt-2 text-center"></div>
-    <button type="button" id="toggleTheme" class="glass-button mt-2">🌙</button>
 </form>
 </div>
 
@@ -120,7 +124,6 @@ if (isDevMode) document.getElementById('moderationPanel').style.display = 'block
 
 // Локальное хранение
 let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
-const dailyLimit = 5;
 const blackList = ['мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак']; // Черный список слов
 
 // Элементы интерфейса
@@ -128,22 +131,6 @@ const questionLimit = document.getElementById('questionLimit');
 const pendingCount = document.getElementById('pendingCount');
 const userNotification = document.getElementById('userNotification');
 const timerElement = document.getElementById('timer');
-const toggleTheme = document.getElementById('toggleTheme');
-
-// Переключение темы
-if (toggleTheme) {
-    toggleTheme.addEventListener('click', () => {
-        document.body.classList.toggle('dark');
-        const isDark = document.body.classList.contains('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        toggleTheme.textContent = isDark ? '☀️' : '🌙';
-    });
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark');
-        toggleTheme.textContent = '☀️';
-    }
-}
 
 // Проверка лимитов и черного списка
 function validateInput(nickname, question) {
@@ -155,34 +142,17 @@ function validateInput(nickname, question) {
     return null;
 }
 
-// Проверка дневного лимита и таймер сброса
-function checkDailyLimit() {
-    const today = new Date().toLocaleDateString();
-    const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
-    const todayCount = dailyStats[today] || 0;
-    const remaining = dailyLimit - todayCount;
-    questionLimit.textContent = `Осталось: ${remaining} из ${dailyLimit} `;
-
-    // Таймер сброса
+// Таймер до конца дня
+function updateTimer() {
     const now = new Date();
     const endOfDay = new Date(now);
     endOfDay.setHours(23, 59, 59, 999);
     const timeLeft = Math.floor((endOfDay - now) / 1000); // В секундах
-    if (todayCount >= dailyLimit) {
-        questionLimit.innerHTML = `Достигнут лимит в ${dailyLimit} вопросов за день! Сброс через: <span id="timer">${timerElement.textContent}</span>`;
-    }
-    updateTimer(timeLeft);
-
-    return todayCount >= dailyLimit ? `Достигнут лимит в ${dailyLimit} вопросов за день!` : null;
-}
-
-// Обновление таймера
-function updateTimer(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+    const hours = Math.floor(timeLeft / 3600);
+    const minutes = Math.floor((timeLeft % 3600) / 60);
+    const secs = timeLeft % 60;
     timerElement.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    if (seconds > 0) setTimeout(() => updateTimer(seconds - 1), 1000);
+    if (timeLeft > 0) setTimeout(updateTimer, 1000);
 }
 
 // Показ уведомления пользователю
@@ -205,13 +175,6 @@ document.getElementById('qaForm')?.addEventListener('submit', (e) => {
     const validationError = validateInput(nickname, question);
     if (validationError) {
         submitStatus.textContent = validationError;
-        submitStatus.classList.add('error-message');
-        return;
-    }
-
-    const limitError = checkDailyLimit();
-    if (limitError) {
-        submitStatus.innerHTML = limitError;
         submitStatus.classList.add('error-message');
         return;
     }
@@ -317,7 +280,7 @@ const io = new IntersectionObserver(entries => {
 document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
 // Инициализация
-checkDailyLimit(); // Устанавливаем начальный счётчик и таймер
+updateTimer(); // Запускаем таймер
 updateQAList();
 if (isDevMode) updatePendingQuestions();
 </script>
