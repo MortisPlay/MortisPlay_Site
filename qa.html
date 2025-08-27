@@ -154,6 +154,7 @@ function checkDailyLimit() {
     if (todayCount >= dailyLimit && !timerElement) {
         timerElement = document.createElement('span');
         timerElement.id = 'timer';
+        timerElement.style.marginLeft = '5px';
         questionLimit.appendChild(timerElement);
         const now = new Date();
         const tomorrow = new Date(now);
@@ -180,13 +181,13 @@ function updateTimer(seconds) {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    timerElement.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    timerElement.textContent = `Сброс через ${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     if (seconds > 0) setTimeout(() => updateTimer(seconds - 1), 1000);
     else {
         const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
         delete dailyStats[new Date().toLocaleDateString()];
         localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
-        timerElement.parentNode.removeChild(timerElement);
+        if (timerElement.parentNode) timerElement.parentNode.removeChild(timerElement);
         timerElement = null;
         checkDailyLimit();
     }
@@ -206,7 +207,7 @@ document.getElementById('qaForm')?.addEventListener('submit', (e) => {
     const form = e.target;
     const nickname = document.getElementById('nicknameInput').value.trim();
     const question = document.getElementById('questionInput').value.trim();
-    const date = new Date().toISOString(); // Сохраняем в ISO формате для корректного парсинга
+    const date = new Date().toISOString(); // Сохраняем в ISO формате
     const submitStatus = document.getElementById('submitStatus');
 
     const validationError = validateInput(nickname, question);
