@@ -152,9 +152,12 @@ function checkDailyLimit() {
     questionLimit.textContent = `Осталось: ${remaining} из ${dailyLimit}`;
 
     if (todayCount >= dailyLimit && !timerElement) {
+        const resetText = document.createElement('span');
+        resetText.textContent = ' Сброс через: ';
         timerElement = document.createElement('span');
         timerElement.id = 'timer';
         timerElement.style.marginLeft = '5px';
+        questionLimit.appendChild(resetText);
         questionLimit.appendChild(timerElement);
         const now = new Date();
         const tomorrow = new Date(now);
@@ -163,7 +166,13 @@ function checkDailyLimit() {
         const timeLeft = Math.floor((tomorrow - now) / 1000);
         updateTimer(timeLeft);
     } else if (todayCount < dailyLimit && timerElement) {
-        if (timerElement.parentNode) timerElement.parentNode.removeChild(timerElement);
+        if (timerElement.parentNode) {
+            const resetText = timerElement.previousSibling;
+            if (resetText && resetText.textContent === ' Сброс через: ') {
+                questionLimit.removeChild(resetText);
+            }
+            questionLimit.removeChild(timerElement);
+        }
         timerElement = null;
     }
 
@@ -184,7 +193,13 @@ function updateTimer(seconds) {
         const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
         delete dailyStats[new Date().toLocaleDateString()];
         localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
-        if (timerElement.parentNode) timerElement.parentNode.removeChild(timerElement);
+        if (timerElement.parentNode) {
+            const resetText = timerElement.previousSibling;
+            if (resetText && resetText.textContent === ' Сброс через: ') {
+                questionLimit.removeChild(resetText);
+            }
+            questionLimit.removeChild(timerElement);
+        }
         timerElement = null;
         checkDailyLimit();
     }
