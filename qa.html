@@ -25,11 +25,10 @@
 
 <!-- Форма -->
 <div class="mt-8 max-w-lg mx-auto fade-in" id="qaFormContainer">
-<form id="qaForm" action="" method="post">
-<input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded">
-<textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded"></textarea>
-<button type="submit" class="glass-button">Отправить</button>
-<div id="submitStatus" class="mt-2 text-center"></div>
+<form id="qaForm" action="qa.php" method="post">
+    <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required>
+    <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required></textarea>
+    <button type="submit">Отправить</button>
 </form>
 </div>
 
