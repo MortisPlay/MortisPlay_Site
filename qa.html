@@ -76,7 +76,6 @@ textarea:focus, input:focus {
     <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">
     <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"></textarea>
     <button type="submit" class="glass-button">Отправить</button>
-    <button type="button" id="toggleTheme" class="glass-button mt-2">🌙</button>
     <div id="submitStatus" class="mt-2 text-center"></div>
 </form>
 </div>
@@ -100,22 +99,6 @@ if (isDevMode) document.getElementById('moderationPanel').style.display = 'block
 let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
 const dailyLimit = 5;
 const blackList = ['мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак']; // Черный список слов
-
-// Переключение темы
-const toggleTheme = document.getElementById('toggleTheme');
-if (toggleTheme) {
-    toggleTheme.addEventListener('click', () => {
-        document.body.classList.toggle('dark');
-        const isDark = document.body.classList.contains('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        toggleTheme.textContent = isDark ? '☀️' : '🌙';
-    });
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark');
-        toggleTheme.textContent = '☀️';
-    }
-}
 
 // Проверка лимитов и черного списка
 function validateInput(nickname, question) {
