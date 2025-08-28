@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль - MortisPlay (Dev Mode)</title>
     <link rel="icon" href="/images/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             min-height: 100vh;
@@ -25,8 +26,9 @@
             padding: 20px;
             background: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
+            animation: fadeIn 0.5s ease-in;
         }
 
         .dark .container {
@@ -36,10 +38,12 @@
         h1 {
             color: #ff4500;
             font-size: 2rem;
+            font-weight: bold;
         }
 
         .glass-button {
             background: rgba(255, 255, 255, 0.15);
+            -webkit-backdrop-filter: blur(10px); /* Совместимость */
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 0.75rem;
@@ -69,11 +73,18 @@
         .avatar {
             display: block;
             margin: 0 auto;
+            border-radius: 9999px; /* Полукруглый аватар */
+            border: 2px solid #ffffff;
         }
 
         .loading {
             color: #666;
             font-style: italic;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 640px) {
