@@ -37,61 +37,72 @@
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
 
   <style>
-    @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-    .card-hover{transition:transform .25s ease, box-shadow .25s ease}
-    .card-hover:hover{transform:translateY(-4px); box-shadow:0 12px 24px rgb(0 0 0 / .15)}
-    .fade-in{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease}
-    .fade-in.is-visible{opacity:1; transform:none}
-    .glass{backdrop-filter:saturate(160%) blur(8px); background:linear-gradient(180deg, rgb(255 255 255 / .7), rgb(255 255 255 / .55))}
-    .dark .glass{background:linear-gradient(180deg, rgb(17 24 39 / .7), rgb(17 24 39 / .55))}
-    #loader { position: fixed; inset:0; z-index:1000; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#6366f1,#ec4899); }
-    .loader-spin { width:64px; height:64px; border:6px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin 1s linear infinite; }
-    @keyframes spin { 100%{transform:rotate(360deg)} }
-    #sidebarMenu { box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); }
-    #sidebarMenu.open { transform: translateX(0); }
-    .profile-button { position: static; z-index: 10; margin-left: auto; }
-    .profile-button .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; padding: 0.75rem 1.5rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
-    .profile-button .glass-button.login { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); }
-    .profile-button .glass-button.profile { background: rgba(128, 128, 128, 0.2); border-color: rgba(128, 128, 128, 0.5); }
-    .profile-button .glass-button:hover { box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); transform: scale(1.05); }
-    .profile-button .glass-button:active { transform: scale(0.98); }
-    .dark .profile-button .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
-    .dark .profile-button .glass-button.login { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); }
-    .dark .profile-button .glass-button.profile { background: rgba(128, 128, 128, 0.2); border-color: rgba(128, 128, 128, 0.5); }
-    @media (max-width: 640px) { .profile-button { position: fixed; top: 0.5rem; right: 0.5rem; } .profile-button .glass-button { padding: 0.5rem 1rem; font-size: 0.9rem; } }
-    #loginModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); z-index: 100000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
-    #loginModal.active { visibility: visible; opacity: 1; display: flex; align-items: center; justify-content: center; }
-    #loginModal .modal-content { background: linear-gradient(135deg, rgba(0, 123, 255, 0.2), rgba(0, 123, 255, 0.1)); backdrop-filter: blur(15px); border: 1px solid rgba(0, 123, 255, 0.4); border-radius: 1rem; padding: 2rem; width: 100%; max-width: 450px; color: #ffffff; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); text-align: center; overflow-y: auto; max-height: 80vh; }
-    .dark #loginModal .modal-content { background: linear-gradient(135deg, rgba(0, 80, 160, 0.2), rgba(0, 80, 160, 0.1)); border-color: rgba(0, 80, 160, 0.4); }
-    #loginModal .modal-content h3 { font-size: 1.5rem; margin-bottom: 1rem; }
-    #loginModal .modal-content .tab-content { margin-top: 1rem; }
-    #loginModal .modal-content input { width: 100%; padding: 0.75rem; margin: 0.75rem 0; border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 0.5rem; background: rgba(255, 255, 255, 0.1); color: #ffffff; transition: border-color 0.3s ease; }
-    #loginModal .modal-content input:focus { border-color: rgba(0, 123, 255, 0.7); outline: none; }
-    #loginModal .modal-content input::placeholder { color: rgba(255, 255, 255, 0.7); }
-    #loginModal .modal-content button { margin-top: 1.5rem; width: 100%; padding: 0.75rem; border-radius: 0.5rem; background: rgba(0, 123, 255, 0.3); border: none; color: #ffffff; transition: background 0.3s ease; }
-    #loginModal .modal-content button:hover { background: rgba(0, 123, 255, 0.5); }
-    #loginModal .tab-buttons { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
-    #loginModal .tab-buttons button { flex: 1; padding: 0.75rem; border: none; border-radius: 0.5rem; background: rgba(255, 255, 255, 0.2); cursor: pointer; transition: background 0.3s ease; }
-    #loginModal .tab-buttons button.active { background: rgba(0, 123, 255, 0.3); }
-    #loginModal .tab-buttons button:hover { background: rgba(255, 255, 255, 0.3); }
-    @media (max-width: 640px) { #loginModal .modal-content { padding: 1.5rem; max-width: 90%; } }
-    .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; padding: 0.75rem 1.5rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
-    .glass-button:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); }
-    .glass-button:active { transform: scale(0.98); }
-    .dark .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
-    .dark .glass-button:hover { background: rgba(50, 50, 50, 0.25); }
-    @media (max-width: 640px) { .glass-button { padding: 0.5rem 1rem; font-size: 0.9rem; } }
-    @supports not (backdrop-filter: blur(10px)) { .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; } .dark .glass-button { background: rgba(50, 50, 50, 0.5); } }
-    #updateModal { display: flex; align-items: center; justify-content: center; }
-    #updateModal > div { transform: translate(-50%, -50%); position: fixed; top: 50%; left: 50%; }
-    #updateModal.hidden { display: none !important; }
-    .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #fff5f5, #ffffff, #e0f2fe); }
-    .dark .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #4b5bd1); }
-    .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
-    .grid { display: grid; }
-    .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    @media (max-width: 640px) { .glass { backdrop-filter: none; background: linear-gradient(180deg, rgb(255 255 255 / .9), rgb(255 255 255 / .8)); } .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .9), rgb(17 24 39 / .8)); } .card-hover:hover { transform: none; } .animate-[floaty_5s_ease-in-out_infinite] { animation: none; } iframe, video, img { loading: lazy; } }
-  </style>
+  @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  .card-hover{transition:transform .25s ease, box-shadow .25s ease}
+  .card-hover:hover{transform:translateY(-4px); box-shadow:0 12px 24px rgb(0 0 0 / .15)}
+  .fade-in{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease}
+  .fade-in.is-visible{opacity:1; transform:none}
+  .glass{backdrop-filter:saturate(160%) blur(8px); background:linear-gradient(180deg, rgb(255 255 255 / .7), rgb(255 255 255 / .55))}
+  .dark .glass{background:linear-gradient(180deg, rgb(17 24 39 / .7), rgb(17 24 39 / .55))}
+  #loader { position: fixed; inset:0; z-index:1000; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#6366f1,#ec4899); }
+  .loader-spin { width:64px; height:64px; border:6px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin 1s linear infinite; }
+  @keyframes spin { 100%{transform:rotate(360deg)} }
+  #sidebarMenu { box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
+  #sidebarMenu.open { transform: translateX(0); }
+  .profile-button { position: static; z-index: 10; margin-left: auto; }
+  .profile-button .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; padding: 0.75rem 1.5rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
+  .profile-button .glass-button.login { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); }
+  .profile-button .glass-button.profile { background: rgba(128, 128, 128, 0.2); border-color: rgba(128, 128, 128, 0.5); }
+  .profile-button .glass-button:hover { box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); transform: scale(1.05); }
+  .profile-button .glass-button:active { transform: scale(0.98); }
+  .dark .profile-button .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
+  .dark .profile-button .glass-button.login { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); }
+  .dark .profile-button .glass-button.profile { background: rgba(128, 128, 128, 0.2); border-color: rgba(128, 128, 128, 0.5); }
+  @media (max-width: 640px) { 
+    .profile-button { position: fixed; top: 0.5rem; right: 0.5rem; margin: 0; } 
+    .profile-button .glass-button { padding: 0.5rem 1rem; font-size: 0.9rem; } 
+    #welcome .lg:grid-cols-2 { grid-template-columns: 1fr; }
+    #welcome video { max-width: 100%; height: auto; }
+    #welcome .mt-4.lg\:absolute { position: static; margin-top: 1rem; width: 100%; }
+  }
+  #loginModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); z-index: 100000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
+  #loginModal.active { visibility: visible; opacity: 1; display: flex; align-items: center; justify-content: center; }
+  #loginModal .modal-content { background: linear-gradient(135deg, rgba(0, 123, 255, 0.2), rgba(0, 123, 255, 0.1)); backdrop-filter: blur(15px); border: 1px solid rgba(0, 123, 255, 0.4); border-radius: 1rem; padding: 2rem; width: 100%; max-width: 450px; color: #ffffff; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); text-align: center; overflow-y: auto; max-height: 80vh; }
+  .dark #loginModal .modal-content { background: linear-gradient(135deg, rgba(0, 80, 160, 0.2), rgba(0, 80, 160, 0.1)); border-color: rgba(0, 80, 160, 0.4); }
+  #loginModal .modal-content h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+  #loginModal .modal-content .tab-content { margin-top: 1rem; }
+  #loginModal .modal-content input { width: 100%; padding: 0.75rem; margin: 0.75rem 0; border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 0.5rem; background: rgba(255, 255, 255, 0.1); color: #ffffff; transition: border-color 0.3s ease; }
+  #loginModal .modal-content input:focus { border-color: rgba(0, 123, 255, 0.7); outline: none; }
+  #loginModal .modal-content input::placeholder { color: rgba(255, 255, 255, 0.7); }
+  #loginModal .modal-content button { margin-top: 1.5rem; width: 100%; padding: 0.75rem; border-radius: 0.5rem; background: rgba(0, 123, 255, 0.3); border: none; color: #ffffff; transition: background 0.3s ease; }
+  #loginModal .modal-content button:hover { background: rgba(0, 123, 255, 0.5); }
+  #loginModal .tab-buttons { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
+  #loginModal .tab-buttons button { flex: 1; padding: 0.75rem; border: none; border-radius: 0.5rem; background: rgba(255, 255, 255, 0.2); cursor: pointer; transition: background 0.3s ease; }
+  #loginModal .tab-buttons button.active { background: rgba(0, 123, 255, 0.3); }
+  #loginModal .tab-buttons button:hover { background: rgba(255, 255, 255, 0.3); }
+  @media (max-width: 640px) { #loginModal .modal-content { padding: 1.5rem; max-width: 90%; } }
+  .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; padding: 0.75rem 1.5rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
+  .glass-button:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); }
+  .glass-button:active { transform: scale(0.98); }
+  .dark .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
+  .dark .glass-button:hover { background: rgba(50, 50, 50, 0.25); }
+  @supports not (backdrop-filter: blur(10px)) { .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; } .dark .glass-button { background: rgba(50, 50, 50, 0.5); } }
+  #updateModal { display: flex; align-items: center; justify-content: center; }
+  #updateModal > div { transform: translate(-50%, -50%); position: fixed; top: 50%; left: 50%; }
+  #updateModal.hidden { display: none !important; }
+  .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #fff5f5, #ffffff, #e0f2fe); }
+  .dark .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #4b5bd1); }
+  .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+  .grid { display: grid; }
+  .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 640px) { 
+    .glass { backdrop-filter: none; background: linear-gradient(180deg, rgb(255 255 255 / .9), rgb(255 255 255 / .8)); } 
+    .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .9), rgb(17 24 39 / .8)); } 
+    .card-hover:hover { transform: none; } 
+    .animate-[floaty_5s_ease-in-out_infinite] { animation: none; } 
+    iframe, video, img { max-width: 100%; height: auto; } 
+  }
+</style>
   <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
 </head>
 
@@ -200,15 +211,14 @@
         </div>
         <div id="devLinks" class="mt-6" style="display: none;" data-dev-only>
           <p><a href="/qa.html" class="glass-button">Перейти к Q&A</a></p>
-          <p><a href="/profile.html" class="glass-button">Перейти в профиль</a></p>
         </div>
       </div>
-      <div class="relative">
-        <video class="w-full max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала" onerror="this.src='/assets/fallback.mp4';">
+      <div class="relative mt-8 lg:mt-0">
+        <video class="w-full max-w-xs sm:max-w-sm mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала" onerror="this.src='/assets/fallback.mp4'; this.alt='Видео недоступно';">
           <source src="/assets/photo.mp4" type="video/mp4" />
         </video>
-        <div class="absolute -bottom-4 -right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover animate-[floaty_5s_ease-in-out_infinite]">
-          <p class="text-xs text-slate-600 dark:text-slate-300">Гений, миллиардер, плейбой, филантроп 😎</p>
+        <div class="mt-4 lg:absolute lg:-bottom-4 lg:-right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover animate-[floaty_5s_ease-in-out_infinite] lg:w-auto w-full">
+          <p class="text-xs text-slate-600 dark:text-slate-300 text-center lg:text-left">Гений, миллиардер, плейбой, филантроп 😎</p>
         </div>
       </div>
     </div>
