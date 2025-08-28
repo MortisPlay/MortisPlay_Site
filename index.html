@@ -181,15 +181,11 @@
               Эксклюзивные видео, мемы, новости и апдейты. Врывайся — дальше только громче 😎
             </p>
             <div class="mt-6 flex flex-wrap gap-3">
-              <a href="#updates" class="glass-button">
-                <i class="fa-solid fa-bolt"></i>
-                Что нового
-              </a>
-              <a href="#biography" class="glass-button">
-                <i class="fa-solid fa-user"></i>
-                Обо мне
-              </a>
-            </div>
+  <a href="#biography" class="glass-button">
+    <i class="fa-solid fa-user"></i>
+    Обо мне
+  </a>
+</div>
             <div class="mt-6 flex items-center gap-6 text-sm text-slate-600 dark:text-slate-300">
               <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">420</span></div>
               <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
@@ -469,16 +465,15 @@
   const isDevMode = urlParams.get('dev') === 'true';
   console.log('Режим:', { isDevMode });
   const devLinks = document.getElementById('devLinks');
-  const qaLink = document.getElementById('qaLink');
+  const qaLinks = document.querySelectorAll('#qaLink'); // Обрабатываем все элементы с id qaLink
   if (isDevMode && devLinks) {
     devLinks.style.display = 'block';
-    // Удаляем ссылку на профиль
     const profileLink = devLinks.querySelector('a[href="/profile.html"]');
     if (profileLink) profileLink.remove();
     // Показываем кнопку Q&A только в режиме разработчика
-    if (qaLink) qaLink.classList.add('dev-only');
-  } else if (qaLink) {
-    qaLink.style.display = 'none'; // Скрываем в полной версии
+    qaLinks.forEach(link => link.classList.add('dev-only'));
+  } else {
+    qaLinks.forEach(link => link.style.display = 'none'); // Скрываем во всех местах, включая мобильное меню
   }
 
   // Меню
