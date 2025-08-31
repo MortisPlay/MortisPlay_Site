@@ -135,67 +135,13 @@
     const isDevMode = new URLSearchParams(window.location.search).get('dev') === 'true';
     if (isDevMode) document.getElementById('moderationPanel').style.display = 'block';
 
-    // Инициализация IndexedDB
-    let db;
-    const request = indexedDB.open('QAStore', 1);
-
-    request.onupgradeneeded = (event) => {
-      db = event.target.result;
-      db.createObjectStore('questions', { keyPath: 'id', autoIncrement: true });
-    };
-
-    request.onsuccess = (event) => {
-      db = event.target.result;
-      loadQuestions();
-    };
-
-    request.onerror = (event) => {
-      console.error('Ошибка открытия IndexedDB:', event.target.error);
-      fallbackToLocalStorage();
-    };
-
-    // Резервный вариант с localStorage
-    function fallbackToLocalStorage() {
-      let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
-      renderQuestions(questions);
-    }
-
-    // Загрузка вопросов
-    function loadQuestions() {
-      const transaction = db.transaction(['questions'], 'readonly');
-      const store = transaction.objectStore('questions');
-      const request = store.getAll();
-
-      request.onsuccess = () => {
-        const questions = request.result;
-        const now = new Date();
-        const filteredQuestions = questions.filter(q => (now - new Date(q.date)) < (30 * 24 * 60 * 60 * 1000));
-        renderQuestions(filteredQuestions);
-        if (isDevMode) updateQuestionStats(filteredQuestions);
-      };
-    }
-
-    // Сохранение вопроса
-    function saveQuestion(question) {
-      const transaction = db.transaction(['questions'], 'readwrite');
-      const store = transaction.objectStore('questions');
-      store.add(question);
-
-      transaction.oncomplete = () => {
-        loadQuestions();
-      };
-    }
-
-    // Удаление вопроса
-    function deleteQuestion(id) {
-      const transaction = db.transaction(['questions'], 'readwrite');
-      const store = transaction.objectStore('questions');
-      store.delete(id);
-
-      transaction.oncomplete = () => {
-        loadQuestions();
-      };
-    }
+    // Элементы интерфейса
+    const questionLimit = document.getElementById('questionLimit');
+    const pendingCount = document.getElementById('pendingCount');
+    const userNotification = document.getElementById('userNotification');
+    const notificationMessage = document.getElementById('notificationMessage');
+    let timerElement = null;
+    let sortNewest = true;
 
     const dailyLimit = 5;
     const timeoutSeconds = 30; // Тайм-аут в 30 секунд
@@ -204,14 +150,6 @@
       'реклама', 'купить', 'заработок', 'порно', 'xxx', 'вирус', 'hack', 'free', 'click',
       'shit', 'fuck', 'ass', 'damn', 'crap', 'botnet', 'phishing', 'scam', 'link'
     ];
-
-    // Элементы интерфейса
-    const questionLimit = document.getElementById('questionLimit');
-    const pendingCount = document.getElementById('pendingCount');
-    const userNotification = document.getElementById('userNotification');
-    const notificationMessage = document.getElementById('notificationMessage');
-    let timerElement = null;
-    let sortNewest = true;
 
     // Усиленная валидация
     function validateInput(nickname, question) {
@@ -312,12 +250,11 @@
     }
 
     // Обработка формы
-    document.getElementById('qaForm')?.addEventListener('submit', (e) => {
+    document.getElementById('qaForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const form = e.target;
       const nickname = document.getElementById('nicknameInput').value.trim();
       const question = document.getElementById('questionInput').value.trim();
-      const date = new Date().toISOString();
       const submitStatus = document.getElementById('submitStatus');
 
       const validationError = validateInput(nickname, question);
@@ -344,30 +281,33 @@
         return;
       }
 
-      const today = new Date().toLocaleDateString();
-      let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
-      if (dailyStats[today] >= dailyLimit) {
-        submitStatus.textContent = 'Достигнут лимит в 5 вопросов за день!';
-        submitStatus.classList.add('error-message');
-        showNotification('Достигнут лимит вопросов за день!', false);
-        return;
-      }
-      dailyStats[today] = (dailyStats[today] || 0) + 1;
-      localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
-
       submitStatus.textContent = 'Отправка...';
       submitStatus.classList.remove('success-message', 'error-message');
 
-      const newQuestion = { nickname, text: question, date, approved: false };
-      saveQuestion(newQuestion);
-
-      submitStatus.textContent = 'Вопрос отправлен!';
-      submitStatus.classList.add('success-message');
-      showNotification('Вопрос отправлен на модерацию!', true);
-      form.reset();
-
-      addQuestionToList(newQuestion.nickname, newQuestion.text, newQuestion.date);
-      if (isDevMode) updatePendingQuestions();
+      try {
+        const response = await fetch('http://localhost:3000/questions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nickname, text: question }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          submitStatus.textContent = 'Вопрос отправлен!';
+          submitStatus.classList.add('success-message');
+          showNotification(data.message, true);
+          form.reset();
+          addQuestionToList(nickname, question, new Date().toISOString());
+        } else {
+          submitStatus.textContent = data.error;
+          submitStatus.classList.add('error-message');
+          showNotification(data.error, false);
+        }
+      } catch (error) {
+        submitStatus.textContent = 'Ошибка сети!';
+        submitStatus.classList.add('error-message');
+        showNotification('Не удалось связаться с сервером.', false);
+        console.error('Ошибка:', error);
+      }
     });
 
     // Добавление вопроса в список с анимацией
@@ -381,38 +321,43 @@
     }
 
     // Обновление списка одобренных вопросов
-    function renderQuestions(questionsList) {
+    async function renderQuestions() {
       const qaList = document.getElementById('qaList');
       qaList.innerHTML = '';
-      let sortedQuestions = [...questionsList].sort((a, b) => {
-        return sortNewest ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
-      });
-      const approvedQuestions = sortedQuestions.filter(q => q.approved);
-      if (approvedQuestions.length > 0) {
-        approvedQuestions.forEach(q => {
-          const div = document.createElement('div');
-          div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow question-slide';
-          div.innerHTML = `<p class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></p>`;
-          qaList.appendChild(div);
-          setTimeout(() => div.classList.add('is-visible'), 10);
+      try {
+        const response = await fetch('http://localhost:3000/questions');
+        const questions = await response.json();
+        let sortedQuestions = [...questions].sort((a, b) => {
+          return sortNewest ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
         });
-      } else {
-        qaList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Пока одобренных вопросов нет — ждём модерацию!</p>';
+        const approvedQuestions = sortedQuestions.filter(q => q.approved);
+        if (approvedQuestions.length > 0) {
+          approvedQuestions.forEach(q => {
+            const div = document.createElement('div');
+            div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow question-slide';
+            div.innerHTML = `<p class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></p>`;
+            qaList.appendChild(div);
+            setTimeout(() => div.classList.add('is-visible'), 10);
+          });
+        } else {
+          qaList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Пока одобренных вопросов нет — ждём модерацию!</p>';
+        }
+        if (isDevMode) updatePendingQuestions();
+      } catch (error) {
+        qaList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Ошибка загрузки вопросов.</p>';
+        console.error('Ошибка:', error);
       }
-      if (isDevMode) updatePendingQuestions();
     }
 
     // Обновление списка ожидающих вопросов и счётчика
-    function updatePendingQuestions() {
+    async function updatePendingQuestions() {
       if (!isDevMode) return;
       const pendingList = document.getElementById('pendingQuestions');
       pendingList.innerHTML = '';
-      const transaction = db.transaction(['questions'], 'readonly');
-      const store = transaction.objectStore('questions');
-      const request = store.getAll();
-
-      request.onsuccess = () => {
-        const pendingQuestions = request.result.filter(q => !q.approved);
+      try {
+        const response = await fetch('http://localhost:3000/questions');
+        const questions = await response.json();
+        const pendingQuestions = questions.filter(q => !q.approved);
         pendingCount.textContent = pendingQuestions.length > 0 ? `(Ожидает: ${pendingQuestions.length})` : '';
         if (pendingQuestions.length > 0) {
           pendingQuestions.forEach((q, index) => {
@@ -430,74 +375,88 @@
         } else {
           pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
         }
-      };
+      } catch (error) {
+        pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Ошибка загрузки ожидающих вопросов.</p>';
+        console.error('Ошибка:', error);
+      }
     }
 
     // Обновление статистики вопросов
-    function updateQuestionStats(questions) {
-      const total = questions.length;
-      const approved = questions.filter(q => q.approved).length;
-      const pending = questions.filter(q => !q.approved).length;
-      document.getElementById('questionStats').textContent = `Всего: ${total}, Одобрено: ${approved}, Ожидает: ${pending}`;
+    async function updateQuestionStats() {
+      try {
+        const response = await fetch('http://localhost:3000/questions');
+        const questions = await response.json();
+        const total = questions.length;
+        const approved = questions.filter(q => q.approved).length;
+        const pending = questions.filter(q => !q.approved).length;
+        document.getElementById('questionStats').textContent = `Всего: ${total}, Одобрено: ${approved}, Ожидает: ${pending}`;
+      } catch (error) {
+        document.getElementById('questionStats').textContent = 'Ошибка загрузки статистики.';
+        console.error('Ошибка:', error);
+      }
     }
 
     // Одобрение вопроса
-    function approveQuestion(id) {
-      const transaction = db.transaction(['questions'], 'readwrite');
-      const store = transaction.objectStore('questions');
-      const request = store.get(id);
-
-      request.onsuccess = () => {
-        const question = request.result;
-        question.approved = true;
-        store.put(question);
-
-        transaction.oncomplete = () => {
-          loadQuestions();
-          showNotification(`Вопрос "${question.text}" одобрен!`, true);
-        };
-      };
+    async function approveQuestion(id) {
+      try {
+        const response = await fetch(`http://localhost:3000/questions/${id}/approve`, {
+          method: 'POST',
+        });
+        const data = await response.json();
+        if (response.ok) {
+          renderQuestions();
+          showNotification(data.message, true);
+        } else {
+          showNotification(data.error, false);
+        }
+      } catch (error) {
+        showNotification('Ошибка при одобрении.', false);
+        console.error('Ошибка:', error);
+      }
     }
 
     // Отклонение вопроса
-    function rejectQuestion(id) {
-      const transaction = db.transaction(['questions'], 'readwrite');
-      const store = transaction.objectStore('questions');
-      const request = store.get(id);
-
-      request.onsuccess = () => {
-        const question = request.result;
-        store.delete(id);
-
-        transaction.oncomplete = () => {
-          loadQuestions();
-          showNotification(`Вопрос "${question.text}" отклонён.`, false);
-        };
-      };
+    async function rejectQuestion(id) {
+      try {
+        const response = await fetch(`http://localhost:3000/questions/${id}`, {
+          method: 'DELETE',
+        });
+        const data = await response.json();
+        if (response.ok) {
+          renderQuestions();
+          showNotification(data.message, false);
+        } else {
+          showNotification(data.error, false);
+        }
+      } catch (error) {
+        showNotification('Ошибка при отклонении.', false);
+        console.error('Ошибка:', error);
+      }
     }
 
     // Очистка одобренных вопросов
-    document.getElementById('clearApproved')?.addEventListener('click', () => {
-      const transaction = db.transaction(['questions'], 'readwrite');
-      const store = transaction.objectStore('questions');
-      const request = store.getAll();
-
-      request.onsuccess = () => {
-        request.result.forEach(q => {
-          if (q.approved) store.delete(q.id);
+    document.getElementById('clearApproved')?.addEventListener('click', async () => {
+      try {
+        const response = await fetch('http://localhost:3000/questions/approved', {
+          method: 'DELETE',
         });
-
-        transaction.oncomplete = () => {
-          loadQuestions();
-        };
-      };
+        const data = await response.json();
+        if (response.ok) {
+          renderQuestions();
+        } else {
+          showNotification(data.error, false);
+        }
+      } catch (error) {
+        showNotification('Ошибка при очистке.', false);
+        console.error('Ошибка:', error);
+      }
     });
 
     // Переключение сортировки
     document.getElementById('sortToggle')?.addEventListener('click', () => {
       sortNewest = !sortNewest;
       document.getElementById('sortToggle').textContent = `Сортировать: ${sortNewest ? 'Новые сверху' : 'Старые сверху'}`;
-      loadQuestions();
+      renderQuestions();
     });
 
     // Консольная команда для сброса лимита (только для теста)
@@ -525,7 +484,11 @@
 
     // Инициализация
     checkDailyLimit();
-    if (db) renderQuestions([]);
+    renderQuestions();
+    if (isDevMode) {
+      updatePendingQuestions();
+      updateQuestionStats();
+    }
   </script>
 </body>
 </html>
