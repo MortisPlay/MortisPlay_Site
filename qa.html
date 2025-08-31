@@ -88,6 +88,8 @@
     }
     .pending { background-color: #fef3c7; color: #92400e; } /* Оранжевый фон для ожидающих */
     .approved { background-color: #d1fae5; color: #065f46; } /* Зелёный фон для одобренных */
+    .comment-section { margin-top: 0.5rem; font-size: 0.9rem; }
+    .comment-input { width: 100%; margin-top: 0.5rem; }
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100">
@@ -105,6 +107,7 @@
       <form id="qaForm">
         <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">
         <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"></textarea>
+        <textarea name="authorComment" id="authorCommentInput" placeholder="Ваш комментарий (опционально)" class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 comment-input"></textarea>
         <button type="submit" class="glass-button">Отправить</button>
         <div id="questionLimit" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300"></div>
         <div id="submitStatus" class="mt-2 text-center"></div>
@@ -139,11 +142,12 @@
 
     // Инициализация IndexedDB
     let db;
-    const request = indexedDB.open('QAStore', 1);
+    const request = indexedDB.open('QAStore', 2); // Увеличиваем версию для изменения структуры
 
     request.onupgradeneeded = (event) => {
       db = event.target.result;
-      db.createObjectStore('questions', { keyPath: 'id', autoIncrement: true });
+      const store = db.createObjectStore('questions', { keyPath: 'id', autoIncrement: true });
+      store.createIndex('byDate', 'date', { unique: false });
     };
 
     request.onsuccess = (event) => {
@@ -191,6 +195,24 @@
       };
     }
 
+    // Обновление вопроса
+    function updateQuestion(id, updates) {
+      const transaction = db.transaction(['questions'], 'readwrite');
+      const store = transaction.objectStore('questions');
+      const request = store.get(id);
+
+      request.onsuccess = () => {
+        const question = request.result;
+        if (question) {
+          Object.assign(question, updates);
+          store.put(question);
+          transaction.oncomplete = () => {
+            loadQuestions();
+          };
+        }
+      };
+    }
+
     // Удаление вопроса
     function deleteQuestion(id) {
       const transaction = db.transaction(['questions'], 'readwrite');
@@ -219,10 +241,10 @@
     let sortNewest = true;
 
     // Усиленная валидация
-    function validateInput(nickname, question) {
+    function validateInput(nickname, question, comment = '') {
       if (nickname.length < 3 || nickname.length > 20) return 'Никнейм должен быть от 3 до 20 символов!';
       if (question.length < 10 || question.length > 200) return 'Вопрос должен быть от 10 до 200 символов!';
-      if (blackList.some(word => nickname.toLowerCase().includes(word) || question.toLowerCase().includes(word))) {
+      if (blackList.some(word => nickname.toLowerCase().includes(word) || question.toLowerCase().includes(word) || comment.toLowerCase().includes(word))) {
         return 'Сообщение содержит запрещённые слова!';
       }
       const words = question.trim().split(/\s+/);
@@ -322,10 +344,11 @@
       const form = e.target;
       const nickname = document.getElementById('nicknameInput').value.trim();
       const question = document.getElementById('questionInput').value.trim();
+      const authorComment = document.getElementById('authorCommentInput').value.trim();
       const date = new Date().toISOString();
       const submitStatus = document.getElementById('submitStatus');
 
-      const validationError = validateInput(nickname, question);
+      const validationError = validateInput(nickname, question, authorComment);
       if (validationError) {
         submitStatus.textContent = validationError;
         submitStatus.classList.add('error-message');
@@ -363,23 +386,27 @@
       submitStatus.textContent = 'Отправка...';
       submitStatus.classList.remove('success-message', 'error-message');
 
-      const newQuestion = { nickname, text: question, date, approved: false };
+      const newQuestion = { nickname, text: question, authorComment: authorComment || '', date, approved: false, answer: '' };
       saveQuestion(newQuestion);
 
       submitStatus.textContent = 'Вопрос отправлен!';
       submitStatus.classList.add('success-message');
-      showNotification('Вопрос отправлен!', true); // Убрано "на модерацию"
+      showNotification('Вопрос отправлен!', true);
       form.reset();
 
-      addQuestionToList(newQuestion.nickname, newQuestion.text, newQuestion.date, newQuestion.approved);
+      addQuestionToList(newQuestion.nickname, newQuestion.text, newQuestion.date, newQuestion.approved, newQuestion.authorComment, newQuestion.answer);
     });
 
     // Добавление вопроса в список с анимацией
-    function addQuestionToList(nickname, question, date, approved) {
+    function addQuestionToList(nickname, question, date, approved, authorComment, answer) {
       const qaList = document.getElementById('qaList');
       const div = document.createElement('div');
       div.className = `p-4 rounded-lg shadow question-slide ${approved ? 'approved' : 'pending'}`;
-      div.innerHTML = `<p class="question-text">${nickname}: ${question} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(date).toLocaleString('ru-RU')})</span></p>`;
+      div.innerHTML = `
+        <p class="question-text">${nickname}: ${question} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(date).toLocaleString('ru-RU')})</span></p>
+        ${authorComment ? `<div class="comment-section"><strong>Комментарий автора:</strong> ${authorComment}</div>` : ''}
+        ${answer ? `<div class="comment-section"><strong>Ответ:</strong> ${answer}</div>` : ''}
+      `;
       qaList.insertBefore(div, qaList.firstChild);
       setTimeout(() => div.classList.add('is-visible'), 10);
     }
@@ -395,7 +422,11 @@
         sortedQuestions.forEach(q => {
           const div = document.createElement('div');
           div.className = `p-4 rounded-lg shadow question-slide ${q.approved ? 'approved' : 'pending'}`;
-          div.innerHTML = `<p class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></p>`;
+          div.innerHTML = `
+            <p class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></p>
+            ${q.authorComment ? `<div class="comment-section"><strong>Комментарий автора:</strong> ${q.authorComment}</div>` : ''}
+            ${q.answer ? `<div class="comment-section"><strong>Ответ:</strong> ${q.answer}</div>` : ''}
+          `;
           qaList.appendChild(div);
           setTimeout(() => div.classList.add('is-visible'), 10);
         });
@@ -420,13 +451,20 @@
           pendingQuestions.forEach((q, index) => {
             const li = document.createElement('li');
             li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded';
-            li.innerHTML = `<div class="flex justify-between items-center">
-                <span class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></span>
-                <div>
+            li.innerHTML = `
+              <div class="flex flex-col">
+                <div class="flex justify-between items-center">
+                  <span class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></span>
+                  <div>
                     <button class="glass-button text-xs px-2 py-1 mr-2" onclick="approveQuestion(${q.id})">Одобрить</button>
                     <button class="glass-button text-xs px-2 py-1" onclick="rejectQuestion(${q.id})">Отклонить</button>
+                  </div>
                 </div>
-            </div>`;
+                ${q.authorComment ? `<div class="comment-section"><strong>Комментарий автора:</strong> ${q.authorComment}</div>` : ''}
+                <textarea id="answerInput_${q.id}" placeholder="Ответ (опционально)" class="w-full p-2 mt-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 comment-input"></textarea>
+                <button class="glass-button text-xs px-2 py-1 mt-2" onclick="setAnswer(${q.id})">Добавить ответ</button>
+              </div>
+            `;
             pendingList.appendChild(li);
           });
         } else {
@@ -481,6 +519,17 @@
           showNotification(`Вопрос "${question.text}" отклонён.`, false);
         };
       };
+    }
+
+    // Установка ответа
+    function setAnswer(id) {
+      const answerInput = document.getElementById(`answerInput_${id}`);
+      const answer = answerInput.value.trim();
+      if (answer) {
+        updateQuestion(id, { answer });
+        showNotification('Ответ добавлен!', true);
+        answerInput.value = '';
+      }
     }
 
     // Очистка одобренных вопросов
