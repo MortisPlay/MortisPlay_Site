@@ -244,7 +244,7 @@
             Object.assign(question, updates);
             store.put(question);
             transaction.oncomplete = () => {
-              loadQuestions(); // Убедимся, что список обновляется
+              loadQuestions(); // Убеждаемся, что список обновляется
             };
           }
         };
@@ -550,9 +550,9 @@
           const question = request.result;
           if (question) {
             question.approved = true;
-            store.put(question); // Сохраняем изменения, включая существующий answer
+            store.put(question);
             transaction.oncomplete = () => {
-              loadQuestions(); // Перезагружаем список для отображения обновлённых данных
+              loadQuestions();
               showNotification(`Вопрос "${question.text}" одобрен!`, true);
             };
           }
@@ -594,9 +594,10 @@
         const answerInput = document.getElementById(`answerInput_${id}`);
         const answer = answerInput.value.trim();
         if (answer) {
-          updateQuestion(id, { answer });
+          updateQuestion(id, { answer: answer }); // Убедимся, что answer корректно передаётся
           showNotification('Ответ добавлен!', true);
           answerInput.value = '';
+          loadQuestions(); // Немедленное обновление списка
         }
       });
     }
