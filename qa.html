@@ -243,6 +243,7 @@
           const question = request.result;
           if (question) {
             Object.assign(question, updates);
+            console.log('Обновляем вопрос:', question); // Новый лог для диагностики
             store.put(question);
             transaction.oncomplete = () => {
               loadQuestions(); // Убеждаемся, что список обновляется
