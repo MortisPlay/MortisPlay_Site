@@ -198,6 +198,7 @@
     }
 
     const dailyLimit = 5;
+    const timeoutSeconds = 30; // Тайм-аут в 30 секунд
     const blackList = [
       'мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак', 'пидор', 'сука', 'бля', 'хуй',
       'реклама', 'купить', 'заработок', 'порно', 'xxx', 'вирус', 'hack', 'free', 'click',
@@ -224,6 +225,20 @@
       if (words.some(w => w.length < 4 || /(.)\1{2,}/.test(w) || !/[a-zа-яё0-9]/i.test(w))) {
         return 'Вопрос должен содержать осмысленные слова (без повторов символов или случайных символов)!';
       }
+      return null;
+    }
+
+    // Проверка тайм-аута
+    function checkTimeout(nickname) {
+      const lastTimes = JSON.parse(localStorage.getItem('qaLastTimes')) || {};
+      const now = Date.now();
+      const lastTime = lastTimes[nickname] || 0;
+      if (now - lastTime < timeoutSeconds * 1000) {
+        const timeLeft = Math.ceil((timeoutSeconds * 1000 - (now - lastTime)) / 1000);
+        return `Подождите ${timeLeft} секунд перед следующим вопросом!`;
+      }
+      lastTimes[nickname] = now;
+      localStorage.setItem('qaLastTimes', JSON.stringify(lastTimes));
       return null;
     }
 
@@ -310,6 +325,14 @@
         submitStatus.textContent = validationError;
         submitStatus.classList.add('error-message');
         showNotification(validationError, false);
+        return;
+      }
+
+      const timeoutError = checkTimeout(nickname);
+      if (timeoutError) {
+        submitStatus.textContent = timeoutError;
+        submitStatus.classList.add('error-message');
+        showNotification(timeoutError, false);
         return;
       }
 
