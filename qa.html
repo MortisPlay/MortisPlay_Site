@@ -168,8 +168,8 @@
 
     // Проверка доступности базы перед операцией
     function withDB(callback) {
-      if (!db || db.objectStoreNames.length === 0 || db.connection.readyState !== 'open') {
-        console.warn('База данных не готова, пытаемся переоткрыть');
+      if (!db || db.objectStoreNames.length === 0) {
+        console.warn('База данных не инициализирована, пытаемся переоткрыть');
         const retryRequest = indexedDB.open('QAStore', 2);
         retryRequest.onsuccess = (event) => {
           db = event.target.result;
@@ -180,7 +180,12 @@
           fallbackToLocalStorage();
         };
       } else {
-        callback();
+        try {
+          callback();
+        } catch (error) {
+          console.error('Ошибка при выполнении операции с базой:', error);
+          fallbackToLocalStorage();
+        }
       }
     }
 
