@@ -184,7 +184,11 @@
     }
 
     const dailyLimit = 5;
-    const blackList = ['мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак'];
+    const blackList = [
+      'мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак', 'пидор', 'сука', 'бля', 'хуй',
+      'реклама', 'купить', 'заработок', 'порно', 'xxx', 'вирус', 'hack', 'free', 'click',
+      'shit', 'fuck', 'ass', 'damn', 'crap', 'botnet', 'phishing', 'scam', 'link'
+    ]; // Расширенный чёрный список
 
     // Элементы интерфейса
     const questionLimit = document.getElementById('questionLimit');
@@ -192,7 +196,7 @@
     const userNotification = document.getElementById('userNotification');
     let timerElement = null;
 
-    // Улучшенная валидация
+    // Усиленная валидация
     function validateInput(nickname, question) {
       if (nickname.length < 3 || nickname.length > 20) return 'Никнейм должен быть от 3 до 20 символов!';
       if (question.length < 10 || question.length > 200) return 'Вопрос должен быть от 10 до 200 символов!';
@@ -200,8 +204,9 @@
         return 'Сообщение содержит запрещённые слова!';
       }
       const words = question.trim().split(/\s+/);
-      if (words.length < 2 || words.some(w => w.length < 3)) {
-        return 'Вопрос должен содержать минимум 2 осмысленных слова!';
+      if (words.length < 2) return 'Вопрос должен содержать минимум 2 слова!';
+      if (words.some(w => w.length < 4 || /(.)\1{2,}/.test(w) || !/[a-zа-яё0-9]/i.test(w))) {
+        return 'Вопрос должен содержать осмысленные слова (без повторов символов или случайных символов)!';
       }
       return null;
     }
