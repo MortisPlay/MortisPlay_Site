@@ -107,7 +107,6 @@
       <form id="qaForm">
         <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">
         <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"></textarea>
-        <textarea name="authorComment" id="authorCommentInput" placeholder="Ваш комментарий (опционально)" class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 comment-input"></textarea>
         <button type="submit" class="glass-button">Отправить</button>
         <div id="questionLimit" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300"></div>
         <div id="submitStatus" class="mt-2 text-center"></div>
@@ -300,10 +299,10 @@
     let sortNewest = true;
 
     // Усиленная валидация
-    function validateInput(nickname, question, comment = '') {
+    function validateInput(nickname, question) {
       if (nickname.length < 3 || nickname.length > 20) return 'Никнейм должен быть от 3 до 20 символов!';
       if (question.length < 10 || question.length > 200) return 'Вопрос должен быть от 10 до 200 символов!';
-      if (blackList.some(word => nickname.toLowerCase().includes(word) || question.toLowerCase().includes(word) || comment.toLowerCase().includes(word))) {
+      if (blackList.some(word => nickname.toLowerCase().includes(word) || question.toLowerCase().includes(word))) {
         return 'Сообщение содержит запрещённые слова!';
       }
       const words = question.trim().split(/\s+/);
@@ -403,11 +402,10 @@
       const form = e.target;
       const nickname = document.getElementById('nicknameInput').value.trim();
       const question = document.getElementById('questionInput').value.trim();
-      const authorComment = document.getElementById('authorCommentInput').value.trim();
       const date = new Date().toISOString();
       const submitStatus = document.getElementById('submitStatus');
 
-      const validationError = validateInput(nickname, question, authorComment);
+      const validationError = validateInput(nickname, question);
       if (validationError) {
         submitStatus.textContent = validationError;
         submitStatus.classList.add('error-message');
@@ -445,7 +443,7 @@
       submitStatus.textContent = 'Отправка...';
       submitStatus.classList.remove('success-message', 'error-message');
 
-      const newQuestion = { nickname, text: question, authorComment: authorComment || '', date, approved: false, answer: '' };
+      const newQuestion = { nickname, text: question, date, approved: false, answer: '' };
       saveQuestion(newQuestion);
 
       submitStatus.textContent = 'Вопрос отправлен!';
@@ -453,7 +451,7 @@
       showNotification('Вопрос отправлен!', true);
       form.reset();
 
-      addQuestionToList(newQuestion.nickname, newQuestion.text, newQuestion.date, newQuestion.approved, newQuestion.authorComment, newQuestion.answer);
+      addQuestionToList(newQuestion.nickname, newQuestion.text, newQuestion.date, newQuestion.approved, '', newQuestion.answer);
     });
 
     // Добавление вопроса в список с анимацией
@@ -520,7 +518,6 @@
                       <button class="glass-button text-xs px-2 py-1" onclick="rejectQuestion(${q.id})">Отклонить</button>
                     </div>
                   </div>
-                  ${q.authorComment ? `<div class="comment-section"><strong>Комментарий автора:</strong> ${q.authorComment}</div>` : ''}
                   <textarea id="answerInput_${q.id}" placeholder="Ответ (опционально)" class="w-full p-2 mt-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 comment-input"></textarea>
                   <button class="glass-button text-xs px-2 py-1 mt-2" onclick="setAnswer(${q.id})">Добавить ответ</button>
                 </div>
