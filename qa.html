@@ -22,6 +22,11 @@
       background: rgba(255, 255, 255, 0.25); 
       transform: scale(1.05); 
     }
+    .glass-button:disabled { 
+      background: rgba(255, 255, 255, 0.05); 
+      cursor: not-allowed; 
+      opacity: 0.6; 
+    }
     .dark .glass-button { 
       background: rgba(50, 50, 50, 0.15); 
       border-color: rgba(200, 200, 200, 0.2); 
@@ -81,6 +86,11 @@
       z-index: 1000;
       display: none;
     }
+    .notification-close {
+      position: absolute;
+      right: 10px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100">
@@ -98,7 +108,8 @@
       <form id="qaForm">
         <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">
         <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"></textarea>
-        <button type="submit" class="glass-button">Отправить</button>
+        <button type="submit" id="submitButton" class="glass-button">Отправить</button>
+        <button type="button" id="statusButton" class="glass-button mt-2 w-full" style="display:none;">Узнать статус</button>
         <div id="questionLimit" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300"></div>
         <div id="submitStatus" class="mt-2 text-center"></div>
       </form>
@@ -107,15 +118,23 @@
     <!-- Панель модерации -->
     <div id="moderationPanel" class="mt-8 max-w-lg mx-auto fade-in hidden">
       <h2 class="text-xl font-semibold text-center text-slate-900 dark:text-white">Модерация вопросов <span id="pendingCount" class="blink text-red-500"></span></h2>
+      <div class="text-center mb-2 text-sm text-slate-600 dark:text-slate-300" id="questionStats"></div>
       <ul id="pendingQuestions" class="mt-4 space-y-2"></ul>
       <button id="clearApproved" class="glass-button mt-4 w-full">Очистить одобренные</button>
     </div>
 
     <!-- Список одобренных вопросов -->
-    <div id="qaList" class="mt-12 space-y-4 fade-in"></div>
+    <div id="qaList" class="mt-12 space-y-4 fade-in">
+      <div class="text-right mb-2">
+        <button id="sortToggle" class="glass-button text-xs px-2 py-1">Сортировать: Новые сверху</button>
+      </div>
+    </div>
 
     <!-- Уведомление для пользователя -->
-    <div id="userNotification" class="notification"></div>
+    <div id="userNotification" class="notification">
+      <span id="notificationMessage"></span>
+      <span class="notification-close" onclick="this.parentElement.style.display='none'">×</span>
+    </div>
   </div>
 
   <script>
@@ -158,6 +177,7 @@
         const now = new Date();
         const filteredQuestions = questions.filter(q => (now - new Date(q.date)) < (30 * 24 * 60 * 60 * 1000));
         renderQuestions(filteredQuestions);
+        if (isDevMode) updateQuestionStats(filteredQuestions);
       };
     }
 
@@ -184,6 +204,7 @@
     }
 
     const dailyLimit = 5;
+    const timeoutSeconds = 30; // Тайм-аут 30 секунд
     const blackList = [
       'мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак', 'пидор', 'сука', 'бля', 'хуй',
       'реклама', 'купить', 'заработок', 'порно', 'xxx', 'вирус', 'hack', 'free', 'click',
@@ -194,7 +215,11 @@
     const questionLimit = document.getElementById('questionLimit');
     const pendingCount = document.getElementById('pendingCount');
     const userNotification = document.getElementById('userNotification');
+    const notificationMessage = document.getElementById('notificationMessage');
+    const submitButton = document.getElementById('submitButton');
+    const statusButton = document.getElementById('statusButton');
     let timerElement = null;
+    let sortNewest = true;
 
     // Усиленная валидация
     function validateInput(nickname, question) {
@@ -211,6 +236,20 @@
       return null;
     }
 
+    // Проверка тайм-аута
+    function checkTimeout(nickname) {
+      const lastTimes = JSON.parse(localStorage.getItem('qaLastTimes')) || {};
+      const now = Date.now();
+      const lastTime = lastTimes[nickname] || 0;
+      if (now - lastTime < timeoutSeconds * 1000) {
+        const timeLeft = Math.ceil((timeoutSeconds * 1000 - (now - lastTime)) / 1000);
+        return `Подождите ${timeLeft} секунд перед следующим вопросом!`;
+      }
+      lastTimes[nickname] = now;
+      localStorage.setItem('qaLastTimes', JSON.stringify(lastTimes));
+      return null;
+    }
+
     // Проверка дневного лимита и таймер сброса
     function checkDailyLimit() {
       const today = new Date().toLocaleDateString();
@@ -218,6 +257,7 @@
       const todayCount = dailyStats[today] || 0;
       const remaining = dailyLimit - todayCount;
       questionLimit.textContent = `Осталось: ${remaining} из ${dailyLimit}`;
+      submitButton.disabled = todayCount >= dailyLimit;
 
       if (todayCount >= dailyLimit && !timerElement) {
         const resetText = document.createElement('span');
@@ -275,10 +315,9 @@
 
     // Показ уведомления пользователю
     function showNotification(message, isSuccess = true) {
-      userNotification.textContent = message;
+      notificationMessage.textContent = message;
       userNotification.className = 'notification ' + (isSuccess ? 'bg-green-600' : 'bg-red-600');
       userNotification.style.display = 'block';
-      setTimeout(() => userNotification.style.display = 'none', 3000);
     }
 
     // Обработка формы
@@ -295,6 +334,14 @@
         submitStatus.textContent = validationError;
         submitStatus.classList.add('error-message');
         showNotification(validationError, false);
+        return;
+      }
+
+      const timeoutError = checkTimeout(nickname);
+      if (timeoutError) {
+        submitStatus.textContent = timeoutError;
+        submitStatus.classList.add('error-message');
+        showNotification(timeoutError, false);
         return;
       }
 
@@ -325,8 +372,9 @@
 
       submitStatus.textContent = 'Вопрос отправлен!';
       submitStatus.classList.add('success-message');
-      showNotification('Вопрос отправлен на модерацию!', true);
+      showNotification('Вопрос отправлен на модерацию! Нажмите "Узнать статус" для проверки.', true);
       form.reset();
+      statusButton.style.display = 'block';
 
       addQuestionToList(newQuestion.nickname, newQuestion.text, newQuestion.date);
       if (isDevMode) updatePendingQuestions();
@@ -346,7 +394,10 @@
     function renderQuestions(questionsList) {
       const qaList = document.getElementById('qaList');
       qaList.innerHTML = '';
-      const approvedQuestions = questionsList.filter(q => q.approved);
+      let sortedQuestions = [...questionsList].sort((a, b) => {
+        return sortNewest ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
+      });
+      const approvedQuestions = sortedQuestions.filter(q => q.approved);
       if (approvedQuestions.length > 0) {
         approvedQuestions.forEach(q => {
           const div = document.createElement('div');
@@ -392,6 +443,14 @@
       };
     }
 
+    // Обновление статистики вопросов
+    function updateQuestionStats(questions) {
+      const total = questions.length;
+      const approved = questions.filter(q => q.approved).length;
+      const pending = questions.filter(q => !q.approved).length;
+      document.getElementById('questionStats').textContent = `Всего: ${total}, Одобрено: ${approved}, Ожидает: ${pending}`;
+    }
+
     // Одобрение вопроса
     function approveQuestion(id) {
       const transaction = db.transaction(['questions'], 'readwrite');
@@ -404,7 +463,7 @@
         store.put(question);
 
         transaction.oncomplete = () => {
-          loadQuestions(); // Обновление списка после завершения транзакции
+          loadQuestions();
           showNotification(`Вопрос "${question.text}" одобрен!`, true);
         };
       };
@@ -421,7 +480,7 @@
         store.delete(id);
 
         transaction.oncomplete = () => {
-          loadQuestions(); // Обновление списка после завершения транзакции
+          loadQuestions();
           showNotification(`Вопрос "${question.text}" отклонён.`, false);
         };
       };
@@ -439,8 +498,38 @@
         });
 
         transaction.oncomplete = () => {
-          loadQuestions(); // Обновление списка после завершения транзакции
+          loadQuestions();
         };
+      };
+    });
+
+    // Переключение сортировки
+    document.getElementById('sortToggle')?.addEventListener('click', () => {
+      sortNewest = !sortNewest;
+      document.getElementById('sortToggle').textContent = `Сортировать: ${sortNewest ? 'Новые сверху' : 'Старые сверху'}`;
+      loadQuestions();
+    });
+
+    // Проверка статуса вопроса
+    document.getElementById('statusButton')?.addEventListener('click', () => {
+      const nickname = document.getElementById('nicknameInput').value.trim();
+      if (!nickname) {
+        showNotification('Введите никнейм для проверки статуса!', false);
+        return;
+      }
+
+      const transaction = db.transaction(['questions'], 'readonly');
+      const store = transaction.objectStore('questions');
+      const request = store.getAll();
+
+      request.onsuccess = () => {
+        const questions = request.result.filter(q => q.nickname === nickname && q.date === (JSON.parse(localStorage.getItem('qaLastTimes')) || {})[nickname]);
+        if (questions.length > 0) {
+          const question = questions[0];
+          showNotification(`Статус вопроса "${question.text}": ${question.approved ? 'Одобрен' : 'Ожидает модерации'}`, question.approved);
+        } else {
+          showNotification('Вопрос с таким никнеймом не найден или ещё не обработан.', false');
+        }
       };
     });
 
