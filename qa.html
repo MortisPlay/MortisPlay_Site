@@ -145,77 +145,27 @@
     if (isDevMode) document.getElementById('moderationPanel').style.display = 'block';
 
     console.log('Скрипт загружен');
-    document.getElementById('debugMessage').textContent = 'Скрипт работает, проверяем IndexedDB...';
+    document.getElementById('debugMessage').textContent = 'Скрипт работает, загружаем вопросы из localStorage...';
 
-    let db;
-    const request = indexedDB.open('QAStore', 1);
+    // Загрузка вопросов из localStorage
+    let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
+    console.log('Загружено вопросов:', questions.length);
+    renderQuestions(questions);
+    document.getElementById('debugMessage').textContent = 'Вопросы загружены из localStorage.';
 
-    request.onupgradeneeded = (event) => {
-      db = event.target.result;
-      db.createObjectStore('questions', { keyPath: 'id', autoIncrement: true });
-      console.log('IndexedDB создан или обновлён');
-      document.getElementById('debugMessage').textContent = 'IndexedDB инициализирован.';
-    };
-
-    request.onsuccess = (event) => {
-      db = event.target.result;
-      console.log('IndexedDB подключён');
-      document.getElementById('debugMessage').textContent = 'IndexedDB подключён, загружаем вопросы.';
-      loadQuestions();
-    };
-
-    request.onerror = (event) => {
-      console.error('Ошибка открытия IndexedDB:', event.target.error);
-      document.getElementById('debugMessage').textContent = 'Ошибка IndexedDB: ' + event.target.error;
-      fallbackToLocalStorage();
-    };
-
-    function fallbackToLocalStorage() {
-      let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
-      console.log('Переключение на localStorage, вопросы:', questions);
-      renderQuestions(questions);
-      document.getElementById('debugMessage').textContent = 'Используется localStorage.';
-    }
-
-    function loadQuestions() {
-      const transaction = db.transaction(['questions'], 'readonly');
-      const store = transaction.objectStore('questions');
-      const request = store.getAll();
-
-      request.onsuccess = () => {
-        const questions = request.result;
-        const now = new Date();
-        const filteredQuestions = questions.filter(q => (now - new Date(q.date)) < (30 * 24 * 60 * 60 * 1000));
-        console.log('Загружено вопросов:', filteredQuestions.length);
-        renderQuestions(filteredQuestions);
-        if (isDevMode) updateQuestionStats(filteredQuestions);
-        document.getElementById('debugMessage').textContent = 'Вопросы загружены.';
-      };
-
-      request.onerror = (event) => {
-        console.error('Ошибка загрузки вопросов:', event.target.error);
-        document.getElementById('debugMessage').textContent = 'Ошибка загрузки вопросов: ' + event.target.error;
-      };
-    }
-
+    // Сохранение вопроса в localStorage
     function saveQuestion(question) {
-      const transaction = db.transaction(['questions'], 'readwrite');
-      const store = transaction.objectStore('questions');
-      store.add(question);
-
-      transaction.oncomplete = () => {
-        loadQuestions();
-      };
+      questions.push(question);
+      localStorage.setItem('qaQuestions', JSON.stringify(questions));
+      renderQuestions(questions);
+      if (isDevMode) updatePendingQuestions();
     }
 
-    function deleteQuestion(id) {
-      const transaction = db.transaction(['questions'], 'readwrite');
-      const store = transaction.objectStore('questions');
-      store.delete(id);
-
-      transaction.oncomplete = () => {
-        loadQuestions();
-      };
+    // Удаление вопроса из localStorage
+    function deleteQuestion(index) {
+      questions = questions.filter(q => q.id !== index);
+      localStorage.setItem('qaQuestions', JSON.stringify(questions));
+      renderQuestions(questions);
     }
 
     const dailyLimit = 5;
@@ -375,7 +325,7 @@
       submitStatus.textContent = 'Отправка...';
       submitStatus.classList.remove('success-message', 'error-message');
 
-      const newQuestion = { nickname, text: question, date, approved: false };
+      const newQuestion = { id: Date.now(), nickname, text: question, date, approved: false };
       saveQuestion(newQuestion);
 
       submitStatus.textContent = 'Вопрос отправлен!';
@@ -422,30 +372,24 @@
       if (!isDevMode) return;
       const pendingList = document.getElementById('pendingQuestions');
       pendingList.innerHTML = '';
-      const transaction = db.transaction(['questions'], 'readonly');
-      const store = transaction.objectStore('questions');
-      const request = store.getAll();
-
-      request.onsuccess = () => {
-        const pendingQuestions = request.result.filter(q => !q.approved);
-        pendingCount.textContent = pendingQuestions.length > 0 ? `(Ожидает: ${pendingQuestions.length})` : '';
-        if (pendingQuestions.length > 0) {
-          pendingQuestions.forEach((q, index) => {
-            const li = document.createElement('li');
-            li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded';
-            li.innerHTML = `<div class="flex justify-between items-center">
-                <span class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></span>
-                <div>
-                    <button class="glass-button text-xs px-2 py-1 mr-2" onclick="approveQuestion(${q.id})">Одобрить</button>
-                    <button class="glass-button text-xs px-2 py-1" onclick="rejectQuestion(${q.id})">Отклонить</button>
-                </div>
-            </div>`;
-            pendingList.appendChild(li);
-          });
-        } else {
-          pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
-        }
-      };
+      const pendingQuestions = questions.filter(q => !q.approved);
+      pendingCount.textContent = pendingQuestions.length > 0 ? `(Ожидает: ${pendingQuestions.length})` : '';
+      if (pendingQuestions.length > 0) {
+        pendingQuestions.forEach((q, index) => {
+          const li = document.createElement('li');
+          li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded';
+          li.innerHTML = `<div class="flex justify-between items-center">
+              <span class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></span>
+              <div>
+                  <button class="glass-button text-xs px-2 py-1 mr-2" onclick="approveQuestion(${q.id})">Одобрить</button>
+                  <button class="glass-button text-xs px-2 py-1" onclick="rejectQuestion(${q.id})">Отклонить</button>
+              </div>
+          </div>`;
+          pendingList.appendChild(li);
+        });
+      } else {
+        pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
+      }
     }
 
     function updateQuestionStats(questions) {
@@ -456,58 +400,35 @@
     }
 
     function approveQuestion(id) {
-      const transaction = db.transaction(['questions'], 'readwrite');
-      const store = transaction.objectStore('questions');
-      const request = store.get(id);
-
-      request.onsuccess = () => {
-        const question = request.result;
+      const question = questions.find(q => q.id === id);
+      if (question) {
         question.approved = true;
-        store.put(question);
-
-        transaction.oncomplete = () => {
-          loadQuestions();
-          showNotification(`Вопрос "${question.text}" одобрен!`, true);
-        };
-      };
+        localStorage.setItem('qaQuestions', JSON.stringify(questions));
+        renderQuestions(questions);
+        showNotification(`Вопрос "${question.text}" одобрен!`, true);
+      }
     }
 
     function rejectQuestion(id) {
-      const transaction = db.transaction(['questions'], 'readwrite');
-      const store = transaction.objectStore('questions');
-      const request = store.get(id);
-
-      request.onsuccess = () => {
-        const question = request.result;
-        store.delete(id);
-
-        transaction.oncomplete = () => {
-          loadQuestions();
-          showNotification(`Вопрос "${question.text}" отклонён.`, false);
-        };
-      };
+      const question = questions.find(q => q.id === id);
+      if (question) {
+        questions = questions.filter(q => q.id !== id);
+        localStorage.setItem('qaQuestions', JSON.stringify(questions));
+        renderQuestions(questions);
+        showNotification(`Вопрос "${question.text}" отклонён.`, false);
+      }
     }
 
     document.getElementById('clearApproved')?.addEventListener('click', () => {
-      const transaction = db.transaction(['questions'], 'readwrite');
-      const store = transaction.objectStore('questions');
-      const request = store.getAll();
-
-      request.onsuccess = () => {
-        request.result.forEach(q => {
-          if (q.approved) store.delete(q.id);
-        });
-
-        transaction.oncomplete = () => {
-          loadQuestions();
-        };
-      };
+      questions = questions.filter(q => !q.approved);
+      localStorage.setItem('qaQuestions', JSON.stringify(questions));
+      renderQuestions(questions);
     });
 
     document.getElementById('sortToggle')?.addEventListener('click', () => {
       sortNewest = !sortNewest;
       document.getElementById('sortToggle').textContent = `Сортировать: ${sortNewest ? 'Новые сверху' : 'Старые сверху'}`;
-      loadQuestions();
+      renderQuestions(questions);
     });
 
     document.getElementById('statusButton')?.addEventListener('click', () => {
@@ -517,28 +438,18 @@
         return;
       }
 
-      const transaction = db.transaction(['questions'], 'readonly');
-      const store = transaction.objectStore('questions');
-      const request = store.getAll();
-
-      request.onsuccess = () => {
-        const questions = request.result.filter(q => q.nickname === nickname && q.date === (JSON.parse(localStorage.getItem('qaLastTimes')) || {})[nickname]);
-        if (questions.length > 0) {
-          const question = questions[0];
-          showNotification(`Статус вопроса "${question.text}": ${question.approved ? 'Одобрен' : 'Ожидает модерации'}`, question.approved);
-        } else {
-          showNotification('Вопрос с таким никнеймом не найден или ещё не обработан.', false');
-        }
-      };
+      const lastTime = (JSON.parse(localStorage.getItem('qaLastTimes')) || {})[nickname];
+      const question = questions.find(q => q.nickname === nickname && q.date === lastTime);
+      if (question) {
+        showNotification(`Статус вопроса "${question.text}": ${question.approved ? 'Одобрен' : 'Ожидает модерации'}`, question.approved);
+      } else {
+        showNotification('Вопрос с таким никнеймом не найден или ещё не обработан.', false');
+      }
     });
 
     if (isDevMode) {
       console.log('Тестовая команда доступна: resetLimit() — сбросить дневной лимит. Удалите после тестирования!');
       window.resetLimit = function() {
-        if (!isDevMode) {
-          console.warn('Команда доступна только в режиме разработчика!');
-          return;
-        }
         const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
         delete dailyStats[new Date().toLocaleDateString()];
         localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
@@ -554,7 +465,7 @@
     document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
     checkDailyLimit();
-    if (db) renderQuestions([]);
+    renderQuestions(questions);
   </script>
 </body>
 </html>
