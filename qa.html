@@ -88,8 +88,6 @@
     }
     .pending { background-color: #fef3c7; color: #92400e; } /* Оранжевый фон для ожидающих */
     .approved { background-color: #d1fae5; color: #065f46; } /* Зелёный фон для одобренных */
-    .comment-section { margin-top: 0.5rem; font-size: 0.9rem; }
-    .comment-input { width: 100%; margin-top: 0.5rem; }
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100">
@@ -161,7 +159,7 @@
 
     // Резервный вариант с localStorage
     function fallbackToLocalStorage() {
-      let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
+      let questions = JSON.parse(localStorage.getItem('qaQuestions') || '[]');
       renderQuestions(questions);
     }
 
@@ -172,19 +170,14 @@
         const retryRequest = indexedDB.open('QAStore', 2);
         retryRequest.onsuccess = (event) => {
           db = event.target.result;
-          callback();
+          try { callback(); } catch (e) { console.error('Ошибка в коллбэке:', e); }
         };
         retryRequest.onerror = (event) => {
           console.error('Повторная попытка открытия базы провалилась:', event.target.error);
           fallbackToLocalStorage();
         };
       } else {
-        try {
-          callback();
-        } catch (error) {
-          console.error('Ошибка при выполнении операции с базой:', error);
-          fallbackToLocalStorage();
-        }
+        try { callback(); } catch (e) { console.error('Ошибка при выполнении операции:', e); fallbackToLocalStorage(); }
       }
     }
 
@@ -315,7 +308,7 @@
 
     // Проверка тайм-аута
     function checkTimeout(nickname) {
-      const lastTimes = JSON.parse(localStorage.getItem('qaLastTimes')) || {};
+      const lastTimes = JSON.parse(localStorage.getItem('qaLastTimes') || '{}');
       const now = Date.now();
       const lastTime = lastTimes[nickname] || 0;
       if (now - lastTime < timeoutSeconds * 1000) {
@@ -330,7 +323,7 @@
     // Проверка дневного лимита и таймер сброса
     function checkDailyLimit() {
       const today = new Date().toLocaleDateString();
-      let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+      let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats') || '{}');
       const todayCount = dailyStats[today] || 0;
       const remaining = dailyLimit - todayCount;
       questionLimit.textContent = `Осталось: ${remaining} из ${dailyLimit}`;
@@ -374,7 +367,7 @@
       timerElement.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
       if (seconds > 0) setTimeout(() => updateTimer(seconds - 1), 1000);
       else {
-        const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+        const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats') || '{}');
         delete dailyStats[new Date().toLocaleDateString()];
         localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
         if (timerElement.parentNode) {
@@ -430,7 +423,7 @@
       }
 
       const today = new Date().toLocaleDateString();
-      let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+      let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats') || '{}');
       if (dailyStats[today] >= dailyLimit) {
         submitStatus.textContent = 'Достигнут лимит в 5 вопросов за день!';
         submitStatus.classList.add('error-message');
@@ -461,7 +454,6 @@
       div.className = `p-4 rounded-lg shadow question-slide ${approved ? 'approved' : 'pending'}`;
       div.innerHTML = `
         <p class="question-text">${nickname}: ${question} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(date).toLocaleString('ru-RU')})</span></p>
-        ${authorComment ? `<div class="comment-section"><strong>Комментарий автора:</strong> ${authorComment}</div>` : ''}
         ${answer ? `<div class="comment-section"><strong>Ответ:</strong> ${answer}</div>` : ''}
       `;
       qaList.insertBefore(div, qaList.firstChild);
@@ -472,6 +464,7 @@
     function renderQuestions(questionsList) {
       const qaList = document.getElementById('qaList');
       qaList.innerHTML = '';
+      console.log('Рендеринг вопросов:', questionsList); // Новый лог
       let sortedQuestions = [...questionsList].sort((a, b) => {
         return sortNewest ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
       });
@@ -481,7 +474,6 @@
           div.className = `p-4 rounded-lg shadow question-slide ${q.approved ? 'approved' : 'pending'}`;
           div.innerHTML = `
             <p class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></p>
-            ${q.authorComment ? `<div class="comment-section"><strong>Комментарий автора:</strong> ${q.authorComment}</div>` : ''}
             ${q.answer ? `<div class="comment-section"><strong>Ответ:</strong> ${q.answer}</div>` : ''}
           `;
           qaList.appendChild(div);
@@ -518,7 +510,7 @@
                       <button class="glass-button text-xs px-2 py-1" onclick="rejectQuestion(${q.id})">Отклонить</button>
                     </div>
                   </div>
-                  <textarea id="answerInput_${q.id}" placeholder="Ответ (опционально)" class="w-full p-2 mt-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 comment-input"></textarea>
+                  <textarea id="answerInput_${q.id}" placeholder="Ответ (опционально)" class="w-full p-2 mt-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"></textarea>
                   <button class="glass-button text-xs px-2 py-1 mt-2" onclick="setAnswer(${q.id})">Добавить ответ</button>
                 </div>
               `;
@@ -647,7 +639,7 @@
           console.warn('Команда доступна только в режиме разработчика!');
           return;
         }
-        const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+        const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats') || '{}');
         delete dailyStats[new Date().toLocaleDateString()];
         localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
         checkDailyLimit();
