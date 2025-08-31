@@ -198,7 +198,7 @@
 
         request.onsuccess = () => {
           const questions = request.result;
-          console.log('Загруженные вопросы:', request.result); // Лог для диагностики
+          console.log('Загруженные вопросы:', questions); // Лог для диагностики
           const now = new Date();
           const filteredQuestions = questions.filter(q => (now - new Date(q.date)) < (30 * 24 * 60 * 60 * 1000));
           renderQuestions(filteredQuestions);
@@ -243,8 +243,14 @@
           const question = request.result;
           if (question) {
             Object.assign(question, updates);
-            console.log('Обновляем вопрос:', question); // Новый лог для диагностики
-            store.put(question);
+            console.log('Обновляем вопрос:', question); // Лог для диагностики
+            const putRequest = store.put(question);
+            putRequest.onsuccess = () => {
+              console.log('Вопрос успешно сохранён в базе с ID:', id); // Новый лог
+            };
+            putRequest.onerror = (event) => {
+              console.error('Ошибка при сохранении вопроса в базе:', event.target.error);
+            };
             transaction.oncomplete = () => {
               loadQuestions(); // Убеждаемся, что список обновляется
             };
