@@ -122,18 +122,73 @@
     const isDevMode = new URLSearchParams(window.location.search).get('dev') === 'true';
     if (isDevMode) document.getElementById('moderationPanel').style.display = 'block';
 
-    // Локальное хранение с очисткой устаревших данных
-    let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
-    const dailyLimit = 5;
-    const blackList = ['мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак']; // Черный список слов
+    // Инициализация IndexedDB
+    let db;
+    const request = indexedDB.open('QAStore', 1);
 
-    // Очистка вопросов старше 30 дней
-    questions = questions.filter(q => {
-      const now = new Date();
-      const questionDate = new Date(q.date);
-      return (now - questionDate) < (30 * 24 * 60 * 60 * 1000); // 30 дней
-    });
-    localStorage.setItem('qaQuestions', JSON.stringify(questions));
+    request.onupgradeneeded = (event) => {
+      db = event.target.result;
+      db.createObjectStore('questions', { keyPath: 'id', autoIncrement: true });
+    };
+
+    request.onsuccess = (event) => {
+      db = event.target.result;
+      loadQuestions();
+    };
+
+    request.onerror = (event) => {
+      console.error('Ошибка открытия IndexedDB:', event.target.error);
+      fallbackToLocalStorage(); // Резервный вариант
+    };
+
+    // Резервный вариант с localStorage
+    function fallbackToLocalStorage() {
+      let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
+      renderQuestions(questions);
+    }
+
+    // Загрузка вопросов
+    function loadQuestions() {
+      const transaction = db.transaction(['questions'], 'readonly');
+      const store = transaction.objectStore('questions');
+      const request = store.getAll();
+
+      request.onsuccess = () => {
+        const questions = request.result;
+        // Очистка вопросов старше 30 дней
+        const now = new Date();
+        const filteredQuestions = questions.filter(q => {
+          const questionDate = new Date(q.date);
+          return (now - questionDate) < (30 * 24 * 60 * 60 * 1000);
+        });
+        renderQuestions(filteredQuestions);
+      };
+    }
+
+    // Сохранение вопроса
+    function saveQuestion(question) {
+      const transaction = db.transaction(['questions'], 'readwrite');
+      const store = transaction.objectStore('questions');
+      store.add(question);
+
+      transaction.oncomplete = () => {
+        loadQuestions();
+      };
+    }
+
+    // Удаление вопроса
+    function deleteQuestion(id) {
+      const transaction = db.transaction(['questions'], 'readwrite');
+      const store = transaction.objectStore('questions');
+      store.delete(id);
+
+      transaction.oncomplete = () => {
+        loadQuestions();
+      };
+    }
+
+    const dailyLimit = 5;
+    const blackList = ['мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак'];
 
     // Элементы интерфейса
     const questionLimit = document.getElementById('questionLimit');
@@ -148,14 +203,9 @@
       if (blackList.some(word => nickname.toLowerCase().includes(word) || question.toLowerCase().includes(word))) {
         return 'Сообщение содержит запрещённые слова!';
       }
-      // Проверка на осмысленность (минимум 2 слова)
       const words = question.trim().split(/\s+/);
       if (words.length < 2 || words.some(w => w.length < 3)) {
         return 'Вопрос должен содержать минимум 2 осмысленных слова!';
-      }
-      // Проверка на дубликаты
-      if (questions.some(q => q.text.toLowerCase() === question.toLowerCase())) {
-        return 'Этот вопрос уже задан!';
       }
       return null;
     }
@@ -270,8 +320,7 @@
       submitStatus.classList.remove('success-message', 'error-message');
 
       const newQuestion = { nickname, text: question, date, approved: false };
-      questions.push(newQuestion);
-      localStorage.setItem('qaQuestions', JSON.stringify(questions));
+      saveQuestion(newQuestion);
 
       submitStatus.textContent = 'Вопрос отправлен!';
       submitStatus.classList.add('success-message');
@@ -293,10 +342,10 @@
     }
 
     // Обновление списка одобренных вопросов
-    function updateQAList() {
+    function renderQuestions(questionsList) {
       const qaList = document.getElementById('qaList');
       qaList.innerHTML = '';
-      const approvedQuestions = questions.filter(q => q.approved);
+      const approvedQuestions = questionsList.filter(q => q.approved);
       if (approvedQuestions.length > 0) {
         approvedQuestions.forEach(q => {
           const div = document.createElement('div');
@@ -308,6 +357,7 @@
       } else {
         qaList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Пока одобренных вопросов нет — ждём модерацию!</p>';
       }
+      if (isDevMode) updatePendingQuestions();
     }
 
     // Обновление списка ожидающих вопросов и счётчика
@@ -315,50 +365,72 @@
       if (!isDevMode) return;
       const pendingList = document.getElementById('pendingQuestions');
       pendingList.innerHTML = '';
-      const pendingQuestions = questions.filter(q => !q.approved);
-      pendingCount.textContent = pendingQuestions.length > 0 ? `(Ожидает: ${pendingQuestions.length})` : '';
-      if (pendingQuestions.length > 0) {
-        pendingQuestions.forEach((q, index) => {
-          const li = document.createElement('li');
-          li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded';
-          li.innerHTML = `<div class="flex justify-between items-center">
-              <span class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></span>
-              <div>
-                  <button class="glass-button text-xs px-2 py-1 mr-2" onclick="approveQuestion(${index})">Одобрить</button>
-                  <button class="glass-button text-xs px-2 py-1" onclick="rejectQuestion(${index})">Отклонить</button>
-              </div>
-          </div>`;
-          pendingList.appendChild(li);
-        });
-      } else {
-        pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
-      }
+      const transaction = db.transaction(['questions'], 'readonly');
+      const store = transaction.objectStore('questions');
+      const request = store.getAll();
+
+      request.onsuccess = () => {
+        const pendingQuestions = request.result.filter(q => !q.approved);
+        pendingCount.textContent = pendingQuestions.length > 0 ? `(Ожидает: ${pendingQuestions.length})` : '';
+        if (pendingQuestions.length > 0) {
+          pendingQuestions.forEach((q, index) => {
+            const li = document.createElement('li');
+            li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded';
+            li.innerHTML = `<div class="flex justify-between items-center">
+                <span class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></span>
+                <div>
+                    <button class="glass-button text-xs px-2 py-1 mr-2" onclick="approveQuestion(${q.id})">Одобрить</button>
+                    <button class="glass-button text-xs px-2 py-1" onclick="rejectQuestion(${q.id})">Отклонить</button>
+                </div>
+            </div>`;
+            pendingList.appendChild(li);
+          });
+        } else {
+          pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
+        }
+      };
     }
 
     // Одобрение вопроса
-    function approveQuestion(index) {
-      questions[index].approved = true;
-      localStorage.setItem('qaQuestions', JSON.stringify(questions));
-      updateQAList();
-      updatePendingQuestions();
-      showNotification(`Вопрос "${questions[index].text}" одобрен!`, true);
+    function approveQuestion(id) {
+      const transaction = db.transaction(['questions'], 'readwrite');
+      const store = transaction.objectStore('questions');
+      const request = store.get(id);
+
+      request.onsuccess = () => {
+        const question = request.result;
+        question.approved = true;
+        store.put(question);
+        showNotification(`Вопрос "${question.text}" одобрен!`, true);
+        renderQuestions(db.transaction(['questions']).objectStore('questions').getAll().result);
+      };
     }
 
     // Отклонение вопроса
-    function rejectQuestion(index) {
-      const rejectedQuestion = questions[index].text;
-      questions.splice(index, 1);
-      localStorage.setItem('qaQuestions', JSON.stringify(questions));
-      updatePendingQuestions();
-      showNotification(`Вопрос "${rejectedQuestion}" отклонён.`, false);
+    function rejectQuestion(id) {
+      const transaction = db.transaction(['questions'], 'readwrite');
+      const store = transaction.objectStore('questions');
+      const request = store.get(id);
+
+      request.onsuccess = () => {
+        const question = request.result;
+        showNotification(`Вопрос "${question.text}" отклонён.`, false);
+        store.delete(id);
+      };
     }
 
     // Очистка одобренных вопросов
     document.getElementById('clearApproved')?.addEventListener('click', () => {
-      questions = questions.filter(q => !q.approved);
-      localStorage.setItem('qaQuestions', JSON.stringify(questions));
-      updateQAList();
-      updatePendingQuestions();
+      const transaction = db.transaction(['questions'], 'readwrite');
+      const store = transaction.objectStore('questions');
+      const request = store.getAll();
+
+      request.onsuccess = () => {
+        request.result.forEach(q => {
+          if (q.approved) store.delete(q.id);
+        });
+        renderQuestions(request.result.filter(q => !q.approved));
+      };
     });
 
     // Анимация появления
@@ -369,8 +441,7 @@
 
     // Инициализация
     checkDailyLimit();
-    updateQAList();
-    if (isDevMode) updatePendingQuestions();
+    if (db) renderQuestions([]);
   </script>
 </body>
 </html>
