@@ -138,7 +138,7 @@
 
     request.onerror = (event) => {
       console.error('Ошибка открытия IndexedDB:', event.target.error);
-      fallbackToLocalStorage(); // Резервный вариант
+      fallbackToLocalStorage();
     };
 
     // Резервный вариант с localStorage
@@ -155,12 +155,8 @@
 
       request.onsuccess = () => {
         const questions = request.result;
-        // Очистка вопросов старше 30 дней
         const now = new Date();
-        const filteredQuestions = questions.filter(q => {
-          const questionDate = new Date(q.date);
-          return (now - questionDate) < (30 * 24 * 60 * 60 * 1000);
-        });
+        const filteredQuestions = questions.filter(q => (now - new Date(q.date)) < (30 * 24 * 60 * 60 * 1000));
         renderQuestions(filteredQuestions);
       };
     }
@@ -432,6 +428,23 @@
         renderQuestions(request.result.filter(q => !q.approved));
       };
     });
+
+    // Консольная команда для сброса лимита (только для теста)
+    if (isDevMode) {
+      console.log('Тестовая команда доступна: resetLimit() — сбросить дневной лимит. Удалите после тестирования!');
+      window.resetLimit = function() {
+        if (!isDevMode) {
+          console.warn('Команда доступна только в режиме разработчика!');
+          return;
+        }
+        const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+        delete dailyStats[new Date().toLocaleDateString()];
+        localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
+        checkDailyLimit();
+        console.log('Дневной лимит сброшен!');
+        showNotification('Дневной лимит сброшен для тестирования.', true);
+      };
+    }
 
     // Анимация появления
     const io = new IntersectionObserver(entries => {
