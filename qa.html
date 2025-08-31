@@ -5,112 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Mortis Play — Q&A</title>
   <link rel="icon" href="/images/favicon.ico" />
-  <!-- Убрано CDN Tailwind для теста -->
-  <style>
-    body {
-      min-height: 100vh;
-      background: linear-gradient(to bottom right, #fefcbf, #ffffff, #c6f6d5);
-      color: #1a202c;
-      font-family: Arial, sans-serif;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #a0aec0;
-      border-radius: 5px;
-      background: #edf2f7;
-      color: #1a202c;
-    }
-    button {
-      padding: 10px 20px;
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 5px;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    button:hover {
-      background: rgba(255, 255, 255, 0.25);
-    }
-    button:disabled {
-      background: rgba(255, 255, 255, 0.05);
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-    .notification {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
-      z-index: 1000;
-      display: none;
-    }
-    .notification-close {
-      position: absolute;
-      right: 10px;
-      cursor: pointer;
-    }
-    .success-message { color: #48bb78; }
-    .error-message { color: #f56565; }
-    .fade-in { opacity: 0; transition: opacity 0.6s ease; }
-    .fade-in.is-visible { opacity: 1; }
-  </style>
+  <!-- Возвращаем Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <!-- Добавляем meta для временного обхода CSP (для теста) -->
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;">
 </head>
-<body>
-  <div class="container">
+<body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100">
+  <div class="mx-auto max-w-7xl px-4 py-16">
     <!-- Отладочный заголовок -->
     <div class="text-center text-red-500" id="debugMessage">Проверка загрузки...</div>
 
     <!-- Кнопка "Вернуться на сайт" в шапке -->
     <div class="text-right mb-4">
-      <a href="/index.html" class="button">Вернуться на сайт</a>
+      <a href="/index.html" class="glass-button">Вернуться на сайт</a>
     </div>
 
-    <h1 class="text-3xl font-bold text-center">Q&A с Mortis Play</h1>
-    <p class="mt-4 text-center text-gray-600">Задавай вопросы — лучшие попадут в раздел после модерации!</p>
+    <h1 class="text-3xl font-bold text-center text-slate-900 dark:text-white">Q&A с Mortis Play</h1>
+    <p class="mt-4 text-center text-slate-600 dark:text-slate-300">Задавай вопросы — лучшие попадут в раздел после модерации!</p>
 
-    <!-- Форма -->
-    <div class="mt-8 max-w-lg mx-auto fade-in" id="qaFormContainer">
-      <form id="qaForm">
-        <div class="form-group">
-          <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required>
+    <!-- Форма теперь видимая -->
+    <div class="mt-8 max-w-lg mx-auto fade-in" id="qaFormContainer" style="display: block !important;">
+      <form id="qaForm" class="space-y-4">
+        <div>
+          <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">
         </div>
-        <div class="form-group">
-          <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required></textarea>
+        <div>
+          <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"></textarea>
         </div>
-        <button type="submit" id="submitButton" class="button">Отправить</button>
-        <button type="button" id="statusButton" class="button mt-2 w-full" style="display:none;">Узнать статус</button>
-        <div id="questionLimit" class="mt-2 text-center text-sm text-gray-600"></div>
+        <button type="submit" id="submitButton" class="glass-button">Отправить</button>
+        <button type="button" id="statusButton" class="glass-button mt-2 w-full" style="display:none;">Узнать статус</button>
+        <div id="questionLimit" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300"></div>
         <div id="submitStatus" class="mt-2 text-center"></div>
       </form>
     </div>
 
     <!-- Панель модерации -->
     <div id="moderationPanel" class="mt-8 max-w-lg mx-auto fade-in hidden">
-      <h2 class="text-xl font-semibold text-center">Модерация вопросов <span id="pendingCount" class="blink text-red-500"></span></h2>
-      <div class="text-center mb-2 text-sm text-gray-600" id="questionStats"></div>
+      <h2 class="text-xl font-semibold text-center text-slate-900 dark:text-white">Модерация вопросов <span id="pendingCount" class="blink text-red-500"></span></h2>
+      <div class="text-center mb-2 text-sm text-slate-600 dark:text-slate-300" id="questionStats"></div>
       <ul id="pendingQuestions" class="mt-4 space-y-2"></ul>
-      <button id="clearApproved" class="button mt-4 w-full">Очистить одобренные</button>
+      <button id="clearApproved" class="glass-button mt-4 w-full">Очистить одобренные</button>
     </div>
 
     <!-- Список одобренных вопросов -->
     <div id="qaList" class="mt-12 space-y-4 fade-in">
       <div class="text-right mb-2">
-        <button id="sortToggle" class="button text-xs px-2 py-1">Сортировать: Новые сверху</button>
+        <button id="sortToggle" class="glass-button text-xs px-2 py-1">Сортировать: Новые сверху</button>
       </div>
     </div>
 
@@ -319,8 +259,8 @@
     function addQuestionToList(nickname, question, date) {
       const qaList = document.getElementById('qaList');
       const div = document.createElement('div');
-      div.className = 'p-4 bg-white rounded-lg shadow question-slide';
-      div.innerHTML = `<p class="question-text">${nickname}: ${question} <span class="text-xs text-gray-500">(${new Date(date).toLocaleString('ru-RU')})</span></p>`;
+      div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow question-slide';
+      div.innerHTML = `<p class="question-text">${nickname}: ${question} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(date).toLocaleString('ru-RU')})</span></p>`;
       qaList.insertBefore(div, qaList.firstChild);
       setTimeout(() => div.classList.add('is-visible'), 10);
     }
@@ -335,13 +275,13 @@
       if (approvedQuestions.length > 0) {
         approvedQuestions.forEach(q => {
           const div = document.createElement('div');
-          div.className = 'p-4 bg-white rounded-lg shadow question-slide';
-          div.innerHTML = `<p class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-gray-500">(${new Date(q.date).toLocaleString('ru-RU')})</span></p>`;
+          div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow question-slide';
+          div.innerHTML = `<p class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></p>`;
           qaList.appendChild(div);
           setTimeout(() => div.classList.add('is-visible'), 10);
         });
       } else {
-        qaList.innerHTML = '<p class="text-center text-gray-600">Пока одобренных вопросов нет — ждём модерацию!</p>';
+        qaList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Пока одобренных вопросов нет — ждём модерацию!</p>';
       }
       if (isDevMode) updatePendingQuestions();
     }
@@ -355,18 +295,18 @@
       if (pendingQuestions.length > 0) {
         pendingQuestions.forEach((q, index) => {
           const li = document.createElement('li');
-          li.className = 'p-2 bg-gray-100 rounded';
+          li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded';
           li.innerHTML = `<div class="flex justify-between items-center">
-              <span class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-gray-500">(${new Date(q.date).toLocaleString('ru-RU')})</span></span>
+              <span class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></span>
               <div>
-                  <button class="button text-xs px-2 py-1 mr-2" onclick="approveQuestion(${q.id})">Одобрить</button>
-                  <button class="button text-xs px-2 py-1" onclick="rejectQuestion(${q.id})">Отклонить</button>
+                  <button class="glass-button text-xs px-2 py-1 mr-2" onclick="approveQuestion(${q.id})">Одобрить</button>
+                  <button class="glass-button text-xs px-2 py-1" onclick="rejectQuestion(${q.id})">Отклонить</button>
               </div>
           </div>`;
           pendingList.appendChild(li);
         });
       } else {
-        pendingList.innerHTML = '<p class="text-center text-gray-600">Все вопросы одобрены или ещё не отправлены.</p>';
+        pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
       }
     }
 
@@ -445,5 +385,91 @@
     checkDailyLimit();
     renderQuestions(questions);
   </script>
+
+  <style>
+    .glass-button { 
+      background: rgba(255, 255, 255, 0.15); 
+      backdrop-filter: blur(10px); 
+      border: 1px solid rgba(255, 255, 255, 0.3); 
+      border-radius: 0.75rem; 
+      padding: 0.75rem 1.5rem; 
+      color: #fff; 
+      font-weight: 600; 
+      transition: all 0.3s ease; 
+    }
+    .glass-button:hover { 
+      background: rgba(255, 255, 255, 0.25); 
+      transform: scale(1.05); 
+    }
+    .glass-button:disabled { 
+      background: rgba(255, 255, 255, 0.05); 
+      cursor: not-allowed; 
+      opacity: 0.6; 
+    }
+    .dark .glass-button { 
+      background: rgba(50, 50, 50, 0.15); 
+      border-color: rgba(200, 200, 200, 0.2); 
+    }
+    .fade-in { 
+      opacity: 0; 
+      transform: translateY(16px); 
+      transition: opacity 0.6s ease, transform 0.6s ease; 
+    }
+    .fade-in.is-visible { 
+      opacity: 1; 
+      transform: none; 
+    }
+    .question-slide { 
+      animation: slideIn 0.5s ease-out; 
+    }
+    @keyframes slideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .blink { 
+      animation: blink 1s step-end infinite; 
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    @media (max-width: 640px) { 
+      .glass-button { 
+        padding: 0.5rem 1rem; 
+        font-size: 0.9rem; 
+      } 
+    }
+    .success-message { color: #10b981; }
+    .error-message { color: #ef4444; }
+    textarea, input {
+      color: #333; 
+    }
+    .dark textarea, .dark input {
+      color: #d1d5db; 
+    }
+    textarea:focus, input:focus {
+      outline: none;
+      border-color: #3b82f6; 
+    }
+    .dark textarea:focus, .dark input:focus {
+      border-color: #60a5fa; 
+    }
+    .notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      z-index: 1000;
+      display: none;
+    }
+    .notification-close {
+      position: absolute;
+      right: 10px;
+      cursor: pointer;
+    }
+  </style>
 </body>
 </html>
