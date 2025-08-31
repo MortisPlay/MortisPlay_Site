@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Mortis Play — Q&A</title>
   <link rel="icon" href="/images/favicon.ico" />
+  <!-- Проверка подключения Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com" defer></script>
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
   <style>
@@ -95,6 +96,9 @@
 </head>
 <body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100">
   <div class="mx-auto max-w-7xl px-4 py-16">
+    <!-- Отладочный заголовок -->
+    <div class="text-center text-red-500" id="debugMessage">Проверка загрузки...</div>
+
     <!-- Кнопка "Вернуться на сайт" в шапке -->
     <div class="text-right mb-4">
       <a href="/index.html" class="glass-button">Вернуться на сайт</a>
@@ -141,6 +145,10 @@
     const isDevMode = new URLSearchParams(window.location.search).get('dev') === 'true';
     if (isDevMode) document.getElementById('moderationPanel').style.display = 'block';
 
+    // Отладка загрузки
+    console.log('Скрипт загружен');
+    document.getElementById('debugMessage').textContent = 'Скрипт работает, проверяем IndexedDB...';
+
     // Инициализация IndexedDB
     let db;
     const request = indexedDB.open('QAStore', 1);
@@ -148,22 +156,29 @@
     request.onupgradeneeded = (event) => {
       db = event.target.result;
       db.createObjectStore('questions', { keyPath: 'id', autoIncrement: true });
+      console.log('IndexedDB создан или обновлён');
+      document.getElementById('debugMessage').textContent = 'IndexedDB инициализирован.';
     };
 
     request.onsuccess = (event) => {
       db = event.target.result;
+      console.log('IndexedDB подключён');
+      document.getElementById('debugMessage').textContent = 'IndexedDB подключён, загружаем вопросы.';
       loadQuestions();
     };
 
     request.onerror = (event) => {
       console.error('Ошибка открытия IndexedDB:', event.target.error);
+      document.getElementById('debugMessage').textContent = 'Ошибка IndexedDB: ' + event.target.error;
       fallbackToLocalStorage();
     };
 
     // Резервный вариант с localStorage
     function fallbackToLocalStorage() {
       let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
+      console.log('Переключение на localStorage, вопросы:', questions);
       renderQuestions(questions);
+      document.getElementById('debugMessage').textContent = 'Используется localStorage.';
     }
 
     // Загрузка вопросов
@@ -176,8 +191,15 @@
         const questions = request.result;
         const now = new Date();
         const filteredQuestions = questions.filter(q => (now - new Date(q.date)) < (30 * 24 * 60 * 60 * 1000));
+        console.log('Загружено вопросов:', filteredQuestions.length);
         renderQuestions(filteredQuestions);
         if (isDevMode) updateQuestionStats(filteredQuestions);
+        document.getElementById('debugMessage').textContent = 'Вопросы загружены.';
+      };
+
+      request.onerror = (event) => {
+        console.error('Ошибка загрузки вопросов:', event.target.error);
+        document.getElementById('debugMessage').textContent = 'Ошибка загрузки вопросов: ' + event.target.error;
       };
     }
 
