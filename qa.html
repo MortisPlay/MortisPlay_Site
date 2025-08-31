@@ -476,7 +476,7 @@
           div.className = `p-4 rounded-lg shadow question-slide ${q.approved ? 'approved' : 'pending'}`;
           div.innerHTML = `
             <p class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></p>
-            ${q.answer ? (console.log('Проверка ответа:', q.answer), `<div class="comment-section"><strong>Ответ:</strong> ${q.answer}</div>`) : ''}
+            ${q.answer && q.answer.trim() !== '' ? (console.log('Проверка ответа:', q.answer), `<div class="comment-section"><strong>Ответ:</strong> ${q.answer}</div>`) : ''}
           `;
           qaList.appendChild(div);
           setTimeout(() => div.classList.add('is-visible'), 10);
@@ -592,6 +592,7 @@
       withDB(() => {
         const answerInput = document.getElementById(`answerInput_${id}`);
         const answer = answerInput.value.trim();
+        console.log('Получаем ответ из ввода:', answer, 'для ID:', id); // Новый лог
         if (answer) {
           console.log('Добавляем ответ:', answer, 'для ID:', id); // Лог для диагностики
           updateQuestion(id, { answer: answer }); // Убедимся, что answer корректно передаётся
