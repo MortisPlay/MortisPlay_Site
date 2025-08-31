@@ -235,7 +235,7 @@
           const question = request.result;
           if (question) {
             Object.assign(question, updates);
-            console.log('Обновляем вопрос:', question); // Лог для диагностики
+            console.log('Обновляем вопрос:', question); // Лog для диагностики
             const putRequest = store.put(question);
             putRequest.onsuccess = () => {
               console.log('Вопрос успешно сохранён в базе с ID:', id); // Новый лог
@@ -464,7 +464,7 @@
     function renderQuestions(questionsList) {
       const qaList = document.getElementById('qaList');
       qaList.innerHTML = '';
-      console.log('Рендеринг вопросов:', questionsList); // Новый лог
+      console.log('Рендеринг вопросов:', questionsList); // Лог для диагностики
       let sortedQuestions = [...questionsList].sort((a, b) => {
         return sortNewest ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
       });
