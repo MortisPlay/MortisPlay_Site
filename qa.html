@@ -86,9 +86,40 @@
       right: 10px;
       cursor: pointer;
     }
-    .pending { background-color: #fef3c7; color: #92400e; } /* Оранжевый фон для ожидающих */
-    .approved { background-color: #d1fae5; color: #065f46; } /* Зелёный фон для одобренных */
-  </style>
+    .pending { background-color: #fef3c7; color: #92400e; }
+    .approved { background-color: #d1fae5; color: #065f46; }
+
+    /* === Эффект черной дыры для кадра === */
+    .black-hole-frame {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, #000 40%, rgba(0,0,0,0.8) 70%, transparent 100%);
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 100px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      animation: swirl 6s linear infinite;
+    }
+    .black-hole-frame img {
+      position: absolute;
+      width: 120%;
+      height: 120%;
+      top: -10%;
+      left: -10%;
+      object-fit: cover;
+      border-radius: 50%;
+      animation: spinImage 10s linear infinite;
+    }
+    @keyframes swirl {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.05); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    @keyframes spinImage {
+      0% { transform: rotate(0deg) scale(1.1); }
+      100% { transform: rotate(-360deg) scale(1.1); }
+    }
+</style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100">
   <div class="mx-auto max-w-7xl px-4 py-16">
