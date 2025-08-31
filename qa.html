@@ -188,7 +188,7 @@
       'мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак', 'пидор', 'сука', 'бля', 'хуй',
       'реклама', 'купить', 'заработок', 'порно', 'xxx', 'вирус', 'hack', 'free', 'click',
       'shit', 'fuck', 'ass', 'damn', 'crap', 'botnet', 'phishing', 'scam', 'link'
-    ]; // Расширенный чёрный список
+    ];
 
     // Элементы интерфейса
     const questionLimit = document.getElementById('questionLimit');
@@ -402,8 +402,11 @@
         const question = request.result;
         question.approved = true;
         store.put(question);
-        showNotification(`Вопрос "${question.text}" одобрен!`, true);
-        renderQuestions(db.transaction(['questions']).objectStore('questions').getAll().result);
+
+        transaction.oncomplete = () => {
+          loadQuestions(); // Обновление списка после завершения транзакции
+          showNotification(`Вопрос "${question.text}" одобрен!`, true);
+        };
       };
     }
 
@@ -415,8 +418,12 @@
 
       request.onsuccess = () => {
         const question = request.result;
-        showNotification(`Вопрос "${question.text}" отклонён.`, false);
         store.delete(id);
+
+        transaction.oncomplete = () => {
+          loadQuestions(); // Обновление списка после завершения транзакции
+          showNotification(`Вопрос "${question.text}" отклонён.`, false);
+        };
       };
     }
 
@@ -430,7 +437,10 @@
         request.result.forEach(q => {
           if (q.approved) store.delete(q.id);
         });
-        renderQuestions(request.result.filter(q => !q.approved));
+
+        transaction.oncomplete = () => {
+          loadQuestions(); // Обновление списка после завершения транзакции
+        };
       };
     });
 
