@@ -311,64 +311,66 @@
       userNotification.style.display = 'block';
     }
 
-    // Обработка формы
-    document.getElementById('qaForm')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const nickname = document.getElementById('nicknameInput').value.trim();
-      const question = document.getElementById('questionInput').value.trim();
-      const date = new Date().toISOString();
-      const submitStatus = document.getElementById('submitStatus');
+    // Обработка формы (обновим вызов после сохранения)
+document.getElementById('qaForm')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const nickname = document.getElementById('nicknameInput').value.trim();
+  const question = document.getElementById('questionInput').value.trim();
+  const date = new Date().toISOString();
+  const submitStatus = document.getElementById('submitStatus');
 
-      const validationError = validateInput(nickname, question);
-      if (validationError) {
-        submitStatus.textContent = validationError;
-        submitStatus.classList.add('error-message');
-        showNotification(validationError, false);
-        return;
-      }
+  const validationError = validateInput(nickname, question);
+  if (validationError) {
+    submitStatus.textContent = validationError;
+    submitStatus.classList.add('error-message');
+    showNotification(validationError, false);
+    return;
+  }
 
-      const timeoutError = checkTimeout(nickname);
-      if (timeoutError) {
-        submitStatus.textContent = timeoutError;
-        submitStatus.classList.add('error-message');
-        showNotification(timeoutError, false);
-        return;
-      }
+  const timeoutError = checkTimeout(nickname);
+  if (timeoutError) {
+    submitStatus.textContent = timeoutError;
+    submitStatus.classList.add('error-message');
+    showNotification(timeoutError, false);
+    return;
+  }
 
-      const limitError = checkDailyLimit();
-      if (limitError) {
-        submitStatus.textContent = 'Достигнут лимит в 5 вопросов за день!';
-        submitStatus.classList.add('error-message');
-        showNotification('Достигнут лимит вопросов за день!', false);
-        return;
-      }
+  const limitError = checkDailyLimit();
+  if (limitError) {
+    submitStatus.textContent = 'Достигнут лимит в 5 вопросов за день!';
+    submitStatus.classList.add('error-message');
+    showNotification('Достигнут лимит вопросов за день!', false);
+    return;
+  }
 
-      const today = new Date().toLocaleDateString();
-      let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
-      if (dailyStats[today] >= dailyLimit) {
-        submitStatus.textContent = 'Достигнут лимит в 5 вопросов за день!';
-        submitStatus.classList.add('error-message');
-        showNotification('Достигнут лимит вопросов за день!', false);
-        return;
-      }
-      dailyStats[today] = (dailyStats[today] || 0) + 1;
-      localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
+  const today = new Date().toLocaleDateString();
+  let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+  if (dailyStats[today] >= dailyLimit) {
+    submitStatus.textContent = 'Достигнут лимит в 5 вопросов за день!';
+    submitStatus.classList.add('error-message');
+    showNotification('Достигнут лимит вопросов за день!', false);
+    return;
+  }
+  dailyStats[today] = (dailyStats[today] || 0) + 1;
+  localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
 
-      submitStatus.textContent = 'Отправка...';
-      submitStatus.classList.remove('success-message', 'error-message');
+  submitStatus.textContent = 'Отправка...';
+  submitStatus.classList.remove('success-message', 'error-message');
 
-      const newQuestion = { nickname, text: question, date, approved: false };
-      saveQuestion(newQuestion);
+  const newQuestion = { nickname, text: question, date, approved: false };
+  saveQuestion(newQuestion);
 
-      submitStatus.textContent = 'Вопрос отправлен!';
-      submitStatus.classList.add('success-message');
-      showNotification('Вопрос отправлен на модерацию!', true);
-      form.reset();
+  submitStatus.textContent = 'Вопрос отправлен!';
+  submitStatus.classList.add('success-message');
+  showNotification('Вопрос отправлен на модерацию!', true);
+  form.reset();
 
-      addQuestionToList(newQuestion.nickname, newQuestion.text, newQuestion.date);
-      if (isDevMode) updatePendingQuestions();
-    });
+  addQuestionToList(newQuestion.nickname, newQuestion.text, newQuestion.date);
+  if (isDevMode) {
+    setTimeout(updatePendingQuestions, 100); // Убеждаемся, что список обновится
+  }
+});
 
     // Добавление вопроса в список с анимацией
     function addQuestionToList(nickname, question, date) {
@@ -403,35 +405,40 @@
     }
 
     // Обновление списка ожидающих вопросов и счётчика
-    function updatePendingQuestions() {
-      if (!isDevMode) return;
-      const pendingList = document.getElementById('pendingQuestions');
-      pendingList.innerHTML = '';
-      const transaction = db.transaction(['questions'], 'readonly');
-      const store = transaction.objectStore('questions');
-      const request = store.getAll();
+function updatePendingQuestions() {
+  if (!isDevMode) return;
+  const pendingList = document.getElementById('pendingQuestions');
+  pendingList.innerHTML = '';
+  const transaction = db.transaction(['questions'], 'readonly');
+  const store = transaction.objectStore('questions');
+  const request = store.getAll();
 
-      request.onsuccess = () => {
-        const pendingQuestions = request.result.filter(q => !q.approved);
-        pendingCount.textContent = pendingQuestions.length > 0 ? `(Ожидает: ${pendingQuestions.length})` : '';
-        if (pendingQuestions.length > 0) {
-          pendingQuestions.forEach((q, index) => {
-            const li = document.createElement('li');
-            li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded';
-            li.innerHTML = `<div class="flex justify-between items-center">
-                <span class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></span>
-                <div>
-                    <button class="glass-button text-xs px-2 py-1 mr-2" onclick="approveQuestion(${q.id})">Одобрить</button>
-                    <button class="glass-button text-xs px-2 py-1" onclick="rejectQuestion(${q.id})">Отклонить</button>
-                </div>
-            </div>`;
-            pendingList.appendChild(li);
-          });
-        } else {
-          pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
-        }
-      };
+  request.onsuccess = () => {
+    const pendingQuestions = request.result.filter(q => !q.approved);
+    pendingCount.textContent = pendingQuestions.length > 0 ? `(Ожидает: ${pendingQuestions.length})` : '';
+    if (pendingQuestions.length > 0) {
+      pendingQuestions.forEach((q, index) => {
+        const li = document.createElement('li');
+        li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded';
+        li.innerHTML = `<div class="flex justify-between items-center">
+            <span class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></span>
+            <div>
+                <button class="glass-button text-xs px-2 py-1 mr-2" onclick="approveQuestion(${q.id})">Одобрить</button>
+                <button class="glass-button text-xs px-2 py-1" onclick="rejectQuestion(${q.id})">Отклонить</button>
+            </div>
+        </div>`;
+        pendingList.appendChild(li);
+      });
+    } else {
+      pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
     }
+  };
+
+  request.onerror = () => {
+    console.error('Ошибка при загрузке ожидающих вопросов');
+    pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Ошибка загрузки ожидающих вопросов.</p>';
+  };
+}
 
     // Обновление статистики вопросов
     function updateQuestionStats(questions) {
