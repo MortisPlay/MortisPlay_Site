@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Mortis Play — Q&A</title>
   <link rel="icon" href="/images/favicon.ico" />
-  <!-- Проверка подключения Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com" defer></script>
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
   <style>
@@ -145,11 +144,9 @@
     const isDevMode = new URLSearchParams(window.location.search).get('dev') === 'true';
     if (isDevMode) document.getElementById('moderationPanel').style.display = 'block';
 
-    // Отладка загрузки
     console.log('Скрипт загружен');
     document.getElementById('debugMessage').textContent = 'Скрипт работает, проверяем IndexedDB...';
 
-    // Инициализация IndexedDB
     let db;
     const request = indexedDB.open('QAStore', 1);
 
@@ -173,7 +170,6 @@
       fallbackToLocalStorage();
     };
 
-    // Резервный вариант с localStorage
     function fallbackToLocalStorage() {
       let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
       console.log('Переключение на localStorage, вопросы:', questions);
@@ -181,7 +177,6 @@
       document.getElementById('debugMessage').textContent = 'Используется localStorage.';
     }
 
-    // Загрузка вопросов
     function loadQuestions() {
       const transaction = db.transaction(['questions'], 'readonly');
       const store = transaction.objectStore('questions');
@@ -203,7 +198,6 @@
       };
     }
 
-    // Сохранение вопроса
     function saveQuestion(question) {
       const transaction = db.transaction(['questions'], 'readwrite');
       const store = transaction.objectStore('questions');
@@ -214,7 +208,6 @@
       };
     }
 
-    // Удаление вопроса
     function deleteQuestion(id) {
       const transaction = db.transaction(['questions'], 'readwrite');
       const store = transaction.objectStore('questions');
@@ -226,14 +219,13 @@
     }
 
     const dailyLimit = 5;
-    const timeoutSeconds = 30; // Тайм-аут 30 секунд
+    const timeoutSeconds = 30;
     const blackList = [
       'мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак', 'пидор', 'сука', 'бля', 'хуй',
       'реклама', 'купить', 'заработок', 'порно', 'xxx', 'вирус', 'hack', 'free', 'click',
       'shit', 'fuck', 'ass', 'damn', 'crap', 'botnet', 'phishing', 'scam', 'link'
     ];
 
-    // Элементы интерфейса
     const questionLimit = document.getElementById('questionLimit');
     const pendingCount = document.getElementById('pendingCount');
     const userNotification = document.getElementById('userNotification');
@@ -243,7 +235,6 @@
     let timerElement = null;
     let sortNewest = true;
 
-    // Усиленная валидация
     function validateInput(nickname, question) {
       if (nickname.length < 3 || nickname.length > 20) return 'Никнейм должен быть от 3 до 20 символов!';
       if (question.length < 10 || question.length > 200) return 'Вопрос должен быть от 10 до 200 символов!';
@@ -258,7 +249,6 @@
       return null;
     }
 
-    // Проверка тайм-аута
     function checkTimeout(nickname) {
       const lastTimes = JSON.parse(localStorage.getItem('qaLastTimes')) || {};
       const now = Date.now();
@@ -272,7 +262,6 @@
       return null;
     }
 
-    // Проверка дневного лимита и таймер сброса
     function checkDailyLimit() {
       const today = new Date().toLocaleDateString();
       let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
@@ -311,7 +300,6 @@
       return null;
     }
 
-    // Обновление таймера
     function updateTimer(seconds) {
       if (!timerElement) return;
       const hours = Math.floor(seconds / 3600);
@@ -335,14 +323,12 @@
       }
     }
 
-    // Показ уведомления пользователю
     function showNotification(message, isSuccess = true) {
       notificationMessage.textContent = message;
       userNotification.className = 'notification ' + (isSuccess ? 'bg-green-600' : 'bg-red-600');
       userNotification.style.display = 'block';
     }
 
-    // Обработка формы
     document.getElementById('qaForm')?.addEventListener('submit', (e) => {
       e.preventDefault();
       const form = e.target;
@@ -402,7 +388,6 @@
       if (isDevMode) updatePendingQuestions();
     });
 
-    // Добавление вопроса в список с анимацией
     function addQuestionToList(nickname, question, date) {
       const qaList = document.getElementById('qaList');
       const div = document.createElement('div');
@@ -412,7 +397,6 @@
       setTimeout(() => div.classList.add('is-visible'), 10);
     }
 
-    // Обновление списка одобренных вопросов
     function renderQuestions(questionsList) {
       const qaList = document.getElementById('qaList');
       qaList.innerHTML = '';
@@ -434,7 +418,6 @@
       if (isDevMode) updatePendingQuestions();
     }
 
-    // Обновление списка ожидающих вопросов и счётчика
     function updatePendingQuestions() {
       if (!isDevMode) return;
       const pendingList = document.getElementById('pendingQuestions');
@@ -465,7 +448,6 @@
       };
     }
 
-    // Обновление статистики вопросов
     function updateQuestionStats(questions) {
       const total = questions.length;
       const approved = questions.filter(q => q.approved).length;
@@ -473,7 +455,6 @@
       document.getElementById('questionStats').textContent = `Всего: ${total}, Одобрено: ${approved}, Ожидает: ${pending}`;
     }
 
-    // Одобрение вопроса
     function approveQuestion(id) {
       const transaction = db.transaction(['questions'], 'readwrite');
       const store = transaction.objectStore('questions');
@@ -491,7 +472,6 @@
       };
     }
 
-    // Отклонение вопроса
     function rejectQuestion(id) {
       const transaction = db.transaction(['questions'], 'readwrite');
       const store = transaction.objectStore('questions');
@@ -508,7 +488,6 @@
       };
     }
 
-    // Очистка одобренных вопросов
     document.getElementById('clearApproved')?.addEventListener('click', () => {
       const transaction = db.transaction(['questions'], 'readwrite');
       const store = transaction.objectStore('questions');
@@ -525,14 +504,12 @@
       };
     });
 
-    // Переключение сортировки
     document.getElementById('sortToggle')?.addEventListener('click', () => {
       sortNewest = !sortNewest;
       document.getElementById('sortToggle').textContent = `Сортировать: ${sortNewest ? 'Новые сверху' : 'Старые сверху'}`;
       loadQuestions();
     });
 
-    // Проверка статуса вопроса
     document.getElementById('statusButton')?.addEventListener('click', () => {
       const nickname = document.getElementById('nicknameInput').value.trim();
       if (!nickname) {
@@ -555,7 +532,6 @@
       };
     });
 
-    // Консольная команда для сброса лимита (только для теста)
     if (isDevMode) {
       console.log('Тестовая команда доступна: resetLimit() — сбросить дневной лимит. Удалите после тестирования!');
       window.resetLimit = function() {
@@ -572,13 +548,11 @@
       };
     }
 
-    // Анимация появления
     const io = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
     }, { threshold: 0.1 });
     document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
-    // Инициализация
     checkDailyLimit();
     if (db) renderQuestions([]);
   </script>
