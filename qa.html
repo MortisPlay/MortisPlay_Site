@@ -5,387 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Mortis Play — Q&A</title>
   <link rel="icon" href="/images/favicon.ico" />
-  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com" defer></script>
-  <!-- Временный обход CSP для теста -->
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;">
-</head>
-<body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100">
-  <div class="mx-auto max-w-7xl px-4 py-16">
-    <!-- Отладочный заголовок -->
-    <div class="text-center text-red-500" id="debugMessage">Проверка загрузки...</div>
-
-    <!-- Кнопка "Вернуться на сайт" в шапке -->
-    <div class="text-right mb-4">
-      <a href="/index.html" class="glass-button">Вернуться на сайт</a>
-    </div>
-
-    <h1 class="text-3xl font-bold text-center text-slate-900 dark:text-white">Q&A с Mortis Play</h1>
-    <p class="mt-4 text-center text-slate-600 dark:text-slate-300">Задавай вопросы — лучшие попадут в раздел после модерации!</p>
-
-    <!-- Форма теперь видимая -->
-    <div class="mt-8 max-w-lg mx-auto fade-in" id="qaFormContainer" style="display: block !important;">
-      <form id="qaForm" class="space-y-4">
-        <div>
-          <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">
-        </div>
-        <div>
-          <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"></textarea>
-        </div>
-        <button type="submit" id="submitButton" class="glass-button">Отправить</button>
-        <button type="button" id="statusButton" class="glass-button mt-2 w-full" style="display:none;">Узнать статус</button>
-        <div id="questionLimit" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300"></div>
-        <div id="submitStatus" class="mt-2 text-center"></div>
-      </form>
-    </div>
-
-    <!-- Панель модерации -->
-    <div id="moderationPanel" class="mt-8 max-w-lg mx-auto fade-in hidden">
-      <h2 class="text-xl font-semibold text-center text-slate-900 dark:text-white">Модерация вопросов <span id="pendingCount" class="blink text-red-500"></span></h2>
-      <div class="text-center mb-2 text-sm text-slate-600 dark:text-slate-300" id="questionStats"></div>
-      <ul id="pendingQuestions" class="mt-4 space-y-2"></ul>
-      <button id="clearApproved" class="glass-button mt-4 w-full">Очистить одобренные</button>
-    </div>
-
-    <!-- Список одобренных вопросов -->
-    <div id="qaList" class="mt-12 space-y-4 fade-in">
-      <div class="text-right mb-2">
-        <button id="sortToggle" class="glass-button text-xs px-2 py-1">Сортировать: Новые сверху</button>
-      </div>
-    </div>
-
-    <!-- Уведомление для пользователя -->
-    <div id="userNotification" class="notification">
-      <span id="notificationMessage"></span>
-      <span class="notification-close" onclick="this.parentElement.style.display='none'">×</span>
-    </div>
-  </div>
-
-  <script>
-    const isDevMode = new URLSearchParams(window.location.search).get('dev') === 'true';
-    if (isDevMode) document.getElementById('moderationPanel').style.display = 'block';
-
-    console.log('Скрипт загружен');
-    document.getElementById('debugMessage').textContent = 'Скрипт работает, загружаем вопросы...';
-
-    let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
-    console.log('Загружено вопросов:', questions.length);
-    renderQuestions(questions);
-    document.getElementById('debugMessage').textContent = 'Вопросы загружены.';
-
-    function saveQuestion(question) {
-      questions.push(question);
-      localStorage.setItem('qaQuestions', JSON.stringify(questions));
-      renderQuestions(questions);
-      if (isDevMode) updatePendingQuestions();
-    }
-
-    function deleteQuestion(index) {
-      questions = questions.filter(q => q.id !== index);
-      localStorage.setItem('qaQuestions', JSON.stringify(questions));
-      renderQuestions(questions);
-    }
-
-    const dailyLimit = 5;
-    const timeoutSeconds = 30;
-    const blackList = [
-      'мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак', 'пидор', 'сука', 'бля', 'хуй',
-      'реклама', 'купить', 'заработок', 'порно', 'xxx', 'вирус', 'hack', 'free', 'click',
-      'shit', 'fuck', 'ass', 'damn', 'crap', 'botnet', 'phishing', 'scam', 'link'
-    ];
-
-    const questionLimit = document.getElementById('questionLimit');
-    const pendingCount = document.getElementById('pendingCount');
-    const userNotification = document.getElementById('userNotification');
-    const notificationMessage = document.getElementById('notificationMessage');
-    const submitButton = document.getElementById('submitButton');
-    const statusButton = document.getElementById('statusButton');
-    let timerElement = null;
-    let sortNewest = true;
-
-    function validateInput(nickname, question) {
-      if (nickname.length < 3 || nickname.length > 20) return 'Никнейм должен быть от 3 до 20 символов!';
-      if (question.length < 10 || question.length > 200) return 'Вопрос должен быть от 10 до 200 символов!';
-      if (blackList.some(word => nickname.toLowerCase().includes(word) || question.toLowerCase().includes(word))) {
-        return 'Сообщение содержит запрещённые слова!';
-      }
-      const words = question.trim().split(/\s+/);
-      if (words.length < 2) return 'Вопрос должен содержать минимум 2 слова!';
-      if (words.some(w => w.length < 4 || /(.)\1{2,}/.test(w) || !/[a-zа-яё0-9]/i.test(w))) {
-        return 'Вопрос должен содержать осмысленные слова (без повторов символов или случайных символов)!';
-      }
-      return null;
-    }
-
-    function checkTimeout(nickname) {
-      const lastTimes = JSON.parse(localStorage.getItem('qaLastTimes')) || {};
-      const now = Date.now();
-      const lastTime = lastTimes[nickname] || 0;
-      if (now - lastTime < timeoutSeconds * 1000) {
-        const timeLeft = Math.ceil((timeoutSeconds * 1000 - (now - lastTime)) / 1000);
-        return `Подождите ${timeLeft} секунд перед следующим вопросом!`;
-      }
-      lastTimes[nickname] = now;
-      localStorage.setItem('qaLastTimes', JSON.stringify(lastTimes));
-      return null;
-    }
-
-    function checkDailyLimit() {
-      const today = new Date().toLocaleDateString();
-      let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
-      const todayCount = dailyStats[today] || 0;
-      const remaining = dailyLimit - todayCount;
-      questionLimit.textContent = `Осталось: ${remaining} из ${dailyLimit}`;
-      submitButton.disabled = todayCount >= dailyLimit;
-
-      if (todayCount >= dailyLimit && !timerElement) {
-        const resetText = document.createElement('span');
-        resetText.textContent = ' Сброс через: ';
-        timerElement = document.createElement('span');
-        timerElement.id = 'timer';
-        timerElement.style.marginLeft = '5px';
-        questionLimit.appendChild(resetText);
-        questionLimit.appendChild(timerElement);
-        const now = new Date();
-        const tomorrow = new Date(now);
-        tomorrow.setDate(now.getDate() + 1);
-        tomorrow.setHours(0, 0, 0, 0);
-        const timeLeft = Math.floor((tomorrow - now) / 1000);
-        updateTimer(timeLeft);
-      } else if (todayCount < dailyLimit && timerElement) {
-        if (timerElement.parentNode) {
-          const resetText = timerElement.previousSibling;
-          if (resetText && resetText.textContent === ' Сброс через: ') {
-            questionLimit.removeChild(resetText);
-          }
-          questionLimit.removeChild(timerElement);
-        }
-        timerElement = null;
-      }
-
-      dailyStats[today] = todayCount;
-      localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
-      return null;
-    }
-
-    function updateTimer(seconds) {
-      if (!timerElement) return;
-      const hours = Math.floor(seconds / 3600);
-      const minutes = Math.floor((seconds % 3600) / 60);
-      const secs = seconds % 60;
-      timerElement.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-      if (seconds > 0) setTimeout(() => updateTimer(seconds - 1), 1000);
-      else {
-        const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
-        delete dailyStats[new Date().toLocaleDateString()];
-        localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
-        if (timerElement.parentNode) {
-          const resetText = timerElement.previousSibling;
-          if (resetText && resetText.textContent === ' Сброс через: ') {
-            questionLimit.removeChild(resetText);
-          }
-          questionLimit.removeChild(timerElement);
-        }
-        timerElement = null;
-        checkDailyLimit();
-      }
-    }
-
-    function showNotification(message, isSuccess = true) {
-      notificationMessage.textContent = message;
-      userNotification.className = 'notification ' + (isSuccess ? 'bg-green-600' : 'bg-red-600');
-      userNotification.style.display = 'block';
-    }
-
-    document.getElementById('qaForm')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const nickname = document.getElementById('nicknameInput').value.trim();
-      const question = document.getElementById('questionInput').value.trim();
-      const date = new Date().toISOString();
-      const submitStatus = document.getElementById('submitStatus');
-
-      const validationError = validateInput(nickname, question);
-      if (validationError) {
-        submitStatus.textContent = validationError;
-        submitStatus.classList.add('error-message');
-        showNotification(validationError, false);
-        return;
-      }
-
-      const timeoutError = checkTimeout(nickname);
-      if (timeoutError) {
-        submitStatus.textContent = timeoutError;
-        submitStatus.classList.add('error-message');
-        showNotification(timeoutError, false);
-        return;
-      }
-
-      const limitError = checkDailyLimit();
-      if (limitError) {
-        submitStatus.textContent = 'Достигнут лимит в 5 вопросов за день!';
-        submitStatus.classList.add('error-message');
-        showNotification('Достигнут лимит вопросов за день!', false);
-        return;
-      }
-
-      const today = new Date().toLocaleDateString();
-      let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
-      if (dailyStats[today] >= dailyLimit) {
-        submitStatus.textContent = 'Достигнут лимит в 5 вопросов за день!';
-        submitStatus.classList.add('error-message');
-        showNotification('Достигнут лимит вопросов за день!', false);
-        return;
-      }
-      dailyStats[today] = (dailyStats[today] || 0) + 1;
-      localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
-
-      submitStatus.textContent = 'Отправка...';
-      submitStatus.classList.remove('success-message', 'error-message');
-
-      const newQuestion = { id: Date.now(), nickname, text: question, date, approved: false };
-      saveQuestion(newQuestion);
-
-      submitStatus.textContent = 'Вопрос отправлен!';
-      submitStatus.classList.add('success-message');
-      showNotification('Вопрос отправлен на модерацию! Нажмите "Узнать статус" для проверки.', true);
-      form.reset();
-      statusButton.style.display = 'block';
-
-      addQuestionToList(newQuestion.nickname, newQuestion.text, newQuestion.date);
-      if (isDevMode) updatePendingQuestions();
-    });
-
-    function addQuestionToList(nickname, question, date) {
-      const qaList = document.getElementById('qaList');
-      const div = document.createElement('div');
-      div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow question-slide';
-      div.innerHTML = `<p class="question-text">${nickname}: ${question} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(date).toLocaleString('ru-RU')})</span></p>`;
-      qaList.insertBefore(div, qaList.firstChild);
-      setTimeout(() => div.classList.add('is-visible'), 10);
-    }
-
-    function renderQuestions(questionsList) {
-      const qaList = document.getElementById('qaList');
-      qaList.innerHTML = '';
-      let sortedQuestions = [...questionsList].sort((a, b) => {
-        return sortNewest ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
-      });
-      const approvedQuestions = sortedQuestions.filter(q => q.approved);
-      if (approvedQuestions.length > 0) {
-        approvedQuestions.forEach(q => {
-          const div = document.createElement('div');
-          div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow question-slide';
-          div.innerHTML = `<p class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></p>`;
-          qaList.appendChild(div);
-          setTimeout(() => div.classList.add('is-visible'), 10);
-        });
-      } else {
-        qaList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Пока одобренных вопросов нет — ждём модерацию!</p>';
-      }
-      if (isDevMode) updatePendingQuestions();
-    }
-
-    function updatePendingQuestions() {
-      if (!isDevMode) return;
-      const pendingList = document.getElementById('pendingQuestions');
-      pendingList.innerHTML = '';
-      const pendingQuestions = questions.filter(q => !q.approved);
-      pendingCount.textContent = pendingQuestions.length > 0 ? `(Ожидает: ${pendingQuestions.length})` : '';
-      if (pendingQuestions.length > 0) {
-        pendingQuestions.forEach((q, index) => {
-          const li = document.createElement('li');
-          li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded';
-          li.innerHTML = `<div class="flex justify-between items-center">
-              <span class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></span>
-              <div>
-                  <button class="glass-button text-xs px-2 py-1 mr-2" onclick="approveQuestion(${q.id})">Одобрить</button>
-                  <button class="glass-button text-xs px-2 py-1" onclick="rejectQuestion(${q.id})">Отклонить</button>
-              </div>
-          </div>`;
-          pendingList.appendChild(li);
-        });
-      } else {
-        pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
-      }
-    }
-
-    function updateQuestionStats(questions) {
-      const total = questions.length;
-      const approved = questions.filter(q => q.approved).length;
-      const pending = questions.filter(q => !q.approved).length;
-      document.getElementById('questionStats').textContent = `Всего: ${total}, Одобрено: ${approved}, Ожидает: ${pending}`;
-    }
-
-    function approveQuestion(id) {
-      const question = questions.find(q => q.id === id);
-      if (question) {
-        question.approved = true;
-        localStorage.setItem('qaQuestions', JSON.stringify(questions));
-        renderQuestions(questions);
-        showNotification(`Вопрос "${question.text}" одобрен!`, true);
-      }
-    }
-
-    function rejectQuestion(id) {
-      const question = questions.find(q => q.id === id);
-      if (question) {
-        questions = questions.filter(q => q.id !== id);
-        localStorage.setItem('qaQuestions', JSON.stringify(questions));
-        renderQuestions(questions);
-        showNotification(`Вопрос "${question.text}" отклонён.`, false);
-      }
-    }
-
-    document.getElementById('clearApproved')?.addEventListener('click', () => {
-      questions = questions.filter(q => !q.approved);
-      localStorage.setItem('qaQuestions', JSON.stringify(questions));
-      renderQuestions(questions);
-    });
-
-    document.getElementById('sortToggle')?.addEventListener('click', () => {
-      sortNewest = !sortNewest;
-      document.getElementById('sortToggle').textContent = `Сортировать: ${sortNewest ? 'Новые сверху' : 'Старые сверху'}`;
-      renderQuestions(questions);
-    });
-
-    document.getElementById('statusButton')?.addEventListener('click', () => {
-      const nickname = document.getElementById('nicknameInput').value.trim();
-      if (!nickname) {
-        showNotification('Введите никнейм для проверки статуса!', false);
-        return;
-      }
-
-      const lastTime = (JSON.parse(localStorage.getItem('qaLastTimes')) || {})[nickname];
-      const question = questions.find(q => q.nickname === nickname && q.date === lastTime);
-      if (question) {
-        showNotification(`Статус вопроса "${question.text}": ${question.approved ? 'Одобрен' : 'Ожидает модерации'}`, question.approved);
-      } else {
-        showNotification('Вопрос с таким никнеймом не найден или ещё не обработан.', false');
-      }
-    });
-
-    if (isDevMode) {
-      console.log('Тестовая команда доступна: resetLimit() — сбросить дневной лимит. Удалите после тестирования!');
-      window.resetLimit = function() {
-        const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
-        delete dailyStats[new Date().toLocaleDateString()];
-        localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
-        checkDailyLimit();
-        console.log('Дневной лимит сброшен!');
-        showNotification('Дневной лимит сброшен для тестирования.', true);
-      };
-    }
-
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
-
-    checkDailyLimit();
-    renderQuestions(questions);
-  </script>
-
+  <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
   <style>
     .glass-button { 
       background: rgba(255, 255, 255, 0.15); 
@@ -400,11 +21,6 @@
     .glass-button:hover { 
       background: rgba(255, 255, 255, 0.25); 
       transform: scale(1.05); 
-    }
-    .glass-button:disabled { 
-      background: rgba(255, 255, 255, 0.05); 
-      cursor: not-allowed; 
-      opacity: 0.6; 
     }
     .dark .glass-button { 
       background: rgba(50, 50, 50, 0.15); 
@@ -471,5 +87,422 @@
       cursor: pointer;
     }
   </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100">
+  <div class="mx-auto max-w-7xl px-4 py-16">
+    <!-- Кнопка "Вернуться на сайт" в шапке -->
+    <div class="text-right mb-4">
+      <a href="/index.html" class="glass-button">Вернуться на сайт</a>
+    </div>
+
+    <h1 class="text-3xl font-bold text-center text-slate-900 dark:text-white">Q&A с Mortis Play</h1>
+    <p class="mt-4 text-center text-slate-600 dark:text-slate-300">Задавай вопросы — лучшие попадут в раздел после модерации!</p>
+
+    <!-- Форма -->
+    <div class="mt-8 max-w-lg mx-auto fade-in" id="qaFormContainer">
+      <form id="qaForm">
+        <input type="text" name="nickname" id="nicknameInput" placeholder="Ваш никнейм" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">
+        <textarea name="question" id="questionInput" placeholder="Ваш вопрос" required class="w-full p-2 mb-2 border rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200"></textarea>
+        <button type="submit" class="glass-button">Отправить</button>
+        <div id="questionLimit" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300"></div>
+        <div id="submitStatus" class="mt-2 text-center"></div>
+      </form>
+    </div>
+
+    <!-- Панель модерации -->
+    <div id="moderationPanel" class="mt-8 max-w-lg mx-auto fade-in hidden">
+      <h2 class="text-xl font-semibold text-center text-slate-900 dark:text-white">Модерация вопросов <span id="pendingCount" class="blink text-red-500"></span></h2>
+      <div class="text-center mb-2 text-sm text-slate-600 dark:text-slate-300" id="questionStats"></div>
+      <ul id="pendingQuestions" class="mt-4 space-y-2"></ul>
+      <button id="clearApproved" class="glass-button mt-4 w-full">Очистить одобренные</button>
+    </div>
+
+    <!-- Список одобренных вопросов -->
+    <div id="qaList" class="mt-12 space-y-4 fade-in">
+      <div class="text-right mb-2">
+        <button id="sortToggle" class="glass-button text-xs px-2 py-1">Сортировать: Новые сверху</button>
+      </div>
+    </div>
+
+    <!-- Уведомление для пользователя -->
+    <div id="userNotification" class="notification">
+      <span id="notificationMessage"></span>
+      <span class="notification-close" onclick="this.parentElement.style.display='none'">×</span>
+    </div>
+  </div>
+
+  <script>
+    const isDevMode = new URLSearchParams(window.location.search).get('dev') === 'true';
+    if (isDevMode) document.getElementById('moderationPanel').style.display = 'block';
+
+    // Инициализация IndexedDB
+    let db;
+    const request = indexedDB.open('QAStore', 1);
+
+    request.onupgradeneeded = (event) => {
+      db = event.target.result;
+      db.createObjectStore('questions', { keyPath: 'id', autoIncrement: true });
+    };
+
+    request.onsuccess = (event) => {
+      db = event.target.result;
+      loadQuestions();
+    };
+
+    request.onerror = (event) => {
+      console.error('Ошибка открытия IndexedDB:', event.target.error);
+      fallbackToLocalStorage();
+    };
+
+    // Резервный вариант с localStorage
+    function fallbackToLocalStorage() {
+      let questions = JSON.parse(localStorage.getItem('qaQuestions')) || [];
+      renderQuestions(questions);
+    }
+
+    // Загрузка вопросов
+    function loadQuestions() {
+      const transaction = db.transaction(['questions'], 'readonly');
+      const store = transaction.objectStore('questions');
+      const request = store.getAll();
+
+      request.onsuccess = () => {
+        const questions = request.result;
+        const now = new Date();
+        const filteredQuestions = questions.filter(q => (now - new Date(q.date)) < (30 * 24 * 60 * 60 * 1000));
+        renderQuestions(filteredQuestions);
+        if (isDevMode) updateQuestionStats(filteredQuestions);
+      };
+    }
+
+    // Сохранение вопроса
+    function saveQuestion(question) {
+      const transaction = db.transaction(['questions'], 'readwrite');
+      const store = transaction.objectStore('questions');
+      store.add(question);
+
+      transaction.oncomplete = () => {
+        loadQuestions();
+      };
+    }
+
+    // Удаление вопроса
+    function deleteQuestion(id) {
+      const transaction = db.transaction(['questions'], 'readwrite');
+      const store = transaction.objectStore('questions');
+      store.delete(id);
+
+      transaction.oncomplete = () => {
+        loadQuestions();
+      };
+    }
+
+    const dailyLimit = 5;
+    const blackList = [
+      'мат', 'оскорбление', 'спам', 'бот', 'чёрт', 'дурак', 'пидор', 'сука', 'бля', 'хуй',
+      'реклама', 'купить', 'заработок', 'порно', 'xxx', 'вирус', 'hack', 'free', 'click',
+      'shit', 'fuck', 'ass', 'damn', 'crap', 'botnet', 'phishing', 'scam', 'link'
+    ];
+
+    // Элементы интерфейса
+    const questionLimit = document.getElementById('questionLimit');
+    const pendingCount = document.getElementById('pendingCount');
+    const userNotification = document.getElementById('userNotification');
+    const notificationMessage = document.getElementById('notificationMessage');
+    let timerElement = null;
+    let sortNewest = true;
+
+    // Усиленная валидация
+    function validateInput(nickname, question) {
+      if (nickname.length < 3 || nickname.length > 20) return 'Никнейм должен быть от 3 до 20 символов!';
+      if (question.length < 10 || question.length > 200) return 'Вопрос должен быть от 10 до 200 символов!';
+      if (blackList.some(word => nickname.toLowerCase().includes(word) || question.toLowerCase().includes(word))) {
+        return 'Сообщение содержит запрещённые слова!';
+      }
+      const words = question.trim().split(/\s+/);
+      if (words.length < 2) return 'Вопрос должен содержать минимум 2 слова!';
+      if (words.some(w => w.length < 4 || /(.)\1{2,}/.test(w) || !/[a-zа-яё0-9]/i.test(w))) {
+        return 'Вопрос должен содержать осмысленные слова (без повторов символов или случайных символов)!';
+      }
+      return null;
+    }
+
+    // Проверка дневного лимита и таймер сброса
+    function checkDailyLimit() {
+      const today = new Date().toLocaleDateString();
+      let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+      const todayCount = dailyStats[today] || 0;
+      const remaining = dailyLimit - todayCount;
+      questionLimit.textContent = `Осталось: ${remaining} из ${dailyLimit}`;
+
+      if (todayCount >= dailyLimit && !timerElement) {
+        const resetText = document.createElement('span');
+        resetText.textContent = ' Сброс через: ';
+        timerElement = document.createElement('span');
+        timerElement.id = 'timer';
+        timerElement.style.marginLeft = '5px';
+        questionLimit.appendChild(resetText);
+        questionLimit.appendChild(timerElement);
+        const now = new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(now.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);
+        const timeLeft = Math.floor((tomorrow - now) / 1000);
+        updateTimer(timeLeft);
+      } else if (todayCount < dailyLimit && timerElement) {
+        if (timerElement.parentNode) {
+          const resetText = timerElement.previousSibling;
+          if (resetText && resetText.textContent === ' Сброс через: ') {
+            questionLimit.removeChild(resetText);
+          }
+          questionLimit.removeChild(timerElement);
+        }
+        timerElement = null;
+      }
+
+      dailyStats[today] = todayCount;
+      localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
+      return null;
+    }
+
+    // Обновление таймера
+    function updateTimer(seconds) {
+      if (!timerElement) return;
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = seconds % 60;
+      timerElement.textContent = `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      if (seconds > 0) setTimeout(() => updateTimer(seconds - 1), 1000);
+      else {
+        const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+        delete dailyStats[new Date().toLocaleDateString()];
+        localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
+        if (timerElement.parentNode) {
+          const resetText = timerElement.previousSibling;
+          if (resetText && resetText.textContent === ' Сброс через: ') {
+            questionLimit.removeChild(resetText);
+          }
+          questionLimit.removeChild(timerElement);
+        }
+        timerElement = null;
+        checkDailyLimit();
+      }
+    }
+
+    // Показ уведомления пользователю
+    function showNotification(message, isSuccess = true) {
+      notificationMessage.textContent = message;
+      userNotification.className = 'notification ' + (isSuccess ? 'bg-green-600' : 'bg-red-600');
+      userNotification.style.display = 'block';
+    }
+
+    // Обработка формы
+    document.getElementById('qaForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const nickname = document.getElementById('nicknameInput').value.trim();
+      const question = document.getElementById('questionInput').value.trim();
+      const date = new Date().toISOString();
+      const submitStatus = document.getElementById('submitStatus');
+
+      const validationError = validateInput(nickname, question);
+      if (validationError) {
+        submitStatus.textContent = validationError;
+        submitStatus.classList.add('error-message');
+        showNotification(validationError, false);
+        return;
+      }
+
+      const limitError = checkDailyLimit();
+      if (limitError) {
+        submitStatus.textContent = 'Достигнут лимит в 5 вопросов за день!';
+        submitStatus.classList.add('error-message');
+        showNotification('Достигнут лимит вопросов за день!', false);
+        return;
+      }
+
+      const today = new Date().toLocaleDateString();
+      let dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+      if (dailyStats[today] >= dailyLimit) {
+        submitStatus.textContent = 'Достигнут лимит в 5 вопросов за день!';
+        submitStatus.classList.add('error-message');
+        showNotification('Достигнут лимит вопросов за день!', false);
+        return;
+      }
+      dailyStats[today] = (dailyStats[today] || 0) + 1;
+      localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
+
+      submitStatus.textContent = 'Отправка...';
+      submitStatus.classList.remove('success-message', 'error-message');
+
+      const newQuestion = { nickname, text: question, date, approved: false };
+      saveQuestion(newQuestion);
+
+      submitStatus.textContent = 'Вопрос отправлен!';
+      submitStatus.classList.add('success-message');
+      showNotification('Вопрос отправлен на модерацию!', true);
+      form.reset();
+
+      addQuestionToList(newQuestion.nickname, newQuestion.text, newQuestion.date);
+      if (isDevMode) updatePendingQuestions();
+    });
+
+    // Добавление вопроса в список с анимацией
+    function addQuestionToList(nickname, question, date) {
+      const qaList = document.getElementById('qaList');
+      const div = document.createElement('div');
+      div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow question-slide';
+      div.innerHTML = `<p class="question-text">${nickname}: ${question} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(date).toLocaleString('ru-RU')})</span></p>`;
+      qaList.insertBefore(div, qaList.firstChild);
+      setTimeout(() => div.classList.add('is-visible'), 10);
+    }
+
+    // Обновление списка одобренных вопросов
+    function renderQuestions(questionsList) {
+      const qaList = document.getElementById('qaList');
+      qaList.innerHTML = '';
+      let sortedQuestions = [...questionsList].sort((a, b) => {
+        return sortNewest ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
+      });
+      const approvedQuestions = sortedQuestions.filter(q => q.approved);
+      if (approvedQuestions.length > 0) {
+        approvedQuestions.forEach(q => {
+          const div = document.createElement('div');
+          div.className = 'p-4 bg-white dark:bg-slate-800 rounded-lg shadow question-slide';
+          div.innerHTML = `<p class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></p>`;
+          qaList.appendChild(div);
+          setTimeout(() => div.classList.add('is-visible'), 10);
+        });
+      } else {
+        qaList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Пока одобренных вопросов нет — ждём модерацию!</p>';
+      }
+      if (isDevMode) updatePendingQuestions();
+    }
+
+    // Обновление списка ожидающих вопросов и счётчика
+    function updatePendingQuestions() {
+      if (!isDevMode) return;
+      const pendingList = document.getElementById('pendingQuestions');
+      pendingList.innerHTML = '';
+      const transaction = db.transaction(['questions'], 'readonly');
+      const store = transaction.objectStore('questions');
+      const request = store.getAll();
+
+      request.onsuccess = () => {
+        const pendingQuestions = request.result.filter(q => !q.approved);
+        pendingCount.textContent = pendingQuestions.length > 0 ? `(Ожидает: ${pendingQuestions.length})` : '';
+        if (pendingQuestions.length > 0) {
+          pendingQuestions.forEach((q, index) => {
+            const li = document.createElement('li');
+            li.className = 'p-2 bg-gray-100 dark:bg-gray-700 rounded';
+            li.innerHTML = `<div class="flex justify-between items-center">
+                <span class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></span>
+                <div>
+                    <button class="glass-button text-xs px-2 py-1 mr-2" onclick="approveQuestion(${q.id})">Одобрить</button>
+                    <button class="glass-button text-xs px-2 py-1" onclick="rejectQuestion(${q.id})">Отклонить</button>
+                </div>
+            </div>`;
+            pendingList.appendChild(li);
+          });
+        } else {
+          pendingList.innerHTML = '<p class="text-center text-slate-600 dark:text-slate-300">Все вопросы одобрены или ещё не отправлены.</p>';
+        }
+      };
+    }
+
+    // Обновление статистики вопросов
+    function updateQuestionStats(questions) {
+      const total = questions.length;
+      const approved = questions.filter(q => q.approved).length;
+      const pending = questions.filter(q => !q.approved).length;
+      document.getElementById('questionStats').textContent = `Всего: ${total}, Одобрено: ${approved}, Ожидает: ${pending}`;
+    }
+
+    // Одобрение вопроса
+    function approveQuestion(id) {
+      const transaction = db.transaction(['questions'], 'readwrite');
+      const store = transaction.objectStore('questions');
+      const request = store.get(id);
+
+      request.onsuccess = () => {
+        const question = request.result;
+        question.approved = true;
+        store.put(question);
+
+        transaction.oncomplete = () => {
+          loadQuestions();
+          showNotification(`Вопрос "${question.text}" одобрен!`, true);
+        };
+      };
+    }
+
+    // Отклонение вопроса
+    function rejectQuestion(id) {
+      const transaction = db.transaction(['questions'], 'readwrite');
+      const store = transaction.objectStore('questions');
+      const request = store.get(id);
+
+      request.onsuccess = () => {
+        const question = request.result;
+        store.delete(id);
+
+        transaction.oncomplete = () => {
+          loadQuestions();
+          showNotification(`Вопрос "${question.text}" отклонён.`, false);
+        };
+      };
+    }
+
+    // Очистка одобренных вопросов
+    document.getElementById('clearApproved')?.addEventListener('click', () => {
+      const transaction = db.transaction(['questions'], 'readwrite');
+      const store = transaction.objectStore('questions');
+      const request = store.getAll();
+
+      request.onsuccess = () => {
+        request.result.forEach(q => {
+          if (q.approved) store.delete(q.id);
+        });
+
+        transaction.oncomplete = () => {
+          loadQuestions();
+        };
+      };
+    });
+
+    // Переключение сортировки
+    document.getElementById('sortToggle')?.addEventListener('click', () => {
+      sortNewest = !sortNewest;
+      document.getElementById('sortToggle').textContent = `Сортировать: ${sortNewest ? 'Новые сверху' : 'Старые сверху'}`;
+      loadQuestions();
+    });
+
+    // Консольная команда для сброса лимита (только для теста)
+    if (isDevMode) {
+      console.log('Тестовая команда доступна: resetLimit() — сбросить дневной лимит. Удалите после тестирования!');
+      window.resetLimit = function() {
+        if (!isDevMode) {
+          console.warn('Команда доступна только в режиме разработчика!');
+          return;
+        }
+        const dailyStats = JSON.parse(localStorage.getItem('qaDailyStats')) || {};
+        delete dailyStats[new Date().toLocaleDateString()];
+        localStorage.setItem('qaDailyStats', JSON.stringify(dailyStats));
+        checkDailyLimit();
+        console.log('Дневной лимит сброшен!');
+        showNotification('Дневной лимит сброшен для тестирования.', true);
+      };
+    }
+
+    // Анимация появления
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+    // Инициализация
+    checkDailyLimit();
+    if (db) renderQuestions([]);
+  </script>
 </body>
 </html>
