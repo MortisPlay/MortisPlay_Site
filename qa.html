@@ -144,8 +144,10 @@
 
     request.onupgradeneeded = (event) => {
       db = event.target.result;
-      const store = db.createObjectStore('questions', { keyPath: 'id', autoIncrement: true });
-      store.createIndex('byDate', 'date', { unique: false });
+      if (!db.objectStoreNames.contains('questions')) {
+        const store = db.createObjectStore('questions', { keyPath: 'id', autoIncrement: true });
+        store.createIndex('byDate', 'date', { unique: false });
+      }
     };
 
     request.onsuccess = (event) => {
@@ -166,8 +168,8 @@
 
     // Проверка доступности базы перед операцией
     function withDB(callback) {
-      if (!db || db.objectStoreNames.length === 0) {
-        console.warn('База данных не инициализирована, пытаемся переоткрыть');
+      if (!db || db.objectStoreNames.length === 0 || db.connection.readyState !== 'open') {
+        console.warn('База данных не готова, пытаемся переоткрыть');
         const retryRequest = indexedDB.open('QAStore', 2);
         retryRequest.onsuccess = (event) => {
           db = event.target.result;
