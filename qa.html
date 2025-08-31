@@ -468,13 +468,15 @@
       let sortedQuestions = [...questionsList].sort((a, b) => {
         return sortNewest ? new Date(b.date) - new Date(a.date) : new Date(a.date) - new Date(b.date);
       });
+      console.log('Отфильтрованные и отсортированные вопросы:', sortedQuestions); // Новый лог
       if (sortedQuestions.length > 0) {
         sortedQuestions.forEach(q => {
+          console.log('Обработка вопроса:', q); // Детальный лог для каждого объекта
           const div = document.createElement('div');
           div.className = `p-4 rounded-lg shadow question-slide ${q.approved ? 'approved' : 'pending'}`;
           div.innerHTML = `
             <p class="question-text">${q.nickname}: ${q.text} <span class="text-xs text-slate-500 dark:text-slate-400">(${new Date(q.date).toLocaleString('ru-RU')})</span></p>
-            ${q.answer ? (console.log('Отображаем ответ:', q.answer), `<div class="comment-section"><strong>Ответ:</strong> ${q.answer}</div>`) : ''}
+            ${q.answer ? (console.log('Проверка ответа:', q.answer), `<div class="comment-section"><strong>Ответ:</strong> ${q.answer}</div>`) : ''}
           `;
           qaList.appendChild(div);
           setTimeout(() => div.classList.add('is-visible'), 10);
