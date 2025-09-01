@@ -406,8 +406,14 @@
     </div>
   </div>
 
-  <!-- Скрипты -->
+    <!-- Скрипты -->
   <script nonce="${nonce}">
+  // Функция логирования (без вывода в консоль)
+  const logAction = (message) => {
+    // Лог сохраняется только локально, не выводится
+    console.log = () => {}; // Блокируем консоль для всех
+  };
+
   // Автоматическая тема
   const root = document.documentElement;
   const setTheme = (theme) => {
@@ -420,12 +426,6 @@
   else if (window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
   else setTheme('light');
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => setTheme(e.matches ? 'dark' : 'light'));
-
-  // Функция логирования (без вывода в консоль)
-  const logAction = (message) => {
-    // Лог сохраняется только локально, не выводится
-    console.log = () => {}; // Блокируем консоль для всех
-  };
 
   // Создание модального окна для ввода токена
   const createDevModal = () => {
@@ -547,9 +547,7 @@
       { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
       { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK' },
       { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: 'Новый эпичный стрим' },
-      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: 'Обзор новой игры' },
-      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_3/', title: 'Эксклюзивный вайб' },
-      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_4/', title: 'Секретный челлендж' }
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: 'Обзор новой игры' }
     ];
     videoData.forEach(v => {
       const node = tpl.content.cloneNode(true);
@@ -575,7 +573,7 @@
         loader.style.display = 'none';
         site.classList.remove('hidden');
         logAction('Лоадер скрыт');
-      }, { once: true }); // Убеждаемся, что слушатель вызывается один раз
+      }, { once: true });
     }
   });
 
