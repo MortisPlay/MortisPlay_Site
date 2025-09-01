@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mortis Play - Режим разработчика</title>
+  <title>Mortis Play - Панель разработчика</title>
   <style>
     body {
       margin: 0;
@@ -35,7 +35,7 @@
     #loginModal .modal-content {
       background: linear-gradient(135deg, rgba(0, 80, 160, 0.2), rgba(0, 80, 160, 0.1));
       backdrop-filter: blur(15px);
-      border: 1px solid rgba(0, 80, 160, 0.4);
+      border: 1px solid #00ff00;
       border-radius: 1rem;
       padding: 2rem;
       width: 100%;
@@ -75,9 +75,9 @@
       width: 100%;
       padding: 0.75rem;
       margin: 0.75rem 0;
-      border: 1px solid rgba(0, 80, 160, 0.4);
+      border: 1px solid #00ff00;
       border-radius: 0.5rem;
-      background: rgba(255, 255, 255, 0.1);
+      background: #333;
       color: #e0e0e0;
       transition: border-color 0.3s ease;
     }
@@ -94,7 +94,7 @@
       padding: 0.75rem;
       border-radius: 0.5rem;
       background: rgba(0, 80, 160, 0.3);
-      border: none;
+      border: 1px solid #00ff00;
       color: #00ff00;
       transition: background 0.3s ease;
     }
@@ -108,7 +108,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      display: none; /* Скрыто до авторизации */
     }
     .dev-header h1 {
       margin: 0;
@@ -136,7 +135,6 @@
       padding: 2rem;
       max-width: 1200px;
       margin: 0 auto;
-      display: none; /* Скрыто до авторизации */
     }
     .log-panel {
       background: #222;
@@ -165,7 +163,7 @@
   </style>
 </head>
 <body>
-  <div id="loginModal" class="active">
+  <div id="loginModal">
     <div class="modal-content">
       <h3>Вход в режим разработчика</h3>
       <div class="tab-buttons">
@@ -218,6 +216,15 @@
     let attemptCount = parseInt(localStorage.getItem('devAttempts') || '0');
     let isOnline = false;
 
+    // Проверка параметра dev=true
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('dev') === 'true') {
+      loginModal.classList.add('active');
+    } else {
+      devHeader.style.display = 'none';
+      devContent.style.display = 'none';
+    }
+
     // Переключение вкладок
     document.querySelectorAll('.tab-buttons button').forEach(button => {
       button.addEventListener('click', () => {
@@ -230,7 +237,7 @@
 
     // Проверка токена
     const validateToken = (inputToken) => {
-      const secretKey = '347870420525'; // Твой секретный ключ (измени на свой!)
+      const secretKey = '347870420525'; // Твой секретный ключ
       const encodedToken = btoa(secretKey);
       const decodedToken = atob(encodedToken);
       return inputToken === decodedToken;
@@ -285,8 +292,7 @@
     if (blockUntil && Date.now() < blockUntil) {
       loginModal.classList.remove('active');
       alert('Доступ заблокирован. Подождите 5 минут.');
-    } else if (localStorage.getItem('devMode') === 'true') {
-      loginModal.classList.remove('active');
+    } else if (localStorage.getItem('devMode') === 'true' && !urlParams.get('dev')) {
       devHeader.style.display = 'flex';
       devContent.style.display = 'block';
       log('Режим разработчика активирован автоматически');
