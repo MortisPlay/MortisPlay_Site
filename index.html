@@ -448,8 +448,8 @@
   // Секретная проверка токена (твой токен зашифрован здесь)
   const validateToken = (inputToken) => {
     const secretKey = '347870420525'; // Твой секретный ключ (измени на свой!)
-    const encodedToken = btoa(secretKey);
-    const decodedToken = atob(encodedToken);
+    const encodedToken = btoa(secretKey); // Кодируем ключ
+    const decodedToken = atob(encodedToken); // Декодируем для проверки
     return inputToken === decodedToken;
   };
 
@@ -468,7 +468,19 @@
         if (validateToken(token)) {
           localStorage.setItem('devMode', 'true');
           modal.remove();
-          window.location.href = 'dev.html'
+          // Проверяем наличие dev.html и переходим
+          const devPath = 'dev.html'; // Убедись, что путь верный
+          fetch(devPath)
+            .then(response => {
+              if (response.ok) {
+                window.location.href = devPath;
+              } else {
+                alert('Файл dev.html не найден. Проверь путь!');
+              }
+            })
+            .catch(() => {
+              alert('Ошибка доступа к dev.html. Убедись, что файл существует!');
+            });
         } else {
           attemptCount++;
           localStorage.setItem('devAttempts', attemptCount);
@@ -587,6 +599,6 @@
       site.classList.remove('hidden');
     }
   }, 5000);
-  </script>
+</script>
 </body>
 </html>
