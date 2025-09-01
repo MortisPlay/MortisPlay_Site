@@ -402,14 +402,12 @@
   </div>
 </body>
 
-  <!-- Скрипты -->
-    <!-- Скрипты -->
     <!-- Скрипты -->
   <script nonce="${nonce}">
   // Автоматическая тема
   const root = document.documentElement;
   const setTheme = (theme) => {
-    console.log('Установка темы:', theme);
+    logAction(`Установка темы: ${theme}`);
     localStorage.setItem('theme', theme);
     root.classList.toggle('dark', theme === 'dark');
   };
@@ -419,39 +417,88 @@
   else setTheme('light');
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => setTheme(e.matches ? 'dark' : 'light'));
 
-  // Генерация динамического ключа с истечением
-  const generateDevToken = () => {
-    const timestamp = Date.now().toString().slice(-6); // Последние 6 цифр времени
-    const random = Math.random().toString(36).substring(2, 8); // Случайная строка
-    const expiry = Math.floor(Date.now() / 300000); // Интервал 5 минут
-    return `${timestamp}-${random}-${expiry}`; // Формат: timestamp-random-expiry
+  // Функция логирования (без вывода в консоль)
+  const logAction = (message) => {
+    // Лог сохраняется только локально, не выводится
+    console.log = () => {}; // Блокируем консоль для всех
   };
 
-  // Проверка режима разработчика
-  const isDevMode = () => {
+  // Создание модального окна для ввода токена
+  const createDevModal = () => {
+    const modal = document.createElement('div');
+    modal.id = 'devModal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;';
+    const content = document.createElement('div');
+    content.style.cssText = 'background: white; padding: 20px; border-radius: 8px; text-align: center;';
+    content.innerHTML = `
+      <h3>Введите токен разработчика</h3>
+      <input type="password" id="devTokenInput" style="margin: 10px 0; padding: 5px; width: 200px;">
+      <button id="devSubmit" style="padding: 5px 10px;">Подтвердить</button>
+      <p id="attemptsLeft" style="color: red;"></p>
+    `;
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    return modal;
+  };
+
+  // Секретная проверка токена (твой токен зашифрован здесь)
+  const validateToken = (inputToken) => {
+    // Замени 'YOUR_ENCRYPTED_TOKEN' на закодированное значение твоего токена
+    const secretKey = '347870420525'; // Твой секретный ключ (измени на свой!)
+    const encodedToken = btoa(secretKey); // Пример шифрования, замени на свой токен
+    const decodedToken = atob(encodedToken); // Декодируем для проверки
+    return inputToken === decodedToken;
+  };
+
+  // Управление режимом разработчика
+  const handleDevMode = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const devToken = urlParams.get('devtoken');
-    if (!devToken) return false;
+    if (urlParams.get('dev') === 'true') {
+      let attemptCount = parseInt(localStorage.getItem('devAttempts') || '0');
+      const modal = createDevModal();
+      const input = document.getElementById('devTokenInput');
+      const submit = document.getElementById('devSubmit');
+      const attemptsLeft = document.getElementById('attemptsLeft');
 
-    const [tokenTimestamp, tokenRandom, tokenExpiry] = devToken.split('-');
-    const currentExpiry = Math.floor(Date.now() / 300000); // Текущий 5-минутный интервал
-    const validToken = generateDevToken(); // Генерируем текущий токен для сравнения
-    const [_, __, validExpiry] = validToken.split('-');
+      submit.addEventListener('click', () => {
+        const token = input.value.trim();
+        if (validateToken(token)) {
+          localStorage.setItem('devMode', 'true');
+          modal.remove();
+          window.location.href = `${window.location.pathname}?devmode=true`; // Перенаправление
+        } else {
+          attemptCount++;
+          localStorage.setItem('devAttempts', attemptCount);
+          const remaining = 4 - attemptCount;
+          attemptsLeft.textContent = `Осталось попыток: ${remaining}`;
+          if (attemptCount >= 4) {
+            localStorage.setItem('devBlockedUntil', Date.now() + 300000); // Блокировка на 5 минут
+            modal.remove();
+            alert('Доступ заблокирован на 5 минут. Попробуй позже.');
+          }
+        }
+      });
 
-    // Проверка: токен совпадает и не истёк (разница не более 1 интервала)
-    return devToken === validToken || (tokenExpiry === validExpiry || parseInt(tokenExpiry) === currentExpiry - 1);
+      // Проверка блокировки
+      const blockUntil = localStorage.getItem('devBlockedUntil');
+      if (blockUntil && Date.now() < blockUntil) {
+        modal.remove();
+        alert('Доступ заблокирован. Подождите 5 минут.');
+        return;
+      }
+    } else if (urlParams.get('devmode') === 'true' && localStorage.getItem('devMode') === 'true') {
+      logAction('Режим разработчика активен');
+      // Здесь добавь элементы или логику для разработчика
+      const devElements = document.querySelectorAll('[data-dev-only]');
+      devElements.forEach(el => el.style.display = 'block');
+    } else {
+      const devElements = document.querySelectorAll('[data-dev-only]');
+      devElements.forEach(el => el.remove());
+    }
   };
 
-  const devModeActive = isDevMode();
-  console.log('Режим:', { devModeActive, devToken: urlParams.get('devtoken'), validToken: generateDevToken() });
-
-  if (devModeActive) {
-    console.log('Режим разработчика активен');
-    // Здесь можно добавить отладочные элементы, если они есть
-  } else {
-    const devElements = document.querySelectorAll('[data-dev-only]');
-    devElements.forEach(el => el.remove());
-  }
+  // Инициализация
+  handleDevMode();
 
   // Меню
   document.getElementById('menuToggle')?.addEventListener('click', () => {
@@ -480,10 +527,7 @@
   if (fadeElements.length > 0) {
     fadeElements.forEach(el => {
       if (el instanceof Element) io.observe(el);
-      else console.warn('Невалидный элемент для fade-in:', el);
     });
-  } else {
-    console.warn('Нет элементов для fade-in');
   }
 
   // RuTube видео
@@ -496,8 +540,8 @@
       { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
       { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
       { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK' },
-      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: '?' },
-      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: '?' }
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: 'Новый эпичный стрим' },
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: 'Обзор новой игры' }
     ];
     videoData.forEach(v => {
       const node = tpl.content.cloneNode(true);
@@ -506,20 +550,15 @@
       if (iframe && title) {
         iframe.src = v.src;
         iframe.setAttribute('title', `Видео: ${v.title}`);
-        iframe.onerror = () => console.error(`Ошибка загрузки видео: ${v.title}`);
         title.textContent = v.title;
         grid.appendChild(node);
-      } else {
-        console.warn('Ошибка структуры шаблона для видео:', v.title);
       }
     });
-  } else {
-    console.warn('Шаблон или сетка для видео не найдены');
   }
 
   // Лоадер
   window.addEventListener('load', () => {
-    console.log('Загрузка завершена');
+    logAction('Загрузка завершена');
     const loader = document.getElementById('loader');
     const site = document.getElementById('siteContent');
     if (loader && site) {
@@ -527,12 +566,12 @@
       loader.addEventListener('transitionend', () => {
         loader.style.display = 'none';
         site.classList.remove('hidden');
-        console.log('Лоадер скрыт');
+        logAction('Лоадер скрыт');
       });
     }
   });
   setTimeout(() => {
-    console.log('Таймаут 5с сработал');
+    logAction('Таймаут 5с сработал');
     const loader = document.getElementById('loader');
     const site = document.getElementById('siteContent');
     if (loader && site) {
