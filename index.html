@@ -403,6 +403,7 @@
 </body>
 
   <!-- Скрипты -->
+    <!-- Скрипты -->
   <script nonce="${nonce}">
   // Автоматическая тема
   const root = document.documentElement;
@@ -417,13 +418,23 @@
   else setTheme('light');
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => setTheme(e.matches ? 'dark' : 'light'));
 
-  // Режим разработчика с защитой
+  // Генерация динамического ключа
+  const generateDevToken = () => {
+    const timestamp = Date.now().toString().slice(-6); // Берем последние 6 цифр времени
+    const random = Math.random().toString(36).substring(2, 8); // Случайная строка
+    return `${timestamp}-${random}`; // Динамический токен
+  };
+
+  // Проверка режима разработчика
   const urlParams = new URLSearchParams(window.location.search);
-  const devKey = urlParams.get('devkey'); // Добавляем параметр devkey
-  const isDevMode = devKey === 'YOUR_SECRET_KEY'; // Замени на уникальный ключ
-  console.log('Режим:', { isDevMode, devKey });
+  const devToken = urlParams.get('devtoken');
+  const validToken = generateDevToken();
+  const isDevMode = devToken === validToken && devToken; // Проверка на совпадение токена
+  console.log('Режим:', { isDevMode, devToken, validToken });
+
   if (isDevMode) {
     console.log('Режим разработчика активен');
+    // Здесь можно добавить отладочные элементы, если они есть
   } else {
     const devElements = document.querySelectorAll('[data-dev-only]');
     devElements.forEach(el => el.remove());
@@ -472,8 +483,8 @@
       { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
       { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
       { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK' },
-      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: 'Новый эпичный стрим' }, // Добавлено видео
-      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: 'Обзор новой игры' }  // Добавлено видео
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: 'Новый эпичный стрим' },
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: 'Обзор новой игры' }
     ];
     videoData.forEach(v => {
       const node = tpl.content.cloneNode(true);
