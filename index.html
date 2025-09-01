@@ -404,6 +404,7 @@
 
   <!-- Скрипты -->
     <!-- Скрипты -->
+    <!-- Скрипты -->
   <script nonce="${nonce}">
   // Автоматическая тема
   const root = document.documentElement;
@@ -418,21 +419,33 @@
   else setTheme('light');
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => setTheme(e.matches ? 'dark' : 'light'));
 
-  // Генерация динамического ключа
+  // Генерация динамического ключа с истечением
   const generateDevToken = () => {
-    const timestamp = Date.now().toString().slice(-6); // Берем последние 6 цифр времени
+    const timestamp = Date.now().toString().slice(-6); // Последние 6 цифр времени
     const random = Math.random().toString(36).substring(2, 8); // Случайная строка
-    return `${timestamp}-${random}`; // Динамический токен
+    const expiry = Math.floor(Date.now() / 300000); // Интервал 5 минут
+    return `${timestamp}-${random}-${expiry}`; // Формат: timestamp-random-expiry
   };
 
   // Проверка режима разработчика
-  const urlParams = new URLSearchParams(window.location.search);
-  const devToken = urlParams.get('devtoken');
-  const validToken = generateDevToken();
-  const isDevMode = devToken === validToken && devToken; // Проверка на совпадение токена
-  console.log('Режим:', { isDevMode, devToken, validToken });
+  const isDevMode = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const devToken = urlParams.get('devtoken');
+    if (!devToken) return false;
 
-  if (isDevMode) {
+    const [tokenTimestamp, tokenRandom, tokenExpiry] = devToken.split('-');
+    const currentExpiry = Math.floor(Date.now() / 300000); // Текущий 5-минутный интервал
+    const validToken = generateDevToken(); // Генерируем текущий токен для сравнения
+    const [_, __, validExpiry] = validToken.split('-');
+
+    // Проверка: токен совпадает и не истёк (разница не более 1 интервала)
+    return devToken === validToken || (tokenExpiry === validExpiry || parseInt(tokenExpiry) === currentExpiry - 1);
+  };
+
+  const devModeActive = isDevMode();
+  console.log('Режим:', { devModeActive, devToken: urlParams.get('devtoken'), validToken: generateDevToken() });
+
+  if (devModeActive) {
     console.log('Режим разработчика активен');
     // Здесь можно добавить отладочные элементы, если они есть
   } else {
@@ -483,8 +496,8 @@
       { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
       { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
       { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK' },
-      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: 'Новый эпичный стрим' },
-      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: 'Обзор новой игры' }
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: '?' },
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: '?' }
     ];
     videoData.forEach(v => {
       const node = tpl.content.cloneNode(true);
