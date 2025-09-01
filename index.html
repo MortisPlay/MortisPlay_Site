@@ -468,7 +468,7 @@
         if (validateToken(token)) {
           localStorage.setItem('devMode', 'true');
           modal.remove();
-          window.location.href = `${window.location.pathname}?devmode=true`;
+          window.location.href = 'dev.html'
         } else {
           attemptCount++;
           localStorage.setItem('devAttempts', attemptCount);
