@@ -447,10 +447,9 @@
 
   // Секретная проверка токена (твой токен зашифрован здесь)
   const validateToken = (inputToken) => {
-    // Замени 'YOUR_ENCRYPTED_TOKEN' на закодированное значение твоего токена
     const secretKey = '347870420525'; // Твой секретный ключ (измени на свой!)
-    const encodedToken = btoa(secretKey); // Пример шифрования, замени на свой токен
-    const decodedToken = atob(encodedToken); // Декодируем для проверки
+    const encodedToken = btoa(secretKey);
+    const decodedToken = atob(encodedToken);
     return inputToken === decodedToken;
   };
 
@@ -469,30 +468,27 @@
         if (validateToken(token)) {
           localStorage.setItem('devMode', 'true');
           modal.remove();
-          window.location.href = `${window.location.pathname}?devmode=true`; // Перенаправление
+          window.location.href = `${window.location.pathname}?devmode=true`;
         } else {
           attemptCount++;
           localStorage.setItem('devAttempts', attemptCount);
           const remaining = 4 - attemptCount;
           attemptsLeft.textContent = `Осталось попыток: ${remaining}`;
           if (attemptCount >= 4) {
-            localStorage.setItem('devBlockedUntil', Date.now() + 300000); // Блокировка на 5 минут
+            localStorage.setItem('devBlockedUntil', Date.now() + 300000);
             modal.remove();
             alert('Доступ заблокирован на 5 минут. Попробуй позже.');
           }
         }
       });
 
-      // Проверка блокировки
       const blockUntil = localStorage.getItem('devBlockedUntil');
       if (blockUntil && Date.now() < blockUntil) {
         modal.remove();
         alert('Доступ заблокирован. Подождите 5 минут.');
-        return;
       }
     } else if (urlParams.get('devmode') === 'true' && localStorage.getItem('devMode') === 'true') {
       logAction('Режим разработчика активен');
-      // Здесь добавь элементы или логику для разработчика
       const devElements = document.querySelectorAll('[data-dev-only]');
       devElements.forEach(el => el.style.display = 'block');
     } else {
@@ -524,14 +520,20 @@
   // Fade-in с проверкой
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
-      if (e.isIntersecting) e.target.classList.add('is-visible');
+      if (e.isIntersecting) {
+        e.target.classList.add('is-visible');
+      }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.1, rootMargin: '0px' });
   const fadeElements = document.querySelectorAll('.fade-in, section');
   if (fadeElements.length > 0) {
     fadeElements.forEach(el => {
-      if (el instanceof Element) io.observe(el);
+      if (el instanceof Element) {
+        io.observe(el);
+      }
     });
+  } else {
+    logAction('Нет элементов для fade-in');
   }
 
   // RuTube видео
@@ -544,8 +546,10 @@
       { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
       { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
       { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK' },
-      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: '?' },
-      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: '?' }
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: 'Новый эпичный стрим' },
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: 'Обзор новой игры' },
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_3/', title: 'Эксклюзивный вайб' },
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_4/', title: 'Секретный челлендж' }
     ];
     videoData.forEach(v => {
       const node = tpl.content.cloneNode(true);
@@ -571,9 +575,11 @@
         loader.style.display = 'none';
         site.classList.remove('hidden');
         logAction('Лоадер скрыт');
-      });
+      }, { once: true }); // Убеждаемся, что слушатель вызывается один раз
     }
   });
+
+  // Таймаут как резервный вариант
   setTimeout(() => {
     logAction('Таймаут 5с сработал');
     const loader = document.getElementById('loader');
