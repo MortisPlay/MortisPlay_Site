@@ -299,6 +299,11 @@
             <p class="mt-2 text-sm opacity-90">К сожалению из за нестабильности раздела, мы убрали Q&A, но готовим крупные обновления! Следите за анонсами! 😎</p>
             <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 22 августа 2025</p>
           </article>
+          <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-purple-500 to-indigo-500">
+            <h3 class="text-lg font-semibold">Обновления на сайте!</h3>
+            <p class="mt-2 text-sm opacity-90">Привет, друзья! Несём свежие изменения: больше не будет версий сайта (как вы могли заметить по футеру), обновлён фон для нового вайба, убрали архив обновлений и раздел "Обновление", а также убрали разделы "Мемы" и "Клипы" для оптимизации ресурсов. FAQ стал ещё удобнее, а в разделе "Видео" добавили 2 новых ролика из канала (ожидайте их в будущем)! 😎</p>
+            <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 1 сентября 2025</p>
+          </article>
         </div>
       </div>
     </section>
@@ -363,10 +368,10 @@
           </details>
           <details class="group p-5">
             <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-              Как отключить тёмную тему?
+              Почему убрали разделы "Мемы" и "Клипы"?
               <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
             </summary>
-            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Перейди в настройки браузера и выбери светлую тему, или используй переключатель (появится в будущем).</div>
+            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Мы оптимизировали сайт, убрав эти разделы для повышения производительности.</div>
           </details>
         </div>
       </div>
@@ -400,9 +405,8 @@
       </div>
     </div>
   </div>
-</body>
 
-    <!-- Скрипты -->
+  <!-- Скрипты -->
   <script nonce="${nonce}">
   // Автоматическая тема
   const root = document.documentElement;
@@ -540,8 +544,8 @@
       { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
       { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
       { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK' },
-      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: 'Новый эпичный стрим' },
-      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: 'Обзор новой игры' }
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: '?' },
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: '?' }
     ];
     videoData.forEach(v => {
       const node = tpl.content.cloneNode(true);
@@ -580,4 +584,5 @@
     }
   }, 5000);
   </script>
+</body>
 </html>
