@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mortis Play - Режим разработчика</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      font-family: 'Courier New', monospace;
+      overflow-x: hidden;
+    }
+    .dev-header {
+      background: #0f0f0f;
+      padding: 1rem;
+      border-bottom: 2px solid #00ff00;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dev-header h1 {
+      margin: 0;
+      color: #00ff00;
+      text-shadow: 0 0 5px #00ff00;
+    }
+    .dev-tools {
+      display: flex;
+      gap: 1rem;
+    }
+    .dev-tools button {
+      background: #333;
+      border: 1px solid #00ff00;
+      color: #00ff00;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .dev-tools button:hover {
+      background: #00ff00;
+      color: #1a1a1a;
+      transform: scale(1.05);
+    }
+    .dev-content {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .log-panel {
+      background: #222;
+      padding: 1rem;
+      border: 1px solid #00ff00;
+      border-radius: 5px;
+      height: 400px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+    }
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      background: #ff0000;
+      border-radius: 50%;
+      display: inline-block;
+      animation: blink 1s infinite;
+    }
+    .status-indicator.online {
+      background: #00ff00;
+      animation: none;
+    }
+    @keyframes blink {
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dev-header">
+    <h1>Mortis Play Dev Mode</h1>
+    <div class="dev-tools">
+      <button onclick="log('Лог добавлен')">Добавить лог</button>
+      <button onclick="clearLog()">Очистить лог</button>
+      <button onclick="toggleStatus()">Переключить статус</button>
+    </div>
+  </div>
+  <div class="dev-content">
+    <h2>Панель управления</h2>
+    <div class="log-panel" id="logPanel">
+      <p>Система запущена. Ожидание действий...</p>
+    </div>
+    <p>Статус: <span class="status-indicator" id="statusIndicator"></span></p>
+  </div>
+
+  <script>
+    const logPanel = document.getElementById('logPanel');
+    const statusIndicator = document.getElementById('statusIndicator');
+    let isOnline = false;
+
+    function log(message) {
+      const p = document.createElement('p');
+      p.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logPanel.appendChild(p);
+      logPanel.scrollTop = logPanel.scrollHeight;
+    }
+
+    function clearLog() {
+      logPanel.innerHTML = '';
+      log('Лог очищен');
+    }
+
+    function toggleStatus() {
+      isOnline = !isOnline;
+      statusIndicator.className = 'status-indicator' + (isOnline ? ' online' : '');
+      log(`Статус изменён на: ${isOnline ? 'Онлайн' : 'Оффлайн'}`);
+    }
+
+    // Инициализация
+    log('Режим разработчика активирован');
+    statusIndicator.className = 'status-indicator';
+  </script>
+</body>
+</html>
