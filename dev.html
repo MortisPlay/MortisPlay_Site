@@ -13,6 +13,94 @@
       font-family: 'Courier New', monospace;
       overflow-x: hidden;
     }
+    #loginModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+    #loginModal.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    #loginModal .modal-content {
+      background: linear-gradient(135deg, rgba(0, 80, 160, 0.2), rgba(0, 80, 160, 0.1));
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(0, 80, 160, 0.4);
+      border-radius: 1rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 450px;
+      color: #00ff00;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      overflow-y: auto;
+      max-height: 80vh;
+    }
+    #loginModal .modal-content h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    #loginModal .modal-content .tab-buttons {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    #loginModal .modal-content .tab-buttons button {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: rgba(255, 255, 255, 0.2);
+      color: #00ff00;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    #loginModal .modal-content .tab-buttons button.active {
+      background: rgba(0, 80, 160, 0.3);
+    }
+    #loginModal .modal-content .tab-buttons button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    #loginModal .modal-content input {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.75rem 0;
+      border: 1px solid rgba(0, 80, 160, 0.4);
+      border-radius: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: #e0e0e0;
+      transition: border-color 0.3s ease;
+    }
+    #loginModal .modal-content input:focus {
+      border-color: rgba(0, 80, 160, 0.7);
+      outline: none;
+    }
+    #loginModal .modal-content input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    #loginModal .modal-content button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      background: rgba(0, 80, 160, 0.3);
+      border: none;
+      color: #00ff00;
+      transition: background 0.3s ease;
+    }
+    #loginModal .modal-content button:hover {
+      background: rgba(0, 80, 160, 0.5);
+    }
     .dev-header {
       background: #0f0f0f;
       padding: 1rem;
@@ -20,6 +108,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      display: none; /* Скрыто до авторизации */
     }
     .dev-header h1 {
       margin: 0;
@@ -47,6 +136,7 @@
       padding: 2rem;
       max-width: 1200px;
       margin: 0 auto;
+      display: none; /* Скрыто до авторизации */
     }
     .log-panel {
       background: #222;
@@ -75,6 +165,27 @@
   </style>
 </head>
 <body>
+  <div id="loginModal" class="active">
+    <div class="modal-content">
+      <h3>Вход в режим разработчика</h3>
+      <div class="tab-buttons">
+        <button class="active" data-tab="login">Вход</button>
+        <button data-tab="register">Регистрация</button>
+      </div>
+      <div class="tab-content">
+        <div id="loginTab" class="tab-pane active">
+          <input type="text" placeholder="Токен" id="loginToken" />
+          <button id="loginSubmit">Войти</button>
+        </div>
+        <div id="registerTab" class="tab-pane">
+          <input type="text" placeholder="Токен" id="registerToken" />
+          <button id="registerSubmit">Зарегистрироваться</button>
+        </div>
+      </div>
+      <p id="attemptsLeft" style="color: #ff0000;"></p>
+    </div>
+  </div>
+
   <div class="dev-header">
     <h1>Mortis Play Dev Mode</h1>
     <div class="dev-tools">
@@ -92,10 +203,96 @@
   </div>
 
   <script>
+    const loginModal = document.getElementById('loginModal');
+    const loginTab = document.getElementById('loginTab');
+    const registerTab = document.getElementById('registerTab');
+    const loginSubmit = document.getElementById('loginSubmit');
+    const registerSubmit = document.getElementById('registerSubmit');
+    const loginToken = document.getElementById('loginToken');
+    const registerToken = document.getElementById('registerToken');
+    const attemptsLeft = document.getElementById('attemptsLeft');
+    const devHeader = document.querySelector('.dev-header');
+    const devContent = document.querySelector('.dev-content');
     const logPanel = document.getElementById('logPanel');
     const statusIndicator = document.getElementById('statusIndicator');
+    let attemptCount = parseInt(localStorage.getItem('devAttempts') || '0');
     let isOnline = false;
 
+    // Переключение вкладок
+    document.querySelectorAll('.tab-buttons button').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelector('.tab-buttons .active').classList.remove('active');
+        button.classList.add('active');
+        document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(button.dataset.tab + 'Tab').classList.add('active');
+      });
+    });
+
+    // Проверка токена
+    const validateToken = (inputToken) => {
+      const secretKey = '347870420525'; // Твой секретный ключ (измени на свой!)
+      const encodedToken = btoa(secretKey);
+      const decodedToken = atob(encodedToken);
+      return inputToken === decodedToken;
+    };
+
+    // Обработчик логина
+    loginSubmit.addEventListener('click', () => {
+      const token = loginToken.value.trim();
+      if (validateToken(token)) {
+        localStorage.setItem('devMode', 'true');
+        loginModal.classList.remove('active');
+        devHeader.style.display = 'flex';
+        devContent.style.display = 'block';
+        log('Успешный вход в режим разработчика');
+      } else {
+        attemptCount++;
+        localStorage.setItem('devAttempts', attemptCount);
+        const remaining = 4 - attemptCount;
+        attemptsLeft.textContent = `Осталось попыток: ${remaining}`;
+        if (attemptCount >= 4) {
+          localStorage.setItem('devBlockedUntil', Date.now() + 300000);
+          loginModal.classList.remove('active');
+          alert('Доступ заблокирован на 5 минут. Попробуй позже.');
+        }
+      }
+    });
+
+    // Обработчик регистрации (пока заглушка)
+    registerSubmit.addEventListener('click', () => {
+      const token = registerToken.value.trim();
+      if (validateToken(token)) {
+        localStorage.setItem('devMode', 'true');
+        loginModal.classList.remove('active');
+        devHeader.style.display = 'flex';
+        devContent.style.display = 'block';
+        log('Успешная регистрация и вход в режим разработчика');
+      } else {
+        attemptCount++;
+        localStorage.setItem('devAttempts', attemptCount);
+        const remaining = 4 - attemptCount;
+        attemptsLeft.textContent = `Осталось попыток: ${remaining}`;
+        if (attemptCount >= 4) {
+          localStorage.setItem('devBlockedUntil', Date.now() + 300000);
+          loginModal.classList.remove('active');
+          alert('Доступ заблокирован на 5 минут. Попробуй позже.');
+        }
+      }
+    });
+
+    // Проверка блокировки
+    const blockUntil = localStorage.getItem('devBlockedUntil');
+    if (blockUntil && Date.now() < blockUntil) {
+      loginModal.classList.remove('active');
+      alert('Доступ заблокирован. Подождите 5 минут.');
+    } else if (localStorage.getItem('devMode') === 'true') {
+      loginModal.classList.remove('active');
+      devHeader.style.display = 'flex';
+      devContent.style.display = 'block';
+      log('Режим разработчика активирован автоматически');
+    }
+
+    // Логика панели
     function log(message) {
       const p = document.createElement('p');
       p.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
@@ -115,7 +312,7 @@
     }
 
     // Инициализация
-    log('Режим разработчика активирован');
+    log('Система запущена. Ожидание действий...');
     statusIndicator.className = 'status-indicator';
   </script>
 </body>
