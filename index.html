@@ -35,7 +35,6 @@
 
   <script src="https://cdn.tailwindcss.com" defer></script>
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
-  <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
 
   <style>
     @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
@@ -110,8 +109,6 @@
       nav a { padding: 0.75rem 1rem; }
       nav a:hover { background: slate-100 dark:bg-slate-800; }
     }
-    /* Скрытие Q&A в полной версии */
-    #qaLink:not(.dev-only) { display: none; }
   </style>
 </head>
 
@@ -138,12 +135,6 @@
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
-          <a id="qaLink" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 dev-only" href="/qa.html">Перейти в Q&A</a>
-        </div>
-        <div class="profile-button" id="profileButton" style="display: none;" data-dev-only>
-          <button class="glass-button" id="profileAction">
-            <i class="fa-solid fa-user-circle"></i> <span id="profileText">Войти</span>
-          </button>
         </div>
       </nav>
       <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 sm:hidden glass">
@@ -163,7 +154,6 @@
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
-            <a id="qaLink" class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 dev-only" href="/qa.html">Перейти в Q&A</a>
           </nav>
         </div>
       </div>
@@ -181,17 +171,14 @@
               Эксклюзивные видео, мемы, новости и апдейты. Врывайся — дальше только громче 😎
             </p>
             <div class="mt-6 flex flex-wrap gap-3">
-  <a href="#biography" class="glass-button">
-    <i class="fa-solid fa-user"></i>
-    Обо мне
-  </a>
-</div>
-            <div class="mt-6 flex items-center gap-6 text-sm text-slate-600 dark:text-slate-300">
-              <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">420</span></div>
-              <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
+              <a href="#contact" class="glass-button">
+                <i class="fa-solid fa-envelope"></i>
+                Контакты
+              </a>
             </div>
-            <div id="devLinks" class="mt-6" style="display: none;" data-dev-only>
-              <p><a href="/qa.html" class="glass-button">Перейти в Q&A</a></p>
+            <div class="mt-6 flex items-center gap-6 text-sm text-slate-600 dark:text-slate-300">
+              <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">421</span></div>
+              <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
             </div>
           </div>
           <div class="relative mt-8 lg:mt-0">
@@ -241,22 +228,6 @@
           <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button">
             <i class="fa-brands fa-youtube"></i> Смотреть все видео
           </a>
-        </div>
-      </div>
-    </section>
-
-    <section id="memes" class="py-16 bg-slate-50 dark:bg-slate-900/40">
-      <div class="mx-auto max-w-7xl px-4">
-        <h2 class="text-center text-2xl md:text-3xl font-bold">Мемы</h2>
-        <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Идёт разработка мемов…</p>
-        <div class="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
-          <img src="/assets/meme_fail.gif" alt="Мем: Fail" class="rounded-xl shadow" loading="lazy" />
-          <img src="/assets/meme_ugly_dance.gif" alt="Мем: Ugly Dance" class="rounded-xl shadow" loading="lazy" />
-          <img src="/assets/meme_stream_moment.gif" alt="Мем: Stream Moment" class="rounded-xl shadow" loading="lazy" />
-          <img src="/assets/meme_game_win.gif" alt="Мем: Game Win" class="rounded-xl shadow" loading="lazy" />
-          <img src="/assets/meme_funny_chat.gif" alt="Мем: Funny Chat" class="rounded-xl shadow" loading="lazy" />
-          <img src="/assets/meme_epic_fail2.gif" alt="Мем: Epic Fail 2" class="rounded-xl shadow" loading="lazy" />
-          <img src="/assets/meme_dance_party.gif" alt="Мем: Dance Party" class="rounded-xl shadow" loading="lazy" />
         </div>
       </div>
     </section>
@@ -333,30 +304,30 @@
     </section>
 
     <section id="contact" class="py-16 bg-slate-50 dark:bg-slate-900/40">
-  <div class="mx-auto max-w-5xl px-4">
-    <h2 class="text-center text-2xl md:text-3xl font-bold">Связь со мной</h2>
-    <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Хочешь коллаб или просто поболтать? Пиши!</p>
-    <div class="mt-6 grid gap-6">
-      <div class="rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-6">
-        <ul class="space-y-2 text-slate-700 dark:text-slate-300">
-          <li>Telegram: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/Mortisplay_YT">MortisPlay</a></li>
-          <li>Канал: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/MortisPlayTG">@MortisPlayTG</a></li>
-          <li>Частный канал: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/+VhpxzWl9ygYzMmFi">t.me/+VhpxzWl9ygYzMmFi</a></li>
-          <li>Email: <a class="text-indigo-600 dark:text-indigo-400 underline" href="mailto:mortisplay@mail.ru">mortisplay@mail.ru</a></li>
-        </ul>
-        <div class="mt-4 flex flex-wrap gap-3">
-          <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button"><i class="fa-brands fa-youtube"></i>YouTube</a>
-          <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="glass-button"><i class="fa-brands fa-twitch"></i>Twitch</a>
-          <a href="https://www.tiktok.com/@mortisplay32" target="_blank" class="glass-button"><i class="fa-brands fa-tiktok"></i>TikTok</a>
-          <a href="https://discord.gg/c7EmwzR4cX" target="_blank" class="glass-button"><i class="fa-brands fa-discord"></i>Discord</a>
-        </div>
-        <div class="mt-4">
-          <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="glass-button"><i class="fa-solid fa-hand-holding-dollar"></i> Поддержать проект</a>
+      <div class="mx-auto max-w-5xl px-4">
+        <h2 class="text-center text-2xl md:text-3xl font-bold">Связь со мной</h2>
+        <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Хочешь коллаб или просто поболтать? Пиши!</p>
+        <div class="mt-6 grid gap-6">
+          <div class="rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-6">
+            <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+              <li>Telegram: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/Mortisplay_YT">MortisPlay</a></li>
+              <li>Канал: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/MortisPlayTG">@MortisPlayTG</a></li>
+              <li>Частный канал: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/+VhpxzWl9ygYzMmFi">t.me/+VhpxzWl9ygYzMmFi</a></li>
+              <li>Email: <a class="text-indigo-600 dark:text-indigo-400 underline" href="mailto:mortisplay@mail.ru">mortisplay@mail.ru</a></li>
+            </ul>
+            <div class="mt-4 flex flex-wrap gap-3">
+              <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button"><i class="fa-brands fa-youtube"></i>YouTube</a>
+              <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="glass-button"><i class="fa-brands fa-twitch"></i>Twitch</a>
+              <a href="https://www.tiktok.com/@mortisplay32" target="_blank" class="glass-button"><i class="fa-brands fa-tiktok"></i>TikTok</a>
+              <a href="https://discord.gg/c7EmwzR4cX" target="_blank" class="glass-button"><i class="fa-brands fa-discord"></i>Discord</a>
+            </div>
+            <div class="mt-4">
+              <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="glass-button"><i class="fa-solid fa-hand-holding-dollar"></i> Поддержать проект</a>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
     <section id="faq" class="py-16">
       <div class="mx-auto max-w-4xl px-4">
@@ -385,33 +356,19 @@
           </details>
           <details class="group p-5">
             <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-              Где архив обновлений?
+              Как обновить сайт вручную?
               <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
             </summary>
-            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">В разделе «Архив обновлений» — вся история версий с июля 2025.</div>
+            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Нажми Ctrl+F5 или очисти кеш браузера, чтобы увидеть последние изменения.</div>
           </details>
           <details class="group p-5">
             <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-              Почему иногда не грузятся видео?
+              Как отключить тёмную тему?
               <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
             </summary>
-            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Иногда это RuTube/Twitch. Обнови страницу или интернет. Если не помогло — напиши в Telegram.</div>
-          </details>
-          <details class="group p-5">
-            <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-              Как предложить идею для видео?
-              <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-            </summary>
-            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Пиши свои идеи в Telegram или через форму на сайте (скоро появится).</div>
+            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Перейди в настройки браузера и выбери светлую тему, или используй переключатель (появится в будущем).</div>
           </details>
         </div>
-      </div>
-    </section>
-
-    <section id="twitch-clips" class="py-16 bg-slate-50 dark:bg-slate-900/40 hidden">
-      <div class="mx-auto max-w-7xl px-4">
-        <h2 class="text-center text-2xl md:text-3xl font-bold">Клипы Twitch</h2>
-        <div id="twitchGrid" class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       </div>
     </section>
 
@@ -460,20 +417,16 @@
   else setTheme('light');
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => setTheme(e.matches ? 'dark' : 'light'));
 
-  // Режим разработчика
+  // Режим разработчика с защитой
   const urlParams = new URLSearchParams(window.location.search);
-  const isDevMode = urlParams.get('dev') === 'true';
-  console.log('Режим:', { isDevMode });
-  const devLinks = document.getElementById('devLinks');
-  const qaLinks = document.querySelectorAll('#qaLink'); // Обрабатываем все элементы с id qaLink
-  if (isDevMode && devLinks) {
-    devLinks.style.display = 'block';
-    const profileLink = devLinks.querySelector('a[href="/profile.html"]');
-    if (profileLink) profileLink.remove();
-    // Показываем кнопку Q&A только в режиме разработчика
-    qaLinks.forEach(link => link.classList.add('dev-only'));
+  const devKey = urlParams.get('devkey'); // Добавляем параметр devkey
+  const isDevMode = devKey === 'YOUR_SECRET_KEY'; // Замени на уникальный ключ
+  console.log('Режим:', { isDevMode, devKey });
+  if (isDevMode) {
+    console.log('Режим разработчика активен');
   } else {
-    qaLinks.forEach(link => link.style.display = 'none'); // Скрываем во всех местах, включая мобильное меню
+    const devElements = document.querySelectorAll('[data-dev-only]');
+    devElements.forEach(el => el.remove());
   }
 
   // Меню
@@ -518,7 +471,9 @@
       { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO' },
       { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
       { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
-      { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK' }
+      { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK' },
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: 'Новый эпичный стрим' }, // Добавлено видео
+      { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: 'Обзор новой игры' }  // Добавлено видео
     ];
     videoData.forEach(v => {
       const node = tpl.content.cloneNode(true);
@@ -536,58 +491,6 @@
     });
   } else {
     console.warn('Шаблон или сетка для видео не найдены');
-  }
-
-  // Twitch клипы
-  function renderTwitchClips() {
-    if (!isDevMode) {
-      console.log('Запуск renderTwitchClips');
-      const twitchSection = document.getElementById('twitch-clips');
-      const twitchGrid = document.getElementById('twitchGrid');
-      if (!twitchSection || !twitchGrid) {
-        console.error('Секция или сетка для Twitch-клипов не найдена');
-        return;
-      }
-      twitchSection.classList.remove('hidden');
-
-      const twitchContent = [
-        { type: 'clip', id: 'OutstandingSmallPeachOneHand-34JGV7ccc7luTPSc', title: 'Отдали раунд на халяву XD' },
-        { type: 'clip', id: 'ResoluteFlaccidFrogTF2John-Rsv5zTsbJDJvqnwD', title: 'XD' },
-        { type: 'clip', id: 'GlutenFreeShortJuiceEleGiggle-Z5e2rv159RqomWb4', title: 'Да что она мне сделает?' },
-        { type: 'clip', id: 'WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3', title: 'ПУНЬК' },
-        { type: 'clip', id: 'CuteCuteOrangeLitFam-IsbKNAtJlF0qnbAE', title: 'Крик помощи' },
-        { type: 'highlight', videoId: '2475851398', startTime: '00:01:52', title: 'На контентик)' }
-      ];
-      twitchContent.forEach(item => {
-        try {
-          const iframe = document.createElement('iframe');
-          iframe.width = '100%';
-          iframe.height = '300px';
-          iframe.allowFullscreen = true;
-          iframe.title = item.title;
-          iframe.loading = 'lazy';
-          iframe.onerror = () => console.error(`Ошибка загрузки ${item.title}`);
-          const parentHost = location.hostname === 'localhost' ? 'localhost' : 'mortisplay.ru';
-          if (item.type === 'clip') iframe.src = `https://clips.twitch.tv/embed?clip=${item.id}&parent=${parentHost}`;
-          else iframe.src = `https://player.twitch.tv/?video=${item.videoId}&parent=${parentHost}&t=${item.startTime}`;
-          const cap = document.createElement('p');
-          cap.className = 'px-2 py-1 text-xs text-slate-600 dark:text-slate-300 text-center';
-          cap.textContent = item.title;
-          const box = document.createElement('div');
-          box.appendChild(iframe);
-          box.appendChild(cap);
-          twitchGrid.appendChild(box);
-        } catch (e) {
-          console.error(`Ошибка при рендеринге клипа ${item.title}:`, e);
-        }
-      });
-    } else {
-      console.log('Режим разработчика: Клипы Twitch отключены');
-      const updatesSection = document.getElementById('updates');
-      const archiveSection = document.getElementById('archive');
-      if (updatesSection) updatesSection.remove();
-      if (archiveSection) archiveSection.remove();
-    }
   }
 
   // Лоадер
@@ -613,19 +516,5 @@
       site.classList.remove('hidden');
     }
   }, 5000);
-
-  // Удаление раздела "Мемы" в режиме разработчика
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM загружен, запуск клипов');
-    renderTwitchClips();
-    if (isDevMode) {
-      const memesSection = document.getElementById('memes');
-      if (memesSection) {
-        memesSection.remove();
-        console.log('Раздел "Мемы" удалён в режиме разработчика');
-      }
-    }
-  });
-</script>
-</body>
+  </script>
 </html>
