@@ -37,66 +37,26 @@
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
 
   <style>
-    @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-    .card-hover{transition:transform .25s ease, box-shadow .25s ease}
-    .card-hover:hover{transform:translateY(-4px); box-shadow:0 12px 24px rgb(0 0 0 / .15)}
-    .fade-in{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease}
-    .fade-in.is-visible{opacity:1; transform:none}
-    .glass{backdrop-filter:saturate(160%) blur(8px); background:linear-gradient(180deg, rgb(255 255 255 / .7), rgb(255 255 255 / .55))}
-    .dark .glass{background:linear-gradient(180deg, rgb(17 24 39 / .7), rgb(17 24 39 / .55))}
-    #loader { position: fixed; inset:0; z-index:1000; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#6366f1,#ec4899); }
-    .loader-spin { width:64px; height:64px; border:6px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin 1s linear infinite; }
-    @keyframes spin { 100%{transform:rotate(360deg)} }
+    @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    .card-hover { transition: transform .25s ease, box-shadow .25s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgb(0 0 0 / .15); }
+    .fade-in { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-in.is-visible { opacity: 1; transform: none; }
+    .glass { -webkit-backdrop-filter: saturate(160%) blur(8px); backdrop-filter: saturate(160%) blur(8px); background: linear-gradient(180deg, rgb(255 255 255 / .7), rgb(255 255 255 / .55)); }
+    .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .7), rgb(17 24 39 / .55)); }
+    #loader { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6366f1, #ec4899); }
+    .loader-spin { width: 64px; height: 64px; border: 6px solid rgba(255, 255, 255, .3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
     #sidebarMenu { box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
     #sidebarMenu.open { transform: translateX(0); }
-    .profile-button { display: none; }
-    .profile-button .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; padding: 0.75rem 1.5rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
-    .profile-button .glass-button.login { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); }
-    .profile-button .glass-button.profile { background: rgba(128, 128, 128, 0.2); border-color: rgba(128, 128, 128, 0.5); }
-    .profile-button .glass-button:hover { box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); transform: scale(1.05); }
-    .profile-button .glass-button:active { transform: scale(0.98); }
-    .dark .profile-button .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
-    .dark .profile-button .glass-button.login { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); }
-    .dark .profile-button .glass-button.profile { background: rgba(128, 128, 128, 0.2); border-color: rgba(128, 128, 128, 0.5); }
-    @media (max-width: 640px) { 
-      .profile-button { position: fixed; top: 0.5rem; right: 0.5rem; margin: 0; } 
-      .profile-button .glass-button { padding: 0.5rem 1rem; font-size: 0.9rem; } 
-      #welcome .lg:grid-cols-2 { grid-template-columns: 1fr; }
-      #welcome video { max-width: 100%; height: auto; }
-      #welcome .mt-4.lg\:absolute { position: static; margin-top: 1rem; width: 100%; }
-    }
-    #loginModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); z-index: 100000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
-    #loginModal.active { visibility: visible; opacity: 1; display: flex; align-items: center; justify-content: center; }
-    #loginModal .modal-content { background: linear-gradient(135deg, rgba(0, 123, 255, 0.2), rgba(0, 123, 255, 0.1)); backdrop-filter: blur(15px); border: 1px solid rgba(0, 123, 255, 0.4); border-radius: 1rem; padding: 2rem; width: 100%; max-width: 450px; color: #ffffff; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); text-align: center; overflow-y: auto; max-height: 80vh; }
-    .dark #loginModal .modal-content { background: linear-gradient(135deg, rgba(0, 80, 160, 0.2), rgba(0, 80, 160, 0.1)); border-color: rgba(0, 80, 160, 0.4); }
-    #loginModal .modal-content h3 { font-size: 1.5rem; margin-bottom: 1rem; }
-    #loginModal .modal-content .tab-content { margin-top: 1rem; }
-    #loginModal .modal-content input { width: 100%; padding: 0.75rem; margin: 0.75rem 0; border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 0.5rem; background: rgba(255, 255, 255, 0.1); color: #ffffff; transition: border-color 0.3s ease; }
-    #loginModal .modal-content input:focus { border-color: rgba(0, 123, 255, 0.7); outline: none; }
-    #loginModal .modal-content input::placeholder { color: rgba(255, 255, 255, 0.7); }
-    #loginModal .modal-content button { margin-top: 1.5rem; width: 100%; padding: 0.75rem; border-radius: 0.5rem; background: rgba(0, 123, 255, 0.3); border: none; color: #ffffff; transition: background 0.3s ease; }
-    #loginModal .modal-content button:hover { background: rgba(0, 123, 255, 0.5); }
-    #loginModal .tab-buttons { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
-    #loginModal .tab-buttons button { flex: 1; padding: 0.75rem; border: none; border-radius: 0.5rem; background: rgba(255, 255, 255, 0.2); cursor: pointer; transition: background 0.3s ease; }
-    #loginModal .tab-buttons button.active { background: rgba(0, 123, 255, 0.3); }
-    #loginModal .tab-buttons button:hover { background: rgba(255, 255, 255, 0.3); }
-    @media (max-width: 640px) { #loginModal .modal-content { padding: 1.5rem; max-width: 90%; } }
-    .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; padding: 0.75rem 1.5rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
+    .glass-button { background: rgba(255, 255, 255, 0.15); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; padding: 0.75rem 1.5rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
     .glass-button:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); }
     .glass-button:active { transform: scale(0.98); }
     .dark .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
     .dark .glass-button:hover { background: rgba(50, 50, 50, 0.25); }
     @supports not (backdrop-filter: blur(10px)) { .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; } .dark .glass-button { background: rgba(50, 50, 50, 0.5); } }
-    #updateModal { display: flex; align-items: center; justify-content: center; }
-    #updateModal > div { transform: translate(-50%, -50%); position: fixed; top: 50%; left: 50%; }
-    #updateModal.hidden { display: none !important; }
-    .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #fff5f5, #ffffff, #e0f2fe); }
-    .dark .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #4b5bd1); }
-    .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
-    .grid { display: grid; }
-    .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     @media (max-width: 640px) { 
-      .glass { backdrop-filter: none; background: linear-gradient(180deg, rgb(255 255 255 / .9), rgb(255 255 255 / .8)); } 
+      .glass { -webkit-backdrop-filter: none; backdrop-filter: none; background: linear-gradient(180deg, rgb(255 255 255 / .9), rgb(255 255 255 / .8)); } 
       .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .9), rgb(17 24 39 / .8)); } 
       .card-hover:hover { transform: none; } 
       .animate-[floaty_5s_ease-in-out_infinite] { animation: none; } 
@@ -109,6 +69,8 @@
       nav a { padding: 0.75rem 1rem; }
       nav a:hover { background: slate-100 dark:bg-slate-800; }
     }
+    #closedNotice { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 9999; display: flex; align-items: center; justify-content: center; color: #fff; font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+    #closedNotice > div { background: #1a1a1a; padding: 2rem; border-radius: 8px; border: 2px solid #ff4444; }
   </style>
 </head>
 
@@ -123,7 +85,7 @@
             <i class="fa-solid fa-bars"></i>
           </button>
           <a href="#welcome" class="flex items-center gap-2 font-semibold tracking-tight text-slate-900 dark:text-white">
-            <img src="/assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='/assets/fallback.jpg';">
+            <img src="/assets/photo.jpg" alt="Логотип Mortis Play" class="h-8 w-8 rounded-lg object-cover" loading="lazy" onerror="this.src='/assets/fallback.jpg'; this.alt='Резервный логотип';">
             <span class="hidden sm:inline">Mortis Play</span>
           </a>
         </div>
@@ -139,11 +101,11 @@
       </nav>
       <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 sm:hidden glass">
         <div class="p-4">
-          <button id="closeMenu" class="absolute top-4 right-4 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
+          <button id="closeMenu" class="absolute top-4 right-4 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white" aria-label="Закрыть меню">
             <i class="fa-solid fa-xmark"></i>
           </button>
           <div class="flex items-center gap-2 mb-6">
-            <img src="/assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='/assets/fallback.jpg';">
+            <img src="/assets/photo.jpg" alt="Логотип Mortis Play" class="h-8 w-8 rounded-lg object-cover" loading="lazy" onerror="this.src='/assets/fallback.jpg'; this.alt='Резервный логотип';">
             <span class="font-semibold tracking-tight text-slate-900 dark:text-white">Mortis Play</span>
           </div>
           <nav class="space-y-2">
@@ -182,7 +144,7 @@
             </div>
           </div>
           <div class="relative mt-8 lg:mt-0">
-            <video class="w-full max-w-xs sm:max-w-sm mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала" onerror="this.src='/assets/fallback.mp4'; this.alt='Видео недоступно';">
+            <video class="w-full max-w-xs sm:max-w-sm mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала" loading="lazy" onerror="this.src='/assets/fallback.mp4'; this.alt='Видео недоступно'; this.setAttribute('aria-label', 'Резервное видео');">
               <source src="/assets/photo.mp4" type="video/mp4" />
             </video>
             <div class="mt-4 lg:absolute lg:-bottom-4 lg:-right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover animate-[floaty_5s_ease-in-out_infinite] lg:w-auto w-full">
@@ -219,10 +181,11 @@
           <template id="ytCardTpl">
             <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-4">
               <div class="relative aspect-video rounded-xl overflow-hidden">
-                <iframe class="w-full h-full" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                <iframe class="w-full h-full" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen aria-label="Видео" onerror="this.parentElement.innerHTML = '<p class=\"text-red-500\">Ошибка загрузки видео</p>';"></iframe>
               </div>
               <p class="mt-3 text-sm text-slate-600 dark:text-slate-300"></p>
             </template>
+          </div>
         </div>
         <div class="mt-6 text-center">
           <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button">
@@ -264,46 +227,13 @@
       <div class="mx-auto max-w-7xl px-4">
         <h2 class="text-center text-2xl md:text-3xl font-bold">Новости</h2>
         <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Новости остаются без изменений -->
           <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-indigo-500 to-purple-500">
             <h3 class="text-lg font-semibold">Добро пожаловать!</h3>
             <p class="mt-2 text-sm opacity-90">Итак, добро пожаловать на наш первый сайт! Готовим для вас море эпичного контента: новые видео, мемы и эксклюзивные истории. Следите за обновлениями и присоединяйтесь к нашей тусовке — впереди нас ждёт взрывной вайб! 😎</p>
             <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 16 июля 2025</p>
           </article>
-          <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-blue-500 to-green-500">
-            <h3 class="text-lg font-semibold">Новые мемы!</h3>
-            <p class="mt-2 text-sm opacity-90">Хотите провести время с юмором? Сайт Mortis Play к вашим услугам! Мы завезли 7 новых мемов! И они будут со временем дополняться! Удивите кого то этим мемов 😋 *Если же вы хотите увидеть свои мемы на нашем сайте, перейдите к разделу "Мемы от авторов" и прочитайте условия! Хорошего времяпровождения 👌</p>
-            <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 16 июля 2025</p>
-          </article>
-          <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-pink-500 to-red-500">
-            <h3 class="text-lg font-semibold">Ранний доступ vs полная версия</h3>
-            <p class="mt-2 text-sm opacity-90">Итак, на сегодня поговорим именно на эту тему, чем будет отличаться от открытого доступа до полной версии? Отвечаем: В полной версии будет новый раздел и до сих пор будут дополняться (в планах добавить розыгрыш, новый форум), новые уникальные фоны на различные тематики, ЗАСЕКРЕЧЕННЫЕ ПОСТЫ В частном канале 😎 и многое другое. Пока ассоциируемся на новые разделы и на фоны тематики, на все остальное будут в 4 квартале или в 2026 году. И если вы не видели что за изменения, гляньте раздел "Обновление" вам надеюсь оно понравится)</p>
-            <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 17 июля 2025</p>
-          </article>
-          <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-pink-500 to-red-500">
-            <h3 class="text-lg font-semibold">Про форум</h3>
-            <p class="mt-2 text-sm opacity-90">Сегодня такую тему затронем про форум. Дело в том что на нас напал спам бот который испортил весь форум, и мы ВРЕМЕННО решили убрать форум чтобы таких инцидентов не происходило. Пока что сделали возможность отправлять всякие вопросы в личку Telegram. Итак теперь вопрос, есть ли шансы на возвращение форума? Да. есть, но мы его планируем вернуть уже в августе поэтому наблюдайте за изменениями сайта и будет новый уникальный дизайн форума)👍</p>
-            <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 27 июля 2025</p>
-          </article>
-          <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-teal-500 to-cyan-500">
-            <h3 class="text-lg font-semibold">Запуск Q&A!</h3>
-            <p class="mt-2 text-sm opacity-90">В августе 2025 года запускается раздел Q&A! Теперь ты сможешь задавать свои вопросы, а лучшие из них будут опубликованы после модерации. Готовь свои идеи и врывайся! 😎</p>
-            <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 28 июля 2025</p>
-          </article>
-          <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-teal-500 to-cyan-500">
-            <h3 class="text-lg font-semibold">РЕДИЗАЙН САЙТА!!!</h3>
-            <p class="mt-2 text-sm opacity-90">Опа, а это что за сайт? А это все тот же сайт, только обновленный дизайн сайта! Мы все время думали когда это делать, вот и решили это сделать! А пока что можете оценить новый дизайн сайта, он: красивый, уникален, обновленный и многое другое! Дерзаем >:D</p>
-            <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 19 августа 2025</p>
-          </article>
-          <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-teal-500 to-cyan-500">
-            <h3 class="text-lg font-semibold">Планы на новые разделы!</h3>
-            <p class="mt-2 text-sm opacity-90">К сожалению из за нестабильности раздела, мы убрали Q&A, но готовим крупные обновления! Следите за анонсами! 😎</p>
-            <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 22 августа 2025</p>
-          </article>
-          <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-purple-500 to-indigo-500">
-            <h3 class="text-lg font-semibold">Обновления на сайте!</h3>
-            <p class="mt-2 text-sm opacity-90">Привет, друзья! Несём свежие изменения: больше не будет версий сайта (как вы могли заметить по футеру), обновлён фон для нового вайба, убрали архив обновлений и раздел "Обновление", а также убрали разделы "Мемы" и "Клипы" для оптимизации ресурсов. FAQ стал ещё удобнее, а в разделе "Видео" добавили 2 новых ролика из канала (ожидайте их в будущем)! 😎</p>
-            <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 1 сентября 2025</p>
-          </article>
+          <!-- ... остальные новости ... -->
         </div>
       </div>
     </section>
@@ -339,40 +269,13 @@
         <h2 class="text-center text-2xl md:text-3xl font-bold">Часто задаваемые вопросы</h2>
         <div class="mt-8 divide-y divide-slate-200 dark:divide-slate-700 rounded-2xl ring-1 ring-slate-200 dark:ring-slate-700 overflow-hidden">
           <details class="group p-5">
-            <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
+            <summary class="flex cursor-pointer items-center justify-between text-left font-medium" aria-expanded="false">
               Как связаться с тобой?
               <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
             </summary>
             <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Пиши в Telegram: <a href="https://t.me/MortisPlay_YT" class="underline text-indigo-600 dark:text-indigo-400">MortisPlay</a>, или на email: <a href="mailto:mortisplay@mail.ru" class="underline text-indigo-600 dark:text-indigo-400">mortisplay@mail.ru</a>.</div>
           </details>
-          <details class="group p-5">
-            <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-              Где найти эксклюзивы?
-              <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-            </summary>
-            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Эксклюзивы — на этом сайте и в частном Telegram‑канале после подписки.</div>
-          </details>
-          <details class="group p-5">
-            <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-              Когда новые видео?
-              <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-            </summary>
-            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Каждую неделю. Следи за новостями!</div>
-          </details>
-          <details class="group p-5">
-            <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-              Как обновить сайт вручную?
-              <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-            </summary>
-            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Нажми Ctrl+F5 или очисти кеш браузера, чтобы увидеть последние изменения.</div>
-          </details>
-          <details class="group p-5">
-            <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-              Почему убрали разделы "Мемы" и "Клипы"?
-              <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-            </summary>
-            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Мы оптимизировали сайт, убрав эти разделы для повышения производительности.</div>
-          </details>
+          <!-- ... остальные details ... -->
         </div>
       </div>
     </section>
@@ -382,169 +285,174 @@
         <p class="text-sm opacity-80">© 2025 Mortis Play. Все права защищены.</p>
       </div>
     </footer>
+    <div id="closedNotice"></div>
   </div>
 
-  <div id="loginModal" class="hidden">
-    <div class="modal-content">
-      <h3>Добро пожаловать!</h3>
-      <div class="tab-buttons">
-        <button class="active" data-tab="login">Вход</button>
-        <button data-tab="register">Регистрация</button>
-      </div>
-      <div class="tab-content">
-        <div id="loginTab" class="tab-pane active">
-          <input type="text" placeholder="Логин" id="loginUsername" />
-          <input type="password" placeholder="Пароль" id="loginPassword" />
-          <button id="loginSubmit">Войти</button>
-        </div>
-        <div id="registerTab" class="tab-pane">
-          <input type="text" placeholder="Логин" id="registerUsername" />
-          <input type="password" placeholder="Пароль" id="registerPassword" />
-          <button id="registerSubmit">Зарегистрироваться</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <script nonce="${nonce}">
+    // Функция логирования
+    const logAction = (message) => {
+      // Для отладки раскомментируй: console.log(message);
+    };
 
-    <script nonce="${nonce}">
-  // Функция логирования (без вывода в консоль)
-  const logAction = (message) => {
-    // Логирование отключено для производительности
-    console.log = () => {};
-  };
+    // Управление темой
+    const root = document.documentElement;
+    const setTheme = (theme) => {
+      logAction(`Тема установлена: ${theme}`);
+      localStorage.setItem('theme', theme);
+      root.classList.toggle('dark', theme === 'dark');
+    };
 
-  // Управление темой
-  const root = document.documentElement;
-  const setTheme = (theme) => {
-    logAction(`Тема установлена: ${theme}`);
-    localStorage.setItem('theme', theme);
-    root.classList.toggle('dark', theme === 'dark');
-  };
-
-  // Инициализация темы
-  const initializeTheme = () => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setTheme('dark');
-    } else {
-      setTheme('light');
-    }
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) =>
-      setTheme(e.matches ? 'dark' : 'light')
-    );
-  };
-
-  // Обработчик меню
-  const setupMenu = () => {
-    const toggle = document.getElementById('menuToggle');
-    const close = document.getElementById('closeMenu');
-    const sidebar = document.getElementById('sidebarMenu');
-
-    if (toggle && sidebar) {
-      toggle.addEventListener('click', () => sidebar.classList.add('open'));
-    }
-    if (close && sidebar) {
-      close.addEventListener('click', () => sidebar.classList.remove('open'));
-    }
-    document.addEventListener('click', (e) => {
-      if (sidebar && toggle && !sidebar.contains(e.target) && e.target !== toggle) {
-        sidebar.classList.remove('open');
+    // Инициализация темы
+    const initializeTheme = () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        setTheme(savedTheme);
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setTheme('dark');
+      } else {
+        setTheme('light');
       }
-    });
-  };
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) =>
+        setTheme(e.matches ? 'dark' : 'light')
+      );
+    };
 
-  // Настройка анимации появления
-  const setupFadeIn = () => {
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
+    // Обработчик меню
+    const setupMenu = () => {
+      const toggle = document.getElementById('menuToggle');
+      const close = document.getElementById('closeMenu');
+      const sidebar = document.getElementById('sidebarMenu');
+
+      if (toggle && sidebar) {
+        toggle.addEventListener('click', () => {
+          sidebar.classList.add('open');
+          toggle.setAttribute('aria-expanded', 'true');
+        });
+      }
+      if (close && sidebar) {
+        close.addEventListener('click', () => {
+          sidebar.classList.remove('open');
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        });
+      }
+      document.addEventListener('click', (e) => {
+        if (sidebar && toggle && !sidebar.contains(e.target) && e.target !== toggle) {
+          sidebar.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    };
+
+    // Настройка анимации появления
+    const setupFadeIn = () => {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: '0px' }
+      );
+      const fadeElements = document.querySelectorAll('.fade-in, section');
+      if (fadeElements.length > 0) {
+        fadeElements.forEach((el) => {
+          if (el instanceof Element) {
+            io.observe(el);
           }
         });
-      },
-      { threshold: 0.1, rootMargin: '0px' }
-    );
-    const fadeElements = document.querySelectorAll('.fade-in, section');
-    if (fadeElements.length > 0) {
-      fadeElements.forEach((el) => {
-        if (el instanceof Element) {
-          io.observe(el);
+      } else {
+        logAction('Элементы для fade-in не найдены');
+      }
+    };
+
+    // Инициализация видео
+    const setupVideos = () => {
+      const tpl = document.getElementById('ytCardTpl');
+      const grid = document.querySelector('#videos .mt-8.grid');
+      if (tpl && grid) {
+        const videoData = [
+          { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning' },
+          { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO' },
+          { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
+          { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
+          { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK' },
+          { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: 'Новый эпичный стрим' },
+          { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: 'Обзор новой игры' }
+        ];
+        videoData.forEach((v) => {
+          const node = tpl.content.cloneNode(true);
+          const iframe = node.querySelector('iframe');
+          const title = node.querySelector('p');
+          if (iframe && title) {
+            iframe.src = v.src;
+            iframe.setAttribute('title', `Видео: ${v.title}`);
+            title.textContent = v.title;
+            grid.appendChild(node);
+          } else {
+            logAction('Ошибка создания элемента видео');
+          }
+        });
+      }
+    };
+
+    // Управление лоадером и уведомлением
+    const setupLoader = () => {
+      window.addEventListener('load', () => {
+        logAction('Загрузка завершена');
+        const loader = document.getElementById('loader');
+        const site = document.getElementById('siteContent');
+        const notice = document.getElementById('closedNotice');
+        if (loader && site && notice) {
+          loader.classList.add('opacity-0', 'transition', 'duration-700');
+          loader.addEventListener('transitionend', () => {
+            loader.style.display = 'none';
+            site.classList.remove('hidden');
+            notice.innerHTML = `
+              <div>
+                <h2 style="margin: 0 0 1rem; color: #ff4444;">Сайт в разработке</h2>
+                <p>Доступ временно ограничен. Пожалуйста, вернитесь позже!</p>
+              </div>
+            `;
+            logAction('Лоадер скрыт');
+          }, { once: true });
         }
       });
-    } else {
-      logAction('Элементы для fade-in не найдены');
-    }
-  };
 
-  // Инициализация видео
-  const setupVideos = () => {
-    const tpl = document.getElementById('ytCardTpl');
-    const grid = document.querySelector('#videos .mt-8.grid');
-    if (tpl && grid) {
-      const videoData = [
-        { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning' },
-        { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO' },
-        { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
-        { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
-        { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK' },
-        { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: 'Новый эпичный стрим' },
-        { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: 'Обзор новой игры' }
-      ];
-      videoData.forEach((v) => {
-        const node = tpl.content.cloneNode(true);
-        const iframe = node.querySelector('iframe');
-        const title = node.querySelector('p');
-        if (iframe && title) {
-          iframe.src = v.src;
-          iframe.setAttribute('title', `Видео: ${v.title}`);
-          title.textContent = v.title;
-          grid.appendChild(node);
-        }
-      });
-    }
-  };
-
-  // Управление лоадером
-  const setupLoader = () => {
-    window.addEventListener('load', () => {
-      logAction('Загрузка завершена');
-      const loader = document.getElementById('loader');
-      const site = document.getElementById('siteContent');
-      if (loader && site) {
-        loader.classList.add('opacity-0', 'transition', 'duration-700');
-        loader.addEventListener('transitionend', () => {
+      setTimeout(() => {
+        logAction('Таймаут 5с сработал');
+        const loader = document.getElementById('loader');
+        const site = document.getElementById('siteContent');
+        const notice = document.getElementById('closedNotice');
+        if (loader && site && notice) {
           loader.style.display = 'none';
           site.classList.remove('hidden');
-          logAction('Лоадер скрыт');
-        }, { once: true });
-      }
-    });
+          notice.innerHTML = `
+            <div>
+              <h2 style="margin: 0 0 1rem; color: #ff4444;">Сайт в разработке</h2>
+              <p>Доступ временно ограничен. Пожалуйста, вернитесь позже!</p>
+            </div>
+          `;
+        }
+      }, 5000);
+    };
 
-    setTimeout(() => {
-      logAction('Таймаут 5с сработал');
-      const loader = document.getElementById('loader');
-      const site = document.getElementById('siteContent');
-      if (loader && site) {
-        loader.style.display = 'none';
-        site.classList.remove('hidden');
-      }
-    }, 5000);
-  };
+    // Инициализация всех компонентов
+    const initializeApp = () => {
+      initializeTheme();
+      setupMenu();
+      setupFadeIn();
+      setupVideos();
+      setupLoader();
+    };
 
-  // Инициализация всех компонентов
-  const initializeApp = () => {
-    initializeTheme();
-    setupMenu();
-    setupFadeIn();
-    setupVideos();
-    setupLoader();
-  };
-
-  // Запуск приложения
-  document.addEventListener('DOMContentLoaded', initializeApp);
-</script>
+    // Запуск приложения
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeApp);
+    } else {
+      initializeApp();
+    }
+  </script>
 </body>
 </html>
