@@ -1,221 +1,90 @@
 <!DOCTYPE html>
-<html lang="ru" class="scroll-smooth">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mortis Play — Биография</title>
-  <meta name="description" content="Узнай больше о Mortis Play: биография, путь и увлечения." />
-  <meta name="robots" content="index,follow" />
-  <link rel="icon" href="assets/favicon.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-black text-white">
+    <!-- Параллакс элементы -->
+    <div class="absolute -top-20 -left-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-floaty"></div>
+    <div class="absolute top-60 -right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-floaty-slow"></div>
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[50rem] bg-indigo-500/10 rounded-full blur-[200px] animate-breathing"></div>
 
-  <!-- QUICK FIX: tailwind CDN (только для разработки) -->
-  <script>
-    // Включаем darkMode = 'class' чтобы твой JS мог переключать тему через document.documentElement.classList.toggle('dark')
-    window.tailwind = window.tailwind || {};
-    tailwind.config = { darkMode: 'class' };
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <div class="mx-auto max-w-5xl px-4 py-24 relative z-10">
+      <!-- Заголовок -->
+      <h1 class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] text-center">
+        Моя история
+      </h1>
 
-  <!-- FontAwesome (оставляем defer) -->
-  <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
+      <div class="mt-16 grid gap-10 md:grid-cols-2">
+        <!-- Обо мне -->
+        <div class="backdrop-blur-lg bg-white/10 border border-purple-400/30 rounded-3xl p-8 shadow-lg">
+          <h2 class="text-2xl font-semibold text-purple-300 flex items-center gap-2">
+            <i class="fa-solid fa-user"></i> Обо мне
+          </h2>
+          <p class="mt-4 text-lg text-slate-200 leading-relaxed">
+            Привет! Я — Mortis Play. Мой путь начался ещё в 2020 году с простых видео без монтажа, но с огромным энтузиазмом. 
+            Тогда я и не представлял, что мои мемы будут разлетаться по сети и собирать тысячи просмотров.<br><br>
+            Я обожаю всё, что связано с играми, креативом и монтажом. В моих видео всегда есть юмор, немного странностей и особая атмосфера. 
+            Со временем я улучшил звук, добавил спецэффекты и начал экспериментировать с форматами — от мемов до стримов. 
+            Для меня главное — это эмоции зрителей, а не только цифры в статистике.
+          </p>
+        </div>
 
-  <!-- Собственные стили (без "[]"-классов) -->
+        <!-- Факты -->
+        <div class="backdrop-blur-lg bg-white/10 border border-pink-400/30 rounded-3xl p-8 shadow-lg">
+          <h2 class="text-2xl font-semibold text-pink-300 flex items-center gap-2">
+            <i class="fa-solid fa-circle-info"></i> Факты
+          </h2>
+          <ul class="mt-4 space-y-3 text-lg text-slate-200">
+            <li><i class="fa-solid fa-id-card text-purple-300"></i> <span class="font-medium">Имя:</span> ???</li>
+            <li><i class="fa-solid fa-cake-candles text-pink-300"></i> <span class="font-medium">Дата рождения:</span> 5 августа 2009 🎂</li>
+            <li><i class="fa-solid fa-hourglass-half text-yellow-300"></i> <span class="font-medium">Возраст:</span> 16 лет</li>
+            <li><i class="fa-solid fa-gamepad text-green-300"></i> <span class="font-medium">Увлечения:</span> Игры 🎮, мемы 😂, монтаж 📹</li>
+            <li><i class="fa-solid fa-bolt text-orange-300"></i> <span class="font-medium">Первый вирусный мем:</span> в 2021 году 🚀</li>
+            <li><i class="fa-solid fa-camera-movie text-red-300"></i> <span class="font-medium">Любимый формат:</span> динамичные мемы с неожиданными переходами</li>
+            <li><i class="fa-solid fa-star text-indigo-300"></i> <span class="font-medium">Цель:</span> создать свой уникальный стиль контента</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Кнопка -->
+      <div class="mt-12 text-center">
+        <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg inline-flex items-center gap-2">
+          <i class="fa-solid fa-arrow-left"></i> На главную
+        </a>
+      </div>
+    </div>
+  </main>
+
   <style>
-    /* анимации */
-    @keyframes floaty { 0%,100%{ transform: translateY(0) translateX(0); } 50%{ transform: translateY(-20px) translateX(10px); } }
-    @keyframes breathing { 0%,100%{ opacity: 0.3; transform: scale(1); } 50%{ opacity: 0.6; transform: scale(1.05); } }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* удобные классы (чтобы не писать странные символы в селекторах) */
-    .floaty-8s { animation: floaty 8s ease-in-out infinite; }
-    .floaty-10s { animation: floaty 10s ease-in-out infinite; }
-    .breathing-6s { animation: breathing 6s ease-in-out infinite; }
-    .breathing-8s { animation: breathing 8s ease-in-out infinite; }
-    .breathing-10s { animation: breathing 10s ease-in-out infinite; }
-    .fade-in-up { animation: fadeInUp 1s ease-out both; }
-    .slide-in { animation: fadeInUp 1s ease-out both; }
-    .delay-200 { animation-delay: .2s; }
-    .loader-spin { width:64px; height:64px; border:6px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin 1s linear infinite; }
-
-    /* визуальные улучшения */
-    .neon-title { transition: all .45s ease; }
-    .neon-title:hover { filter: brightness(1.3) drop-shadow(0 0 20px rgba(200,100,255,.6)); transform: scale(1.03); }
-    .card-hover { transition: transform .25s ease, box-shadow .25s ease; }
-    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,.45); }
-
-    /* glass helper */
-    .backdrop-frost {
-      background: rgba(255,255,255,0.03);
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.04);
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-20px) translateX(10px); }
+    }
+    @keyframes breathing {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.05); }
+    }
+    .animate-floaty {
+      animation: floaty 8s ease-in-out infinite;
+    }
+    .animate-floaty-slow {
+      animation: floaty 10s ease-in-out infinite;
+    }
+    .animate-breathing {
+      animation: breathing 10s ease-in-out infinite;
+    }
+    .neon-title {
+      transition: all 0.5s ease;
+    }
+    .neon-title:hover {
+      filter: brightness(1.3);
     }
   </style>
-</head>
-
-<body class="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-black text-white selection:bg-purple-800 selection:text-white">
-  <!-- Лоадер -->
-  <div id="loader" class="fixed inset-0 z-[1000] flex items-center justify-center bg-gradient-to-br from-purple-900 to-pink-700">
-    <div class="loader-spin" aria-hidden="true"></div>
-    <span class="sr-only">Загрузка...</span>
-  </div>
-
-  <!-- Контент (скрыт через Tailwind .hidden) -->
-  <div id="siteContent" class="hidden">
-    <header class="sticky top-0 z-50 border-b border-slate-800/60 bg-black/50">
-      <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between" aria-label="Навигация">
-        <div class="flex items-center gap-3">
-          <button id="menuToggle" class="inline-flex sm:hidden items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium ring-1 ring-slate-700">
-            <span>Меню</span>
-            <i class="fa-solid fa-bars"></i>
-          </button>
-          <a href="/" class="flex items-center gap-2 font-semibold tracking-tight">
-            <img src="assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='assets/fallback.jpg';">
-            <span class="hidden sm:inline">Mortis Play</span>
-          </a>
-        </div>
-
-        <div class="hidden sm:flex items-center gap-2 text-sm">
-          <a class="px-3 py-2 rounded-lg hover:bg-white/5" href="/">Главная</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-white/5" href="biography.html">Биография</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-white/5" href="#videos">Видео</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-white/5" href="#projects">Проекты</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-white/5" href="#news">Новости</a>
-        </div>
-      </nav>
-
-      <!-- Сайдбар (моб) -->
-      <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-black/80 transform -translate-x-full transition-transform duration-300 z-50">
-        <div class="p-4">
-          <button id="closeMenu" class="absolute top-4 right-4 text-slate-300"><i class="fa-solid fa-xmark"></i></button>
-          <div class="flex items-center gap-2 mb-6">
-            <img src="assets/photo.jpg" alt="" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='assets/fallback.jpg';">
-            <span class="font-semibold">Mortis Play</span>
-          </div>
-          <nav class="space-y-2">
-            <a class="block px-3 py-2 rounded-lg hover:bg-white/5" href="/">Главная</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-white/5" href="biography.html">Биография</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-white/5" href="#videos">Видео</a>
-          </nav>
-        </div>
-      </div>
-    </header>
-
-    <!-- === УЛУЧШЕННАЯ СЕКЦИЯ БИОГРАФИИ (единственная) === -->
-    <main id="biography-page" class="relative min-h-screen overflow-hidden bg-black text-white">
-      <!-- декор -->
-      <div class="absolute -top-20 -left-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl floaty-8s breathing-6s"></div>
-      <div class="absolute top-60 -right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl floaty-10s breathing-8s"></div>
-      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[50rem] bg-indigo-500/10 rounded-full blur-[200px] breathing-10s"></div>
-
-      <div class="mx-auto max-w-5xl px-4 py-24 relative z-10 text-center">
-        <h1 class="neon-title text-4xl md:text-6xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] fade-in-up">
-          Моя история
-        </h1>
-
-        <div class="mt-16 grid gap-10 md:grid-cols-2">
-          <div class="backdrop-frost rounded-3xl p-8 card-hover card-hover transition-all duration-500 slide-in">
-            <h2 class="text-2xl font-semibold text-purple-300 flex items-center gap-2">
-              <i class="fa-solid fa-user"></i> Обо мне
-            </h2>
-            <p class="mt-4 text-lg text-slate-200 leading-relaxed">
-              Привет! Я Mortis Play, начал свой путь в 2020 году с простых видео. Теперь я взрываю вайб мемами, стримами и эпичным контентом. Мой первый вирусный мем и сезон «Бароны» — это только начало! 🚀
-            </p>
-          </div>
-
-          <div class="backdrop-frost rounded-3xl p-8 card-hover transition-all duration-500 slide-in delay-200">
-            <h2 class="text-2xl font-semibold text-pink-300 flex items-center gap-2">
-              <i class="fa-solid fa-circle-info"></i> Факты
-            </h2>
-            <ul class="mt-4 space-y-3 text-lg text-slate-200">
-              <li class="flex items-center gap-2"><i class="fa-solid fa-id-card text-purple-300"></i> <span class="font-medium">Имя:</span> ???</li>
-              <li class="flex items-center gap-2"><i class="fa-solid fa-cake-candles text-pink-300"></i> <span class="font-medium">Дата рождения:</span> 5 августа 2009 🎂</li>
-              <li class="flex items-center gap-2"><i class="fa-solid fa-hourglass-half text-yellow-300"></i> <span class="font-medium">Возраст:</span> 16 лет</li>
-              <li class="flex items-center gap-2"><i class="fa-solid fa-gamepad text-green-300"></i> <span class="font-medium">Увлечения:</span> Игры 🎮, мемы 😂, контент 📹</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="mt-12">
-          <a href="/" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 shadow-lg hover:scale-105 transition-transform">
-            <i class="fa-solid fa-arrow-left"></i> На главную
-          </a>
-        </div>
-      </div>
-    </main>
-
-    <footer class="border-t border-slate-800/40 py-8">
-      <div class="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-sm opacity-80">© 2025 Mortis Play. Все права защищены.</p>
-      </div>
-    </footer>
-  </div>
-
-  <!-- Скрипты (как раньше, чуть подправлены) -->
-  <script>
-    // логгер (закомментирован)
-    const logAction = (m) => { /* console.log(m); */ };
-
-    // тема
-    const root = document.documentElement;
-    const setTheme = (theme) => {
-      localStorage.setItem('theme', theme);
-      root.classList.toggle('dark', theme === 'dark');
-    };
-    const initializeTheme = () => {
-      const saved = localStorage.getItem('theme');
-      if (saved) setTheme(saved);
-      else setTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => setTheme(e.matches ? 'dark' : 'light'));
-    };
-
-    // меню
-    const setupMenu = () => {
-      const toggle = document.getElementById('menuToggle');
-      const close = document.getElementById('closeMenu');
-      const sidebar = document.getElementById('sidebarMenu');
-      if (toggle && sidebar) {
-        toggle.addEventListener('click', e => { e.preventDefault(); sidebar.classList.toggle('-translate-x-full'); });
-      }
-      if (close && sidebar) {
-        close.addEventListener('click', e => { e.preventDefault(); sidebar.classList.add('-translate-x-full'); });
-      }
-      document.addEventListener('click', (e) => {
-        if (!sidebar.contains(e.target) && e.target !== toggle) sidebar.classList.add('-translate-x-full');
-      });
-    };
-
-    // fade-in observer
-    const setupFadeIn = () => {
-      const io = new IntersectionObserver(entries => {
-        entries.forEach(ent => { if (ent.isIntersecting) ent.target.classList.add('opacity-100', 'translate-y-0'); });
-      }, { threshold: 0.12 });
-      document.querySelectorAll('.fade-in-up, .slide-in').forEach(el => {
-        // начальное состояние (tailwind + inline)
-        el.classList.add('opacity-0', 'translate-y-4');
-        io.observe(el);
-      });
-    };
-
-    // loader -> show content
-    const setupLoader = () => {
-      window.addEventListener('load', () => {
-        const loader = document.getElementById('loader');
-        const site = document.getElementById('siteContent');
-        if (loader) loader.style.display = 'none';
-        if (site) site.classList.remove('hidden');
-      });
-      // fallback
-      setTimeout(() => { document.getElementById('loader')?.remove(); document.getElementById('siteContent')?.classList.remove('hidden'); }, 6000);
-    };
-
-    document.addEventListener('DOMContentLoaded', () => {
-      initializeTheme();
-      setupMenu();
-      setupFadeIn();
-      setupLoader();
-    });
-  </script>
 </body>
 </html>
