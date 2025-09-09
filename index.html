@@ -6,12 +6,38 @@
   <title>Mortis Play — официальный сайт</title>
   <meta name="description" content="Эпичные видео, мемы, новости и обновления от Mortis Play. Присоединяйся к вайбу!" />
   <meta name="robots" content="index,follow" />
-  <link rel="icon" href="assets/favicon.ico" />
+  <link rel="icon" href="/images/favicon.ico" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Mortis Play — официальный сайт" />
+  <meta property="og:description" content="Эксклюзивы, мемы, новости и клипы." />
+  <meta property="og:image" content="https://mortisplay.ru/assets/og-image.jpg" />
+  <meta property="og:url" content="https://mortisplay.ru" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ru_RU" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mortis Play — официальный сайт" />
+  <meta name="twitter:description" content="Эксклюзивы, мемы, новости и клипы." />
+  <meta name="twitter:image" content="https://mortisplay.ru/assets/twitter-image.jpg" />
+
+  <!-- Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
+  <script>
+    const nonce = crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '');
+    const script = document.createElement('script');
+    script.nonce = nonce;
+    script.id = 'gtagScript';
+    script.innerHTML = `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-W7QBLDDSSK');`;
+    document.head.appendChild(script);
+  </script>
+
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
+
   <style>
     @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-    @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes slide-in { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .6; } }
     .card-hover{transition:transform .25s ease, box-shadow .25s ease}
     .card-hover:hover{transform:translateY(-4px); box-shadow:0 12px 24px rgb(0 0 0 / .15)}
     .fade-in{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease}
@@ -76,18 +102,16 @@
       .animate-[floaty_5s_ease-in-out_infinite] { animation: none; } 
       iframe, video, img { max-width: 100%; height: auto; } 
     }
+    /* Фиксированная навигация для ПК */
     @media (min-width: 1024px) {
       header { position: sticky; top: 0; z-index: 50; background: white/80 dark:bg-slate-900/80; }
       nav { height: 4rem; }
       nav a { padding: 0.75rem 1rem; }
       nav a:hover { background: slate-100 dark:bg-slate-800; }
     }
-    .animate-fade-in-up { animation: fade-in-up 1s ease-out forwards; }
-    .animate-slide-in { animation: slide-in 1s ease-out forwards; }
-    .animate-slide-in.delay-200 { animation-delay: 0.2s; }
-    .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
   </style>
 </head>
+
 <body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100 selection:bg-indigo-200 selection:text-slate-900">
   <div id="loader"><div class="loader-spin" aria-label="Загрузка сайта"></div></div>
   <div id="siteContent" class="hidden">
@@ -98,14 +122,14 @@
             <span>Меню</span>
             <i class="fa-solid fa-bars"></i>
           </button>
-          <a href="/" class="flex items-center gap-2 font-semibold tracking-tight text-slate-900 dark:text-white">
-            <img src="assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='assets/fallback.jpg';">
+          <a href="#welcome" class="flex items-center gap-2 font-semibold tracking-tight text-slate-900 dark:text-white">
+            <img src="/assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='/assets/fallback.jpg';">
             <span class="hidden sm:inline">Mortis Play</span>
           </a>
         </div>
         <div class="hidden sm:flex items-center gap-2">
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="biography.html">Биография</a>
+          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#biography">Биография</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#videos">Видео</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#projects">Проекты</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
@@ -119,12 +143,12 @@
             <i class="fa-solid fa-xmark"></i>
           </button>
           <div class="flex items-center gap-2 mb-6">
-            <img src="assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='assets/fallback.jpg';">
+            <img src="/assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='/assets/fallback.jpg';">
             <span class="font-semibold tracking-tight text-slate-900 dark:text-white">Mortis Play</span>
           </div>
           <nav class="space-y-2">
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="biography.html">Биография</a>
+            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#biography">Биография</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#videos">Видео</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#projects">Проекты</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
@@ -135,6 +159,7 @@
       </div>
     </header>
 
+    <!-- Hero -->
     <section id="welcome" class="relative overflow-hidden">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         <div class="grid lg:grid-cols-2 gap-10 items-center">
@@ -157,12 +182,31 @@
             </div>
           </div>
           <div class="relative mt-8 lg:mt-0">
-            <video class="w-full max-w-xs sm:max-w-sm mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала" onerror="this.src='assets/fallback.mp4'; this.alt='Видео недоступно';">
-              <source src="assets/photo.mp4" type="video/mp4" />
+            <video class="w-full max-w-xs sm:max-w-sm mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала" onerror="this.src='/assets/fallback.mp4'; this.alt='Видео недоступно';">
+              <source src="/assets/photo.mp4" type="video/mp4" />
             </video>
             <div class="mt-4 lg:absolute lg:-bottom-4 lg:-right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover animate-[floaty_5s_ease-in-out_infinite] lg:w-auto w-full">
               <p class="text-xs text-slate-600 dark:text-slate-300 text-center lg:text-left">Гений, миллиардер, плейбой, филантроп 😎</p>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="biography" class="py-16 bg-gradient-to-b from-transparent to-indigo-50 dark:to-slate-900">
+      <div class="mx-auto max-w-5xl px-4">
+        <div class="rounded-3xl p-6 md:p-8 bg-indigo-600 text-white shadow-2xl">
+          <h2 class="text-2xl md:text-3xl font-bold">Биография</h2>
+          <div class="mt-6 grid sm:grid-cols-2 gap-6">
+            <ul class="space-y-3 text-indigo-50/90">
+              <li><span class="font-semibold">Имя:</span> ???</li>
+              <li><span class="font-semibold">Дата рождения:</span> 5 августа 2009 🎂</li>
+              <li><span class="font-semibold">Возраст:</span> 16 лет</li>
+              <li><span class="font-semibold">Увлечения:</span> Игры 🎮, мемы 😂, контент 📹</li>
+            </ul>
+            <p class="text-indigo-50/90">
+              Начал в 2020 с простых видео, а теперь взрываю вайб мемами и стримами! 🚀 Горжусь первым вирусным мемом и сезоном «Бароны».
+            </p>
           </div>
         </div>
       </div>
@@ -179,12 +223,11 @@
               </div>
               <p class="mt-3 text-sm text-slate-600 dark:text-slate-300"></p>
             </template>
-          </div>
-          <div class="mt-6 text-center">
-            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button">
-              <i class="fa-brands fa-youtube"></i> Смотреть все видео
-            </a>
-          </div>
+        </div>
+        <div class="mt-6 text-center">
+          <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button">
+            <i class="fa-brands fa-youtube"></i> Смотреть все видео
+          </a>
         </div>
       </div>
     </section>
@@ -363,152 +406,145 @@
     </div>
   </div>
 
-  <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
-  <script>
-    // Функция логирования
-    const logAction = (message) => {
-      // Для отладки раскомментируй: console.log(message);
-    };
+  <script nonce="${nonce}">
+  // Функция логирования (без вывода в консоль)
+  const logAction = (message) => {
+    // Логирование отключено для производительности
+    console.log = () => {};
+  };
 
-    // Управление темой
-    const root = document.documentElement;
-    const setTheme = (theme) => {
-      logAction(`Тема установлена: ${theme}`);
-      localStorage.setItem('theme', theme);
-      root.classList.toggle('dark', theme === 'dark');
-    };
+  // Управление темой
+  const root = document.documentElement;
+  const setTheme = (theme) => {
+    logAction(`Тема установлена: ${theme}`);
+    localStorage.setItem('theme', theme);
+    root.classList.toggle('dark', theme === 'dark');
+  };
 
-    // Инициализация темы
-    const initializeTheme = () => {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme) {
-        setTheme(savedTheme);
-      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        setTheme('dark');
-      } else {
-        setTheme('light');
+  // Инициализация темы
+  const initializeTheme = () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) =>
+      setTheme(e.matches ? 'dark' : 'light')
+    );
+  };
+
+  // Обработчик меню
+  const setupMenu = () => {
+    const toggle = document.getElementById('menuToggle');
+    const close = document.getElementById('closeMenu');
+    const sidebar = document.getElementById('sidebarMenu');
+
+    if (toggle && sidebar) {
+      toggle.addEventListener('click', () => sidebar.classList.add('open'));
+    }
+    if (close && sidebar) {
+      close.addEventListener('click', () => sidebar.classList.remove('open'));
+    }
+    document.addEventListener('click', (e) => {
+      if (sidebar && toggle && !sidebar.contains(e.target) && e.target !== toggle) {
+        sidebar.classList.remove('open');
       }
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) =>
-        setTheme(e.matches ? 'dark' : 'light')
-      );
-    };
+    });
+  };
 
-    // Обработчик меню
-    const setupMenu = () => {
-      const toggle = document.getElementById('menuToggle');
-      const close = document.getElementById('closeMenu');
-      const sidebar = document.getElementById('sidebarMenu');
-
-      if (toggle && sidebar) {
-        toggle.addEventListener('click', (e) => {
-          e.preventDefault();
-          sidebar.classList.toggle('open');
-          toggle.setAttribute('aria-expanded', sidebar.classList.contains('open'));
-        });
-      }
-      if (close && sidebar) {
-        close.addEventListener('click', (e) => {
-          e.preventDefault();
-          sidebar.classList.remove('open');
-          if (toggle) toggle.setAttribute('aria-expanded', 'false');
-        });
-      }
-      document.addEventListener('click', (e) => {
-        if (sidebar && toggle && !sidebar.contains(e.target) && e.target !== toggle) {
-          sidebar.classList.remove('open');
-          if (toggle) toggle.setAttribute('aria-expanded', 'false');
-        }
-      });
-    };
-
-    // Настройка анимации появления
-    const setupFadeIn = () => {
-      const io = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-            }
-          });
-        },
-        { threshold: 0.1, rootMargin: '0px' }
-      );
-      const fadeElements = document.querySelectorAll('.fade-in, section');
-      if (fadeElements.length > 0) {
-        fadeElements.forEach((el) => {
-          if (el instanceof Element) {
-            io.observe(el);
+  // Настройка анимации появления
+  const setupFadeIn = () => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
           }
         });
-      } else {
-        logAction('Элементы для fade-in не найдены');
-      }
-    };
-
-    // Инициализация видео
-    const setupVideos = () => {
-      const tpl = document.getElementById('ytCardTpl');
-      const grid = document.querySelector('#videos .mt-8.grid');
-      if (tpl && grid) {
-        const videoData = [
-          { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning' },
-          { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO' },
-          { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
-          { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
-          { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK' }
-        ];
-        videoData.forEach((v) => {
-          const node = tpl.content.cloneNode(true);
-          const iframe = node.querySelector('iframe');
-          const title = node.querySelector('p');
-          if (iframe && title) {
-            iframe.src = v.src;
-            iframe.setAttribute('title', `Видео: ${v.title}`);
-            title.textContent = v.title;
-            grid.appendChild(node);
-          }
-        });
-      }
-    };
-
-    // Управление лоадером
-    const setupLoader = () => {
-      window.addEventListener('load', () => {
-        logAction('Загрузка завершена');
-        const loader = document.getElementById('loader');
-        const site = document.getElementById('siteContent');
-        if (loader && site) {
-          loader.classList.add('opacity-0', 'transition', 'duration-700');
-          loader.addEventListener('transitionend', () => {
-            loader.style.display = 'none';
-            site.classList.remove('hidden');
-            logAction('Лоадер скрыт');
-          }, { once: true });
+      },
+      { threshold: 0.1, rootMargin: '0px' }
+    );
+    const fadeElements = document.querySelectorAll('.fade-in, section');
+    if (fadeElements.length > 0) {
+      fadeElements.forEach((el) => {
+        if (el instanceof Element) {
+          io.observe(el);
         }
       });
+    } else {
+      logAction('Элементы для fade-in не найдены');
+    }
+  };
 
-      setTimeout(() => {
-        logAction('Таймаут 5с сработал');
-        const loader = document.getElementById('loader');
-        const site = document.getElementById('siteContent');
-        if (loader && site) {
+  // Инициализация видео
+  const setupVideos = () => {
+    const tpl = document.getElementById('ytCardTpl');
+    const grid = document.querySelector('#videos .mt-8.grid');
+    if (tpl && grid) {
+      const videoData = [
+        { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning' },
+        { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO' },
+        { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
+        { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
+        { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK' },
+        { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_1/', title: 'Новый эпичный стрим' },
+        { src: 'https://rutube.ru/play/embed/NEW_VIDEO_ID_2/', title: 'Обзор новой игры' }
+      ];
+      videoData.forEach((v) => {
+        const node = tpl.content.cloneNode(true);
+        const iframe = node.querySelector('iframe');
+        const title = node.querySelector('p');
+        if (iframe && title) {
+          iframe.src = v.src;
+          iframe.setAttribute('title', `Видео: ${v.title}`);
+          title.textContent = v.title;
+          grid.appendChild(node);
+        }
+      });
+    }
+  };
+
+  // Управление лоадером
+  const setupLoader = () => {
+    window.addEventListener('load', () => {
+      logAction('Загрузка завершена');
+      const loader = document.getElementById('loader');
+      const site = document.getElementById('siteContent');
+      if (loader && site) {
+        loader.classList.add('opacity-0', 'transition', 'duration-700');
+        loader.addEventListener('transitionend', () => {
           loader.style.display = 'none';
           site.classList.remove('hidden');
-        }
-      }, 5000);
-    };
+          logAction('Лоадер скрыт');
+        }, { once: true });
+      }
+    });
 
-    // Инициализация всех компонентов
-    const initializeApp = () => {
-      initializeTheme();
-      setupMenu();
-      setupFadeIn();
-      setupVideos();
-      setupLoader();
-    };
+    setTimeout(() => {
+      logAction('Таймаут 5с сработал');
+      const loader = document.getElementById('loader');
+      const site = document.getElementById('siteContent');
+      if (loader && site) {
+        loader.style.display = 'none';
+        site.classList.remove('hidden');
+      }
+    }, 5000);
+  };
 
-    // Запуск приложения
-    document.addEventListener('DOMContentLoaded', initializeApp);
-  </script>
+  // Инициализация всех компонентов
+  const initializeApp = () => {
+    initializeTheme();
+    setupMenu();
+    setupFadeIn();
+    setupVideos();
+    setupLoader();
+  };
+
+  // Запуск приложения
+  document.addEventListener('DOMContentLoaded', initializeApp);
+</script>
 </body>
 </html>
