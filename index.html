@@ -85,8 +85,10 @@
     .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; padding: 0.75rem 1.5rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
     .glass-button:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); }
     .glass-button:active { transform: scale(0.98); }
+    .glass-button.disabled { pointer-events: none; opacity: 0.6; background: rgba(255, 255, 255, 0.1); }
     .dark .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
     .dark .glass-button:hover { background: rgba(50, 50, 50, 0.25); }
+    .dark .glass-button.disabled { background: rgba(50, 50, 50, 0.1); }
     @supports not (backdrop-filter: blur(10px)) { .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; } .dark .glass-button { background: rgba(50, 50, 50, 0.5); } }
     #updateModal { display: flex; align-items: center; justify-content: center; }
     #updateModal > div { transform: translate(-50%, -50%); position: fixed; top: 50%; left: 50%; }
@@ -176,7 +178,7 @@
                 <i class="fa-solid fa-envelope"></i>
                 Контакты
               </a>
-              <a href="biography.html" class="glass-button">
+              <a href="biography.html" class="glass-button" id="bioButton">
                 <i class="fa-solid fa-user"></i>
                 Биография
               </a>
@@ -418,6 +420,11 @@
     console.log(message); // Включено для режима разработчика
   };
 
+  // Проверка режима разработчика
+  const isDevMode = () => {
+    return new URLSearchParams(window.location.search).get('dev') === 'true' || localStorage.getItem('devMode') === 'true';
+  };
+
   // Управление темой
   const root = document.documentElement;
   const setTheme = (theme) => {
@@ -546,6 +553,17 @@
     }, 5000);
   };
 
+  // Управление кнопкой биографии
+  const setupBioButton = () => {
+    const bioButton = document.getElementById('bioButton');
+    if (bioButton) {
+      if (!isDevMode()) {
+        bioButton.classList.add('disabled');
+        bioButton.setAttribute('disabled', 'disabled');
+      }
+    }
+  };
+
   // Инициализация всех компонентов
   const initializeApp = () => {
     initializeTheme();
@@ -553,10 +571,16 @@
     setupFadeIn();
     setupVideos();
     setupLoader();
+    setupBioButton();
   };
 
   // Запуск приложения
   document.addEventListener('DOMContentLoaded', initializeApp);
+
+  // Включение режима разработчика через URL (например, ?dev=true)
+  if (isDevMode()) {
+    logAction('Режим разработчика активирован');
+  }
   </script>
 </body>
 </html>
