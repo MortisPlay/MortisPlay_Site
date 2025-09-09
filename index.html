@@ -178,7 +178,7 @@
                 <i class="fa-solid fa-envelope"></i>
                 Контакты
               </a>
-              <a href="biography.html" class="glass-button" id="bioButton">
+              <a href="biography.html" class="glass-button disabled" id="bioButton">
                 <i class="fa-solid fa-user"></i>
                 Биография
               </a>
@@ -557,7 +557,10 @@
   const setupBioButton = () => {
     const bioButton = document.getElementById('bioButton');
     if (bioButton) {
-      if (!isDevMode()) {
+      if (isDevMode()) {
+        bioButton.classList.remove('disabled');
+        bioButton.removeAttribute('disabled');
+      } else {
         bioButton.classList.add('disabled');
         bioButton.setAttribute('disabled', 'disabled');
       }
