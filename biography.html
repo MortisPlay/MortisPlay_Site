@@ -4,89 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Mortis Play — Биография</title>
-  <meta name="description" content="Узнай больше о Mortis Play: биография, путь и увлечения." />
+  <meta name="description" content="Погрузись в полную биографию Mortis Play: путь, достижения и увлечения." />
   <meta name="robots" content="index,follow" />
   <link rel="icon" href="assets/favicon.ico" />
   <style>
-    @keyframes floaty { 0%,100%{transform:translateY(0) translateX(0)} 50%{transform:translateY(-20px) translateX(10px)} }
+    @keyframes floaty { 0%, 100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-20px) translateX(10px); } }
     @keyframes breathing { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.05); } }
     @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes slide-in { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .6; } }
-    @keyframes spin { 100%{transform:rotate(360deg)} }
-    .card-hover{transition:transform .25s ease, box-shadow .25s ease}
-    .card-hover:hover{transform:translateY(-4px); box-shadow:0 12px 24px rgb(0 0 0 / .15)}
-    .fade-in{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease}
-    .fade-in.is-visible{opacity:1; transform:none}
-    .glass{backdrop-filter:saturate(160%) blur(8px); background:linear-gradient(180deg, rgb(255 255 255 / .7), rgb(255 255 255 / .55))}
-    .dark .glass{background:linear-gradient(180deg, rgb(17 24 39 / .7), rgb(17 24 39 / .55))}
-    #loader { position: fixed; inset:0; z-index:1000; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#6366f1,#ec4899); }
-    .loader-spin { width:64px; height:64px; border:6px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin 1s linear infinite; }
-    #sidebarMenu { box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
-    #sidebarMenu.open { transform: translateX(0); }
-    .profile-button { display: none; }
-    .profile-button .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; padding: 0.75rem 1.5rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
-    .profile-button .glass-button.login { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); }
-    .profile-button .glass-button.profile { background: rgba(128, 128, 128, 0.2); border-color: rgba(128, 128, 128, 0.5); }
-    .profile-button .glass-button:hover { box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); transform: scale(1.05); }
-    .profile-button .glass-button:active { transform: scale(0.98); }
-    .dark .profile-button .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
-    .dark .profile-button .glass-button.login { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); }
-    .dark .profile-button .glass-button.profile { background: rgba(128, 128, 128, 0.2); border-color: rgba(128, 128, 128, 0.5); }
-    @media (max-width: 640px) { 
-      .profile-button { position: fixed; top: 0.5rem; right: 0.5rem; margin: 0; } 
-      .profile-button .glass-button { padding: 0.5rem 1rem; font-size: 0.9rem; } 
-      #welcome .lg:grid-cols-2 { grid-template-columns: 1fr; }
-      #welcome video { max-width: 100%; height: auto; }
-      #welcome .mt-4.lg\:absolute { position: static; margin-top: 1rem; width: 100%; }
-    }
-    #loginModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); z-index: 100000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
-    #loginModal.active { visibility: visible; opacity: 1; display: flex; align-items: center; justify-content: center; }
-    #loginModal .modal-content { background: linear-gradient(135deg, rgba(0, 123, 255, 0.2), rgba(0, 123, 255, 0.1)); backdrop-filter: blur(15px); border: 1px solid rgba(0, 123, 255, 0.4); border-radius: 1rem; padding: 2rem; width: 100%; max-width: 450px; color: #ffffff; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); text-align: center; overflow-y: auto; max-height: 80vh; }
-    .dark #loginModal .modal-content { background: linear-gradient(135deg, rgba(0, 80, 160, 0.2), rgba(0, 80, 160, 0.1)); border-color: rgba(0, 80, 160, 0.4); }
-    #loginModal .modal-content h3 { font-size: 1.5rem; margin-bottom: 1rem; }
-    #loginModal .modal-content .tab-content { margin-top: 1rem; }
-    #loginModal .modal-content input { width: 100%; padding: 0.75rem; margin: 0.75rem 0; border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 0.5rem; background: rgba(255, 255, 255, 0.1); color: #ffffff; transition: border-color 0.3s ease; }
-    #loginModal .modal-content input:focus { border-color: rgba(0, 123, 255, 0.7); outline: none; }
-    #loginModal .modal-content input::placeholder { color: rgba(255, 255, 255, 0.7); }
-    #loginModal .modal-content button { margin-top: 1.5rem; width: 100%; padding: 0.75rem; border-radius: 0.5rem; background: rgba(0, 123, 255, 0.3); border: none; color: #ffffff; transition: background 0.3s ease; }
-    #loginModal .modal-content button:hover { background: rgba(0, 123, 255, 0.5); }
-    #loginModal .tab-buttons { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
-    #loginModal .tab-buttons button { flex: 1; padding: 0.75rem; border: none; border-radius: 0.5rem; background: rgba(255, 255, 255, 0.2); cursor: pointer; transition: background 0.3s ease; }
-    #loginModal .tab-buttons button.active { background: rgba(0, 123, 255, 0.3); }
-    #loginModal .tab-buttons button:hover { background: rgba(255, 255, 255, 0.3); }
-    @media (max-width: 640px) { #loginModal .modal-content { padding: 1.5rem; max-width: 90%; } }
-    .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; padding: 0.75rem 1.5rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
-    .glass-button:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); }
-    .glass-button:active { transform: scale(0.98); }
-    .dark .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
-    .dark .glass-button:hover { background: rgba(50, 50, 50, 0.25); }
-    @supports not (backdrop-filter: blur(10px)) { .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; } .dark .glass-button { background: rgba(50, 50, 50, 0.5); } }
-    #updateModal { display: flex; align-items: center; justify-content: center; }
-    #updateModal > div { transform: translate(-50%, -50%); position: fixed; top: 50%; left: 50%; }
-    #updateModal.hidden { display: none !important; }
+    .glass { backdrop-filter: saturate(160%) blur(8px); background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.55)); }
+    .dark .glass { background: linear-gradient(180deg, rgba(17, 24, 39, 0.7), rgba(17, 24, 39, 0.55)); }
+    #loader { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6366f1, #ec4899); }
+    .loader-spin { width: 64px; height: 64px; border: 6px solid rgba(255, 255, 255, 0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
     .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #fff5f5, #ffffff, #e0f2fe); }
     .dark .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #4b5bd1); }
-    .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
-    .grid { display: grid; }
-    .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     @media (max-width: 640px) { 
-      .glass { backdrop-filter: none; background: linear-gradient(180deg, rgb(255 255 255 / .9), rgb(255 255 255 / .8)); } 
-      .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .9), rgb(17 24 39 / .8)); } 
-      .card-hover:hover { transform: none; } 
-      .animate-[floaty_5s_ease-in-out_infinite] { animation: none; } 
+      .glass { backdrop-filter: none; background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8)); } 
+      .dark .glass { background: linear-gradient(180deg, rgba(17, 24, 39, 0.9), rgba(17, 24, 39, 0.8)); } 
       iframe, video, img { max-width: 100%; height: auto; } 
     }
-    @media (min-width: 1024px) {
-      header { position: sticky; top: 0; z-index: 50; background: white/80 dark:bg-slate-900/80; }
-      nav { height: 4rem; }
-      nav a { padding: 0.75rem 1rem; }
-      nav a:hover { background: slate-100 dark:bg-slate-800; }
-    }
-    .animate-fade-in-up { animation: fade-in-up 1s ease-out forwards; }
-    .animate-slide-in { animation: slide-in 1s ease-out forwards; }
-    .animate-slide-in.delay-200 { animation-delay: 0.2s; }
-    .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     .neon-title {
       transition: all 0.5s ease;
     }
@@ -108,55 +45,14 @@
     .animate-[breathing_10s_ease-in-out_infinite] {
       animation: breathing 10s ease-in-out infinite;
     }
+    .animate-fade-in-up { animation: fade-in-up 1s ease-out forwards; }
+    .animate-slide-in { animation: slide-in 1s ease-out forwards; }
+    .animate-slide-in.delay-200 { animation-delay: 0.2s; }
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-950 text-slate-800 dark:text-slate-100 selection:bg-purple-200 selection:text-slate-900">
   <div id="loader"><div class="loader-spin" aria-label="Загрузка сайта"></div></div>
   <div id="siteContent" class="hidden">
-    <header class="sticky top-0 z-50 border-b border-slate-200/60 dark:border-slate-700/60 bg-white/80 dark:bg-slate-900/80 glass">
-      <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative" aria-label="Навигация">
-        <div class="flex items-center gap-2">
-          <button id="menuToggle" class="inline-flex sm:hidden items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium ring-1 ring-slate-300/70 dark:ring-slate-600" aria-controls="sidebarMenu" aria-expanded="false">
-            <span>Меню</span>
-            <i class="fa-solid fa-bars"></i>
-          </button>
-          <a href="/" class="flex items-center gap-2 font-semibold tracking-tight text-slate-900 dark:text-white">
-            <img src="assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='assets/fallback.jpg';">
-            <span class="hidden sm:inline">Mortis Play</span>
-          </a>
-        </div>
-        <div class="hidden sm:flex items-center gap-2">
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="/">Главная</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="biography.html">Биография</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#videos">Видео</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#projects">Проекты</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
-        </div>
-      </nav>
-      <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 sm:hidden glass">
-        <div class="p-4">
-          <button id="closeMenu" class="absolute top-4 right-4 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-          <div class="flex items-center gap-2 mb-6">
-            <img src="assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='assets/fallback.jpg';">
-            <span class="font-semibold tracking-tight text-slate-900 dark:text-white">Mortis Play</span>
-          </div>
-          <nav class="space-y-2">
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="/">Главная</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="biography.html">Биография</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#videos">Видео</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#projects">Проекты</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
-          </nav>
-        </div>
-      </div>
-    </header>
-
     <section id="biography-page" class="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-black text-white">
       <!-- Параллакс-декор с дыханием -->
       <div class="absolute -top-20 -left-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-[floaty_8s_ease-in-out_infinite,breathing_6s_ease-in-out_infinite]"></div>
@@ -176,7 +72,7 @@
               <i class="fa-solid fa-user"></i> Обо мне
             </h2>
             <p class="mt-4 text-lg text-slate-200 leading-relaxed">
-              Привет! Я Mortis Play, начал свой путь в 2020 году с простых видео. Теперь я взрываю вайб мемами, стримами и эпичным контентом. Мой первый вирусный мем и сезон «Бароны» — это только начало! 🚀
+              Привет! Меня зовут Mortis Play, и мой путь в мире контент-креации начался в 2020 году с простых видео, снятых на телефон. Тогда я только учился монтировать и находить свой стиль, но уже мечтал о больших проектах. Со временем я освоил редактирование, экспериментировал с мемами и начал стримить, что принесло мне первую волну популярности. Мой первый вирусный мем, посвящённый игровым фейлам, набрал тысячи просмотров, а сезон «Бароны» стал переломным моментом — я получил поддержку от сообщества и начал сотрудничать с другими креаторами. Сегодня я создаю эпичный контент, сочетающий юмор, гейминг и уникальный вайб, а мой канал продолжает расти. 🚀 Моя цель — вдохновлять других раскрывать свои таланты и создавать что-то своё!
             </p>
           </div>
 
@@ -186,10 +82,13 @@
               <i class="fa-solid fa-circle-info"></i> Факты
             </h2>
             <ul class="mt-4 space-y-3 text-lg text-slate-200">
-              <li class="flex items-center gap-2"><i class="fa-solid fa-id-card text-purple-300"></i> <span class="font-medium">Имя:</span> ???</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-id-card text-purple-300"></i> <span class="font-medium">Имя:</span> Mortis (настоящее имя предпочитаю держать в тайне 😄)</li>
               <li class="flex items-center gap-2"><i class="fa-solid fa-cake-candles text-pink-300"></i> <span class="font-medium">Дата рождения:</span> 5 августа 2009 🎂</li>
               <li class="flex items-center gap-2"><i class="fa-solid fa-hourglass-half text-yellow-300"></i> <span class="font-medium">Возраст:</span> 16 лет</li>
-              <li class="flex items-center gap-2"><i class="fa-solid fa-gamepad text-green-300"></i> <span class="font-medium">Увлечения:</span> Игры 🎮, мемы 😂, контент 📹</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-gamepad text-green-300"></i> <span class="font-medium">Увлечения:</span> Игры (особенно CS2 и PEAK), мемы, создание контента, изучение графического дизайна 🎨</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-trophy text-orange-300"></i> <span class="font-medium">Достижения:</span> Первый вирусный мем (2022), 10k подписчиков (2023), участие в коллабах с Johnny Drill</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-headphones text-blue-300"></i> <span class="font-medium">Любимая музыка:</span> Электронная и хип-хоп, особенно треки для стримов</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-laptop-code text-indigo-300"></i> <span class="font-medium">Навыки:</span> Монтаж (Adobe Premiere), базовое программирование, создание мемов</li>
             </ul>
           </div>
         </div>
@@ -202,12 +101,6 @@
         </div>
       </div>
     </section>
-
-    <footer class="border-t border-slate-200/60 dark:border-slate-700/60 py-8">
-      <div class="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-sm opacity-80">© 2025 Mortis Play. Все права защищены.</p>
-      </div>
-    </footer>
   </div>
 
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
@@ -215,81 +108,6 @@
     // Функция логирования
     const logAction = (message) => {
       // Для отладки раскомментируй: console.log(message);
-    };
-
-    // Управление темой
-    const root = document.documentElement;
-    const setTheme = (theme) => {
-      logAction(`Тема установлена: ${theme}`);
-      localStorage.setItem('theme', theme);
-      root.classList.toggle('dark', theme === 'dark');
-    };
-
-    // Инициализация темы
-    const initializeTheme = () => {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme) {
-        setTheme(savedTheme);
-      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        setTheme('dark');
-      } else {
-        setTheme('light');
-      }
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) =>
-        setTheme(e.matches ? 'dark' : 'light')
-      );
-    };
-
-    // Обработчик меню
-    const setupMenu = () => {
-      const toggle = document.getElementById('menuToggle');
-      const close = document.getElementById('closeMenu');
-      const sidebar = document.getElementById('sidebarMenu');
-
-      if (toggle && sidebar) {
-        toggle.addEventListener('click', (e) => {
-          e.preventDefault();
-          sidebar.classList.toggle('open');
-          toggle.setAttribute('aria-expanded', sidebar.classList.contains('open'));
-        });
-      }
-      if (close && sidebar) {
-        close.addEventListener('click', (e) => {
-          e.preventDefault();
-          sidebar.classList.remove('open');
-          if (toggle) toggle.setAttribute('aria-expanded', 'false');
-        });
-      }
-      document.addEventListener('click', (e) => {
-        if (sidebar && toggle && !sidebar.contains(e.target) && e.target !== toggle) {
-          sidebar.classList.remove('open');
-          if (toggle) toggle.setAttribute('aria-expanded', 'false');
-        }
-      });
-    };
-
-    // Настройка анимации появления
-    const setupFadeIn = () => {
-      const io = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-            }
-          });
-        },
-        { threshold: 0.1, rootMargin: '0px' }
-      );
-      const fadeElements = document.querySelectorAll('.fade-in, section');
-      if (fadeElements.length > 0) {
-        fadeElements.forEach((el) => {
-          if (el instanceof Element) {
-            io.observe(el);
-          }
-        });
-      } else {
-        logAction('Элементы для fade-in не найдены');
-      }
     };
 
     // Управление лоадером
@@ -319,16 +137,8 @@
       }, 5000);
     };
 
-    // Инициализация всех компонентов
-    const initializeApp = () => {
-      initializeTheme();
-      setupMenu();
-      setupFadeIn();
-      setupLoader();
-    };
-
     // Запуск приложения
-    document.addEventListener('DOMContentLoaded', initializeApp);
+    document.addEventListener('DOMContentLoaded', setupLoader);
   </script>
 </body>
 </html>
