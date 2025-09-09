@@ -8,10 +8,12 @@
   <meta name="robots" content="index,follow" />
   <link rel="icon" href="assets/favicon.ico" />
   <style>
-    @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+    @keyframes floaty { 0%,100%{transform:translateY(0) translateX(0)} 50%{transform:translateY(-20px) translateX(10px)} }
+    @keyframes breathing { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.05); } }
     @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes slide-in { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .6; } }
+    @keyframes spin { 100%{transform:rotate(360deg)} }
     .card-hover{transition:transform .25s ease, box-shadow .25s ease}
     .card-hover:hover{transform:translateY(-4px); box-shadow:0 12px 24px rgb(0 0 0 / .15)}
     .fade-in{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease}
@@ -20,7 +22,6 @@
     .dark .glass{background:linear-gradient(180deg, rgb(17 24 39 / .7), rgb(17 24 39 / .55))}
     #loader { position: fixed; inset:0; z-index:1000; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#6366f1,#ec4899); }
     .loader-spin { width:64px; height:64px; border:6px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin 1s linear infinite; }
-    @keyframes spin { 100%{transform:rotate(360deg)} }
     #sidebarMenu { box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
     #sidebarMenu.open { transform: translateX(0); }
     .profile-button { display: none; }
@@ -86,6 +87,27 @@
     .animate-slide-in { animation: slide-in 1s ease-out forwards; }
     .animate-slide-in.delay-200 { animation-delay: 0.2s; }
     .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    .neon-title {
+      transition: all 0.5s ease;
+    }
+    .neon-title:hover {
+      filter: brightness(1.3);
+    }
+    .animate-[floaty_8s_ease-in-out_infinite] {
+      animation: floaty 8s ease-in-out infinite;
+    }
+    .animate-[floaty_10s_ease-in-out_infinite] {
+      animation: floaty 10s ease-in-out infinite;
+    }
+    .animate-[breathing_6s_ease-in-out_infinite] {
+      animation: breathing 6s ease-in-out infinite;
+    }
+    .animate-[breathing_8s_ease-in-out_infinite] {
+      animation: breathing 8s ease-in-out infinite;
+    }
+    .animate-[breathing_10s_ease-in-out_infinite] {
+      animation: breathing 10s ease-in-out infinite;
+    }
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-950 text-slate-800 dark:text-slate-100 selection:bg-purple-200 selection:text-slate-900">
@@ -135,28 +157,46 @@
       </div>
     </header>
 
-    <section id="biography-page" class="relative min-h-screen overflow-hidden">
-      <div class="mx-auto max-w-5xl px-4 py-24 text-center">
-        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 animate-fade-in-up">
+    <section id="biography-page" class="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-black text-white">
+      <!-- Параллакс-декор с дыханием -->
+      <div class="absolute -top-20 -left-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-[floaty_8s_ease-in-out_infinite,breathing_6s_ease-in-out_infinite]"></div>
+      <div class="absolute top-60 -right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-[floaty_10s_ease-in-out_infinite,breathing_8s_ease-in-out_infinite]"></div>
+      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[50rem] bg-indigo-500/10 rounded-full blur-[200px] animate-[breathing_10s_ease-in-out_infinite]"></div>
+
+      <div class="mx-auto max-w-5xl px-4 py-24 relative z-10">
+        <!-- Заголовок -->
+        <h1 class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] animate-fade-in-up text-center transition-all duration-500 hover:drop-shadow-[0_0_35px_rgba(200,100,255,0.9)] hover:scale-105">
           Моя история
         </h1>
-        <div class="mt-12 space-y-8">
-          <div class="bg-white/80 dark:bg-slate-800/80 glass rounded-3xl p-8 shadow-lg animate-slide-in">
-            <h2 class="text-2xl font-semibold text-indigo-600 dark:text-indigo-400">Обо мне</h2>
-            <p class="mt-4 text-lg text-slate-600 dark:text-slate-300">
+
+        <div class="mt-16 grid gap-10 md:grid-cols-2">
+          <!-- Карточка "Обо мне" -->
+          <div class="backdrop-blur-lg bg-white/10 border border-purple-400/30 rounded-3xl p-8 shadow-[0_0_25px_rgba(200,100,255,0.2)] hover:shadow-[0_0_40px_rgba(200,100,255,0.5)] transition-all duration-500 animate-slide-in">
+            <h2 class="text-2xl font-semibold text-purple-300 flex items-center gap-2">
+              <i class="fa-solid fa-user"></i> Обо мне
+            </h2>
+            <p class="mt-4 text-lg text-slate-200 leading-relaxed">
               Привет! Я Mortis Play, начал свой путь в 2020 году с простых видео. Теперь я взрываю вайб мемами, стримами и эпичным контентом. Мой первый вирусный мем и сезон «Бароны» — это только начало! 🚀
             </p>
           </div>
-          <div class="bg-white/80 dark:bg-slate-800/80 glass rounded-3xl p-8 shadow-lg animate-slide-in delay-200">
-            <h2 class="text-2xl font-semibold text-indigo-600 dark:text-indigo-400">Факты</h2>
-            <ul class="mt-4 space-y-3 text-lg text-slate-600 dark:text-slate-300">
-              <li><span class="font-medium">Имя:</span> ???</li>
-              <li><span class="font-medium">Дата рождения:</span> 5 августа 2009 🎂</li>
-              <li><span class="font-medium">Возраст:</span> 16 лет</li>
-              <li><span class="font-medium">Увлечения:</span> Игры 🎮, мемы 😂, контент 📹</li>
+
+          <!-- Карточка "Факты" -->
+          <div class="backdrop-blur-lg bg-white/10 border border-pink-400/30 rounded-3xl p-8 shadow-[0_0_25px_rgba(255,100,200,0.2)] hover:shadow-[0_0_40px_rgba(255,100,200,0.5)] transition-all duration-500 animate-slide-in delay-200">
+            <h2 class="text-2xl font-semibold text-pink-300 flex items-center gap-2">
+              <i class="fa-solid fa-circle-info"></i> Факты
+            </h2>
+            <ul class="mt-4 space-y-3 text-lg text-slate-200">
+              <li class="flex items-center gap-2"><i class="fa-solid fa-id-card text-purple-300"></i> <span class="font-medium">Имя:</span> ???</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-cake-candles text-pink-300"></i> <span class="font-medium">Дата рождения:</span> 5 августа 2009 🎂</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-hourglass-half text-yellow-300"></i> <span class="font-medium">Возраст:</span> 16 лет</li>
+              <li class="flex items-center gap-2"><i class="fa-solid fa-gamepad text-green-300"></i> <span class="font-medium">Увлечения:</span> Игры 🎮, мемы 😂, контент 📹</li>
             </ul>
           </div>
-          <a href="/" class="glass-button animate-pulse">
+        </div>
+
+        <!-- Кнопка -->
+        <div class="mt-12 text-center">
+          <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-[0_0_20px_rgba(200,100,255,0.5)] hover:shadow-[0_0_30px_rgba(200,100,255,0.8)] inline-flex items-center gap-2">
             <i class="fa-solid fa-arrow-left"></i> На главную
           </a>
         </div>
@@ -252,32 +292,6 @@
       }
     };
 
-    // Инициализация видео
-    const setupVideos = () => {
-      const tpl = document.getElementById('ytCardTpl');
-      const grid = document.querySelector('#videos .mt-8.grid');
-      if (tpl && grid) {
-        const videoData = [
-          { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning' },
-          { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO' },
-          { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)' },
-          { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!' },
-          { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK' }
-        ];
-        videoData.forEach((v) => {
-          const node = tpl.content.cloneNode(true);
-          const iframe = node.querySelector('iframe');
-          const title = node.querySelector('p');
-          if (iframe && title) {
-            iframe.src = v.src;
-            iframe.setAttribute('title', `Видео: ${v.title}`);
-            title.textContent = v.title;
-            grid.appendChild(node);
-          }
-        });
-      }
-    };
-
     // Управление лоадером
     const setupLoader = () => {
       window.addEventListener('load', () => {
@@ -310,7 +324,6 @@
       initializeTheme();
       setupMenu();
       setupFadeIn();
-      setupVideos();
       setupLoader();
     };
 
