@@ -64,6 +64,7 @@
       #welcome .lg:grid-cols-2 { grid-template-columns: 1fr; }
       #welcome video { max-width: 100%; height: auto; }
       #welcome .mt-4.lg\:absolute { position: static; margin-top: 1rem; width: 100%; }
+      #menuToggle { padding: 0.75rem 1rem; font-size: 1.1rem; } /* Увеличение области клика */
     }
     #loginModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); z-index: 100000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
     #loginModal.active { visibility: visible; opacity: 1; display: flex; align-items: center; justify-content: center; }
@@ -175,6 +176,10 @@
                 <i class="fa-solid fa-envelope"></i>
                 Контакты
               </a>
+              <a href="biography.html" class="glass-button">
+                <i class="fa-solid fa-user"></i>
+                Биография
+              </a>
             </div>
             <div class="mt-6 flex items-center gap-6 text-sm text-slate-600 dark:text-slate-300">
               <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">421</span></div>
@@ -223,11 +228,12 @@
               </div>
               <p class="mt-3 text-sm text-slate-600 dark:text-slate-300"></p>
             </template>
-        </div>
-        <div class="mt-6 text-center">
-          <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button">
-            <i class="fa-brands fa-youtube"></i> Смотреть все видео
-          </a>
+          </div>
+          <div class="mt-6 text-center">
+            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button">
+              <i class="fa-brands fa-youtube"></i> Смотреть все видео
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -407,10 +413,9 @@
   </div>
 
   <script nonce="${nonce}">
-  // Функция логирования (без вывода в консоль)
+  // Функция логирования
   const logAction = (message) => {
-    // Логирование отключено для производительности
-    console.log = () => {};
+    console.log(message); // Включено для режима разработчика
   };
 
   // Управление темой
@@ -443,14 +448,21 @@
     const sidebar = document.getElementById('sidebarMenu');
 
     if (toggle && sidebar) {
-      toggle.addEventListener('click', () => sidebar.classList.add('open'));
+      toggle.addEventListener('click', () => {
+        sidebar.classList.add('open');
+        toggle.setAttribute('aria-expanded', 'true');
+      });
     }
     if (close && sidebar) {
-      close.addEventListener('click', () => sidebar.classList.remove('open'));
+      close.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      });
     }
     document.addEventListener('click', (e) => {
       if (sidebar && toggle && !sidebar.contains(e.target) && e.target !== toggle) {
         sidebar.classList.remove('open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
       }
     });
   };
@@ -545,6 +557,6 @@
 
   // Запуск приложения
   document.addEventListener('DOMContentLoaded', initializeApp);
-</script>
+  </script>
 </body>
 </html>
