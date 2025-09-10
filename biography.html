@@ -32,6 +32,9 @@
     .neon-title:hover {
       filter: brightness(1.3);
     }
+    @media (max-width: 640px) {
+      .md:grid-cols-4 { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-black text-white">
@@ -44,10 +47,10 @@
     <div class="mx-auto max-w-5xl px-4 py-24 relative z-10">
       <!-- Заголовок -->
       <h1 class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] text-center">
-        Моя история
+        Биография
       </h1>
 
-      <div class="mt-16 grid gap-10 md:grid-cols-4">
+      <div class="mt-16 grid gap-10">
         <!-- Обо мне -->
         <div class="backdrop-blur-lg bg-white/10 border border-purple-400/30 rounded-3xl p-8 shadow-lg">
           <h2 class="text-2xl font-semibold text-purple-300 flex items-center gap-2">
