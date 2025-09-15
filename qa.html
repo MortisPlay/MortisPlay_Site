@@ -58,9 +58,6 @@
   </style>
 </head>
 <body class="min-h-screen">
-  <div id="loader" style="position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center;">
-    <div style="width: 64px; height: 64px; border: 6px solid rgba(255, 255, 255, 0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-  </div>
   <main class="relative min-h-screen overflow-hidden">
     <div class="absolute -top-20 -left-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-floaty"></div>
     <div class="absolute top-60 -right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-floaty-slow"></div>
@@ -75,7 +72,7 @@
             <i class="fa-solid fa-question-circle"></i> Задать вопрос
           </h2>
           <p class="mt-4 text-lg text-slate-200 leading-relaxed">
-            Хочешь узнать что-то крутое? Задай свой вопрос в Telegram, и я отвечу на сайте! 😎
+            Хочешь узнать что-то крутое? Задай свой вопрос в Telegram, и я отвечу на лучшие в стримах или на сайте! 😎
           </p>
           <div class="mt-6 flex justify-center">
             <a href="https://t.me/MortisplayQABot" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg flex items-center gap-2">
@@ -100,15 +97,6 @@
     </div>
   </main>
   <script>
-    // Лоадер
-    window.addEventListener('load', () => {
-      const loader = document.getElementById('loader');
-      setTimeout(() => {
-        loader.style.opacity = '0';
-        setTimeout(() => loader.remove(), 500);
-      }, 2000);
-    });
-
     // Анимация появления
     const setupFadeIn = () => {
       const io = new IntersectionObserver(
