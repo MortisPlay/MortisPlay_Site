@@ -1,58 +1,83 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mortis Play — Биография</title>
   <meta name="description" content="Погрузись в полную биографию Mortis Play: путь, достижения и увлечения." />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Mortis Play — Биография" />
+  <meta property="og:description" content="История, факты и вайб Mortis Play." />
+  <meta property="og:image" content="https://mortisplay.ru/assets/og-image-bio.jpg" />
+  <meta property="og:url" content="https://mortisplay.ru/biography.html" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mortis Play — Биография" />
+  <meta name="twitter:description" content="История, факты и вайб Mortis Play." />
+  <meta name="twitter:image" content="https://mortisplay.ru/assets/twitter-image-bio.jpg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <!-- Подключение Tailwind CSS через CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });
+  </script>
   <style>
-    @keyframes floaty {
-      0%, 100% { transform: translateY(0) translateX(0); }
-      50% { transform: translateY(-20px) translateX(10px); }
-    }
-    @keyframes breathing {
-      0%, 100% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.05); }
-    }
-    .animate-floaty {
-      animation: floaty 8s ease-in-out infinite;
-    }
-    .animate-floaty-slow {
-      animation: floaty 10s ease-in-out infinite;
-    }
-    .animate-breathing {
-      animation: breathing 10s ease-in-out infinite;
-    }
-    .neon-title {
-      transition: all 0.5s ease;
-    }
-    .neon-title:hover {
-      filter: brightness(1.3);
-    }
+    @keyframes floaty { 0%,100%{transform:translateY(0) translateX(0)} 50%{transform:translateY(-20px) translateX(10px)} }
+    @keyframes breathing { 0%,100%{opacity:0.3; transform:scale(1)} 50%{opacity:0.6; transform:scale(1.05)} }
+    .animate-floaty { animation: floaty 8s ease-in-out infinite; }
+    .animate-floaty-slow { animation: floaty 10s ease-in-out infinite; }
+    .animate-breathing { animation: breathing 10s ease-in-out infinite; }
+    .neon-title { transition: all 0.5s ease; }
+    .neon-title:hover { filter: brightness(1.3); }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.is-visible { opacity: 1; transform: translateY(0); }
+    .timeline-item { position: relative; }
+    .timeline-item:last-child .timeline-line { display: none; }
+    .dark .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #4b5bd1); }
+    .dark .text-white { color: #e5e7eb; }
+    .dark .bg-white\/10 { background: rgba(50, 50, 50, 0.15); }
+    .dark .border-purple-400\/30 { border-color: rgba(200, 200, 200, 0.2); }
+    .dark .text-purple-300 { color: #a5b4fc; }
+    .dark .text-pink-300 { color: #f9a8d4; }
+    .dark .text-indigo-300 { color: #a5b4fc; }
+    .dark .text-green-300 { color: #6ee7b7; }
+    .dark .text-yellow-300 { color: #fcd34d; }
+    .dark .text-red-300 { color: #f87171; }
+    .dark .neon-title { background: linear-gradient(to right, #a5b4fc, #f9a8d4, #a5b4fc); }
     @media (max-width: 640px) {
-      .md:grid-cols-4 { grid-template-columns: 1fr; }
+      .md\:grid-cols-4 { grid-template-columns: 1fr; }
+      .animate-floaty, .animate-floaty-slow, .animate-breathing { animation: none; }
+      .text-4xl { font-size: 2rem; }
+      .text-2xl { font-size: 1.5rem; }
+      .px-4 { padding-left: 1rem; padding-right: 1rem; }
+      .py-24 { padding-top: 4rem; padding-bottom: 4rem; }
+      .w-80, .w-72, .w-[50rem] { width: 100%; }
+      .rounded-3xl { border-radius: 1rem; }
+      .backdrop-blur-lg { backdrop-filter: none; background: rgba(255, 255, 255, 0.2); }
+      .dark .backdrop-blur-lg { background: rgba(50, 50, 50, 0.2); }
     }
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-black text-white">
+  <div id="loader" style="position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center;">
+    <div style="width: 64px; height: 64px; border: 6px solid rgba(255, 255, 255, 0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+  </div>
   <main class="relative min-h-screen overflow-hidden">
-    <!-- Параллакс элементы -->
     <div class="absolute -top-20 -left-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-floaty"></div>
     <div class="absolute top-60 -right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-floaty-slow"></div>
     <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[50rem] bg-indigo-500/10 rounded-full blur-[200px] animate-breathing"></div>
-
+    <button id="themeToggle" class="fixed top-4 right-4 p-3 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg" aria-label="Переключить тему">
+      <i class="fa-solid fa-sun"></i>
+    </button>
     <div class="mx-auto max-w-5xl px-4 py-24 relative z-10">
-      <!-- Заголовок -->
-      <h1 class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] text-center">
+      <h1 class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] text-center fade-in">
         Биография
       </h1>
-
       <div class="mt-16 grid gap-10">
-        <!-- Обо мне -->
-        <div class="backdrop-blur-lg bg-white/10 border border-purple-400/30 rounded-3xl p-8 shadow-lg">
+        <div class="backdrop-blur-lg bg-white/10 border border-purple-400/30 rounded-3xl p-8 shadow-lg fade-in">
           <h2 class="text-2xl font-semibold text-purple-300 flex items-center gap-2">
             <i class="fa-solid fa-user"></i> Обо мне
           </h2>
@@ -63,46 +88,68 @@
             Со временем я улучшил звук, добавил спецэффекты и начал экспериментировать с форматами — от мемов до стримов. 
             Для меня главное — это эмоции зрителей, а не только цифры в статистике.
           </p>
+          <div class="mt-6 flex justify-center gap-4">
+            <a href="https://t.me/Mortisplay_YT" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg flex items-center gap-2">
+              <i class="fa-brands fa-telegram"></i> Telegram
+            </a>
+            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-pink-500 hover:to-red-500 transition-all duration-500 shadow-lg flex items-center gap-2">
+              <i class="fa-brands fa-youtube"></i> YouTube
+            </a>
+            <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-teal-500 hover:to-green-500 transition-all duration-500 shadow-lg flex items-center gap-2">
+              <i class="fa-solid fa-hand-holding-dollar"></i> Поддержать
+            </a>
+          </div>
         </div>
-
-        <!-- Факты -->
-        <div class="backdrop-blur-lg bg-white/10 border border-pink-400/30 rounded-3xl p-8 shadow-lg">
+        <div class="backdrop-blur-lg bg-white/10 border border-indigo-400/30 rounded-3xl p-8 shadow-lg fade-in">
+          <h2 class="text-2xl font-semibold text-indigo-300 flex items-center gap-2">
+            <i class="fa-solid fa-timeline"></i> Мой путь
+          </h2>
+          <div class="mt-4 space-y-6">
+            <div class="timeline-item relative pl-8">
+              <div class="absolute left-0 top-0 w-3 h-3 bg-purple-400 rounded-full"></div>
+              <div class="timeline-line absolute left-1.5 top-3 h-[calc(100%-0.75rem)] w-0.5 bg-indigo-400/50"></div>
+              <h3 class="text-lg font-semibold text-purple-300">2020: Первый запуск на Youtube</h3>
+              <p class="mt-1 text-sm text-slate-200">Всё началось с одного видеообзора на консоль и всякая всячина... 😎</p>
+            </div>
+            <div class="timeline-item relative pl-8">
+              <div class="absolute left-0 top-0 w-3 h-3 bg-purple-400 rounded-full"></div>
+              <div class="timeline-line absolute left-1.5 top-3 h-[calc(100%-0.75rem)] w-0.5 bg-indigo-400/50"></div>
+              <h3 class="text-lg font-semibold text-purple-300">2021: Запуск нового уровня</h3>
+              <p class="mt-1 text-sm text-slate-200">Первый ролик на YouTube в новом уровне — и понеслась!</p>
+            </div>
+            <div class="timeline-item relative pl-8">
+              <div class="absolute left-0 top-0 w-3 h-3 bg-purple-400 rounded-full"></div>
+              <h3 class="text-lg font-semibold text-purple-300">2025: Запуск сайта</h3>
+              <p class="mt-1 text-sm text-slate-200">Создал mortisplay.ru — мой вайб в одном месте!</p>
+            </div>
+          </div>
+        </div>
+        <div class="backdrop-blur-lg bg-white/10 border border-pink-400/30 rounded-3xl p-8 shadow-lg fade-in">
           <h2 class="text-2xl font-semibold text-pink-300 flex items-center gap-2">
             <i class="fa-solid fa-circle-info"></i> Факты
           </h2>
           <ul class="mt-4 space-y-3 text-lg text-slate-200">
-            <li><i class="fa-solid fa-id-card text-purple-300"></i> <span class="font-medium">Имя:</span> ???</li>
+            <li><i class="fa-solid fa-id-card text-purple-300"></i> <span class="font-medium">Имя:</span> ? (в народе — Мортис 😎)</li>
             <li><i class="fa-solid fa-cake-candles text-pink-300"></i> <span class="font-medium">Дата рождения:</span> 5 августа 2009 🎂</li>
             <li><i class="fa-solid fa-hourglass-half text-yellow-300"></i> <span class="font-medium">Возраст:</span> 16 лет</li>
-            <li><i class="fa-solid fa-gamepad text-green-300"></i> <span class="font-medium">Увлечения:</span> Игры 🎮, мемы 😂, монтаж 📹</li>
-            <li><i class="fa-solid fa-camera-movie text-red-300"></i> <span class="font-medium">Любимый формат:</span> динамичные мемы с неожиданными переходами</li>
-            <li><i class="fa-solid fa-star text-indigo-300"></i> <span class="font-medium">Цель:</span> создать свой уникальный стиль контента</li>
+            <li><i class="fa-solid fa-gamepad text-green-300"></i> <span class="font-medium">Любимая игра:</span> CS2 — тактика, адреналин и мемы! И несколько других игр</li>
+            <li><i class="fa-solid fa-camera-movie text-red-300"></i> <span class="font-medium">Любимый формат:</span> Динамичные мемы с неожиданными переходами</li>
           </ul>
         </div>
-
-        <!-- Будущее -->
-        <div class="backdrop-blur-lg bg-white/10 border border-indigo-400/30 rounded-3xl p-8 shadow-lg">
-          <h2 class="text-2xl font-semibold text-indigo-300 flex items-center gap-2">
-            <i class="fa-solid fa-rocket"></i> Будущее
-          </h2>
-          <ul class="mt-4 space-y-3 text-lg text-slate-200">
-            <li><i class="fa-solid fa-video text-indigo-400"></i> <span class="font-medium">Новый формат:</span> Всякие челленджи с мемами</li>
-            <li><i class="fa-solid fa-users text-indigo-400"></i> <span class="font-medium">Коллаборация:</span> работа с другими креаторами в 2026</li>
-          </ul>
-        </div>
-
-        <!-- Плейлист -->
-        <div class="backdrop-blur-lg bg-white/10 border border-green-400/30 rounded-3xl p-8 shadow-lg">
+        <div class="backdrop-blur-lg bg-white/10 border border-green-400/30 rounded-3xl p-8 shadow-lg fade-in">
           <h2 class="text-2xl font-semibold text-green-300 flex items-center gap-2">
             <i class="fa-solid fa-music"></i> Плейлист
           </h2>
           <p class="mt-4 text-lg text-slate-200 leading-relaxed">
-            Скоро здесь появится мой уникальный плейлист с музыкой для стримов и видео! Пока всё в разработке — следи за обновлениями! 🎶
+            Мой вайб — это музыка для Поднятие настроений! Слушай мой плейлист на Spotify или следи за обновлениями. 🎶
           </p>
+          <div class="mt-4">
+            <a href="https://open.spotify.com/playlist/3UEMLQdDi830YOoOvEF1RB?si=-yT6Kq4fQ_6STsIgQiGHrw" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-teal-500 hover:to-green-500 transition-all duration-500 shadow-lg flex items-center gap-2 mx-auto w-fit">
+              <i class="fa-brands fa-spotify"></i> Слушать на Spotify
+            </a>
+          </div>
         </div>
       </div>
-
-      <!-- Кнопка -->
       <div class="mt-12 text-center">
         <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg inline-flex items-center gap-2">
           <i class="fa-solid fa-arrow-left"></i> На главную
@@ -110,25 +157,79 @@
       </div>
     </div>
   </main>
-
   <script>
-    // Простая анимация загрузки (опционально)
+    // Лоадер
     window.addEventListener('load', () => {
-      const loader = document.createElement('div');
-      loader.id = 'loader';
-      loader.style.cssText = 'position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center;';
-      loader.innerHTML = '<div style="width: 64px; height: 64px; border: 6px solid rgba(255, 255, 255, 0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite;"></div>';
-      document.body.appendChild(loader);
-
+      const loader = document.getElementById('loader');
       setTimeout(() => {
         loader.style.opacity = '0';
         setTimeout(() => loader.remove(), 500);
       }, 2000);
     });
 
-    @keyframes spin {
-      100% { transform: rotate(360deg); }
-    }
+    // Тема
+    const root = document.documentElement;
+    const setTheme = (theme) => {
+      localStorage.setItem('theme', theme);
+      root.classList.toggle('dark', theme === 'dark');
+      const themeIcon = document.querySelector('#themeToggle i');
+      if (themeIcon) {
+        themeIcon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+      }
+      gtag('event', 'theme_toggle', { event_category: 'engagement', event_label: theme });
+    };
+    const initializeTheme = () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        setTheme(savedTheme);
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setTheme('dark');
+      } else {
+        setTheme('light');
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => setTheme(e.matches ? 'dark' : 'light'));
+      const themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          const currentTheme = localStorage.getItem('theme') || 'light';
+          setTheme(currentTheme === 'light' ? 'dark' : 'light');
+        });
+      }
+    };
+
+    // Анимация появления
+    const setupFadeIn = () => {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+    };
+
+    // Отслеживание кликов
+    const setupButtonTracking = () => {
+      const buttons = document.querySelectorAll('a[class*="bg-gradient-to-r"]');
+      buttons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          const label = e.target.textContent.trim();
+          gtag('event', 'button_click', { event_category: 'engagement', event_label: label });
+        });
+      });
+    };
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeTheme();
+      setupFadeIn();
+      setupButtonTracking();
+    });
   </script>
 </body>
 </html>
