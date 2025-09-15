@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" class="scroll-smooth">
+<html lang="ru" class="scroll-smooth dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,23 +30,39 @@
     .animate-floaty { animation: floaty 8s ease-in-out infinite; }
     .animate-floaty-slow { animation: floaty 10s ease-in-out infinite; }
     .animate-breathing { animation: breathing 10s ease-in-out infinite; }
-    .neon-title { transition: all 0.5s ease; color: #e5e7eb; }
+
+    /* Темная тема */
+    html.dark body {
+      background: linear-gradient(to bottom right, #0d0d0d, #1a1a1a, #2d2d2d);
+      color: #e5e7eb;
+    }
+    html.dark .card {
+      background: rgba(30, 30, 30, 0.8);
+      border-color: rgba(120, 120, 120, 0.3);
+    }
+    html.dark h1, 
+    html.dark h2, 
+    html.dark h3 {
+      color: #e5e7eb;
+    }
+    html.dark p, 
+    html.dark li, 
+    html.dark span {
+      color: #d1d5db;
+    }
+
+    .neon-title { 
+      transition: all 0.5s ease; 
+      color: #e5e7eb; 
+      background: linear-gradient(to right, #a5b4fc, #f9a8d4, #a5b4fc);
+    }
     .neon-title:hover { filter: brightness(1.3); }
+
     .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .fade-in.is-visible { opacity: 1; transform: translateY(0); }
     .timeline-item { position: relative; }
     .timeline-item:last-child .timeline-line { display: none; }
-    .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #4b5bd1); }
-    .text-white { color: #e5e7eb; }
-    .bg-white\/10 { background: rgba(50, 50, 50, 0.15); }
-    .border-purple-400\/30 { border-color: rgba(200, 200, 200, 0.2); }
-    .text-purple-300 { color: #a5b4fc; }
-    .text-pink-300 { color: #f9a8d4; }
-    .text-indigo-300 { color: #a5b4fc; }
-    .text-green-300 { color: #6ee7b7; }
-    .text-yellow-300 { color: #fcd34d; }
-    .text-red-300 { color: #f87171; }
-    .neon-title { background: linear-gradient(to right, #a5b4fc, #f9a8d4, #a5b4fc); }
+
     @media (max-width: 640px) {
       .md\:grid-cols-4 { grid-template-columns: 1fr; }
       .animate-floaty, .animate-floaty-slow, .animate-breathing { animation: none; }
@@ -56,10 +72,11 @@
       .py-24 { padding-top: 4rem; padding-bottom: 4rem; }
       .w-80, .w-72, .w-[50rem] { width: 100%; }
       .rounded-3xl { border-radius: 1rem; }
-      .backdrop-blur-lg { backdrop-filter: none; background: rgba(50, 50, 50, 0.2); }
+      .backdrop-blur-lg { backdrop-filter: none; background: rgba(30, 30, 30, 0.8); }
     }
   </style>
 </head>
+<body class="min-h-screen dark">
 <body class="min-h-screen bg-gradient-to-br text-white">
   <div id="loader" style="position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center;">
     <div style="width: 64px; height: 64px; border: 6px solid rgba(255, 255, 255, 0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
