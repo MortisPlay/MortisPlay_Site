@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mortis Play — Q&A</title>
+  <meta name="description" content="Задай свой вопрос Mortis Play и смотри ответы на лучшие вопросы!" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="Mortis Play — Q&A" />
+  <meta property="og:description" content="Интерактивное Q&A с Mortis Play: задавай вопросы и получай ответы!" />
+  <meta property="og:image" content="https://mortisplay.ru/assets/og-image-qa.jpg" />
+  <meta property="og:url" content="https://mortisplay.ru/qa.html" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mortis Play — Q&A" />
+  <meta name="twitter:description" content="Интерактивное Q&A с Mortis Play: задавай вопросы и получай ответы!" />
+  <meta name="twitter:image" content="https://mortisplay.ru/assets/twitter-image-qa.jpg" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });
+  </script>
+  <style>
+    @keyframes floaty { 0%,100%{transform:translateY(0) translateX(0)} 50%{transform:translateY(-20px) translateX(10px)} }
+    @keyframes breathing { 0%,100%{opacity:0.3; transform:scale(1)} 50%{opacity:0.6; transform:scale(1.05)} }
+    .animate-floaty { animation: floaty 8s ease-in-out infinite; }
+    .animate-floaty-slow { animation: floaty 10s ease-in-out infinite; }
+    .animate-breathing { animation: breathing 10s ease-in-out infinite; }
+    .neon-title { transition: all 0.5s ease; color: #e5e7eb; background: linear-gradient(to right, #a5b4fc, #f9a8d4, #a5b4fc); }
+    .neon-title:hover { filter: brightness(1.3); }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.is-visible { opacity: 1; transform: translateY(0); }
+    body {
+      background: linear-gradient(to bottom right, #0d0d0d, #1a1a1a, #2d2d2d);
+      color: #e5e7eb;
+    }
+    .card {
+      background: rgba(30, 30, 30, 0.8);
+      border-color: rgba(120, 120, 120, 0.3);
+    }
+    h1, h2, h3 { color: #e5e7eb; }
+    p, li, span { color: #d1d5db; }
+    @media (max-width: 640px) {
+      .md\:grid-cols-4 { grid-template-columns: 1fr; }
+      .animate-floaty, .animate-floaty-slow, .animate-breathing { animation: none; }
+      .text-4xl { font-size: 2rem; }
+      .text-2xl { font-size: 1.5rem; }
+      .px-4 { padding-left: 1rem; padding-right: 1rem; }
+      .py-24 { padding-top: 4rem; padding-bottom: 4rem; }
+      .w-80, .w-72, .w-[50rem] { width: 100%; }
+      .rounded-3xl { border-radius: 1rem; }
+      .backdrop-blur-lg { backdrop-filter: none; background: rgba(30, 30, 30, 0.8); }
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <div id="loader" style="position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center;">
+    <div style="width: 64px; height: 64px; border: 6px solid rgba(255, 255, 255, 0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+  </div>
+  <main class="relative min-h-screen overflow-hidden">
+    <div class="absolute -top-20 -left-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-floaty"></div>
+    <div class="absolute top-60 -right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-floaty-slow"></div>
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[50rem] bg-indigo-500/10 rounded-full blur-[200px] animate-breathing"></div>
+    <div class="mx-auto max-w-5xl px-4 py-24 relative z-10">
+      <h1 class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] text-center">
+        Q&A
+      </h1>
+      <div class="mt-16 grid gap-10">
+        <div class="backdrop-blur-lg card border rounded-3xl p-8 shadow-lg fade-in">
+          <h2 class="text-2xl font-semibold text-purple-300 flex items-center gap-2">
+            <i class="fa-solid fa-question-circle"></i> Задать вопрос
+          </h2>
+          <p class="mt-4 text-lg text-slate-200 leading-relaxed">
+            Хочешь узнать что-то крутое? Задай свой вопрос в Telegram, и я отвечу на сайте! 😎
+          </p>
+          <div class="mt-6 flex justify-center">
+            <a href="https://t.me/MortisplayQABot" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg flex items-center gap-2">
+              <i class="fa-brands fa-telegram"></i> Задать вопрос в Telegram
+            </a>
+          </div>
+        </div>
+        <div class="backdrop-blur-lg card border rounded-3xl p-8 shadow-lg fade-in">
+          <h2 class="text-2xl font-semibold text-indigo-300 flex items-center gap-2">
+            <i class="fa-solid fa-comments"></i> Вопросы и ответы
+          </h2>
+          <div id="qa-list" class="mt-4 space-y-6">
+            <!-- Вопросы добавляются через JS -->
+          </div>
+        </div>
+      </div>
+      <div class="mt-12 text-center">
+        <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg inline-flex items-center gap-2">
+          <i class="fa-solid fa-arrow-left"></i> На главную
+        </a>
+      </div>
+    </div>
+  </main>
+  <script>
+    // Лоадер
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('loader');
+      setTimeout(() => {
+        loader.style.opacity = '0';
+        setTimeout(() => loader.remove(), 500);
+      }, 2000);
+    });
+
+    // Анимация появления
+    const setupFadeIn = () => {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+    };
+
+    // Отслеживание кликов
+    const setupButtonTracking = () => {
+      const buttons = document.querySelectorAll('a[class*="bg-gradient-to-r"]');
+      buttons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          const label = e.target.textContent.trim();
+          gtag('event', 'button_click', { event_category: 'engagement', event_label: label });
+        });
+      });
+    };
+
+    // Список вопросов (пример)
+    const setupQAList = () => {
+      const qaList = document.getElementById('qa-list');
+      const questions = [
+        { name: 'Геймер2000', question: 'Какая у тебя любимая карта в CS2?', answer: 'Mirage — классика, братан! 😎 Люблю раздавать хедшоты на А-поинте.' },
+        { name: 'Аноним', question: 'Планируешь стримить на Twitch?', answer: 'Пока фокус на YouTube, но Twitch в планах, если комьюнити захочет!' }
+      ];
+      questions.forEach(q => {
+        const qaItem = document.createElement('div');
+        qaItem.className = 'border-l-4 border-purple-500 pl-4';
+        qaItem.innerHTML = `
+          <p class="text-lg font-semibold text-purple-300">${q.name || 'Аноним'}</p>
+          <p class="text-sm text-slate-200">${q.question}</p>
+          <p class="mt-2 text-sm text-indigo-300"><strong>Ответ:</strong> ${q.answer}</p>
+        `;
+        qaList.appendChild(qaItem);
+      });
+    };
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', () => {
+      setupFadeIn();
+      setupButtonTracking();
+      setupQAList();
+    });
+  </script>
+</body>
+</html>
