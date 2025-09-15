@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Mortis Play — официальный сайт</title>
-  <meta name="description" content="Эпичные видео, мемы, новости и обновления от Mortis Play. Присоединяйся к вайбу!" />
+  <meta name="description" content="Эпичные видео, новости и обновления от Mortis Play. Присоединяйся к вайбу!" />
   <meta name="robots" content="index,follow" />
   <link rel="icon" href="/images/favicon.ico" />
 
   <!-- Open Graph -->
   <meta property="og:title" content="Mortis Play — официальный сайт" />
-  <meta property="og:description" content="Эксклюзивы, мемы, новости и клипы." />
+  <meta property="og:description" content="Эксклюзивы, новости и клипы." />
   <meta property="og:image" content="https://mortisplay.ru/assets/og-image.jpg" />
   <meta property="og:url" content="https://mortisplay.ru" />
   <meta property="og:type" content="website" />
@@ -19,7 +19,7 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Mortis Play — официальный сайт" />
-  <meta name="twitter:description" content="Эксклюзивы, мемы, новости и клипы." />
+  <meta name="twitter:description" content="Эксклюзивы, новости и клипы." />
   <meta name="twitter:image" content="https://mortisplay.ru/assets/twitter-image.jpg" />
 
   <!-- Analytics -->
@@ -59,12 +59,12 @@
     .dark .profile-button .glass-button.login { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); }
     .dark .profile-button .glass-button.profile { background: rgba(128, 128, 128, 0.2); border-color: rgba(128, 128, 128, 0.5); }
     @media (max-width: 640px) { 
-      .profile-button { position: fixed; top: 0.5rem; right: 0.5rem; margin: 0; } 
+      .profile-button { position: fixed; top: 0.5rem; right: 0.5rem; margin: 0; display: block; } 
       .profile-button .glass-button { padding: 0.5rem 1rem; font-size: 0.9rem; } 
       #welcome .lg:grid-cols-2 { grid-template-columns: 1fr; }
       #welcome video { max-width: 100%; height: auto; }
       #welcome .mt-4.lg\:absolute { position: static; margin-top: 1rem; width: 100%; }
-      #menuToggle { padding: 0.75rem 1rem; font-size: 1.1rem; } /* Увеличение области клика */
+      #menuToggle { padding: 0.75rem 1rem; font-size: 1.1rem; }
     }
     #loginModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); z-index: 100000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
     #loginModal.active { visibility: visible; opacity: 1; display: flex; align-items: center; justify-content: center; }
@@ -81,15 +81,22 @@
     #loginModal .tab-buttons button { flex: 1; padding: 0.75rem; border: none; border-radius: 0.5rem; background: rgba(255, 255, 255, 0.2); cursor: pointer; transition: background 0.3s ease; }
     #loginModal .tab-buttons button.active { background: rgba(0, 123, 255, 0.3); }
     #loginModal .tab-buttons button:hover { background: rgba(255, 255, 255, 0.3); }
-    @media (max-width: 640px) { #loginModal .modal-content { padding: 1.5rem; max-width: 90%; } }
+    @media (max-width: 640px) { 
+      #loginModal .modal-content { padding: 1.5rem; max-width: 90%; } 
+      .glass { backdrop-filter: none; background: linear-gradient(180deg, rgb(255 255 255 / .9), rgb(255 255 255 / .8)); } 
+      .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .9), rgb(17 24 39 / .8)); } 
+      .card-hover:hover { transform: none; } 
+      .animate-[floaty_5s_ease-in-out_infinite] { animation: none; } 
+      iframe, video, img { max-width: 100%; height: auto; } 
+    }
     .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; padding: 0.75rem 1.5rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
     .glass-button:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); }
-    .glass-button:active { transform: scale(0.98); }
-    .glass-button.disabled { pointer-events: none; opacity: 0.6; background: rgba(255, 255, 255, 0.1); }
     .dark .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
     .dark .glass-button:hover { background: rgba(50, 50, 50, 0.25); }
-    .dark .glass-button.disabled { background: rgba(50, 50, 50, 0.1); }
-    @supports not (backdrop-filter: blur(10px)) { .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; } .dark .glass-button { background: rgba(50, 50, 50, 0.5); } }
+    @supports not (backdrop-filter: blur(10px)) { 
+      .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; } 
+      .dark .glass-button { background: rgba(50, 50, 50, 0.5); } 
+    }
     #updateModal { display: flex; align-items: center; justify-content: center; }
     #updateModal > div { transform: translate(-50%, -50%); position: fixed; top: 50%; left: 50%; }
     #updateModal.hidden { display: none !important; }
@@ -98,14 +105,6 @@
     .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
     .grid { display: grid; }
     .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    @media (max-width: 640px) { 
-      .glass { backdrop-filter: none; background: linear-gradient(180deg, rgb(255 255 255 / .9), rgb(255 255 255 / .8)); } 
-      .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .9), rgb(17 24 39 / .8)); } 
-      .card-hover:hover { transform: none; } 
-      .animate-[floaty_5s_ease-in-out_infinite] { animation: none; } 
-      iframe, video, img { max-width: 100%; height: auto; } 
-    }
-    /* Фиксированная навигация для ПК */
     @media (min-width: 1024px) {
       header { position: sticky; top: 0; z-index: 50; background: white/80 dark:bg-slate-900/80; }
       nav { height: 4rem; }
@@ -138,6 +137,15 @@
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
         </div>
+        <div class="flex items-center gap-2">
+          <button id="themeToggle" class="glass-button" aria-label="Переключить тему">
+            <i class="fa-solid fa-sun"></i>
+          </button>
+          <div class="profile-button">
+            <button id="profileButton" class="glass-button profile hidden">Профиль</button>
+            <button id="loginButton" class="glass-button login">Войти</button>
+          </div>
+        </div>
       </nav>
       <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 sm:hidden glass">
         <div class="p-4">
@@ -169,14 +177,14 @@
               Йоу, это <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-fuchsia-600">Mortis Play</span>!
             </h1>
             <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-prose">
-              Эксклюзивные видео, мемы, новости и апдейты. Врывайся — дальше только громче 😎
+              Эксклюзивные видео, новости и апдейты. Врывайся — дальше только громче 😎
             </p>
             <div class="mt-6 flex flex-wrap gap-3">
               <a href="#contact" class="glass-button">
                 <i class="fa-solid fa-envelope"></i>
                 Контакты
               </a>
-              <a href="biography.html" class="glass-button disabled" id="bioButton">
+              <a href="biography.html" class="glass-button" id="bioButton">
                 <i class="fa-solid fa-user"></i>
                 Биография
               </a>
@@ -208,13 +216,13 @@
                 <iframe class="w-full h-full" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen></iframe>
               </div>
               <p class="mt-3 text-sm text-slate-600 dark:text-slate-300"></p>
-            </template>
-          </div>
-          <div class="mt-6 text-center">
-            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button">
-              <i class="fa-brands fa-youtube"></i> Смотреть все видео
-            </a>
-          </div>
+            </div>
+          </template>
+        </div>
+        <div class="mt-6 text-center">
+          <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button">
+            <i class="fa-brands fa-youtube"></i> Смотреть все видео
+          </a>
         </div>
       </div>
     </section>
@@ -253,17 +261,17 @@
         <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-indigo-500 to-purple-500">
             <h3 class="text-lg font-semibold">Добро пожаловать!</h3>
-            <p class="mt-2 text-sm opacity-90">Итак, добро пожаловать на наш первый сайт! Готовим для вас море эпичного контента: новые видео, мемы и эксклюзивные истории. Следите за обновлениями и присоединяйтесь к нашей тусовке — впереди нас ждёт взрывной вайб! 😎</p>
+            <p class="mt-2 text-sm opacity-90">Итак, добро пожаловать на наш первый сайт! Готовим для вас море эпичного контента: новые видео и эксклюзивные истории. Следите за обновлениями и присоединяйтесь к нашей тусовке — впереди нас ждёт взрывной вайб! 😎</p>
             <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 16 июля 2025</p>
           </article>
           <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-blue-500 to-green-500">
             <h3 class="text-lg font-semibold">Новые мемы!</h3>
-            <p class="mt-2 text-sm opacity-90">Хотите провести время с юмором? Сайт Mortis Play к вашим услугам! Мы завезли 7 новых мемов! И они будут со временем дополняться! Удивите кого то этим мемов 😋 *Если же вы хотите увидеть свои мемы на нашем сайте, перейдите к разделу "Мемы от авторов" и прочитайте условия! Хорошего времяпровождения 👌</p>
+            <p class="mt-2 text-sm opacity-90">Хотите провести время с юмором? Сайт Mortis Play к вашим услугам! Мы завезли 7 новых мемов! И они будут со временем дополняться! Удивите кого-то этим мемом 😋 Хорошего времяпровождения 👌</p>
             <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 16 июля 2025</p>
           </article>
           <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-pink-500 to-red-500">
             <h3 class="text-lg font-semibold">Ранний доступ vs полная версия</h3>
-            <p class="mt-2 text-sm opacity-90">Итак, на сегодня поговорим именно на эту тему, чем будет отличаться от открытого доступа до полной версии? Отвечаем: В полной версии будет новый раздел и до сих пор будут дополняться (в планах добавить розыгрыш, новый форум), новые уникальные фоны на различные тематики, ЗАСЕКРЕЧЕННЫЕ ПОСТЫ В частном канале 😎 и многое другое. Пока ассоциируемся на новые разделы и на фоны тематики, на все остальное будут в 4 квартале или в 2026 году. И если вы не видели что за изменения, гляньте раздел "Обновление" вам надеюсь оно понравится)</p>
+            <p class="mt-2 text-sm opacity-90">Итак, на сегодня поговорим именно на эту тему, чем будет отличаться от открытого доступа до полной версии? Отвечаем: В полной версии будет новый раздел и до сих пор будут дополняться (в планах добавить розыгрыш, новый форум), новые уникальные фоны на различные тематики, ЗАСЕКРЕЧЕННЫЕ ПОСТЫ В частном канале 😎 и многое другое. Пока ассоциируемся на новые разделы и на фоны тематики, на все остальное будут в 4 квартале или в 2026 году.</p>
             <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 17 июля 2025</p>
           </article>
           <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-pink-500 to-red-500">
@@ -295,6 +303,11 @@
             <h3 class="text-lg font-semibold">Улучшена Биография!</h3>
             <p class="mt-2 text-sm opacity-90">Мы полностью переработали страницу Биографии! Теперь она включает больше деталей о моём пути, фактах и планах. Зайди и проверь обновления на кнопку "Биография"! 😎</p>
             <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 10 сентября 2025</p>
+          </article>
+          <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-indigo-500 to-purple-500">
+            <h3 class="text-lg font-semibold">Q&A в разработке и другие изменения</h3>
+            <p class="mt-2 text-sm opacity-90">Раздел Q&A находится в разработке — думаем, как сделать его лучше! 😎 Раздел "Мемы" убран навсегда для оптимизации, а кнопка "Биография" теперь активна для всех. Следите за новостями!</p>
+            <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 15 сентября 2025</p>
           </article>
         </div>
       </div>
@@ -335,7 +348,7 @@
               Как связаться с тобой?
               <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
             </summary>
-            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Пиши в Telegram: <a href="https://t.me/MortisPlay_YT" class="underline text-indigo-600 dark:text-indigo-400">MortisPlay</a>, или на email: <a href="mailto:mortisplay@mail.ru" class="underline text-indigo-600 dark:text-indigo-400">mortisplay@mail.ru</a>.</div>
+            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Пиши в Telegram: <a href="https://t.me/Mortisplay_YT" class="underline text-indigo-600 dark:text-indigo-400">MortisPlay</a>, или на email: <a href="mailto:mortisplay@mail.ru" class="underline text-indigo-600 dark:text-indigo-400">mortisplay@mail.ru</a>.</div>
           </details>
           <details class="group p-5">
             <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
@@ -363,7 +376,14 @@
               Почему убрали разделы "Мемы" и "Клипы"?
               <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
             </summary>
-            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Мы оптимизировали сайт, убрав эти разделы для повышения производительности.</div>
+            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Мы оптимизировали сайт, убрав эти разделы для повышения производительности. Раздел "Мемы" удалён навсегда, чтобы снизить нагрузку на ресурсы.</div>
+          </details>
+          <details class="group p-5">
+            <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
+              Что с разделом Q&A?
+              <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
+            </summary>
+            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Раздел Q&A находится в разработке. Скоро вернём его в улучшенном виде, следите за новостями!</div>
           </details>
         </div>
       </div>
@@ -401,7 +421,7 @@
   <script nonce="${nonce}">
   // Функция логирования
   const logAction = (message) => {
-    console.log(message); // Включено для режима разработчика
+    console.log(message);
   };
 
   // Проверка режима разработчика
@@ -415,6 +435,10 @@
     logAction(`Тема установлена: ${theme}`);
     localStorage.setItem('theme', theme);
     root.classList.toggle('dark', theme === 'dark');
+    const themeIcon = document.querySelector('#themeToggle i');
+    if (themeIcon) {
+      themeIcon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+    }
   };
 
   // Инициализация темы
@@ -430,9 +454,16 @@
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) =>
       setTheme(e.matches ? 'dark' : 'light')
     );
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        setTheme(currentTheme === 'light' ? 'dark' : 'light');
+      });
+    }
   };
 
-  // Обработчик меню
+  // Управление меню
   const setupMenu = () => {
     const toggle = document.getElementById('menuToggle');
     const close = document.getElementById('closeMenu');
@@ -456,6 +487,74 @@
         if (toggle) toggle.setAttribute('aria-expanded', 'false');
       }
     });
+  };
+
+  // Управление модальным окном входа
+  const setupLoginModal = () => {
+    const loginButton = document.getElementById('loginButton');
+    const profileButton = document.getElementById('profileButton');
+    const loginModal = document.getElementById('loginModal');
+    const loginSubmit = document.getElementById('loginSubmit');
+    const registerSubmit = document.getElementById('registerSubmit');
+    const tabButtons = document.querySelectorAll('#loginModal .tab-buttons button');
+    const tabPanes = document.querySelectorAll('#loginModal .tab-pane');
+
+    if (loginButton && profileButton && loginModal) {
+      loginButton.addEventListener('click', () => {
+        loginModal.classList.add('active');
+      });
+      loginModal.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+          loginModal.classList.remove('active');
+        }
+      });
+      tabButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          tabButtons.forEach((btn) => btn.classList.remove('active'));
+          tabPanes.forEach((pane) => pane.classList.remove('active'));
+          button.classList.add('active');
+          document.getElementById(`${button.dataset.tab}Tab`).classList.add('active');
+        });
+      });
+      loginSubmit.addEventListener('click', () => {
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        if (username && password) {
+          logAction(`Вход: ${username}`);
+          localStorage.setItem('loggedIn', 'true');
+          localStorage.setItem('username', username);
+          loginButton.classList.add('hidden');
+          profileButton.classList.remove('hidden');
+          loginModal.classList.remove('active');
+          alert(`Добро пожаловать, ${username}!`);
+        } else {
+          alert('Пожалуйста, заполните все поля!');
+        }
+      });
+      registerSubmit.addEventListener('click', () => {
+        const username = document.getElementById('registerUsername').value;
+        const password = document.getElementById('registerPassword').value;
+        if (username && password) {
+          logAction(`Регистрация: ${username}`);
+          localStorage.setItem('loggedIn', 'true');
+          localStorage.setItem('username', username);
+          loginButton.classList.add('hidden');
+          profileButton.classList.remove('hidden');
+          loginModal.classList.remove('active');
+          alert(`Регистрация успешна, ${username}!`);
+        } else {
+          alert('Пожалуйста, заполните все поля!');
+        }
+      });
+      profileButton.addEventListener('click', () => {
+        const username = localStorage.getItem('username');
+        alert(`Профиль: ${username}`);
+      });
+      if (localStorage.getItem('loggedIn') === 'true') {
+        loginButton.classList.add('hidden');
+        profileButton.classList.remove('hidden');
+      }
+    }
   };
 
   // Настройка анимации появления
@@ -537,34 +636,20 @@
     }, 5000);
   };
 
-  // Управление кнопкой биографии
-  const setupBioButton = () => {
-    const bioButton = document.getElementById('bioButton');
-    if (bioButton) {
-      if (isDevMode()) {
-        bioButton.classList.remove('disabled');
-        bioButton.removeAttribute('disabled');
-      } else {
-        bioButton.classList.add('disabled');
-        bioButton.setAttribute('disabled', 'disabled');
-      }
-    }
-  };
-
   // Инициализация всех компонентов
   const initializeApp = () => {
     initializeTheme();
     setupMenu();
+    setupLoginModal();
     setupFadeIn();
     setupVideos();
     setupLoader();
-    setupBioButton();
   };
 
   // Запуск приложения
   document.addEventListener('DOMContentLoaded', initializeApp);
 
-  // Включение режима разработчика через URL (например, ?dev=true)
+  // Включение режима разработчика через URL
   if (isDevMode()) {
     logAction('Режим разработчика активирован');
   }
