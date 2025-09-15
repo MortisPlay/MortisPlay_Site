@@ -58,6 +58,14 @@
     .dark .profile-button .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
     .dark .profile-button .glass-button.login { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); }
     .dark .profile-button .glass-button.profile { background: rgba(128, 128, 128, 0.2); border-color: rgba(128, 128, 128, 0.5); }
+    #themeToggle { position: relative; overflow: hidden; }
+    #themeToggle::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255, 255, 255, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.5s ease, height 0.5s ease; }
+    #themeToggle:hover::before { width: 200%; height: 200%; }
+    #themeToggle i { transition: transform 0.5s ease, opacity 0.5s ease; }
+    #themeToggle:hover i { transform: rotate(180deg); opacity: 0.8; }
+    #themeToggle .glow { position: absolute; inset: 0; box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); opacity: 0; transition: opacity 0.3s ease; }
+    #themeToggle:hover .glow { opacity: 1; }
+    .dark #themeToggle .glow { box-shadow: 0 0 10px rgba(99, 102, 241, 0.5); }
     @media (max-width: 640px) { 
       .profile-button { position: fixed; top: 0.5rem; right: 0.5rem; margin: 0; display: block; } 
       .profile-button .glass-button { padding: 0.5rem 1rem; font-size: 0.9rem; } 
@@ -135,11 +143,13 @@
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#projects">Проекты</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
+          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#qa">Q&A</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
         </div>
         <div class="flex items-center gap-2">
-          <button id="themeToggle" class="glass-button" aria-label="Переключить тему">
+          <button id="themeToggle" class="glass-button relative" aria-label="Переключить тему">
             <i class="fa-solid fa-sun"></i>
+            <div class="glow"></div>
           </button>
           <div class="profile-button">
             <button id="profileButton" class="glass-button profile hidden">Профиль</button>
@@ -162,6 +172,7 @@
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#projects">Проекты</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
+            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#qa">Q&A</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
           </nav>
         </div>
@@ -252,6 +263,13 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section id="qa" class="py-16 bg-slate-50 dark:bg-slate-900/40">
+      <div class="mx-auto max-w-7xl px-4">
+        <h2 class="text-center text-2xl md:text-3xl font-bold">Q&A</h2>
+        <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Q&A в разработке, скоро откроемся! 😎 Следите за новостями!</p>
       </div>
     </section>
 
@@ -383,7 +401,7 @@
               Что с разделом Q&A?
               <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
             </summary>
-            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Раздел Q&A находится в разработке. Скоро вернём его в улучшенном виде, следите за новостями!</div>
+            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Раздел Q&A находится в разработке. Скоро откроемся, следите за новостями! 😎</div>
           </details>
         </div>
       </div>
