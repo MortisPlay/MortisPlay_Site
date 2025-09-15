@@ -29,7 +29,7 @@
     const script = document.createElement('script');
     script.nonce = nonce;
     script.id = 'gtagScript';
-    script.innerHTML = `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-W7QBLDDSSK');`;
+    script.innerHTML = `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });`;
     document.head.appendChild(script);
   </script>
 
@@ -49,15 +49,6 @@
     @keyframes spin { 100%{transform:rotate(360deg)} }
     #sidebarMenu { box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
     #sidebarMenu.open { transform: translateX(0); }
-    .profile-button { display: none; }
-    .profile-button .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; padding: 0.75rem 1.5rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
-    .profile-button .glass-button.login { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); }
-    .profile-button .glass-button.profile { background: rgba(128, 128, 128, 0.2); border-color: rgba(128, 128, 128, 0.5); }
-    .profile-button .glass-button:hover { box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); transform: scale(1.05); }
-    .profile-button .glass-button:active { transform: scale(0.98); }
-    .dark .profile-button .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
-    .dark .profile-button .glass-button.login { background: rgba(255, 0, 0, 0.2); border-color: rgba(255, 0, 0, 0.5); }
-    .dark .profile-button .glass-button.profile { background: rgba(128, 128, 128, 0.2); border-color: rgba(128, 128, 128, 0.5); }
     #themeToggle { position: relative; overflow: hidden; }
     #themeToggle::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255, 255, 255, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.5s ease, height 0.5s ease; }
     #themeToggle:hover::before { width: 200%; height: 200%; }
@@ -67,30 +58,10 @@
     #themeToggle:hover .glow { opacity: 1; }
     .dark #themeToggle .glow { box-shadow: 0 0 10px rgba(99, 102, 241, 0.5); }
     @media (max-width: 640px) { 
-      .profile-button { position: fixed; top: 0.5rem; right: 0.5rem; margin: 0; display: block; } 
-      .profile-button .glass-button { padding: 0.5rem 1rem; font-size: 0.9rem; } 
       #welcome .lg:grid-cols-2 { grid-template-columns: 1fr; }
       #welcome video { max-width: 100%; height: auto; }
       #welcome .mt-4.lg\:absolute { position: static; margin-top: 1rem; width: 100%; }
       #menuToggle { padding: 0.75rem 1rem; font-size: 1.1rem; }
-    }
-    #loginModal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); z-index: 100000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
-    #loginModal.active { visibility: visible; opacity: 1; display: flex; align-items: center; justify-content: center; }
-    #loginModal .modal-content { background: linear-gradient(135deg, rgba(0, 123, 255, 0.2), rgba(0, 123, 255, 0.1)); backdrop-filter: blur(15px); border: 1px solid rgba(0, 123, 255, 0.4); border-radius: 1rem; padding: 2rem; width: 100%; max-width: 450px; color: #ffffff; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); text-align: center; overflow-y: auto; max-height: 80vh; }
-    .dark #loginModal .modal-content { background: linear-gradient(135deg, rgba(0, 80, 160, 0.2), rgba(0, 80, 160, 0.1)); border-color: rgba(0, 80, 160, 0.4); }
-    #loginModal .modal-content h3 { font-size: 1.5rem; margin-bottom: 1rem; }
-    #loginModal .modal-content .tab-content { margin-top: 1rem; }
-    #loginModal .modal-content input { width: 100%; padding: 0.75rem; margin: 0.75rem 0; border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 0.5rem; background: rgba(255, 255, 255, 0.1); color: #ffffff; transition: border-color 0.3s ease; }
-    #loginModal .modal-content input:focus { border-color: rgba(0, 123, 255, 0.7); outline: none; }
-    #loginModal .modal-content input::placeholder { color: rgba(255, 255, 255, 0.7); }
-    #loginModal .modal-content button { margin-top: 1.5rem; width: 100%; padding: 0.75rem; border-radius: 0.5rem; background: rgba(0, 123, 255, 0.3); border: none; color: #ffffff; transition: background 0.3s ease; }
-    #loginModal .modal-content button:hover { background: rgba(0, 123, 255, 0.5); }
-    #loginModal .tab-buttons { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
-    #loginModal .tab-buttons button { flex: 1; padding: 0.75rem; border: none; border-radius: 0.5rem; background: rgba(255, 255, 255, 0.2); cursor: pointer; transition: background 0.3s ease; }
-    #loginModal .tab-buttons button.active { background: rgba(0, 123, 255, 0.3); }
-    #loginModal .tab-buttons button:hover { background: rgba(255, 255, 255, 0.3); }
-    @media (max-width: 640px) { 
-      #loginModal .modal-content { padding: 1.5rem; max-width: 90%; } 
       .glass { backdrop-filter: none; background: linear-gradient(180deg, rgb(255 255 255 / .9), rgb(255 255 255 / .8)); } 
       .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .9), rgb(17 24 39 / .8)); } 
       .card-hover:hover { transform: none; } 
@@ -105,9 +76,6 @@
       .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; } 
       .dark .glass-button { background: rgba(50, 50, 50, 0.5); } 
     }
-    #updateModal { display: flex; align-items: center; justify-content: center; }
-    #updateModal > div { transform: translate(-50%, -50%); position: fixed; top: 50%; left: 50%; }
-    #updateModal.hidden { display: none !important; }
     .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #fff5f5, #ffffff, #e0f2fe); }
     .dark .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #4b5bd1); }
     .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
@@ -151,10 +119,6 @@
             <i class="fa-solid fa-sun"></i>
             <div class="glow"></div>
           </button>
-          <div class="profile-button">
-            <button id="profileButton" class="glass-button profile hidden">Профиль</button>
-            <button id="loginButton" class="glass-button login">Войти</button>
-          </div>
         </div>
       </nav>
       <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 sm:hidden glass">
@@ -327,6 +291,11 @@
             <p class="mt-2 text-sm opacity-90">Раздел Q&A находится в разработке — думаем, как сделать его лучше! 😎 Раздел "Мемы" убран навсегда для оптимизации, а кнопка "Биография" теперь активна для всех. Следите за новостями!</p>
             <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 15 сентября 2025</p>
           </article>
+          <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-green-500 to-teal-500">
+            <h3 class="text-lg font-semibold">Удалена авторизация и улучшена аналитика</h3>
+            <p class="mt-2 text-sm opacity-90">Мы убрали функции входа и регистрации, чтобы упростить интерфейс и ускорить сайт. Теперь больше фокуса на контенте! 😎 Также добавили улучшенную аналитику, чтобы лучше понимать, что вам нравится. Следите за обновлениями!</p>
+            <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 15 сентября 2025</p>
+          </article>
         </div>
       </div>
     </section>
@@ -403,6 +372,13 @@
             </summary>
             <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Раздел Q&A находится в разработке. Скоро откроемся, следите за новостями! 😎</div>
           </details>
+          <details class="group p-5">
+            <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
+              Почему убрали вход и регистрацию?
+              <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
+            </summary>
+            <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Мы убрали функции входа и регистрации, чтобы упростить интерфейс и ускорить загрузку сайта, сосредоточившись на основном контенте.</div>
+          </details>
         </div>
       </div>
     </section>
@@ -412,28 +388,6 @@
         <p class="text-sm opacity-80">© 2025 Mortis Play. Все права защищены.</p>
       </div>
     </footer>
-  </div>
-
-  <div id="loginModal" class="hidden">
-    <div class="modal-content">
-      <h3>Добро пожаловать!</h3>
-      <div class="tab-buttons">
-        <button class="active" data-tab="login">Вход</button>
-        <button data-tab="register">Регистрация</button>
-      </div>
-      <div class="tab-content">
-        <div id="loginTab" class="tab-pane active">
-          <input type="text" placeholder="Логин" id="loginUsername" />
-          <input type="password" placeholder="Пароль" id="loginPassword" />
-          <button id="loginSubmit">Войти</button>
-        </div>
-        <div id="registerTab" class="tab-pane">
-          <input type="text" placeholder="Логин" id="registerUsername" />
-          <input type="password" placeholder="Пароль" id="registerPassword" />
-          <button id="registerSubmit">Зарегистрироваться</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <script nonce="${nonce}">
@@ -457,6 +411,7 @@
     if (themeIcon) {
       themeIcon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
     }
+    gtag('event', 'theme_toggle', { event_category: 'engagement', event_label: theme });
   };
 
   // Инициализация темы
@@ -491,12 +446,14 @@
       toggle.addEventListener('click', () => {
         sidebar.classList.add('open');
         toggle.setAttribute('aria-expanded', 'true');
+        gtag('event', 'menu_open', { event_category: 'engagement', event_label: 'mobile_menu' });
       });
     }
     if (close && sidebar) {
       close.addEventListener('click', () => {
         sidebar.classList.remove('open');
         if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        gtag('event', 'menu_close', { event_category: 'engagement', event_label: 'mobile_menu' });
       });
     }
     document.addEventListener('click', (e) => {
@@ -507,72 +464,44 @@
     });
   };
 
-  // Управление модальным окном входа
-  const setupLoginModal = () => {
-    const loginButton = document.getElementById('loginButton');
-    const profileButton = document.getElementById('profileButton');
-    const loginModal = document.getElementById('loginModal');
-    const loginSubmit = document.getElementById('loginSubmit');
-    const registerSubmit = document.getElementById('registerSubmit');
-    const tabButtons = document.querySelectorAll('#loginModal .tab-buttons button');
-    const tabPanes = document.querySelectorAll('#loginModal .tab-pane');
+  // Отслеживание навигации
+  const setupNavTracking = () => {
+    const navLinks = document.querySelectorAll('nav a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const section = e.target.getAttribute('href').substring(1);
+        gtag('event', 'nav_click', { event_category: 'navigation', event_label: section });
+      });
+    });
+  };
 
-    if (loginButton && profileButton && loginModal) {
-      loginButton.addEventListener('click', () => {
-        loginModal.classList.add('active');
+  // Отслеживание кликов по кнопкам
+  const setupButtonTracking = () => {
+    const buttons = document.querySelectorAll('.glass-button');
+    buttons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        const label = e.target.textContent.trim();
+        gtag('event', 'button_click', { event_category: 'engagement', event_label: label });
       });
-      loginModal.addEventListener('click', (e) => {
-        if (e.target === loginModal) {
-          loginModal.classList.remove('active');
-        }
-      });
-      tabButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-          tabButtons.forEach((btn) => btn.classList.remove('active'));
-          tabPanes.forEach((pane) => pane.classList.remove('active'));
-          button.classList.add('active');
-          document.getElementById(`${button.dataset.tab}Tab`).classList.add('active');
+    });
+  };
+
+  // Отслеживание просмотров разделов
+  const setupSectionTracking = () => {
+    const sections = document.querySelectorAll('section');
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const sectionId = entry.target.id;
+            gtag('event', 'section_view', { event_category: 'engagement', event_label: sectionId });
+            io.unobserve(entry.target); // Отслеживаем только первый просмотр
+          }
         });
-      });
-      loginSubmit.addEventListener('click', () => {
-        const username = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword').value;
-        if (username && password) {
-          logAction(`Вход: ${username}`);
-          localStorage.setItem('loggedIn', 'true');
-          localStorage.setItem('username', username);
-          loginButton.classList.add('hidden');
-          profileButton.classList.remove('hidden');
-          loginModal.classList.remove('active');
-          alert(`Добро пожаловать, ${username}!`);
-        } else {
-          alert('Пожалуйста, заполните все поля!');
-        }
-      });
-      registerSubmit.addEventListener('click', () => {
-        const username = document.getElementById('registerUsername').value;
-        const password = document.getElementById('registerPassword').value;
-        if (username && password) {
-          logAction(`Регистрация: ${username}`);
-          localStorage.setItem('loggedIn', 'true');
-          localStorage.setItem('username', username);
-          loginButton.classList.add('hidden');
-          profileButton.classList.remove('hidden');
-          loginModal.classList.remove('active');
-          alert(`Регистрация успешна, ${username}!`);
-        } else {
-          alert('Пожалуйста, заполните все поля!');
-        }
-      });
-      profileButton.addEventListener('click', () => {
-        const username = localStorage.getItem('username');
-        alert(`Профиль: ${username}`);
-      });
-      if (localStorage.getItem('loggedIn') === 'true') {
-        loginButton.classList.add('hidden');
-        profileButton.classList.remove('hidden');
-      }
-    }
+      },
+      { threshold: 0.5 }
+    );
+    sections.forEach(section => io.observe(section));
   };
 
   // Настройка анимации появления
@@ -658,10 +587,12 @@
   const initializeApp = () => {
     initializeTheme();
     setupMenu();
-    setupLoginModal();
     setupFadeIn();
     setupVideos();
     setupLoader();
+    setupNavTracking();
+    setupButtonTracking();
+    setupSectionTracking();
   };
 
   // Запуск приложения
