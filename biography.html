@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" class="scroll-smooth dark">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -27,9 +27,9 @@
   <style>
     @keyframes floaty { 0%,100%{transform:translateY(0) translateX(0)} 50%{transform:translateY(-20px) translateX(10px)} }
     @keyframes breathing { 0%,100%{opacity:0.3; transform:scale(1)} 50%{opacity:0.6; transform:scale(1.05)} }
-    .animate-floaty { animation: floaty 8s ease-in-out infinite; }
-    .animate-floaty-slow { animation: floaty 10s ease-in-out infinite; }
-    .animate-breathing { animation: breathing 10s ease-in-out infinite; }
+    .animate-floaty { animation: floaty 8s ease-in-out infinite; will-change: transform; }
+    .animate-floaty-slow { animation: floaty 10s ease-in-out infinite; will-change: transform; }
+    .animate-breathing { animation: breathing 10s ease-in-out infinite; will-change: opacity, transform; }
 
     /* Темная тема */
     html.dark body {
@@ -83,6 +83,9 @@
     }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
+    body { overflow-x: hidden; overscroll-behavior: none; }
+    main { overflow: auto; min-height: 100vh; }
+
     @media (max-width: 640px) {
       .md\:grid-cols-4 { grid-template-columns: 1fr; }
       .animate-floaty, .animate-floaty-slow, .animate-breathing { animation: none; }
@@ -92,7 +95,7 @@
       .py-24 { padding-top: 2rem; padding-bottom: 2rem; }
       .w-80 { width: 60vw; }
       .w-72 { width: 56vw; }
-      .w-[50rem] { width: 90vw; }
+      .w-[40rem] { width: 90vw; }
       .rounded-3xl { border-radius: 1rem; }
       .backdrop-blur-lg { backdrop-filter: none; background: rgba(50, 50, 50, 0.7); }
       .loader-spin { width: 48px; height: 48px; border-width: 4px; }
@@ -101,22 +104,30 @@
       a[class*="bg-gradient-to-r"] { padding: 0.375rem 0.75rem; box-shadow: none; }
       .max-w-5xl { max-width: 100%; }
       .timeline-line { height: 100%; }
-      .-top-20 { top: 0; }
-      .-left-20 { left: 0; }
-      .-right-20 { right: 0; }
-      .blur-[200px] { filter: blur(100px); }
+      .top-0 { top: 0; }
+      .left-0 { left: 0; }
+      .right-0 { right: 0; }
+      .blur-[100px] { filter: blur(50px); }
+    }
+
+    @media (min-width: 641px) {
+      .w-80 { width: 20rem; }
+      .w-72 { width: 18rem; }
+      .w-[40rem] { width: 40rem; }
+      .blur-2xl { filter: blur(2rem); }
+      .blur-[100px] { filter: blur(100px); }
     }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-indigo-900 text-white dark" style="overflow-x: hidden;">
+<body class="bg-gradient-to-br from-black via-gray-900 to-indigo-900 text-white dark">
   <div id="loader">
     <div class="loader-spin"></div>
   </div>
-  <main class="relative min-h-screen overflow-x-hidden">
-    <div class="absolute top-0 left-0 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-floaty md:w-80 md:h-80"></div>
-    <div class="absolute top-60 right-0 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-floaty-slow md:w-72 md:h-72"></div>
-    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[50rem] bg-indigo-500/10 rounded-full blur-[200px] animate-breathing md:w-[50rem] md:h-[50rem]"></div>
-    <div class="mx-auto max-w-5xl px-4 py-24 relative z-10 md:max-w-5xl">
+  <main class="relative overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-80 h-80 bg-purple-500/20 rounded-full blur-2xl animate-floaty z-[-1]"></div>
+    <div class="absolute top-60 right-0 w-72 h-72 bg-pink-500/20 rounded-full blur-2xl animate-floaty-slow z-[-1]"></div>
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[40rem] h-[40rem] bg-indigo-500/10 rounded-full blur-[100px] animate-breathing z-[-1]"></div>
+    <div class="mx-auto max-w-5xl px-4 py-24 relative z-10">
       <h1 class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] text-center">
         Биография
       </h1>
@@ -207,7 +218,10 @@
       const loader = document.getElementById('loader');
       setTimeout(() => {
         loader.style.opacity = '0';
-        setTimeout(() => loader.remove(), 500);
+        setTimeout(() => {
+          loader.remove();
+          console.log('Лоадер удалён');
+        }, 500);
       }, 2000);
     });
 
@@ -222,7 +236,7 @@
             }
           });
         },
-        { threshold: 0.1 }
+        { threshold: 0.2 }
       );
       document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
     };
