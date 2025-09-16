@@ -2,7 +2,7 @@
 <html lang="ru" class="scroll-smooth dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
   <title>Mortis Play — Биография</title>
   <meta name="description" content="Погрузись в полную биографию Mortis Play: путь, достижения и увлечения." />
   <meta name="robots" content="index,follow" />
@@ -16,7 +16,7 @@
   <meta name="twitter:description" content="История, факты и вайб Mortis Play." />
   <meta name="twitter:image" content="https://mortisplay.ru/assets/twitter-image-bio.jpg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com" defer></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -37,8 +37,8 @@
       color: #e5e7eb;
     }
     html.dark .card {
-      background: rgba(30, 30, 30, 0.8);
-      border-color: rgba(120, 120, 120, 0.3);
+      background: rgba(50, 50, 50, 0.7);
+      border-color: rgba(120, 120, 120, 0.5);
     }
     html.dark h1, 
     html.dark h2, 
@@ -63,34 +63,65 @@
     .timeline-item { position: relative; }
     .timeline-item:last-child .timeline-line { display: none; }
 
+    #loader { 
+      position: fixed; 
+      inset: 0; 
+      z-index: 1000; 
+      background: rgba(0, 0, 0, 0.8); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      transition: opacity 0.5s ease;
+    }
+    .loader-spin { 
+      width: 64px; 
+      height: 64px; 
+      border: 6px solid rgba(255, 255, 255, 0.3); 
+      border-top-color: #fff; 
+      border-radius: 50%; 
+      animation: spin 1s linear infinite; 
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
     @media (max-width: 640px) {
       .md\:grid-cols-4 { grid-template-columns: 1fr; }
       .animate-floaty, .animate-floaty-slow, .animate-breathing { animation: none; }
       .text-4xl { font-size: 2rem; }
       .text-2xl { font-size: 1.5rem; }
       .px-4 { padding-left: 1rem; padding-right: 1rem; }
-      .py-24 { padding-top: 4rem; padding-bottom: 4rem; }
-      .w-80, .w-72, .w-[50rem] { width: 100%; }
+      .py-24 { padding-top: 2rem; padding-bottom: 2rem; }
+      .w-80 { width: 60vw; }
+      .w-72 { width: 56vw; }
+      .w-[50rem] { width: 90vw; }
       .rounded-3xl { border-radius: 1rem; }
-      .backdrop-blur-lg { backdrop-filter: none; background: rgba(30, 30, 30, 0.8); }
+      .backdrop-blur-lg { backdrop-filter: none; background: rgba(50, 50, 50, 0.7); }
+      .loader-spin { width: 48px; height: 48px; border-width: 4px; }
+      .text-lg { font-size: 1rem; line-height: 1.5; }
+      .text-sm { font-size: 0.875rem; line-height: 1.5; }
+      a[class*="bg-gradient-to-r"] { padding: 0.375rem 0.75rem; box-shadow: none; }
+      .max-w-5xl { max-width: 100%; }
+      .timeline-line { height: 100%; }
+      .-top-20 { top: 0; }
+      .-left-20 { left: 0; }
+      .-right-20 { right: 0; }
+      .blur-[200px] { filter: blur(100px); }
     }
   </style>
 </head>
-<body class="min-h-screen dark">
-<body class="min-h-screen bg-gradient-to-br text-white">
-  <div id="loader" style="position: fixed; inset: 0; z-index: 1000; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center;">
-    <div style="width: 64px; height: 64px; border: 6px solid rgba(255, 255, 255, 0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+<body class="min-h-screen bg-gradient-to-br from-black via-gray-900 to-indigo-900 text-white dark" style="overflow-x: hidden;">
+  <div id="loader">
+    <div class="loader-spin"></div>
   </div>
-  <main class="relative min-h-screen overflow-hidden">
-    <div class="absolute -top-20 -left-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-floaty"></div>
-    <div class="absolute top-60 -right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-floaty-slow"></div>
-    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[50rem] bg-indigo-500/10 rounded-full blur-[200px] animate-breathing"></div>
-    <div class="mx-auto max-w-5xl px-4 py-24 relative z-10">
+  <main class="relative min-h-screen overflow-x-hidden">
+    <div class="absolute top-0 left-0 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-floaty md:w-80 md:h-80"></div>
+    <div class="absolute top-60 right-0 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-floaty-slow md:w-72 md:h-72"></div>
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[50rem] bg-indigo-500/10 rounded-full blur-[200px] animate-breathing md:w-[50rem] md:h-[50rem]"></div>
+    <div class="mx-auto max-w-5xl px-4 py-24 relative z-10 md:max-w-5xl">
       <h1 class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] text-center">
         Биография
       </h1>
       <div class="mt-16 grid gap-10">
-        <div class="backdrop-blur-lg bg-white/10 border border-purple-400/30 rounded-3xl p-8 shadow-lg fade-in">
+        <div class="backdrop-blur-lg bg-white/10 border border-purple-400/50 rounded-3xl p-8 card fade-in">
           <h2 class="text-2xl font-semibold text-purple-300 flex items-center gap-2">
             <i class="fa-solid fa-user"></i> Обо мне
           </h2>
@@ -101,32 +132,32 @@
             Со временем я улучшил звук, добавил спецэффекты и начал экспериментировать с форматами — от мемов до стримов. 
             Для меня главное — это эмоции зрителей, а не только цифры в статистике.
           </p>
-          <div class="mt-6 flex justify-center gap-4">
-            <a href="https://t.me/dimap7221" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg flex items-center gap-2">
+          <div class="mt-6 flex flex-wrap justify-center gap-4">
+            <a href="https://t.me/dimap7221" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg flex items-center gap-2 md:px-4 md:py-2">
               <i class="fa-brands fa-telegram"></i> Telegram
             </a>
-            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-pink-500 hover:to-red-500 transition-all duration-500 shadow-lg flex items-center gap-2">
+            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-pink-500 hover:to-red-500 transition-all duration-500 shadow-lg flex items-center gap-2 md:px-4 md:py-2">
               <i class="fa-brands fa-youtube"></i> YouTube
             </a>
-            <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-teal-500 hover:to-green-500 transition-all duration-500 shadow-lg flex items-center gap-2">
+            <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-teal-500 hover:to-green-500 transition-all duration-500 shadow-lg flex items-center gap-2 md:px-4 md:py-2">
               <i class="fa-solid fa-hand-holding-dollar"></i> Поддержать
             </a>
           </div>
         </div>
-        <div class="backdrop-blur-lg bg-white/10 border border-indigo-400/30 rounded-3xl p-8 shadow-lg fade-in">
+        <div class="backdrop-blur-lg bg-white/10 border border-indigo-400/50 rounded-3xl p-8 card fade-in">
           <h2 class="text-2xl font-semibold text-indigo-300 flex items-center gap-2">
             <i class="fa-solid fa-timeline"></i> Мой путь
           </h2>
           <div class="mt-4 space-y-6">
             <div class="timeline-item relative pl-8">
               <div class="absolute left-0 top-0 w-3 h-3 bg-purple-400 rounded-full"></div>
-              <div class="timeline-line absolute left-1.5 top-3 h-[calc(100%-0.75rem)] w-0.5 bg-indigo-400/50"></div>
+              <div class="timeline-line absolute left-1.5 top-3 h-full w-0.5 bg-indigo-400/50"></div>
               <h3 class="text-lg font-semibold text-purple-300">2020: Первый запуск на Youtube</h3>
               <p class="mt-1 text-sm text-slate-200">Всё началось с одного видеообзора на консоль и всякая всячина... 😎</p>
             </div>
             <div class="timeline-item relative pl-8">
               <div class="absolute left-0 top-0 w-3 h-3 bg-purple-400 rounded-full"></div>
-              <div class="timeline-line absolute left-1.5 top-3 h-[calc(100%-0.75rem)] w-0.5 bg-indigo-400/50"></div>
+              <div class="timeline-line absolute left-1.5 top-3 h-full w-0.5 bg-indigo-400/50"></div>
               <h3 class="text-lg font-semibold text-purple-300">2021: Запуск нового уровня</h3>
               <p class="mt-1 text-sm text-slate-200">Первый ролик на YouTube в новом уровне — и понеслась!</p>
             </div>
@@ -137,7 +168,7 @@
             </div>
           </div>
         </div>
-        <div class="backdrop-blur-lg bg-white/10 border border-pink-400/30 rounded-3xl p-8 shadow-lg fade-in">
+        <div class="backdrop-blur-lg bg-white/10 border border-pink-400/50 rounded-3xl p-8 card fade-in">
           <h2 class="text-2xl font-semibold text-pink-300 flex items-center gap-2">
             <i class="fa-solid fa-circle-info"></i> Факты
           </h2>
@@ -149,22 +180,22 @@
             <li><i class="fa-solid fa-camera-movie text-red-300"></i> <span class="font-medium">Любимый формат:</span> Динамичные мемы с неожиданными переходами</li>
           </ul>
         </div>
-        <div class="backdrop-blur-lg bg-white/10 border border-green-400/30 rounded-3xl p-8 shadow-lg fade-in">
+        <div class="backdrop-blur-lg bg-white/10 border border-green-400/50 rounded-3xl p-8 card fade-in">
           <h2 class="text-2xl font-semibold text-green-300 flex items-center gap-2">
             <i class="fa-solid fa-music"></i> Плейлист
           </h2>
           <p class="mt-4 text-lg text-slate-200 leading-relaxed">
-            Мой вайб — это музыка для Поднятие настроений! Слушай мой плейлист на Spotify или следи за обновлениями. 🎶
+            Мой вайб — это музыка для поднятия настроения! Слушай мой плейлист на Spotify или следи за обновлениями. 🎶
           </p>
           <div class="mt-4">
-            <a href="https://open.spotify.com/playlist/3UEMLQdDi830YOoOvEF1RB?si=-yT6Kq4fQ_6STsIgQiGHrw" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-teal-500 hover:to-green-500 transition-all duration-500 shadow-lg flex items-center gap-2 mx-auto w-fit">
+            <a href="https://open.spotify.com/playlist/3UEMLQdDi830YOoOvEF1RB?si=-yT6Kq4fQ_6STsIgQiGHrw" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-teal-500 hover:to-green-500 transition-all duration-500 shadow-lg flex items-center gap-2 mx-auto w-fit md:px-4 md:py-2">
               <i class="fa-brands fa-spotify"></i> Слушать на Spotify
             </a>
           </div>
         </div>
       </div>
       <div class="mt-12 text-center">
-        <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg inline-flex items-center gap-2">
+        <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg inline-flex items-center gap-2 md:px-6 md:py-3" onclick="gtag('event', 'button_click', { 'event_category': 'navigation', 'event_label': 'Back to Home' });">
           <i class="fa-solid fa-arrow-left"></i> На главную
         </a>
       </div>
