@@ -233,16 +233,6 @@
           <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
               <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">3 сезон «Бароны»</h3>
-                <span class="text-xs px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700">1%</span>
-              </div>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Готовлю контент для настоящих бойцов!</p>
-              <div class="mt-3 h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700">
-                <div class="h-full w-[1%] rounded-full bg-indigo-600" data-progress="1"></div>
-              </div>
-            </div>
-            <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
-              <div class="flex items-center justify-between">
                 <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">1 сезон «Типичный случай»</h3>
                 <span class="text-xs px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700">50%</span>
               </div>
@@ -390,11 +380,6 @@
   // Функция логирования
   const logAction = (message) => {
     console.log(message);
-  };
-
-  // Проверка режима разработчика
-  const isDevMode = () => {
-    return new URLSearchParams(window.location.search).get('dev') === 'true' || localStorage.getItem('devMode') === 'true';
   };
 
   // Debounce для предотвращения множественных кликов
@@ -681,11 +666,6 @@
 
   // Запуск приложения
   document.addEventListener('DOMContentLoaded', initializeApp);
-
-  // Включение режима разработчика через URL
-  if (isDevMode()) {
-    logAction('Режим разработчика активирован');
-  }
   </script>
 </body>
 </html>
