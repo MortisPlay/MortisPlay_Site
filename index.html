@@ -150,6 +150,9 @@
     .dark .notification button:hover {
       color: #93c5fd;
     }
+    .low-performance .notification { 
+      animation: none !important; 
+    }
     @media (max-width: 640px) { 
       #welcome .lg:grid-cols-2 { grid-template-columns: 1fr; }
       #welcome video, #welcome .banner-fallback { max-width: 100%; height: auto; }
@@ -393,6 +396,10 @@
                 <input type="range" id="fontSizeSlider" min="80" max="120" value="100" class="w-full">
               </label>
               <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Регулируй размер шрифта для удобства чтения.</p>
+              <div id="appearanceNotification" class="notification" role="alert" aria-live="polite">
+                <span></span>
+                <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
+              </div>
             </div>
             <div class="mt-6 card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
               <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Уведомления</h3>
@@ -401,6 +408,10 @@
                 <span class="text-sm text-slate-600 dark:text-slate-300">Уведомления о новостях</span>
               </label>
               <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Получай уведомления о новых постах и Q&A.</p>
+              <div id="newsNotification" class="notification" role="alert" aria-live="polite">
+                <span></span>
+                <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
+              </div>
             </div>
           </div>
         </div>
@@ -557,14 +568,26 @@
     };
   };
 
-  // Показ уведомлений
-  const showNotification = (message, notificationElement = document.getElementById('performanceNotification')) => {
+  // Показ уведомлений с таймером
+  const showNotification = (message, notificationElement) => {
     if (notificationElement) {
       const span = notificationElement.querySelector('span');
       if (span) {
         span.textContent = message;
         notificationElement.classList.add('show');
         gtag('event', 'notification_shown', { event_category: 'settings', event_label: message });
+        const timeout = setTimeout(() => {
+          notificationElement.classList.remove('show');
+        }, 3000);
+        const closeButton = notificationElement.querySelector('button');
+        if (closeButton) {
+          closeButton.addEventListener('click', () => {
+            notificationElement.classList.remove('show');
+            clearTimeout(timeout);
+            gtag('event', 'notification_click', { event_category: 'settings', event_label: 'dismiss_notification' });
+            logAction('Уведомление закрыто');
+          });
+        }
       }
     }
   };
@@ -676,7 +699,7 @@
       themeSelect.addEventListener('change', () => {
         const theme = themeSelect.value;
         setTheme(theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : theme);
-        showNotification(`Тема: ${theme === 'auto' ? 'Авто' : theme === 'light' ? 'Светлая' : 'Тёмная'}`);
+        showNotification(`Тема: ${theme === 'auto' ? 'Авто' : theme === 'light' ? 'Светлая' : 'Тёмная'}`, document.getElementById('appearanceNotification'));
         gtag('event', 'theme_select', { event_category: 'settings', event_label: theme });
         logAction(`Тема выбрана: ${theme}`);
       });
@@ -691,37 +714,22 @@
       const savedMode = localStorage.getItem('lowPerformance') === 'true';
       toggle.checked = savedMode;
       root.classList.toggle('low-performance', savedMode);
-
-      let notificationTimeout;
       toggle.addEventListener('change', () => {
         const isLowPerformance = toggle.checked;
         localStorage.setItem('lowPerformance', isLowPerformance);
         root.classList.toggle('low-performance', isLowPerformance);
-        showNotification(isLowPerformance ? 'Лёгкий режим включён' : 'Лёгкий режим выключен');
-        clearTimeout(notificationTimeout);
-        notificationTimeout = setTimeout(() => {
-          notification.classList.remove('show');
-        }, 3000);
+        showNotification(isLowPerformance ? 'Лёгкий режим включён' : 'Лёгкий режим выключен', notification);
         gtag('event', 'performance_toggle', { event_category: 'settings', event_label: isLowPerformance ? 'low' : 'normal' });
         logAction(`Режим производительности: ${isLowPerformance ? 'Лёгкий' : 'Нормальный'}`);
       });
-
-      const closeButton = notification.querySelector('button');
-      if (closeButton) {
-        closeButton.addEventListener('click', () => {
-          notification.classList.remove('show');
-          clearTimeout(notificationTimeout);
-          gtag('event', 'notification_click', { event_category: 'settings', event_label: 'dismiss_performance_notification' });
-          logAction('Уведомление закрыто');
-        });
-      }
     }
   };
 
   // Управление анимациями
   const setupAnimations = () => {
     const animationsToggle = document.getElementById('disableAnimationsToggle');
-    if (animationsToggle) {
+    const notification = document.getElementById('performanceNotification');
+    if (animationsToggle && notification) {
       const savedAnimations = localStorage.getItem('disableAnimations') === 'true';
       animationsToggle.checked = savedAnimations;
       root.classList.toggle('no-animations', savedAnimations);
@@ -729,7 +737,7 @@
         const disableAnimations = animationsToggle.checked;
         localStorage.setItem('disableAnimations', disableAnimations);
         root.classList.toggle('no-animations', disableAnimations);
-        showNotification(disableAnimations ? 'Анимации отключены' : 'Анимации включены');
+        showNotification(disableAnimations ? 'Анимации отключены' : 'Анимации включены', notification);
         gtag('event', 'animations_toggle', { event_category: 'settings', event_label: disableAnimations ? 'off' : 'on' });
         logAction(`Анимации: ${disableAnimations ? 'Отключены' : 'Включены'}`);
       });
@@ -739,7 +747,8 @@
   // Управление уведомлениями
   const setupNotifications = () => {
     const toggle = document.getElementById('newsNotificationsToggle');
-    if (toggle && 'Notification' in window) {
+    const notification = document.getElementById('newsNotification');
+    if (toggle && notification && 'Notification' in window) {
       const savedNotifications = localStorage.getItem('newsNotifications') === 'true';
       toggle.checked = savedNotifications;
       toggle.addEventListener('change', () => {
@@ -748,7 +757,7 @@
         if (enableNotifications && Notification.permission !== 'granted') {
           Notification.requestPermission().then(permission => {
             if (permission === 'granted') {
-              showNotification('Уведомления о новостях включены');
+              showNotification('Уведомления о новостях включены', notification);
               setTimeout(() => {
                 if (enableNotifications) {
                   new Notification('Новость от Mortis Play!', {
@@ -760,11 +769,11 @@
             } else {
               toggle.checked = false;
               localStorage.setItem('newsNotifications', false);
-              showNotification('Уведомления отклонены браузером');
+              showNotification('Уведомления отклонены браузером', notification);
             }
           });
         } else {
-          showNotification(enableNotifications ? 'Уведомления о новостях включены' : 'Уведомления о новостях отключены');
+          showNotification(enableNotifications ? 'Уведомления о новостях включены' : 'Уведомления о новостях отключены', notification);
         }
         gtag('event', 'notifications_toggle', { event_category: 'settings', event_label: enableNotifications ? 'on' : 'off' });
         logAction(`Уведомления: ${enableNotifications ? 'Включены' : 'Отключены'}`);
@@ -775,7 +784,8 @@
   // Управление размером шрифта
   const setupFontSize = () => {
     const slider = document.getElementById('fontSizeSlider');
-    if (slider) {
+    const notification = document.getElementById('appearanceNotification');
+    if (slider && notification) {
       const savedFontSize = localStorage.getItem('fontSize') || '100';
       slider.value = savedFontSize;
       root.style.setProperty('--font-scale', savedFontSize / 100);
@@ -783,7 +793,7 @@
         const fontSize = slider.value;
         localStorage.setItem('fontSize', fontSize);
         root.style.setProperty('--font-scale', fontSize / 100);
-        showNotification(`Размер шрифта: ${fontSize}%`);
+        showNotification(`Размер шрифта: ${fontSize}%`, notification);
         gtag('event', 'font_size_change', { event_category: 'settings', event_label: fontSize });
         logAction(`Размер шрифта: ${fontSize}%`);
       });
@@ -793,7 +803,8 @@
   // Управление высокой контрастностью
   const setupHighContrast = () => {
     const toggle = document.getElementById('highContrastToggle');
-    if (toggle) {
+    const notification = document.getElementById('appearanceNotification');
+    if (toggle && notification) {
       const savedContrast = localStorage.getItem('highContrast') === 'true';
       toggle.checked = savedContrast;
       root.classList.toggle('high-contrast', savedContrast);
@@ -801,7 +812,7 @@
         const highContrast = toggle.checked;
         localStorage.setItem('highContrast', highContrast);
         root.classList.toggle('high-contrast', highContrast);
-        showNotification(highContrast ? 'Высокая контрастность включена' : 'Высокая контрастность отключена');
+        showNotification(highContrast ? 'Высокая контрастность включена' : 'Высокая контрастность отключена', notification);
         gtag('event', 'high_contrast_toggle', { event_category: 'settings', event_label: highContrast ? 'on' : 'off' });
         logAction(`Контрастность: ${highContrast ? 'Высокая' : 'Нормальная'}`);
       });
