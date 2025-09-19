@@ -72,13 +72,38 @@
     .low-performance .card-hover:hover { transform: none; box-shadow: none; }
     .low-performance .fade-in { transition: none; opacity: 1; transform: none; }
     .low-performance .animate-[floaty_5s_ease-in-out_infinite] { animation: none; }
-    .low-performance #videos { display: none; } /* Добавлено: скрытие раздела видео */
-    .low-performance .banner-video, .low-performance .banner-quote { display: none; } /* Добавлено: скрытие видео и цитаты */
-    .banner-fallback { display: none; } /* Добавлено: скрытие резервной картинки по умолчанию */
-    .low-performance .banner-fallback { display: block; } /* Добавлено: показ резервной картинки */
+    .low-performance #videos { display: none; }
+    .low-performance .banner-video, .low-performance .banner-quote { display: none; }
+    .banner-fallback { display: none; }
+    .low-performance .banner-fallback { display: block; }
+    .notification { 
+      position: fixed; 
+      bottom: 1rem; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      z-index: 1000; 
+      padding: 0.75rem 1.5rem; 
+      border-radius: 0.75rem; 
+      background: rgba(255, 255, 255, 0.8); 
+      backdrop-filter: blur(8px); 
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
+      color: #1e293b; 
+      font-size: 0.875rem; 
+      font-weight: 500; 
+      opacity: 0; 
+      transition: opacity 0.3s ease, transform 0.3s ease; 
+    } /* Добавлено: стили для уведомления */
+    .notification.show { 
+      opacity: 1; 
+      transform: translateX(-50%) translateY(0); 
+    }
+    .dark .notification { 
+      background: rgba(17, 24, 39, 0.8); 
+      color: #e2e8f0; 
+    }
     @media (max-width: 640px) { 
       #welcome .lg:grid-cols-2 { grid-template-columns: 1fr; }
-      #welcome video, #welcome .banner-fallback { max-width: 100%; height: auto; } /* Добавлено: адаптация резервной картинки */
+      #welcome video, #welcome .banner-fallback { max-width: 100%; height: auto; }
       #welcome .mt-4.lg\:absolute { position: static; margin-top: 1rem; width: 100%; }
       #menuToggle { padding: 0.5rem 0.75rem; font-size: 1rem; }
       .glass { backdrop-filter: none; background: linear-gradient(180deg, rgb(255 255 255 / .9), rgb(255 255 255 / .8)); } 
@@ -87,9 +112,16 @@
       .animate-[floaty_5s_ease-in-out_infinite] { animation: none; } 
       iframe, video, img { max-width: 100%; height: auto; } 
       .glass-button { padding: 0.5rem 1rem; }
+      .notification { 
+        top: 1rem; 
+        bottom: auto; 
+        width: calc(100% - 2rem); 
+        max-width: 20rem; 
+      } /* Добавлено: адаптивность уведомления для мобильных */
     }
     @media (min-width: 641px) {
       .glass-button { padding: 0.75rem 1.5rem; }
+      .notification { max-width: 24rem; } /* Добавлено: ограничение ширины уведомления */
     }
     .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
     .glass-button:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); }
@@ -200,12 +232,12 @@
               </div>
             </div>
             <div class="relative mt-8 lg:mt-0 fade-in">
-              <video class="banner-video w-full max-w-full sm:max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" loading="lazy" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала Mortis Play"> <!-- Добавлено: класс banner-video -->
+              <video class="banner-video w-full max-w-full sm:max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" loading="lazy" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала Mortis Play">
                 <source src="/assets/photo.mp4" type="video/mp4" />
                 <img src="/assets/fallback.jpg" alt="Видео недоступно" />
               </video>
-              <img class="banner-fallback w-full max-w-full sm:max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" src="/assets/photo.jpg" alt="Аватар канала Mortis Play" /> <!-- Добавлено: резервная картинка -->
-              <div class="banner-quote mt-4 lg:absolute lg:-bottom-4 lg:-right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover lg:w-auto w-full"> <!-- Добавлено: класс banner-quote -->
+              <img class="banner-fallback w-full max-w-full sm:max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" src="/assets/photo.jpg" alt="Аватар канала Mortis Play" />
+              <div class="banner-quote mt-4 lg:absolute lg:-bottom-4 lg:-right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover lg:w-auto w-full">
                 <p class="text-xs text-slate-600 dark:text-slate-300 text-center lg:text-left">Гений, миллиардер, плейбой, филантроп 😎</p>
               </div>
             </div>
@@ -276,7 +308,8 @@
                 <input type="checkbox" id="lowPerformanceToggle" class="rounded text-indigo-600 focus:ring-indigo-500">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Лёгкий режим (для слабых устройств)</span>
               </label>
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает анимации, эффекты и видео для плавной работы на слабых телефонах.</p> <!-- Добавлено: обновлённое описание -->
+              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает анимации, эффекты и видео для плавной работы на слабых телефонах.</p>
+              <div id="performanceNotification" class="notification" role="alert" aria-live="polite"></div> <!-- Добавлено: контейнер для уведомления -->
             </div>
           </div>
         </div>
@@ -526,16 +559,37 @@
   // Управление производительностью
   const setupPerformance = () => {
     const toggle = document.getElementById('lowPerformanceToggle');
-    if (toggle) {
+    const notification = document.getElementById('performanceNotification');
+    if (toggle && notification) {
       const savedMode = localStorage.getItem('lowPerformance') === 'true';
       toggle.checked = savedMode;
       root.classList.toggle('low-performance', savedMode);
+
+      let notificationTimeout; // Добавлено: для управления таймером уведомления
+      const showNotification = (message) => {
+        notification.textContent = message;
+        notification.classList.add('show');
+        clearTimeout(notificationTimeout);
+        notificationTimeout = setTimeout(() => {
+          notification.classList.remove('show');
+        }, 3000);
+        gtag('event', 'notification_shown', { event_category: 'settings', event_label: message }); // Добавлено: аналитика для показа уведомления
+      };
+
       toggle.addEventListener('change', () => {
         const isLowPerformance = toggle.checked;
         localStorage.setItem('lowPerformance', isLowPerformance);
         root.classList.toggle('low-performance', isLowPerformance);
+        showNotification(isLowPerformance ? 'Лёгкий режим включён' : 'Лёгкий режим выключен'); // Добавлено: показ уведомления
         gtag('event', 'performance_toggle', { event_category: 'settings', event_label: isLowPerformance ? 'low' : 'normal' });
         logAction(`Режим производительности: ${isLowPerformance ? 'Лёгкий' : 'Нормальный'}`);
+      });
+
+      // Добавлено: возможность закрыть уведомление кликом
+      notification.addEventListener('click', () => {
+        notification.classList.remove('show');
+        clearTimeout(notificationTimeout);
+        gtag('event', 'notification_click', { event_category: 'settings', event_label: 'dismiss_notification' });
       });
     }
   };
