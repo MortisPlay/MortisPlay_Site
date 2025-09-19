@@ -6,7 +6,7 @@
   <title>Mortis Play — официальный сайт</title>
   <meta name="description" content="Эпичные видео, новости и обновления от Mortis Play. Присоединяйся к вайбу!" />
   <meta name="robots" content="index,follow" />
-  <meta name="keywords" content="Mortis Play, гейминг, стримы, YouTube, Telegram" /> <!-- Добавлено -->
+  <meta name="keywords" content="Mortis Play, гейминг, стримы, YouTube, Telegram" />
   <link rel="icon" href="/images/favicon.ico" />
 
   <!-- Open Graph -->
@@ -50,8 +50,8 @@
     @keyframes spin { 100% { transform: rotate(360deg); } }
     #sidebarMenu { box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
     #sidebarMenu.open { transform: translateX(0); }
-    #themeToggle { position: relative; overflow: hidden; background: linear-gradient(45deg, #facc15, #fef08a); border-radius: 0.75rem; padding: 0.5rem; } /* Добавлено: яркий градиент для светлой темы */
-    #themeToggle.dark { background: linear-gradient(45deg, #1e3a8a, #3b82f6); } /* Добавлено: тёмный градиент */
+    #themeToggle { position: relative; overflow: hidden; background: linear-gradient(45deg, #facc15, #fef08a); border-radius: 0.75rem; padding: 0.5rem; }
+    #themeToggle.dark { background: linear-gradient(45deg, #1e3a8a, #3b82f6); }
     #themeToggle::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255, 255, 255, 0.4); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.5s ease, height 0.5s ease; }
     #themeToggle:hover::before { width: 200%; height: 200%; }
     #themeToggle i { transition: transform 0.5s ease, opacity 0.5s ease; position: relative; z-index: 1; }
@@ -68,13 +68,17 @@
     .video-card.hidden { opacity: 0; transform: scale(0.95); display: none; }
     body { overscroll-behavior: none; }
     main { overflow: auto; min-height: 100vh; }
-    .low-performance .card-hover { transition: none; } /* Добавлено: отключение hover-эффектов */
-    .low-performance .card-hover:hover { transform: none; box-shadow: none; } /* Добавлено */
-    .low-performance .fade-in { transition: none; opacity: 1; transform: none; } /* Добавлено: отключение анимаций */
-    .low-performance .animate-[floaty_5s_ease-in-out_infinite] { animation: none; } /* Добавлено */
+    .low-performance .card-hover { transition: none; }
+    .low-performance .card-hover:hover { transform: none; box-shadow: none; }
+    .low-performance .fade-in { transition: none; opacity: 1; transform: none; }
+    .low-performance .animate-[floaty_5s_ease-in-out_infinite] { animation: none; }
+    .low-performance #videos { display: none; } /* Добавлено: скрытие раздела видео */
+    .low-performance .banner-video, .low-performance .banner-quote { display: none; } /* Добавлено: скрытие видео и цитаты */
+    .banner-fallback { display: none; } /* Добавлено: скрытие резервной картинки по умолчанию */
+    .low-performance .banner-fallback { display: block; } /* Добавлено: показ резервной картинки */
     @media (max-width: 640px) { 
       #welcome .lg:grid-cols-2 { grid-template-columns: 1fr; }
-      #welcome video { max-width: 100%; height: auto; }
+      #welcome video, #welcome .banner-fallback { max-width: 100%; height: auto; } /* Добавлено: адаптация резервной картинки */
       #welcome .mt-4.lg\:absolute { position: static; margin-top: 1rem; width: 100%; }
       #menuToggle { padding: 0.5rem 0.75rem; font-size: 1rem; }
       .glass { backdrop-filter: none; background: linear-gradient(180deg, rgb(255 255 255 / .9), rgb(255 255 255 / .8)); } 
@@ -132,12 +136,12 @@
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#qa">Q&A</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#settings">Настройки</a> <!-- Добавлено -->
+          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#settings">Настройки</a>
         </div>
         <div class="flex items-center gap-2">
           <button id="themeToggle" class="glass-button relative flex items-center gap-1" aria-label="Переключить тему">
             <i class="fa-solid fa-sun"></i>
-            <span class="text-xs hidden sm:inline">Светлая</span> <!-- Добавлено: текст темы -->
+            <span class="text-xs hidden sm:inline">Светлая</span>
             <div class="glow"></div>
             <canvas id="particleCanvas" class="absolute inset-0 pointer-events-none"></canvas>
           </button>
@@ -160,7 +164,7 @@
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#qa">Q&A</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#settings">Настройки</a> <!-- Добавлено -->
+            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#settings">Настройки</a>
           </nav>
         </div>
       </div>
@@ -196,11 +200,12 @@
               </div>
             </div>
             <div class="relative mt-8 lg:mt-0 fade-in">
-              <video class="w-full max-w-full sm:max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" loading="lazy" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала Mortis Play">
+              <video class="banner-video w-full max-w-full sm:max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" loading="lazy" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала Mortis Play"> <!-- Добавлено: класс banner-video -->
                 <source src="/assets/photo.mp4" type="video/mp4" />
                 <img src="/assets/fallback.jpg" alt="Видео недоступно" />
               </video>
-              <div class="mt-4 lg:absolute lg:-bottom-4 lg:-right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover lg:w-auto w-full">
+              <img class="banner-fallback w-full max-w-full sm:max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" src="/assets/fallback.jpg" alt="Аватар канала Mortis Play" /> <!-- Добавлено: резервная картинка -->
+              <div class="banner-quote mt-4 lg:absolute lg:-bottom-4 lg:-right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover lg:w-auto w-full"> <!-- Добавлено: класс banner-quote -->
                 <p class="text-xs text-slate-600 dark:text-slate-300 text-center lg:text-left">Гений, миллиардер, плейбой, филантроп 😎</p>
               </div>
             </div>
@@ -260,7 +265,7 @@
         </div>
       </section>
 
-      <section id="settings" class="py-16 bg-slate-50 dark:bg-slate-900/40 fade-in"> <!-- Добавлено -->
+      <section id="settings" class="py-16 bg-slate-50 dark:bg-slate-900/40 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="text-center text-2xl md:text-3xl font-bold">Настройки</h2>
           <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Настрой сайт под себя для максимального комфорта! 😎</p>
@@ -271,7 +276,7 @@
                 <input type="checkbox" id="lowPerformanceToggle" class="rounded text-indigo-600 focus:ring-indigo-500">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Лёгкий режим (для слабых устройств)</span>
               </label>
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает анимации и эффекты для плавной работы на слабых телефонах.</p>
+              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает анимации, эффекты и видео для плавной работы на слабых телефонах.</p> <!-- Добавлено: обновлённое описание -->
             </div>
           </div>
         </div>
@@ -390,12 +395,12 @@
               <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Мы убрали функции входа и регистрации, чтобы упростить интерфейс и ускорить загрузку сайта, сосредоточившись на основном контенте.</div>
             </details>
             <details class="group p-5">
-             <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-              Как включить лёгкий режим?
-              <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-            </summary>
-             <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Перейди в раздел «Настройки» и включи «Лёгкий режим» если у тебя лагает сайт. Это отключит анимации и эффекты.</div>
-           </details>
+              <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
+                Как включить лёгкий режим?
+                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
+              </summary>
+              <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Перейди в раздел «Настройки» и включи «Лёгкий режим» если у тебя лагает сайт. Это отключит анимации, эффекты и видео.</div>
+            </details>
           </div>
         </div>
       </section>
@@ -518,7 +523,7 @@
     setupThemeParticles();
   };
 
-  // Управление производительностью // Добавлено
+  // Управление производительностью
   const setupPerformance = () => {
     const toggle = document.getElementById('lowPerformanceToggle');
     if (toggle) {
@@ -608,7 +613,7 @@
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !root.classList.contains('low-performance')) { // Добавлено: проверка режима
+          if (entry.isIntersecting && !root.classList.contains('low-performance')) {
             entry.target.classList.add('is-visible');
           }
         });
@@ -709,7 +714,7 @@
   // Инициализация всех компонентов
   const initializeApp = () => {
     initializeTheme();
-    setupPerformance(); // Добавлено
+    setupPerformance();
     setupMenu();
     setupFadeIn();
     setupVideos();
