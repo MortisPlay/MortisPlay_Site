@@ -18,15 +18,21 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
-  <script>
+  <script nonce="${crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '')}">
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });
   </script>
   <style>
-    @keyframes floaty { 0%,100%{transform:translateY(0) translateX(0)} 50%{transform:translateY(-20px) translateX(10px)} }
-    @keyframes breathing { 0%,100%{opacity:0.3; transform:scale(1)} 50%{opacity:0.6; transform:scale(1.05)} }
+    :root { --font-scale: 1; }
+    body { font-size: calc(1rem * var(--font-scale)); }
+    .text-4xl { font-size: calc(2.25rem * var(--font-scale)); }
+    .text-2xl { font-size: calc(1.5rem * var(--font-scale)); }
+    .text-lg { font-size: calc(1.125rem * var(--font-scale)); }
+    .text-sm { font-size: calc(0.875rem * var(--font-scale)); }
+    @keyframes floaty { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-20px) translateX(10px); } }
+    @keyframes breathing { 0%,100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.05); } }
     .animate-floaty { animation: floaty 8s ease-in-out infinite; }
     .animate-floaty-slow { animation: floaty 10s ease-in-out infinite; }
     .animate-breathing { animation: breathing 10s ease-in-out infinite; }
@@ -44,16 +50,68 @@
     }
     h1, h2, h3 { color: #e5e7eb; }
     p, li, span { color: #d1d5db; }
+    .notification { 
+      position: fixed; 
+      bottom: 1rem; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      z-index: 1000; 
+      padding: 0.75rem 2.5rem 0.75rem 1.5rem; 
+      border-radius: 0.75rem; 
+      background: rgba(255, 255, 255, 0.8); 
+      backdrop-filter: blur(8px); 
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
+      color: #1e293b; 
+      font-size: 0.875rem; 
+      font-weight: 500; 
+      opacity: 0; 
+      transition: opacity 0.3s ease; 
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+      pointer-events: none; 
+    }
+    .notification.show { opacity: 1; }
+    .notification button { 
+      background: none; 
+      border: none; 
+      color: #1e293b; 
+      font-size: 0.75rem; 
+      cursor: pointer; 
+      padding: 0.25rem; 
+      pointer-events: auto; 
+    }
+    .notification button:hover { color: #6366f1; }
+    .high-contrast { 
+      --text-color: #ffffff; 
+      --bg-color: #000000; 
+      --link-color: #00ff00; 
+    }
+    .high-contrast body { background: var(--bg-color); color: var(--text-color); }
+    .high-contrast a { color: var(--link-color); }
+    .high-contrast .card { background: var(--bg-color); border-color: var(--text-color); }
+    .high-contrast .neon-title { color: #ffffff; background: none; }
+    .low-performance .animate-floaty, .low-performance .animate-floaty-slow, .low-performance .animate-breathing { animation: none; }
+    .low-performance .fade-in { transition: none; opacity: 1; transform: none; }
+    .no-animations .fade-in, .no-animations .animate-floaty, .no-animations .animate-floaty-slow, .no-animations .animate-breathing { 
+      transition: none; 
+      transform: none; 
+      opacity: 1; 
+      animation: none; 
+    }
     @media (max-width: 640px) {
       .md\:grid-cols-4 { grid-template-columns: 1fr; }
-      .animate-floaty, .animate-floaty-slow, .animate-breathing { animation: none; }
-      .text-4xl { font-size: 2rem; }
-      .text-2xl { font-size: 1.5rem; }
+      .text-4xl { font-size: calc(2rem * var(--font-scale)); }
+      .text-2xl { font-size: calc(1.5rem * var(--font-scale)); }
       .px-4 { padding-left: 1rem; padding-right: 1rem; }
       .py-24 { padding-top: 4rem; padding-bottom: 4rem; }
       .w-80, .w-72, .w-[50rem] { width: 100%; }
       .rounded-3xl { border-radius: 1rem; }
       .backdrop-blur-lg { backdrop-filter: none; background: rgba(30, 30, 30, 0.8); }
+      .notification { top: 1rem; bottom: auto; width: calc(100% - 2rem); max-width: 20rem; }
+    }
+    @media (min-width: 641px) {
+      .notification { max-width: 24rem; bottom: 1rem; top: auto; }
     }
   </style>
 </head>
@@ -63,19 +121,20 @@
     <div class="absolute top-60 -right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-floaty-slow"></div>
     <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[50rem] bg-indigo-500/10 rounded-full blur-[200px] animate-breathing"></div>
     <div class="mx-auto max-w-5xl px-4 py-24 relative z-10">
-      <h1 class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] text-center">
+      <h1 id="qaTitle" class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] text-center">
         Q&A
       </h1>
+      <p id="qaCountdown" class="mt-4 text-lg text-slate-200 text-center"></p>
       <div class="mt-16 grid gap-10">
         <div class="backdrop-blur-lg card border rounded-3xl p-8 shadow-lg fade-in">
           <h2 class="text-2xl font-semibold text-purple-300 flex items-center gap-2">
             <i class="fa-solid fa-question-circle"></i> Задать вопрос
           </h2>
-          <p class="mt-4 text-lg text-slate-200 leading-relaxed">
-            Хочешь узнать что-то крутое? Задай свой вопрос в Telegram, и я отвечу на сайте! 😎
+          <p id="qaStatus" class="mt-4 text-lg text-slate-200 leading-relaxed">
+            Q&A ещё не началось! Старт через <span id="qaTimer"></span>. Задай свой вопрос в Telegram, и я отвечу на сайте! 😎
           </p>
           <div class="mt-6 flex justify-center">
-            <a href="https://t.me/MortisplayQABot" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg flex items-center gap-2">
+            <a id="qaSubmitButton" href="https://t.me/MortisplayQABot" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg flex items-center gap-2" rel="noopener" aria-label="Задать вопрос в Telegram">
               <i class="fa-brands fa-telegram"></i> Задать вопрос в Telegram
             </a>
           </div>
@@ -90,19 +149,59 @@
         </div>
       </div>
       <div class="mt-12 text-center">
-        <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg inline-flex items-center gap-2">
+        <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg inline-flex items-center gap-2" aria-label="Вернуться на главную">
           <i class="fa-solid fa-arrow-left"></i> На главную
         </a>
       </div>
+      <div id="qaNotification" class="notification" role="alert" aria-live="polite">
+        <span></span>
+        <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
+      </div>
     </div>
   </main>
-  <script>
+  <script nonce="${crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '')}">
+    // Логирование
+    const logAction = (message) => console.log(`[Q&A] ${message}`);
+
+    // Debounce
+    const debounce = (func, wait) => {
+      let timeout;
+      return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    };
+
+    // Показ уведомлений
+    const showNotification = (message, notificationElement) => {
+      if (notificationElement) {
+        const span = notificationElement.querySelector('span');
+        if (span) {
+          span.textContent = message;
+          notificationElement.classList.add('show');
+          gtag('event', 'notification_shown', { event_category: 'qa', event_label: message });
+          const timeout = setTimeout(() => {
+            notificationElement.classList.remove('show');
+          }, 3000);
+          const closeButton = notificationElement.querySelector('button');
+          if (closeButton) {
+            closeButton.addEventListener('click', () => {
+              notificationElement.classList.remove('show');
+              clearTimeout(timeout);
+              gtag('event', 'notification_dismiss', { event_category: 'qa', event_label: 'dismiss_notification' });
+              logAction('Уведомление закрыто');
+            });
+          }
+        }
+      }
+    };
+
     // Анимация появления
     const setupFadeIn = () => {
       const io = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) {
+            if (entry.isIntersecting && !document.documentElement.classList.contains('low-performance') && !document.documentElement.classList.contains('no-animations')) {
               entry.target.classList.add('is-visible');
               io.unobserve(entry.target);
             }
@@ -119,34 +218,170 @@
       buttons.forEach(button => {
         button.addEventListener('click', (e) => {
           const label = e.target.textContent.trim();
-          gtag('event', 'button_click', { event_category: 'engagement', event_label: label });
+          gtag('event', 'button_click', { event_category: 'qa', event_label: label });
+          logAction(`Клик по кнопке: ${label}`);
         });
       });
     };
 
-    // Список вопросов (пример)
+    // Управление размером шрифта
+    const setupFontSize = () => {
+      const savedFontSize = localStorage.getItem('fontSize') || '100';
+      document.documentElement.style.setProperty('--font-scale', savedFontSize / 100);
+    };
+
+    // Управление высокой контрастностью
+    const setupHighContrast = () => {
+      const savedContrast = localStorage.getItem('highContrast') === 'true';
+      document.documentElement.classList.toggle('high-contrast', savedContrast);
+    };
+
+    // Управление производительностью
+    const setupPerformance = () => {
+      const savedMode = localStorage.getItem('lowPerformance') === 'true';
+      document.documentElement.classList.toggle('low-performance', savedMode);
+    };
+
+    // Управление анимациями
+    const setupAnimations = () => {
+      const savedAnimations = localStorage.getItem('disableAnimations') === 'true';
+      document.documentElement.classList.toggle('no-animations', savedAnimations);
+    };
+
+    // Таймер Q&A
+    const setupQaTimer = () => {
+      const qaTitle = document.getElementById('qaTitle');
+      const qaCountdown = document.getElementById('qaCountdown');
+      const qaStatus = document.getElementById('qaStatus');
+      const qaTimer = document.getElementById('qaTimer');
+      const qaSubmitButton = document.getElementById('qaSubmitButton');
+      const notification = document.getElementById('qaNotification');
+      if (!qaTitle || !qaCountdown || !qaStatus || !qaTimer || !qaSubmitButton || !notification) return;
+
+      const startDate = new Date('2025-09-21T10:00:00+03:00');
+      const activationDate = new Date('2025-09-22T10:00:00+03:00');
+
+      const updateTimer = () => {
+        const now = new Date();
+        if (now < startDate) {
+          qaTitle.textContent = 'Q&A скоро начнётся!';
+          qaCountdown.textContent = '';
+          qaStatus.textContent = 'Q&A ещё не началось! Скоро можно будет задавать вопросы в Telegram. 😎';
+          qaSubmitButton.classList.add('opacity-50', 'pointer-events-none');
+          qaSubmitButton.setAttribute('aria-disabled', 'true');
+          logAction('Q&A ещё не началось');
+        } else if (now >= startDate && now < activationDate) {
+          qaTitle.textContent = 'Q&A';
+          const timeLeft = activationDate - now;
+          const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+          qaTimer.textContent = `${days} д ${hours} ч ${minutes} м ${seconds} с`;
+          qaCountdown.textContent = 'Q&A начнётся через:';
+          qaStatus.textContent = `Q&A ещё не началось! Старт через ${qaTimer.textContent}. Задай свой вопрос в Telegram, и я отвечу на сайте! 😎`;
+          qaSubmitButton.classList.remove('opacity-50', 'pointer-events-none');
+          qaSubmitButton.removeAttribute('aria-disabled');
+          gtag('event', 'qa_timer_view', { event_category: 'qa', event_label: 'countdown' });
+          logAction(`Таймер Q&A: ${days} д ${hours} ч ${minutes} м ${seconds} с`);
+        } else {
+          qaTitle.textContent = 'Q&A';
+          qaCountdown.textContent = 'Q&A открыт!';
+          qaStatus.textContent = 'Q&A началось! Задавай свои вопросы в Telegram, я отвечу на лучшие! 😎';
+          qaTimer.remove();
+          qaSubmitButton.classList.remove('opacity-50', 'pointer-events-none');
+          qaSubmitButton.removeAttribute('aria-disabled');
+          gtag('event', 'qa_timer_end', { event_category: 'qa', event_label: 'qa_opened' });
+          logAction('Q&A открыт');
+          if (localStorage.getItem('newsNotifications') === 'true' && Notification.permission === 'granted') {
+            setTimeout(() => {
+              new Notification('Q&A стартовал!', {
+                body: 'Задавай вопросы в Telegram! 😎',
+                icon: '/assets/photo.jpg'
+              });
+            }, 1000);
+            showNotification('Q&A стартовал! Задавай вопросы!', notification);
+          }
+          clearInterval(timerInterval);
+        }
+      };
+
+      updateTimer();
+      const timerInterval = setInterval(updateTimer, 1000);
+    };
+
+    // Список вопросов
     const setupQAList = () => {
       const qaList = document.getElementById('qa-list');
+      if (!qaList) return;
+
+      const activationDate = new Date('2025-09-22T10:00:00+03:00');
+      const now = new Date();
+      if (now < activationDate) {
+        qaList.innerHTML = '<p class="text-sm text-slate-200">Вопросы появятся после старта Q&A 22 сентября 2025 в 10:00 МСК.</p>';
+        logAction('Вопросы скрыты до старта Q&A');
+        return;
+      }
+
+      // Временный статический список вопросов (заменить на API-запрос)
       const questions = [
-        { name: 'Аноним', question: 'Какая у тебя любимая карта в CS2?', answer: 'Mirage — классика, братан! 😎 Люблю раздавать хедшоты на А-плэнт.' },
-        { name: 'Аноним', question: 'Планируешь стримить на Twitch?', answer: 'Пока фокус на YouTube, но Twitch в планах, если комьюнити захочет!' }
+        { 
+          id: 1, 
+          username: 'Аноним', 
+          question: 'Какая у тебя любимая карта в CS2?', 
+          answer: 'Mirage — классика, братан! 😎 Люблю раздавать хедшоты на А-плэнт.', 
+          status: 'approved', 
+          cancelled: false 
+        },
+        { 
+          id: 2, 
+          username: 'Аноним', 
+          question: 'Планируешь стримить на Twitch?', 
+          answer: 'Пока фокус на YouTube, но Twitch в планах, если комьюнити захочет!', 
+          status: 'approved', 
+          cancelled: false 
+        },
+        { 
+          id: 3, 
+          username: 'Геймер_2000', 
+          question: 'Какой твой любимый момент из стримов?', 
+          answer: 'Когда в Content Warning мы с пацанами угорали над багом с камерой! 😂', 
+          status: 'approved', 
+          cancelled: false 
+        }
       ];
-      questions.forEach(q => {
+
+      qaList.innerHTML = '';
+      const approvedQuestions = questions.filter(q => q.status === 'approved' && !q.cancelled);
+      if (approvedQuestions.length === 0) {
+        qaList.innerHTML = '<p class="text-sm text-slate-200">Пока нет одобренных вопросов.</p>';
+        logAction('Нет одобренных вопросов для отображения');
+        return;
+      }
+
+      approvedQuestions.forEach(q => {
         const qaItem = document.createElement('div');
         qaItem.className = 'border-l-4 border-purple-500 pl-4';
         qaItem.innerHTML = `
-          <p class="text-lg font-semibold text-purple-300">${q.name || 'Аноним'}</p>
+          <p class="text-lg font-semibold text-purple-300">${q.username || 'Аноним'}</p>
           <p class="text-sm text-slate-200">${q.question}</p>
           <p class="mt-2 text-sm text-indigo-300"><strong>Ответ:</strong> ${q.answer}</p>
         `;
         qaList.appendChild(qaItem);
       });
+      gtag('event', 'qa_list_view', { event_category: 'qa', event_label: 'questions_displayed' });
+      logAction(`Список вопросов отображен: ${approvedQuestions.length} вопросов`);
     };
 
     // Инициализация
     document.addEventListener('DOMContentLoaded', () => {
       setupFadeIn();
       setupButtonTracking();
+      setupFontSize();
+      setupHighContrast();
+      setupPerformance();
+      setupAnimations();
+      setupQaTimer();
       setupQAList();
     });
   </script>
