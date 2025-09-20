@@ -544,7 +544,7 @@
                 Что с разделом Q&A?
                 <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
               </summary>
-              <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Q&A запускается через 3 дня (22 сентября 2025)! Пиши вопросы в Telegram: <a href="https://t.me/dimap7221" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">MortisPlay</a>.</div>
+              <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Q&A запускается через 2 дня (22 сентября 2025)! Пиши вопросы в Telegram: <a href="https://t.me/dimap7221" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">MortisPlay</a>.</div>
             </details>
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
@@ -817,61 +817,49 @@
     }
   };
 
-  // Таймер в разделе Q&A
-  const setupQaTimer = () => {
+  // Таймер и кнопка Q&A
+  const setupQaTimerAndButton = () => {
     const qaTimer = document.getElementById('qaTimer');
     const qaCountdown = document.getElementById('qaCountdown');
-    if (!qaTimer || !qaCountdown) return;
-
-    const activationDate = new Date('2025-09-22T10:00:00+03:00'); // 22 сентября 10:00 МСК
-
-    const updateTimer = () => {
-      const now = new Date();
-      if (now < activationDate) {
-        const timeLeft = activationDate - now;
-        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-        qaCountdown.textContent = `${days} д ${hours} ч ${minutes} м`;
-        gtag('event', 'qa_timer_view', { event_category: 'engagement', event_label: 'qa_countdown' });
-        logAction(`Таймер Q&A: ${days} д ${hours} ч ${minutes} м`);
-      } else {
-        qaTimer.textContent = 'Q&A открыт! Задавай вопросы на сайте или в Telegram! 😎';
-        qaCountdown.remove();
-        gtag('event', 'qa_timer_end', { event_category: 'engagement', event_label: 'qa_opened' });
-        logAction('Q&A открыт');
-      }
-    };
-
-    updateTimer();
-    setInterval(updateTimer, 10 * 1000);
-  };
-
-  // Кнопка Q&A в разделе "Главная"
-  const setupQaButton = () => {
     const qaButton = document.getElementById('qaButton');
-    if (!qaButton) return;
+    if (!qaTimer || !qaCountdown || !qaButton) return;
 
     const startDate = new Date('2025-09-21T10:00:00+03:00'); // 21 сентября 10:00 МСК
     const activationDate = new Date('2025-09-22T10:00:00+03:00'); // 22 сентября 10:00 МСК
 
-    const updateButton = () => {
+    const updateTimerAndButton = () => {
       const now = new Date();
-      if (now >= startDate && now < activationDate) {
+      if (now < startDate) {
+        qaButton.classList.add('hidden');
+        qaTimer.textContent = 'Q&A скоро начнётся!';
+        qaCountdown.textContent = '';
+        logAction('Q&A ещё не началось');
+      } else if (now >= startDate && now < activationDate) {
         qaButton.classList.remove('hidden');
         qaButton.setAttribute('aria-disabled', 'true');
-        gtag('event', 'qa_button_view', { event_category: 'engagement', event_label: 'qa_button_inactive' });
-        logAction('Кнопка Q&A отображена, но неактивна');
-      } else if (now >= activationDate) {
+        qaButton.classList.add('opacity-50', 'pointer-events-none');
+        const timeLeft = activationDate - now;
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+        qaCountdown.textContent = `${days} д ${hours} ч ${minutes} м ${seconds} с`;
+        gtag('event', 'qa_timer_view', { event_category: 'engagement', event_label: 'qa_countdown' });
+        logAction(`Таймер Q&A: ${days} д ${hours} ч ${minutes} м ${seconds} с`);
+      } else {
         qaButton.classList.remove('hidden', 'opacity-50', 'pointer-events-none');
         qaButton.removeAttribute('aria-disabled');
-        gtag('event', 'qa_button_active', { event_category: 'engagement', event_label: 'qa_button_activated' });
-        logAction('Кнопка Q&A активирована');
+        qaTimer.textContent = 'Q&A открыт! Задавай вопросы на сайте или в Telegram! 😎';
+        qaCountdown.remove();
+        gtag('event', 'qa_timer_end', { event_category: 'engagement', event_label: 'qa_opened' });
+        logAction('Q&A открыт');
+        notifyQaLaunch();
+        clearInterval(timerInterval); // Останавливаем таймер после активации
       }
     };
 
-    updateButton();
-    setInterval(updateButton, 10 * 1000);
+    updateTimerAndButton();
+    const timerInterval = setInterval(updateTimerAndButton, 1000);
 
     qaButton.addEventListener('click', () => {
       if (new Date() >= activationDate) {
@@ -1106,6 +1094,7 @@
     setupNavTracking();
     setupButtonTracking();
     setupSectionTracking();
+    setupQaTimerAndButton();
   };
 
   // Запуск приложения
