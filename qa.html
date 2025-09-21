@@ -99,6 +99,24 @@
       opacity: 1; 
       animation: none; 
     }
+    .loader {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100px;
+    }
+    .loader::before {
+      content: '';
+      width: 24px;
+      height: 24px;
+      border: 4px solid #a5b4fc;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
     @media (max-width: 640px) {
       .md\:grid-cols-4 { grid-template-columns: 1fr; }
       .text-4xl { font-size: calc(2rem * var(--font-scale)); }
@@ -144,7 +162,7 @@
             <i class="fa-solid fa-comments"></i> Вопросы и ответы
           </h2>
           <div id="qa-list" class="mt-4 space-y-6">
-            <!-- Вопросы добавляются через JS -->
+            <div class="loader"></div>
           </div>
         </div>
       </div>
@@ -194,6 +212,13 @@
           }
         }
       }
+    };
+
+    // Экранирование HTML
+    const escapeHTML = (str) => {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
     };
 
     // Анимация появления
@@ -313,7 +338,8 @@
     // Список вопросов
     const setupQAList = () => {
       const qaList = document.getElementById('qa-list');
-      if (!qaList) return;
+      const notification = document.getElementById('qaNotification');
+      if (!qaList || !notification) return;
 
       const activationDate = new Date('2025-09-22T10:00:00+03:00');
       const now = new Date();
@@ -323,54 +349,41 @@
         return;
       }
 
-      // Временный статический список вопросов (заменить на API-запрос)
-      const questions = [
-        { 
-          id: 1, 
-          username: 'Аноним', 
-          question: 'Какая у тебя любимая карта в CS2?', 
-          answer: 'Mirage — классика, братан! 😎 Люблю раздавать хедшоты на А-плэнт.', 
-          status: 'approved', 
-          cancelled: false 
-        },
-        { 
-          id: 2, 
-          username: 'Аноним', 
-          question: 'Планируешь стримить на Twitch?', 
-          answer: 'Пока фокус на YouTube, но Twitch в планах, если комьюнити захочет!', 
-          status: 'approved', 
-          cancelled: false 
-        },
-        { 
-          id: 3, 
-          username: 'Геймер_2000', 
-          question: 'Какой твой любимый момент из стримов?', 
-          answer: 'Когда в Content Warning мы с пацанами угорали над багом с камерой! 😂', 
-          status: 'approved', 
-          cancelled: false 
-        }
-      ];
+      qaList.innerHTML = '<div class="loader"></div>';
+      fetch('/api/questions')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          qaList.innerHTML = '';
+          const approvedQuestions = data.questions || [];
+          if (approvedQuestions.length === 0) {
+            qaList.innerHTML = '<p class="text-sm text-slate-200">Пока нет одобренных вопросов.</p>';
+            logAction('Нет одобренных вопросов для отображения');
+            return;
+          }
 
-      qaList.innerHTML = '';
-      const approvedQuestions = questions.filter(q => q.status === 'approved' && !q.cancelled);
-      if (approvedQuestions.length === 0) {
-        qaList.innerHTML = '<p class="text-sm text-slate-200">Пока нет одобренных вопросов.</p>';
-        logAction('Нет одобренных вопросов для отображения');
-        return;
-      }
-
-      approvedQuestions.forEach(q => {
-        const qaItem = document.createElement('div');
-        qaItem.className = 'border-l-4 border-purple-500 pl-4';
-        qaItem.innerHTML = `
-          <p class="text-lg font-semibold text-purple-300">${q.username || 'Аноним'}</p>
-          <p class="text-sm text-slate-200">${q.question}</p>
-          <p class="mt-2 text-sm text-indigo-300"><strong>Ответ:</strong> ${q.answer}</p>
-        `;
-        qaList.appendChild(qaItem);
-      });
-      gtag('event', 'qa_list_view', { event_category: 'qa', event_label: 'questions_displayed' });
-      logAction(`Список вопросов отображен: ${approvedQuestions.length} вопросов`);
+          approvedQuestions.forEach(q => {
+            const qaItem = document.createElement('div');
+            qaItem.className = 'border-l-4 border-purple-500 pl-4';
+            qaItem.innerHTML = `
+              <p class="text-lg font-semibold text-purple-300">${escapeHTML(q.username || 'Аноним')}</p>
+              <p class="text-sm text-slate-200">${escapeHTML(q.question)}</p>
+              <p class="mt-2 text-sm text-indigo-300"><strong>Ответ:</strong> ${escapeHTML(q.answer)}</p>
+            `;
+            qaList.appendChild(qaItem);
+          });
+          gtag('event', 'qa_list_view', { event_category: 'qa', event_label: 'questions_displayed' });
+          logAction(`Список вопросов отображен: ${approvedQuestions.length} вопросов`);
+        })
+        .catch(error => {
+          qaList.innerHTML = '<p class="text-sm text-slate-200">Ошибка загрузки вопросов. Попробуйте позже!</p>';
+          showNotification('Ошибка загрузки вопросов!', notification);
+          logAction(`Ошибка загрузки вопросов: ${error}`);
+        });
     };
 
     // Инициализация
