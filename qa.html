@@ -131,7 +131,7 @@
             <i class="fa-solid fa-question-circle"></i> Задать вопрос
           </h2>
           <p id="qaStatus" class="mt-4 text-lg text-slate-200 leading-relaxed">
-            Q&A ещё не началось! Старт через <span id="qaTimer"></span>. Задай свой вопрос в Telegram, и я отвечу на сайте! 😎
+            Q&A ещё не открылся! Старт через <span id="qaTimer"></span>. Задай свой вопрос в Telegram, и я отвечу на сайте! 😎
           </p>
           <div class="mt-6 flex justify-center">
             <a id="qaSubmitButton" href="https://t.me/MortisplayQABot" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg flex items-center gap-2" rel="noopener" aria-label="Задать вопрос в Telegram">
@@ -278,8 +278,8 @@
           const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
           qaTimer.textContent = `${days} д ${hours} ч ${minutes} м ${seconds} с`;
-          qaCountdown.textContent = 'Q&A начнётся через:';
-          qaStatus.textContent = `Q&A ещё не началось! Старт через ${qaTimer.textContent}. Задай свой вопрос в Telegram, и я отвечу на сайте! 😎`;
+          qaCountdown.textContent = 'Q&A начнётся через: ${qaTimer.textContent}';
+          qaStatus.textContent = `Q&A ещё не открылся! Старт через ${qaTimer.textContent}. Задай свой вопрос в Telegram, и я отвечу на сайте! 😎`;
           qaSubmitButton.classList.remove('opacity-50', 'pointer-events-none');
           qaSubmitButton.removeAttribute('aria-disabled');
           gtag('event', 'qa_timer_view', { event_category: 'qa', event_label: 'countdown' });
@@ -287,7 +287,7 @@
         } else {
           qaTitle.textContent = 'Q&A';
           qaCountdown.textContent = 'Q&A открыт!';
-          qaStatus.textContent = 'Q&A началось! Задавай свои вопросы в Telegram, я отвечу на лучшие! 😎';
+          qaStatus.textContent = 'Q&A открылся! Задавай свои вопросы в Telegram бота, я отвечу на лучшие! 😎';
           qaTimer.remove();
           qaSubmitButton.classList.remove('opacity-50', 'pointer-events-none');
           qaSubmitButton.removeAttribute('aria-disabled');
