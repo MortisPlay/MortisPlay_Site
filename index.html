@@ -544,7 +544,7 @@
                 Что с разделом Q&A?
                 <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
               </summary>
-              <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Q&A запускается через 2 дня (22 сентября 2025)! Пиши вопросы в Telegram: <a href="https://t.me/dimap7221" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">MortisPlay</a>.</div>
+              <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Q&A запускается через 1 день (22 сентября 2025)! Пиши вопросы в Telegram: <a href="https://t.me/dimap7221" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">MortisPlay</a>.</div>
             </details>
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
@@ -807,7 +807,7 @@
     if (localStorage.getItem('newsNotifications') === 'true' && Notification.permission === 'granted' && new Date() >= activationDate) {
       setTimeout(() => {
         new Notification('Q&A стартовал!', {
-          body: 'Задавай вопросы на сайте или в Telegram! 😎',
+          body: 'Задавай вопросы через бота в Telegram! 😎',
           icon: '/assets/photo.jpg'
         });
       }, 1000);
