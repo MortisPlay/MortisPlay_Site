@@ -278,7 +278,7 @@
           const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
           qaTimer.textContent = `${days} д ${hours} ч ${minutes} м ${seconds} с`;
-          qaCountdown.textContent = 'Q&A начнётся через: ${qaTimer.textContent}';
+          qaCountdown.textContent = 'Q&A начнётся через: <span id="qaTimer"></span>';
           qaStatus.textContent = `Q&A ещё не открылся! Старт через ${qaTimer.textContent}. Задай свой вопрос в Telegram, и я отвечу на сайте! 😎`;
           qaSubmitButton.classList.remove('opacity-50', 'pointer-events-none');
           qaSubmitButton.removeAttribute('aria-disabled');
