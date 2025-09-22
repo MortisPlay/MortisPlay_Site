@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Mortis Play — Технический перерыв</title>
-  <meta name="description" content="Сайт Mortis Play на техническом перерыве. Следи за обновлениями в Telegram!" />
-  <meta name="robots" content="noindex,follow" />
-  <meta name="keywords" content="Mortis Play, технический перерыв, Telegram" />
+  <title>Mortis Play — официальный сайт</title>
+  <meta name="description" content="Эпичные видео, новости и обновления от Mortis Play. Присоединяйся к вайбу!" />
+  <meta name="robots" content="index,follow" />
+  <meta name="keywords" content="Mortis Play, гейминг, стримы, YouTube, Telegram" />
   <link rel="icon" href="/images/favicon.ico" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Mortis Play — Технический перерыв" />
-  <meta property="og:description" content="Сайт на техобслуживании. Подпишись на Telegram для новостей!" />
+  <meta property="og:title" content="Mortis Play — официальный сайт" />
+  <meta property="og:description" content="Эксклюзивы, новости и клипы." />
   <meta property="og:image" content="https://mortisplay.ru/assets/og-image.jpg" />
   <meta property="og:url" content="https://mortisplay.ru" />
   <meta property="og:type" content="website" />
@@ -19,8 +19,8 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Mortis Play — Технический перерыв" />
-  <meta name="twitter:description" content="Сайт на техобслуживании. Подпишись на Telegram для новостей!" />
+  <meta name="twitter:title" content="Mortis Play — официальный сайт" />
+  <meta name="twitter:description" content="Эксклюзивы, новости и клипы." />
   <meta name="twitter:image" content="https://mortisplay.ru/assets/twitter-image.jpg" />
 
   <!-- Analytics -->
@@ -30,7 +30,7 @@
     const script = document.createElement('script');
     script.nonce = nonce;
     script.id = 'gtagScript';
-    script.innerHTML = `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });gtag('event', 'page_view', { page_title: 'Технический перерыв', page_location: '/index.html' });`;
+    script.innerHTML = `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });`;
     document.head.appendChild(script);
   </script>
 
@@ -38,38 +38,45 @@
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
 
   <style>
-    @keyframes floaty { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-20px) translateX(10px); } }
-    @keyframes breathing { 0%,100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.05); } }
-    .animate-floaty { animation: floaty 8s ease-in-out infinite; }
-    .animate-floaty-slow { animation: floaty 10s ease-in-out infinite; }
-    .animate-breathing { animation: breathing 10s ease-in-out infinite; }
+    @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+    .card-hover { transition: transform .25s ease, box-shadow .25s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgb(0 0 0 / .15); }
     .fade-in { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
     .fade-in.is-visible { opacity: 1; transform: none; }
-    .neon-title { transition: all 0.5s ease; color: #e5e7eb; background: linear-gradient(to right, #a5b4fc, #f9a8d4, #a5b4fc); }
-    .neon-title:hover { filter: brightness(1.3); }
-    .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
-    .glass-button:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); }
-    .dark .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
-    .dark .glass-button:hover { background: rgba(50, 50, 50, 0.25); }
-    @supports not (backdrop-filter: blur(10px)) { 
-      .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; } 
-      .dark .glass-button { background: rgba(50, 50, 50, 0.5); } 
-    }
-    body {
-      background: linear-gradient(to bottom right, #0d0d0d, #1a1a1a, #2d2d2d);
-      color: #e5e7eb;
-    }
-    .high-contrast {
-      --text-color: #ffffff;
-      --bg-color: #000000;
-      --link-color: #00ff00;
-    }
-    .high-contrast body { background: var(--bg-color); color: var(--text-color); }
-    .high-contrast a { color: var(--link-color); }
-    .high-contrast .glass-button { background: var(--bg-color); border-color: var(--text-color); }
-    .low-performance .animate-floaty, .low-performance .animate-floaty-slow, .low-performance .animate-breathing { animation: none; }
+    .glass { backdrop-filter: saturate(160%) blur(8px); background: linear-gradient(180deg, rgb(255 255 255 / .7), rgb(255 255 255 / .55)); }
+    .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .7), rgb(17 24 39 / .55)); }
+    #loader { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6366f1, #ec4899); }
+    .loader-spin { width: 64px; height: 64px; border: 6px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    #sidebarMenu { box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
+    #sidebarMenu.open { transform: translateX(0); }
+    #themeToggle { position: relative; overflow: hidden; background: linear-gradient(45deg, #facc15, #fef08a); border-radius: 0.75rem; padding: 0.5rem; }
+    #themeToggle.dark { background: linear-gradient(45deg, #1e3a8a, #3b82f6); }
+    #themeToggle::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255, 255, 255, 0.4); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.5s ease, height 0.5s ease; }
+    #themeToggle:hover::before { width: 200%; height: 200%; }
+    #themeToggle i { transition: transform 0.5s ease, opacity 0.5s ease; position: relative; z-index: 1; }
+    #themeToggle:hover i { transform: rotate(180deg); opacity: 0.8; }
+    #themeToggle .glow { position: absolute; inset: 0; box-shadow: 0 0 12px rgba(255, 255, 255, 0.6); opacity: 0; transition: opacity 0.3s ease; }
+    #themeToggle:hover .glow { opacity: 1; }
+    .dark #themeToggle .glow { box-shadow: 0 0 12px rgba(99, 102, 241, 0.6); }
+    .particle { position: absolute; width: 4px; height: 4px; background: #ffffff; border-radius: 50%; pointer-events: none; z-index: 2; }
+    .dark .particle { background: #6366f1; }
+    .video-filter { transition: all 0.3s ease; }
+    .video-filter.active { background: rgba(99, 102, 241, 0.3); transform: scale(1.05); }
+    .dark .video-filter.active { background: rgba(99, 102, 241, 0.5); }
+    .video-card { transition: opacity 0.3s ease, transform 0.3s ease; }
+    .video-card.hidden { opacity: 0; transform: scale(0.95); display: none; }
+    body { overscroll-behavior: none; }
+    main { overflow: auto; min-height: 100vh; }
+    .low-performance .card-hover { transition: none; }
+    .low-performance .card-hover:hover { transform: none; box-shadow: none; }
     .low-performance .fade-in { transition: none; opacity: 1; transform: none; }
-    .no-animations .fade-in, .no-animations .animate-floaty, .no-animations .animate-floaty-slow, .no-animations .animate-breathing {
+    .low-performance .animate-[floaty_5s_ease-in-out_infinite] { animation: none; }
+    .low-performance #videos { display: none; }
+    .low-performance .banner-video, .low-performance .banner-quote { display: none; }
+    .banner-fallback { display: none; }
+    .low-performance .banner-fallback { display: block; }
+    .no-animations .fade-in, .no-animations .card-hover, .no-animations .animate-[floaty_5s_ease-in-out_infinite] {
       transition: none;
       transform: none;
       opacity: 1;
@@ -80,44 +87,123 @@
     .text-3xl { font-size: calc(1.875rem * var(--font-scale)); }
     .text-2xl { font-size: calc(1.5rem * var(--font-scale)); }
     .text-sm { font-size: calc(0.875rem * var(--font-scale)); }
-    @media (max-width: 640px) {
-      .text-3xl { font-size: calc(1.5rem * var(--font-scale)); }
-      .px-4 { padding-left: 1rem; padding-right: 1rem; }
-      .py-16 { padding-top: 2rem; padding-bottom: 2rem; }
-      .glass-button { padding: 0.5rem 1rem; }
+    .high-contrast {
+      --text-color: #000000;
+      --bg-color: #ffffff;
+      --link-color: #0000ff;
     }
-    details > summary { list-style: none; }
-    details > summary::-webkit-details-marker { display: none; }
-    .group-open .fa-plus { transform: rotate(45deg); }
+    .high-contrast.dark {
+      --text-color: #ffffff;
+      --bg-color: #000000;
+      --link-color: #00ff00;
+    }
+    .high-contrast body { background: var(--bg-color); color: var(--text-color); }
+    .high-contrast a { color: var(--link-color); }
+    .high-contrast .bg-gradient-to-br, .high-contrast .glass, .high-contrast .glass-button {
+      background: var(--bg-color);
+      backdrop-filter: none;
+      border-color: var(--text-color);
+    }
+    .notification { 
+      position: fixed; 
+      bottom: 1rem; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      z-index: 1000; 
+      padding: 0.75rem 2.5rem 0.75rem 1.5rem; 
+      border-radius: 0.75rem; 
+      background: rgba(255, 255, 255, 0.8); 
+      backdrop-filter: blur(8px); 
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
+      color: #1e293b; 
+      font-size: 0.875rem; 
+      font-weight: 500; 
+      opacity: 0; 
+      transition: opacity 0.3s ease; 
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+      pointer-events: none; 
+    }
+    .notification.show { 
+      opacity: 1; 
+    }
+    .dark .notification { 
+      background: rgba(17, 24, 39, 0.8); 
+      color: #e2e8f0; 
+    }
+    .notification button {
+      background: none;
+      border: none;
+      color: #1e293b;
+      font-size: 0.75rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      pointer-events: auto;
+    }
+    .dark .notification button {
+      color: #e2e8f0;
+    }
+    .notification button:hover {
+      color: #6366f1;
+    }
+    .dark .notification button:hover {
+      color: #93c5fd;
+    }
+    .low-performance .notification { 
+      animation: none !important; 
+    }
+    @media (max-width: 640px) { 
+      #welcome .lg:grid-cols-2 { grid-template-columns: 1fr; }
+      #welcome video, #welcome .banner-fallback { max-width: 100%; height: auto; }
+      #welcome .mt-4.lg\:absolute { position: static; margin-top: 1rem; width: 100%; }
+      #menuToggle { padding: 0.5rem 0.75rem; font-size: 1rem; }
+      .glass { backdrop-filter: none; background: linear-gradient(180deg, rgb(255 255 255 / .9), rgb(255 255 255 / .8)); } 
+      .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .9), rgb(17 24 39 / .8)); } 
+      .card-hover:hover { transform: none; } 
+      .animate-[floaty_5s_ease-in-out_infinite] { animation: none; } 
+      iframe, video, img { max-width: 100%; height: auto; } 
+      .glass-button { padding: 0.5rem 1rem; }
+      .notification { 
+        top: 1rem; 
+        bottom: auto; 
+        width: calc(100% - 2rem); 
+        max-width: 20rem; 
+        transform: translateX(-50%); 
+      }
+    }
+    @media (min-width: 641px) {
+      .glass-button { padding: 0.75rem 1.5rem; }
+      .notification { 
+        max-width: 24rem; 
+        bottom: 1rem; 
+        top: auto; 
+      }
+    }
+    .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
+    .glass-button:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); }
+    .dark .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
+    .dark .glass-button:hover { background: rgba(50, 50, 50, 0.25); }
+    @supports not (backdrop-filter: blur(10px)) { 
+      .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; } 
+      .dark .glass-button { background: rgba(50, 50, 50, 0.5); } 
+    }
+    .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #fff5f5, #ffffff, #e0f2fe); }
+    .dark .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #4b5bd1); }
+    .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+    .grid { display: grid; }
+    .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    @media (min-width: 1024px) {
+      header { position: sticky; top: 0; z-index: 50; background: white/80 dark:bg-slate-900/80; }
+      nav { height: 4rem; }
+      nav a { padding: 0.75rem 1rem; }
+      nav a:hover { background: slate-100 dark:bg-slate-800; }
+    }
   </style>
 </head>
 
-<body class="min-h-screen">
-  <div id="maintenance" class="relative min-h-screen flex flex-col items-center justify-center px-4">
-    <div class="absolute -top-20 -left-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-floaty"></div>
-    <div class="absolute top-60 -right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-floaty-slow"></div>
-    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[50rem] bg-indigo-500/10 rounded-full blur-[200px] animate-breathing"></div>
-    <div class="relative z-10 text-center fade-in">
-      <h1 class="neon-title text-3xl sm:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)]">
-        Технический перерыв
-      </h1>
-      <p class="mt-4 text-lg text-slate-300 max-w-prose">
-        Сайт на техобслуживании. Следи за новостями в Telegram! 😎
-      </p>
-      <div class="mt-6 flex flex-wrap justify-center gap-4">
-        <a href="https://t.me/dimap7221" class="glass-button flex items-center gap-2" rel="noopener" aria-label="Написать в Telegram-личку">
-          <i class="fa-brands fa-telegram"></i> Личка
-        </a>
-        <a href="https://t.me/MortisPlayTG" class="glass-button flex items-center gap-2" rel="noopener" aria-label="Перейти в Telegram-канал">
-          <i class="fa-brands fa-telegram"></i> Канал
-        </a>
-        <a href="https://t.me/MortisplayQABot" class="glass-button flex items-center gap-2" rel="noopener" aria-label="Написать Telegram-боту">
-          <i class="fa-brands fa-telegram"></i> Бот
-        </a>
-      </div>
-    </div>
-  </div>
-
+<body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100 selection:bg-indigo-200 selection:text-slate-900">
+  <div id="loader"><div class="loader-spin" aria-label="Загрузка сайта"></div></div>
   <div id="siteContent" class="hidden">
     <header class="sticky top-0 z-50 border-b border-slate-200/60 dark:border-slate-700/60 bg-white/80 dark:bg-slate-900/80 glass">
       <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative" aria-label="Главная навигация">
@@ -138,7 +224,6 @@
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#qa">Q&A</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#settings">Настройки</a>
         </div>
         <div class="flex items-center gap-2">
@@ -166,7 +251,6 @@
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#qa">Q&A</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#faq">FAQ</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#settings">Настройки</a>
           </nav>
         </div>
@@ -199,6 +283,10 @@
                 <a id="qaButton" href="qa.html" class="glass-button" aria-label="Задать вопрос для Q&A">
                   <i class="fa-solid fa-question-circle"></i>
                   Задать вопрос
+                </a>
+                <a href="faq.html" class="glass-button" aria-label="Перейти к FAQ">
+                  <i class="fa-solid fa-circle-question"></i>
+                  FAQ
                 </a>
               </div>
               <div class="mt-6 flex items-center gap-6 text-sm text-slate-600 dark:text-slate-300">
@@ -340,15 +428,20 @@
       <section id="news" class="py-16 bg-slate-50 dark:bg-slate-900/40 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="text-center text-2xl md:text-3xl font-bold">Новости</h2>
-          <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">    
+          <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-indigo-600 to-fuchsia-600">
+              <h3 class="text-lg font-semibold">Технический перерыв завершён!</h3>
+              <p class="mt-2 text-sm opacity-90">Йоу, геймеры! 🎮🔥 Сайт Mortis Play вернулся! Проверь новые фичи, обновления и Q&A. Пиши вопросы боту: <a href="https://t.me/MortisplayQABot" class="underline" rel="noopener" onclick="gtag('event', 'button_click', {'event_category': 'News', 'event_label': 'Maintenance End Telegram'});">MortisplayQABot</a>. Следи за новостями в Telegram: <a href="https://t.me/MortisPlayTG" class="underline" rel="noopener">@MortisPlayTG</a>.</p>
+              <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 22 сентября 2025</p>
+            </article>
             <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-indigo-600 to-fuchsia-600">
               <h3 class="text-lg font-semibold">Новый раздел «Настройки» и бот готов!</h3>
-              <p class="mt-2 text-sm opacity-90">Йоу, геймеры! 🎮🔥 Новый раздел «Настройки» уже на сайте — настраивай тему, шрифты, уведомления и производительность под себя! В будущем добавим ещё больше кастомизаций. 😎 Плюс, наш бот закончен и ждёт своего выхода — следи за анонсами! Пиши в Telegram: <a href="https://t.me/MortisplayQABot" class="underline" rel="noopener" onclick="gtag('event', 'button_click', {'event_category': 'News', 'event_label': 'Settings & Bot Telegram'});">MortisplayQABot</a>.</p>
+              <p class="mt-2 text-sm opacity-90">Йоу, геймеры! 🎮🔥 Новый раздел «Настройки» уже на сайте — настраивай тему, шрифты, уведомления и производительность под себя! В будущем добавим ещё больше кастомизаций. 😎 Плюс, наш бот закончен и ждёт вопросов: <a href="https://t.me/MortisplayQABot" class="underline" rel="noopener" onclick="gtag('event', 'button_click', {'event_category': 'News', 'event_label': 'Settings & Bot Telegram'});">MortisplayQABot</a>.</p>
               <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 18 сентября 2025</p>
             </article>
             <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-indigo-500 to-purple-500">
-              <h3 class="text-lg font-semibold">Q&A готов к запуску!</h3>
-              <p class="mt-2 text-sm opacity-90">Йоу, геймеры! 🎮🔥 Q&A открыт! Пиши вопросы в Telegram: <a href="https://t.me/MortisplayQABot" class="underline" rel="noopener" onclick="gtag('event', 'button_click', {'event_category': 'News', 'event_label': 'Q&A Telegram'});">MortisplayQABot</a>. Раздел «Видео» теперь с категориями (Все, Стримы, Угар). «FAQ» обновлён. «Биография» получила новый стиль и плейлист! 🔥</p>
+              <h3 class="text-lg font-semibold">Q&A открыт!</h3>
+              <p class="mt-2 text-sm opacity-90">Йоу, геймеры! 🎮🔥 Q&A стартовал! Пиши вопросы в Telegram: <a href="https://t.me/MortisplayQABot" class="underline" rel="noopener" onclick="gtag('event', 'button_click', {'event_category': 'News', 'event_label': 'Q&A Telegram'});">MortisplayQABot</a>. Раздел «Видео» теперь с категориями (Все, Стримы, Угар). «FAQ» переехал на отдельную страницу. «Биография» получила новый стиль и плейлист! 🔥</p>
               <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 15 сентября 2025</p>
             </article>
             <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-yellow-500 to-orange-500">
@@ -384,10 +477,14 @@
               <ul class="space-y-2 text-slate-700 dark:text-slate-300">
                 <li>Telegram: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/Mortisplay_YT" rel="noopener">MortisPlay</a></li>
                 <li>Канал: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/MortisPlayTG" rel="noopener">@MortisPlayTG</a></li>
+                <li>Бот: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/MortisplayQABot" rel="noopener">@MortisplayQABot</a></li>
                 <li>Частный канал: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/+VhpxzWl9ygYzMmFi" rel="noopener">t.me/+VhpxzWl9ygYzMmFi</a></li>
                 <li>Email: <a class="text-indigo-600 dark:text-indigo-400 underline" href="mailto:mortisplay@mail.ru" rel="noopener">mortisplay@mail.ru</a></li>
               </ul>
               <div class="mt-4 flex flex-wrap gap-3">
+                <a href="https://t.me/Mortisplay_YT" class="glass-button" rel="noopener" aria-label="Telegram Mortis Play"><i class="fa-brands fa-telegram"></i>Telegram</a>
+                <a href="https://t.me/MortisPlayTG" class="glass-button" rel="noopener" aria-label="Telegram Channel Mortis Play"><i class="fa-brands fa-telegram"></i>Канал</a>
+                <a href="https://t.me/MortisplayQABot" class="glass-button" rel="noopener" aria-label="Telegram Bot Mortis Play"><i class="fa-brands fa-telegram"></i>Бот</a>
                 <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button" rel="noopener" aria-label="YouTube Mortis Play"><i class="fa-brands fa-youtube"></i>YouTube</a>
                 <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="glass-button" rel="noopener" aria-label="Twitch Mortis Play"><i class="fa-brands fa-twitch"></i>Twitch</a>
                 <a href="https://www.tiktok.com/@mortisplay32" target="_blank" class="glass-button" rel="noopener" aria-label="TikTok Mortis Play"><i class="fa-brands fa-tiktok"></i>TikTok</a>
@@ -401,110 +498,50 @@
         </div>
       </section>
 
-      <section id="faq" class="py-16 fade-in">
-        <div class="mx-auto max-w-4xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Часто задаваемые вопросы</h2>
-          <div class="mt-8 divide-y divide-slate-200 dark:divide-slate-700 rounded-2xl ring-1 ring-slate-200 dark:ring-slate-700 overflow-hidden">
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-                Как связаться с тобой?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Пиши в Telegram: <a href="https://t.me/Mortisplay_YT" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">MortisPlay</a>, или на email: <a href="mailto:mortisplay@mail.ru" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">mortisplay@mail.ru</a>.</div>
-            </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-                Где найти эксклюзивы?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Эксклюзивы — на этом сайте и в частном Telegram-канале после подписки.</div>
-            </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-                Когда новые видео?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Каждую неделю. Следи за новостями!</div>
-            </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-                Как обновить сайт вручную?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Нажми Ctrl+F5 или очисти кеш браузера, чтобы увидеть последние изменения.</div>
-            </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-                Почему убрали разделы "Мемы" и "Клипы"?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Мы оптимизировали сайт, убрав эти разделы для повышения производительности. Раздел "Мемы" удалён навсегда, чтобы снизить нагрузку на ресурсы.</div>
-            </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-                Что с разделом Q&A?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Q&A открыт! Задавай вопросы в Telegram: <a href="https://t.me/MortisplayQABot" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">MortisplayQABot</a>.</div>
-            </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-                Почему убрали вход и регистрацию?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Мы убрали функции входа и регистрации, чтобы упростить интерфейс и ускорить загрузку сайта, сосредоточившись на основном контенте.</div>
-            </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium">
-                Как включить лёгкий режим?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-600 dark:text-slate-300">Перейди в раздел «Настройки» и включи «Лёгкий режим» если у тебя лагает сайт. Это отключит анимации, эффекты и видео.</div>
-            </details>
-          </div>
-        </div>
-      </section>
-
       <footer class="border-t border-slate-200/60 dark:border-slate-700/60 py-8">
         <div class="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p class="text-sm opacity-80">© 2025 Mortis Play. Все права защищены.</p>
         </div>
       </footer>
     </main>
-  </div>
 
   <script nonce="${nonce}">
     // Функция логирования
     const logAction = (message) => {
-      console.log(`[Maintenance] ${message}`);
+      console.log(message);
     };
 
-    // Анимация появления
-    const setupFadeIn = () => {
-      const io = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && !document.documentElement.classList.contains('low-performance') && !document.documentElement.classList.contains('no-animations')) {
-              entry.target.classList.add('is-visible');
-              io.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-      document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+    // Debounce для предотвращения множественных кликов
+    const debounce = (func, wait) => {
+      let timeout;
+      return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
     };
 
-    // Отслеживание кликов по кнопкам Telegram
-    const setupButtonTracking = () => {
-      const buttons = document.querySelectorAll('.glass-button');
-      buttons.forEach(button => {
-        button.addEventListener('click', (e) => {
-          const label = e.target.textContent.trim();
-          gtag('event', 'button_click', { event_category: 'maintenance', event_label: label });
-          logAction(`Клик по кнопке: ${label}`);
-        });
-      });
+    // Показ уведомлений с таймером
+    const showNotification = (message, notificationElement) => {
+      if (notificationElement) {
+        const span = notificationElement.querySelector('span');
+        if (span) {
+          span.textContent = message;
+          notificationElement.classList.add('show');
+          gtag('event', 'notification_shown', { event_category: 'settings', event_label: message });
+          const timeout = setTimeout(() => {
+            notificationElement.classList.remove('show');
+          }, 3000);
+          const closeButton = notificationElement.querySelector('button');
+          if (closeButton) {
+            closeButton.addEventListener('click', () => {
+              notificationElement.classList.remove('show');
+              clearTimeout(timeout);
+              gtag('event', 'notification_click', { event_category: 'settings', event_label: 'dismiss_notification' });
+              logAction('Уведомление закрыто');
+            });
+          }
+        }
+      }
     };
 
     // Управление темой
@@ -513,7 +550,73 @@
       logAction(`Тема установлена: ${theme}`);
       localStorage.setItem('theme', theme);
       root.classList.toggle('dark', theme === 'dark');
+      const themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        const themeIcon = themeToggle.querySelector('i');
+        const themeText = themeToggle.querySelector('span');
+        if (themeIcon && themeText) {
+          themeIcon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+          themeText.textContent = theme === 'dark' ? 'Тёмная' : 'Светлая';
+        }
+      }
+      gtag('event', 'theme_toggle', { event_category: 'engagement', event_label: theme });
     };
+
+    // Анимация частиц для кнопки темы
+    const setupThemeParticles = () => {
+      const canvas = document.getElementById('particleCanvas');
+      const themeToggle = document.getElementById('themeToggle');
+      if (!canvas || !themeToggle) return;
+
+      const ctx = canvas.getContext('2d');
+      canvas.width = themeToggle.offsetWidth;
+      canvas.height = themeToggle.offsetHeight;
+
+      const particles = [];
+      const createParticle = (x, y) => {
+        return {
+          x, y,
+          vx: (Math.random() - 0.5) * 3,
+          vy: (Math.random() - 0.5) * 3,
+          size: Math.random() * 2 + 1,
+          life: 15
+        };
+      };
+
+      const animateParticles = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, i) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life--;
+          if (p.life <= 0) {
+            particles.splice(i, 1);
+            return;
+          }
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = root.classList.contains('dark') ? '#6366f1' : '#ffffff';
+          ctx.fill();
+        });
+        if (particles.length > 0) {
+          requestAnimationFrame(animateParticles);
+        }
+      };
+
+      themeToggle.addEventListener('click', (e) => {
+        const rect = themeToggle.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        for (let i = 0; i < 5; i++) {
+          particles.push(createParticle(x, y));
+        }
+        if (particles.length > 0) {
+          animateParticles();
+        }
+      });
+    };
+
+    // Инициализация темы
     const initializeTheme = () => {
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme && savedTheme !== 'auto') {
@@ -523,43 +626,342 @@
       } else {
         setTheme('light');
       }
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (localStorage.getItem('theme') === 'auto') {
+          setTheme(e.matches ? 'dark' : 'light');
+        }
+      });
+      const themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', debounce(() => {
+          const currentTheme = localStorage.getItem('theme') || 'light';
+          setTheme(currentTheme === 'light' ? 'dark' : 'light');
+        }, 300));
+      }
+      setupThemeParticles();
+    };
+
+    // Управление выбором темы
+    const setupThemeSelect = () => {
+      const themeSelect = document.getElementById('themeSelect');
+      if (themeSelect) {
+        const savedTheme = localStorage.getItem('theme') || 'auto';
+        themeSelect.value = savedTheme;
+        setTheme(savedTheme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : savedTheme);
+        themeSelect.addEventListener('change', () => {
+          const theme = themeSelect.value;
+          setTheme(theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : theme);
+          showNotification(`Тема: ${theme === 'auto' ? 'Авто' : theme === 'light' ? 'Светлая' : 'Тёмная'}`, document.getElementById('appearanceNotification'));
+          gtag('event', 'theme_select', { event_category: 'settings', event_label: theme });
+          logAction(`Тема выбрана: ${theme}`);
+        });
+      }
     };
 
     // Управление производительностью
     const setupPerformance = () => {
-      const savedMode = localStorage.getItem('lowPerformance') === 'true';
-      root.classList.toggle('low-performance', savedMode);
+      const toggle = document.getElementById('lowPerformanceToggle');
+      const notification = document.getElementById('performanceNotification');
+      if (toggle && notification) {
+        const savedMode = localStorage.getItem('lowPerformance') === 'true';
+        toggle.checked = savedMode;
+        root.classList.toggle('low-performance', savedMode);
+        toggle.addEventListener('change', () => {
+          const isLowPerformance = toggle.checked;
+          localStorage.setItem('lowPerformance', isLowPerformance);
+          root.classList.toggle('low-performance', isLowPerformance);
+          showNotification(isLowPerformance ? 'Лёгкий режим включён' : 'Лёгкий режим выключен', notification);
+          gtag('event', 'performance_toggle', { event_category: 'settings', event_label: isLowPerformance ? 'low' : 'normal' });
+          logAction(`Режим производительности: ${isLowPerformance ? 'Лёгкий' : 'Нормальный'}`);
+        });
+      }
     };
 
     // Управление анимациями
     const setupAnimations = () => {
-      const savedAnimations = localStorage.getItem('disableAnimations') === 'true';
-      root.classList.toggle('no-animations', savedAnimations);
+      const animationsToggle = document.getElementById('disableAnimationsToggle');
+      const notification = document.getElementById('performanceNotification');
+      if (animationsToggle && notification) {
+        const savedAnimations = localStorage.getItem('disableAnimations') === 'true';
+        animationsToggle.checked = savedAnimations;
+        root.classList.toggle('no-animations', savedAnimations);
+        animationsToggle.addEventListener('change', () => {
+          const disableAnimations = animationsToggle.checked;
+          localStorage.setItem('disableAnimations', disableAnimations);
+          root.classList.toggle('no-animations', disableAnimations);
+          showNotification(disableAnimations ? 'Анимации отключены' : 'Анимации включены', notification);
+          gtag('event', 'animations_toggle', { event_category: 'settings', event_label: disableAnimations ? 'off' : 'on' });
+          logAction(`Анимации: ${disableAnimations ? 'Отключены' : 'Включены'}`);
+        });
+      }
     };
 
-    // Управление высокой контрастностью
-    const setupHighContrast = () => {
-      const savedContrast = localStorage.getItem('highContrast') === 'true';
-      root.classList.toggle('high-contrast', savedContrast);
+    // Управление уведомлениями
+    const setupNotifications = () => {
+      const toggle = document.getElementById('newsNotificationsToggle');
+      const notification = document.getElementById('newsNotification');
+      if (toggle && notification && 'Notification' in window) {
+        const savedNotifications = localStorage.getItem('newsNotifications') === 'true';
+        toggle.checked = savedNotifications;
+        toggle.addEventListener('change', () => {
+          const enableNotifications = toggle.checked;
+          localStorage.setItem('newsNotifications', enableNotifications);
+          if (enableNotifications && Notification.permission !== 'granted') {
+            Notification.requestPermission().then(permission => {
+              if (permission === 'granted') {
+                showNotification('Уведомления о новостях включены', notification);
+                setTimeout(() => {
+                  if (enableNotifications) {
+                    new Notification('Новость от Mortis Play!', {
+                      body: 'Проверь новый пост в разделе "Новости"! 😎',
+                      icon: '/assets/photo.jpg'
+                    });
+                  }
+                }, 3000);
+              } else {
+                toggle.checked = false;
+                localStorage.setItem('newsNotifications', false);
+                showNotification('Уведомления отклонены браузером', notification);
+              }
+            });
+          } else {
+            showNotification(enableNotifications ? 'Уведомления о новостях включены' : 'Уведомления о новостях отключены', notification);
+          }
+          gtag('event', 'notifications_toggle', { event_category: 'settings', event_label: enableNotifications ? 'on' : 'off' });
+          logAction(`Уведомления: ${enableNotifications ? 'Включены' : 'Отключены'}`);
+        });
+      }
+    };
+
+    // Управление меню
+    const setupMenu = () => {
+      const toggle = document.getElementById('menuToggle');
+      const close = document.getElementById('closeMenu');
+      const sidebar = document.getElementById('sidebarMenu');
+
+      if (toggle && sidebar) {
+        toggle.addEventListener('click', debounce(() => {
+          sidebar.classList.add('open');
+          toggle.setAttribute('aria-expanded', 'true');
+          gtag('event', 'menu_open', { event_category: 'engagement', event_label: 'mobile_menu' });
+        }, 300));
+      }
+      if (close && sidebar) {
+        close.addEventListener('click', () => {
+          sidebar.classList.remove('open');
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+          gtag('event', 'menu_close', { event_category: 'engagement', event_label: 'mobile_menu' });
+        });
+      }
+      document.addEventListener('click', (e) => {
+        if (sidebar && toggle && !sidebar.contains(e.target) && e.target !== toggle) {
+          sidebar.classList.remove('open');
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    };
+
+    // Отслеживание навигации
+    const setupNavTracking = () => {
+      const navLinks = document.querySelectorAll('nav a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          const section = e.target.getAttribute('href').substring(1);
+          gtag('event', 'nav_click', { event_category: 'navigation', event_label: section });
+        });
+      });
+    };
+
+    // Отслеживание кликов по кнопкам
+    const setupButtonTracking = () => {
+      const buttons = document.querySelectorAll('.glass-button');
+      buttons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          const label = e.target.textContent.trim();
+          gtag('event', 'button_click', { event_category: 'engagement', event_label: label });
+        });
+      });
+    };
+
+    // Отслеживание просмотров разделов
+    const setupSectionTracking = () => {
+      const sections = document.querySelectorAll('section');
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const sectionId = entry.target.id;
+              gtag('event', 'section_view', { event_category: 'engagement', event_label: sectionId });
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.2, rootMargin: '-50px' }
+      );
+      sections.forEach(section => io.observe(section));
+    };
+
+    // Настройка анимации появления
+    const setupFadeIn = () => {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !root.classList.contains('low-performance') && !root.classList.contains('no-animations')) {
+              entry.target.classList.add('is-visible');
+            }
+          });
+        },
+        { threshold: 0.2, rootMargin: '-50px' }
+      );
+      const fadeElements = document.querySelectorAll('.fade-in');
+      if (fadeElements.length > 0) {
+        fadeElements.forEach((el) => {
+          if (el instanceof Element) {
+            io.observe(el);
+          }
+        });
+      } else {
+        logAction('Элементы для fade-in не найдены');
+      }
+    };
+
+    // Инициализация видео с категоризацией
+    const setupVideos = () => {
+      const tpl = document.getElementById('ytCardTpl');
+      const grid = document.querySelector('#videos .mt-8.grid');
+      if (tpl && grid) {
+        const videoData = [
+          { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning', category: 'fun' },
+          { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO', category: 'fun' },
+          { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)', category: 'streams' },
+          { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!', category: 'fun' },
+          { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK', category: 'streams' }
+        ];
+        videoData.forEach((v) => {
+          const node = tpl.content.cloneNode(true);
+          const iframe = node.querySelector('iframe');
+          const title = node.querySelector('p');
+          const card = node.querySelector('.video-card');
+          const fallbackImg = node.querySelector('img');
+          if (iframe && title && card && fallbackImg) {
+            iframe.src = v.src;
+            iframe.setAttribute('title', `Видео: ${v.title}`);
+            iframe.onerror = () => {
+              iframe.classList.add('hidden');
+              fallbackImg.classList.remove('hidden');
+            };
+            title.textContent = v.title;
+            card.dataset.category = v.category;
+            grid.appendChild(node);
+          }
+        });
+
+        const filterButtons = document.querySelectorAll('.video-filter');
+        filterButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const filter = button.dataset.filter;
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            const cards = document.querySelectorAll('.video-card');
+            cards.forEach(card => {
+              if (filter === 'all' || card.dataset.category === filter) {
+                card.classList.remove('hidden');
+              } else {
+                card.classList.add('hidden');
+              }
+            });
+            gtag('event', 'video_filter', { event_category: 'engagement', event_label: filter });
+          });
+        });
+        filterButtons[0].classList.add('active');
+      }
     };
 
     // Управление размером шрифта
     const setupFontSize = () => {
-      const savedFontSize = localStorage.getItem('fontSize') || '100';
-      root.style.setProperty('--font-scale', savedFontSize / 100);
+      const slider = document.getElementById('fontSizeSlider');
+      const notification = document.getElementById('appearanceNotification');
+      if (slider && notification) {
+        const savedFontSize = localStorage.getItem('fontSize') || '100';
+        slider.value = savedFontSize;
+        root.style.setProperty('--font-scale', savedFontSize / 100);
+        slider.addEventListener('input', () => {
+          const fontSize = slider.value;
+          localStorage.setItem('fontSize', fontSize);
+          root.style.setProperty('--font-scale', fontSize / 100);
+          showNotification(`Размер шрифта: ${fontSize}%`, notification);
+          gtag('event', 'font_size_change', { event_category: 'settings', event_label: fontSize });
+          logAction(`Размер шрифта: ${fontSize}%`);
+        });
+      }
     };
 
-    // Инициализация
-    document.addEventListener('DOMContentLoaded', () => {
+    // Управление высокой контрастностью
+    const setupHighContrast = () => {
+      const toggle = document.getElementById('highContrastToggle');
+      const notification = document.getElementById('appearanceNotification');
+      if (toggle && notification) {
+        const savedContrast = localStorage.getItem('highContrast') === 'true';
+        toggle.checked = savedContrast;
+        root.classList.toggle('high-contrast', savedContrast);
+        toggle.addEventListener('change', () => {
+          const highContrast = toggle.checked;
+          localStorage.setItem('highContrast', highContrast);
+          root.classList.toggle('high-contrast', highContrast);
+          showNotification(highContrast ? 'Высокая контрастность включена' : 'Высокая контрастность отключена', notification);
+          gtag('event', 'high_contrast_toggle', { event_category: 'settings', event_label: highContrast ? 'on' : 'off' });
+          logAction(`Контрастность: ${highContrast ? 'Высокая' : 'Нормальная'}`);
+        });
+      }
+    };
+
+    // Управление лоадером
+    const setupLoader = () => {
+      window.addEventListener('load', () => {
+        logAction('Загрузка завершена');
+        const loader = document.getElementById('loader');
+        const site = document.getElementById('siteContent');
+        if (loader && site) {
+          loader.classList.add('opacity-0', 'transition', 'duration-700');
+          loader.addEventListener('transitionend', () => {
+            loader.style.display = 'none';
+            site.classList.remove('hidden');
+            logAction('Лоадер скрыт');
+          }, { once: true });
+        }
+      });
+
+      setTimeout(() => {
+        logAction('Таймаут 5с сработал');
+        const loader = document.getElementById('loader');
+        const site = document.getElementById('siteContent');
+        if (loader && site) {
+          loader.style.display = 'none';
+          site.classList.remove('hidden');
+        }
+      }, 5000);
+    };
+
+    // Инициализация всех компонентов
+    const initializeApp = () => {
       initializeTheme();
-      setupFadeIn();
-      setupButtonTracking();
+      setupThemeSelect();
       setupPerformance();
       setupAnimations();
-      setupHighContrast();
+      setupNotifications();
       setupFontSize();
-      logAction('Экран техперерыва загружен');
-    });
+      setupHighContrast();
+      setupMenu();
+      setupFadeIn();
+      setupVideos();
+      setupLoader();
+      setupNavTracking();
+      setupButtonTracking();
+      setupSectionTracking();
+    };
+
+    // Запуск приложения
+    document.addEventListener('DOMContentLoaded', initializeApp);
   </script>
 </body>
 </html>
