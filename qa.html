@@ -162,7 +162,11 @@
             <i class="fa-solid fa-comments"></i> Вопросы и ответы
           </h2>
           <div id="qa-list" class="mt-4 space-y-6">
-            <div class="loader"></div>
+            <div class="border-l-4 border-purple-500 pl-4">
+              <p class="text-lg font-semibold text-purple-300">@User123</p>
+              <p class="text-sm text-slate-200">Какая твоя любимая игра?</p>
+              <p class="mt-2 text-sm text-indigo-300"><strong>Ответ:</strong> CS2, конечно! 😎</p>
+            </div>
           </div>
         </div>
       </div>
@@ -295,7 +299,7 @@
           qaSubmitButton.classList.add('opacity-50', 'pointer-events-none');
           qaSubmitButton.setAttribute('aria-disabled', 'true');
           logAction('Q&A ещё не началось');
-        } else if (now >= startDate && now < activationDate) {
+        } else if (now < activationDate) {
           qaTitle.textContent = 'Q&A';
           const timeLeft = activationDate - now;
           const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
@@ -349,41 +353,30 @@
         return;
       }
 
-      qaList.innerHTML = '<div class="loader"></div>';
-      fetch('/api/questions')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          qaList.innerHTML = '';
-          const approvedQuestions = data.questions || [];
-          if (approvedQuestions.length === 0) {
-            qaList.innerHTML = '<p class="text-sm text-slate-200">Пока нет одобренных вопросов.</p>';
-            logAction('Нет одобренных вопросов для отображения');
-            return;
-          }
+      // Статический список вопросов
+      qaList.innerHTML = '';
+      const approvedQuestions = [
+        { username: 'Shartkku', question: 'Когда новая серия Standoff пряток? уже 2года ждём', answer: 'Серии пряток по Standoff 2 больше не будет из за того что канал заброшен.' },
+        { username: 'Johnny_Drill', question: 'когда стрим по PEAK?', answer: 'Т.к сейчас у меня нет времени на стрим, но зато скоро, будет СЕКРЕТНОЕ ДОСЬЕ, КОТОРЫЙ ПЕРЕВЕРНЕТ КОНТОРУ КАНАЛА!!! >:D' }
+      ];
+      if (approvedQuestions.length === 0) {
+        qaList.innerHTML = '<p class="text-sm text-slate-200">Пока нет одобренных вопросов.</p>';
+        logAction('Нет одобренных вопросов для отображения');
+        return;
+      }
 
-          approvedQuestions.forEach(q => {
-            const qaItem = document.createElement('div');
-            qaItem.className = 'border-l-4 border-purple-500 pl-4';
-            qaItem.innerHTML = `
-              <p class="text-lg font-semibold text-purple-300">${escapeHTML(q.username || 'Аноним')}</p>
-              <p class="text-sm text-slate-200">${escapeHTML(q.question)}</p>
-              <p class="mt-2 text-sm text-indigo-300"><strong>Ответ:</strong> ${escapeHTML(q.answer)}</p>
-            `;
-            qaList.appendChild(qaItem);
-          });
-          gtag('event', 'qa_list_view', { event_category: 'qa', event_label: 'questions_displayed' });
-          logAction(`Список вопросов отображен: ${approvedQuestions.length} вопросов`);
-        })
-        .catch(error => {
-          qaList.innerHTML = '<p class="text-sm text-slate-200">Ошибка загрузки вопросов. Попробуйте позже!</p>';
-          showNotification('Ошибка загрузки вопросов!', notification);
-          logAction(`Ошибка загрузки вопросов: ${error}`);
-        });
+      approvedQuestions.forEach(q => {
+        const qaItem = document.createElement('div');
+        qaItem.className = 'border-l-4 border-purple-500 pl-4';
+        qaItem.innerHTML = `
+          <p class="text-lg font-semibold text-purple-300">${escapeHTML(q.username || 'Аноним')}</p>
+          <p class="text-sm text-slate-200">${escapeHTML(q.question)}</p>
+          <p class="mt-2 text-sm text-indigo-300"><strong>Ответ:</strong> ${escapeHTML(q.answer)}</p>
+        `;
+        qaList.appendChild(qaItem);
+      });
+      gtag('event', 'qa_list_view', { event_category: 'qa', event_label: 'questions_displayed' });
+      logAction(`Список вопросов отображен: ${approvedQuestions.length} вопросов`);
     };
 
     // Инициализация
