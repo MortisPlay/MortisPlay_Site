@@ -142,14 +142,13 @@
       <h1 id="qaTitle" class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] text-center">
         Q&A
       </h1>
-      <p id="qaCountdown" class="mt-4 text-lg text-slate-200 text-center"></p>
       <div class="mt-16 grid gap-10">
         <div class="backdrop-blur-lg card border rounded-3xl p-8 shadow-lg fade-in">
           <h2 class="text-2xl font-semibold text-purple-300 flex items-center gap-2">
             <i class="fa-solid fa-question-circle"></i> Задать вопрос
           </h2>
           <p id="qaStatus" class="mt-4 text-lg text-slate-200 leading-relaxed">
-            Q&A ещё не открылся! Старт через <span id="qaTimer"></span>. Задай свой вопрос в Telegram, и я отвечу на сайте! 😎
+            Q&A открыт! Задавай свои вопросы в Telegram бота, я отвечу на лучшие! 😎
           </p>
           <div class="mt-6 flex justify-center">
             <a id="qaSubmitButton" href="https://t.me/MortisplayQABot" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg flex items-center gap-2" rel="noopener" aria-label="Задать вопрос в Telegram">
@@ -178,217 +177,159 @@
     </div>
   </main>
   <script nonce="${crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '')}">
-  // Логирование
-  const logAction = (message) => console.log(`[Q&A] ${message}`);
+    // Логирование
+    const logAction = (message) => console.log(`[Q&A] ${message}`);
 
-  // Debounce
-  const debounce = (func, wait) => {
-    let timeout;
-    return (...args) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
+    // Debounce
+    const debounce = (func, wait) => {
+      let timeout;
+      return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
     };
-  };
 
-  // Показ уведомлений
-  const showNotification = (message, notificationElement) => {
-    if (notificationElement) {
-      const span = notificationElement.querySelector('span');
-      if (span) {
-        span.textContent = message;
-        notificationElement.classList.add('show');
-        gtag('event', 'notification_shown', { event_category: 'qa', event_label: message });
-        const timeout = setTimeout(() => {
-          notificationElement.classList.remove('show');
-        }, 3000);
-        const closeButton = notificationElement.querySelector('button');
-        if (closeButton) {
-          closeButton.addEventListener('click', () => {
+    // Показ уведомлений
+    const showNotification = (message, notificationElement) => {
+      if (notificationElement) {
+        const span = notificationElement.querySelector('span');
+        if (span) {
+          span.textContent = message;
+          notificationElement.classList.add('show');
+          gtag('event', 'notification_shown', { event_category: 'qa', event_label: message });
+          const timeout = setTimeout(() => {
             notificationElement.classList.remove('show');
-            clearTimeout(timeout);
-            gtag('event', 'notification_dismiss', { event_category: 'qa', event_label: 'dismiss_notification' });
-            logAction('Уведомление закрыто');
-          });
-        }
-      }
-    }
-  };
-
-  // Экранирование HTML
-  const escapeHTML = (str) => {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  };
-
-  // Анимация появления
-  const setupFadeIn = () => {
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !document.documentElement.classList.contains('low-performance') && !document.documentElement.classList.contains('no-animations')) {
-            entry.target.classList.add('is-visible');
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
-  };
-
-  // Отслеживание кликов
-  const setupButtonTracking = () => {
-    const buttons = document.querySelectorAll('a[class*="bg-gradient-to-r"]');
-    buttons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        const label = e.target.textContent.trim();
-        gtag('event', 'button_click', { event_category: 'qa', event_label: label });
-        logAction(`Клик по кнопке: ${label}`);
-      });
-    });
-  };
-
-  // Управление размером шрифта
-  const setupFontSize = () => {
-    const savedFontSize = localStorage.getItem('fontSize') || '100';
-    document.documentElement.style.setProperty('--font-scale', savedFontSize / 100);
-  };
-
-  // Управление высокой контрастностью
-  const setupHighContrast = () => {
-    const savedContrast = localStorage.getItem('highContrast') === 'true';
-    document.documentElement.classList.toggle('high-contrast', savedContrast);
-  };
-
-  // Управление производительностью
-  const setupPerformance = () => {
-    const savedMode = localStorage.getItem('lowPerformance') === 'true';
-    document.documentElement.classList.toggle('low-performance', savedMode);
-  };
-
-  // Управление анимациями
-  const setupAnimations = () => {
-    const savedAnimations = localStorage.getItem('disableAnimations') === 'true';
-    document.documentElement.classList.toggle('no-animations', savedAnimations);
-  };
-
-  // Таймер Q&A
-  const setupQaTimer = () => {
-    console.log('[Q&A] Запуск setupQaTimer');
-    const qaTitle = document.getElementById('qaTitle');
-    const qaCountdown = document.getElementById('qaCountdown');
-    const qaStatus = document.getElementById('qaStatus');
-    const qaTimer = document.getElementById('qaTimer');
-    const qaSubmitButton = document.getElementById('qaSubmitButton');
-    const notification = document.getElementById('qaNotification');
-    if (!qaTitle || !qaCountdown || !qaStatus || !qaTimer || !qaSubmitButton || !notification) {
-      logAction('Ошибка: Один из элементов таймера не найден');
-      return;
-    }
-
-    const startDate = new Date('2025-09-21T10:00:00+03:00');
-    const activationDate = new Date('2025-09-22T10:00:00+03:00');
-    let timerInterval; // Объявляем заранее
-
-    const updateTimer = () => {
-      const now = new Date();
-      console.log('[Q&A] Текущее время:', now.toISOString());
-      if (now < startDate) {
-        qaTitle.textContent = 'Q&A скоро начнётся!';
-        qaCountdown.textContent = '';
-        qaStatus.textContent = 'Q&A ещё не началось! Скоро можно будет задавать вопросы в Telegram. 😎';
-        qaSubmitButton.classList.add('opacity-50', 'pointer-events-none');
-        qaSubmitButton.setAttribute('aria-disabled', 'true');
-        logAction('Q&A ещё не началось');
-      } else if (now < activationDate) {
-        qaTitle.textContent = 'Q&A';
-        const timeLeft = activationDate - now;
-        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-        qaTimer.textContent = `${days} д ${hours} ч ${minutes} м ${seconds} с`;
-        qaCountdown.textContent = 'Q&A Скоро откроется!';
-        qaStatus.textContent = `Q&A ещё не открылся! Старт через ${qaTimer.textContent}. Задай свой вопрос в Telegram, и я отвечу на сайте! 😎`;
-        qaSubmitButton.classList.remove('opacity-50', 'pointer-events-none');
-        qaSubmitButton.removeAttribute('aria-disabled');
-        gtag('event', 'qa_timer_view', { event_category: 'qa', event_label: 'countdown' });
-        logAction(`Таймер Q&A: ${days} д ${hours} ч ${minutes} м ${seconds} с`);
-      } else {
-        qaTitle.textContent = 'Q&A';
-        qaCountdown.textContent = 'Q&A открыт!';
-        qaStatus.textContent = 'Q&A открылся! Задавай свои вопросы в Telegram бота, я отвечу на лучшие! 😎';
-        qaTimer.remove();
-        qaSubmitButton.classList.remove('opacity-50', 'pointer-events-none');
-        qaSubmitButton.removeAttribute('aria-disabled');
-        gtag('event', 'qa_timer_end', { event_category: 'qa', event_label: 'qa_opened' });
-        logAction('Q&A открыт');
-        if (localStorage.getItem('newsNotifications') === 'true' && Notification.permission === 'granted') {
-          setTimeout(() => {
-            new Notification('Q&A стартовал!', {
-              body: 'Задавай вопросы в Telegram! 😎',
-              icon: '/assets/photo.jpg'
+          }, 3000);
+          const closeButton = notificationElement.querySelector('button');
+          if (closeButton) {
+            closeButton.addEventListener('click', () => {
+              notificationElement.classList.remove('show');
+              clearTimeout(timeout);
+              gtag('event', 'notification_dismiss', { event_category: 'qa', event_label: 'dismiss_notification' });
+              logAction('Уведомление закрыто');
             });
-          }, 1000);
-          showNotification('Q&A стартовал! Задавай вопросы!', notification);
+          }
         }
-        clearInterval(timerInterval);
       }
     };
 
-    updateTimer();
-    timerInterval = setInterval(updateTimer, 1000); // Инициализация после updateTimer
-  };
+    // Экранирование HTML
+    const escapeHTML = (str) => {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    };
 
-  // Список вопросов
-  const setupQAList = () => {
-    console.log('[Q&A] Запуск setupQAList');
-    const qaList = document.getElementById('qa-list');
-    const notification = document.getElementById('qaNotification');
-    if (!qaList || !notification) {
-      console.log('[Q&A] Ошибка: qaList или qaNotification не найдены');
-      return;
-    }
+    // Анимация появления
+    const setupFadeIn = () => {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !document.documentElement.classList.contains('low-performance') && !document.documentElement.classList.contains('no-animations')) {
+              entry.target.classList.add('is-visible');
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+    };
 
-    qaList.innerHTML = '';
-    const approvedQuestions = [
-      { username: 'Shartkku', question: 'Когда новая серия Standoff пряток? уже 2года ждём', answer: 'Серии пряток по Standoff 2 больше не будет из за того что канал заброшен.' },
-      { username: 'Johnny_Drill', question: 'когда стрим по PEAK?', answer: 'Т.к сейчас у меня нет времени на стрим, но зато скоро, будет СЕКРЕТНОЕ ДОСЬЕ, КОТОРЫЙ ПЕРЕВЕРНЕТ КОНТОРУ КАНАЛА!!! >:D' },
-      { username: 'sakhaboom_b00m', question: 'Функционирует ли бот с Discord сервером?', answer: 'Если ты имеешь ввиду, что, этот бот функционирует с Discord сервером то к сожалению нет. Однако, у нас на новом Discord сервере у нас он есть.' }
-    ];
-    if (approvedQuestions.length === 0) {
-      qaList.innerHTML = '<p class="text-sm text-slate-200">Пока нет одобренных вопросов.</p>';
-      logAction('Нет одобренных вопросов для отображения');
-      return;
-    }
+    // Отслеживание кликов
+    const setupButtonTracking = () => {
+      const buttons = document.querySelectorAll('a[class*="bg-gradient-to-r"]');
+      buttons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          const label = e.target.textContent.trim();
+          gtag('event', 'button_click', { event_category: 'qa', event_label: label });
+          logAction(`Клик по кнопке: ${label}`);
+        });
+      });
+    };
 
-    approvedQuestions.forEach(q => {
-      const qaItem = document.createElement('div');
-      qaItem.className = 'border-l-4 border-purple-500 pl-4';
-      qaItem.innerHTML = `
-        <p class="text-lg font-semibold text-purple-300">${escapeHTML(q.username || 'Аноним')}</p>
-        <p class="text-sm text-slate-200">${escapeHTML(q.question)}</p>
-        <p class="mt-2 text-sm text-indigo-300"><strong>Ответ:</strong> ${escapeHTML(q.answer)}</p>
-      `;
-      qaList.appendChild(qaItem);
+    // Управление размером шрифта
+    const setupFontSize = () => {
+      const savedFontSize = localStorage.getItem('fontSize') || '100';
+      document.documentElement.style.setProperty('--font-scale', savedFontSize / 100);
+    };
+
+    // Управление высокой контрастностью
+    const setupHighContrast = () => {
+      const savedContrast = localStorage.getItem('highContrast') === 'true';
+      document.documentElement.classList.toggle('high-contrast', savedContrast);
+    };
+
+    // Управление производительностью
+    const setupPerformance = () => {
+      const savedMode = localStorage.getItem('lowPerformance') === 'true';
+      document.documentElement.classList.toggle('low-performance', savedMode);
+    };
+
+    // Управление анимациями
+    const setupAnimations = () => {
+      const savedAnimations = localStorage.getItem('disableAnimations') === 'true';
+      document.documentElement.classList.toggle('no-animations', savedAnimations);
+    };
+
+    // Список вопросов
+    const setupQAList = () => {
+      console.log('[Q&A] Запуск setupQAList');
+      const qaList = document.getElementById('qa-list');
+      const notification = document.getElementById('qaNotification');
+      if (!qaList || !notification) {
+        console.log('[Q&A] Ошибка: qaList или qaNotification не найдены');
+        return;
+      }
+
+      qaList.innerHTML = '';
+      const approvedQuestions = [
+        { username: 'Shartkku', question: 'Когда новая серия Standoff пряток? уже 2года ждём', answer: 'Серии пряток по Standoff 2 больше не будет из за того что канал заброшен.' },
+        { username: 'Johnny_Drill', question: 'когда стрим по PEAK?', answer: 'Т.к сейчас у меня нет времени на стрим, но зато скоро, будет СЕКРЕТНОЕ ДОСЬЕ, КОТОРЫЙ ПЕРЕВЕРНЕТ КОНТОРУ КАНАЛА!!! >:D' },
+        { username: 'sakhaboom_b00m', question: 'Функционирует ли бот с Discord сервером?', answer: 'Если ты имеешь ввиду, что, этот бот функционирует с Discord сервером то к сожалению нет. Однако, у нас на новом Discord сервере у нас он есть.' }
+      ];
+      if (approvedQuestions.length === 0) {
+        qaList.innerHTML = '<p class="text-sm text-slate-200">Пока нет одобренных вопросов.</p>';
+        logAction('Нет одобренных вопросов для отображения');
+        return;
+      }
+
+      approvedQuestions.forEach(q => {
+        const qaItem = document.createElement('div');
+        qaItem.className = 'border-l-4 border-purple-500 pl-4';
+        qaItem.innerHTML = `
+          <p class="text-lg font-semibold text-purple-300">${escapeHTML(q.username || 'Аноним')}</p>
+          <p class="text-sm text-slate-200">${escapeHTML(q.question)}</p>
+          <p class="mt-2 text-sm text-indigo-300"><strong>Ответ:</strong> ${escapeHTML(q.answer)}</p>
+        `;
+        qaList.appendChild(qaItem);
+      });
+      gtag('event', 'qa_list_view', { event_category: 'qa', event_label: 'questions_displayed' });
+      logAction(`Список вопросов отображен: ${approvedQuestions.length} вопросов`);
+
+      // Показ уведомления о запуске Q&A
+      if (localStorage.getItem('newsNotifications') === 'true' && Notification.permission === 'granted') {
+        setTimeout(() => {
+          new Notification('Q&A стартовал!', {
+            body: 'Задавай вопросы в Telegram! 😎',
+            icon: '/assets/photo.jpg'
+          });
+        }, 1000);
+        showNotification('Q&A стартовал! Задавай вопросы!', notification);
+      }
+    };
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('[Q&A] DOMContentLoaded сработал');
+      setupFadeIn();
+      setupButtonTracking();
+      setupFontSize();
+      setupHighContrast();
+      setupPerformance();
+      setupAnimations();
+      setupQAList();
     });
-    gtag('event', 'qa_list_view', { event_category: 'qa', event_label: 'questions_displayed' });
-    logAction(`Список вопросов отображен: ${approvedQuestions.length} вопросов`);
-  };
-
-  // Инициализация
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log('[Q&A] DOMContentLoaded сработал');
-    setupFadeIn();
-    setupButtonTracking();
-    setupFontSize();
-    setupHighContrast();
-    setupPerformance();
-    setupAnimations();
-    setupQaTimer();
-    setupQAList();
-  });
-</script>
+  </script>
 </body>
 </html>
