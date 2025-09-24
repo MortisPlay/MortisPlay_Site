@@ -1,3 +1,4 @@
+Теперь пофиксим уведомление в самом Q&A странице когда заходишь на него и всякие исправление тоже там исправь:
 <!DOCTYPE html>
 <html lang="ru" class="scroll-smooth">
 <head>
@@ -26,11 +27,7 @@
   </script>
   <style>
     :root { --font-scale: 1; }
-    body { 
-      font-size: calc(1rem * var(--font-scale)); 
-      background: linear-gradient(to bottom right, #0d0d0d, #1a1a1a, #2d2d2d); 
-      color: #e5e7eb; 
-    }
+    body { font-size: calc(1rem * var(--font-scale)); }
     .text-4xl { font-size: calc(2.25rem * var(--font-scale)); }
     .text-2xl { font-size: calc(1.5rem * var(--font-scale)); }
     .text-lg { font-size: calc(1.125rem * var(--font-scale)); }
@@ -40,18 +37,14 @@
     .animate-floaty { animation: floaty 8s ease-in-out infinite; }
     .animate-floaty-slow { animation: floaty 10s ease-in-out infinite; }
     .animate-breathing { animation: breathing 10s ease-in-out infinite; }
-    .neon-title { 
-      transition: all 0.5s ease; 
-      color: #e5e7eb; 
-      background: linear-gradient(to right, #a5b4fc, #f9a8d4, #a5b4fc); 
-    }
+    .neon-title { transition: all 0.5s ease; color: #e5e7eb; background: linear-gradient(to right, #a5b4fc, #f9a8d4, #a5b4fc); }
     .neon-title:hover { filter: brightness(1.3); }
-    .fade-in { 
-      opacity: 0; 
-      transform: translateY(20px); 
-      transition: opacity 0.6s ease, transform 0.6s ease; 
-    }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .fade-in.is-visible { opacity: 1; transform: translateY(0); }
+    body {
+      background: linear-gradient(to bottom right, #0d0d0d, #1a1a1a, #2d2d2d);
+      color: #e5e7eb;
+    }
     .card {
       background: rgba(30, 30, 30, 0.8);
       border-color: rgba(120, 120, 120, 0.3);
@@ -61,7 +54,8 @@
     .notification { 
       position: fixed; 
       bottom: 1rem; 
-      left: 1rem; 
+      left: 50%; 
+      transform: translateX(-50%); 
       z-index: 1000; 
       padding: 0.75rem 2.5rem 0.75rem 1.5rem; 
       border-radius: 0.75rem; 
@@ -71,27 +65,14 @@
       color: #1e293b; 
       font-size: 0.875rem; 
       font-weight: 500; 
+      opacity: 0; 
+      transition: opacity 0.3s ease; 
       display: flex; 
       align-items: center; 
       gap: 0.5rem; 
-      opacity: 0; 
-      transform: translateY(20px); 
-      transition: opacity 0.3s ease, transform 0.3s ease; 
+      pointer-events: none; 
     }
-    .notification.show { 
-      opacity: 1; 
-      transform: translateY(0); 
-    }
-    .dark .notification {
-      background: rgba(17, 24, 39, 0.8);
-      color: #e2e8f0;
-    }
-    .dark .notification button {
-      color: #e2e8f0;
-    }
-    .dark .notification button:hover {
-      color: #93c5fd;
-    }
+    .notification.show { opacity: 1; }
     .notification button { 
       background: none; 
       border: none; 
@@ -111,22 +92,12 @@
     .high-contrast a { color: var(--link-color); }
     .high-contrast .card { background: var(--bg-color); border-color: var(--text-color); }
     .high-contrast .neon-title { color: #ffffff; background: none; }
-    .high-contrast .bg-gradient-to-r { 
-      background: var(--bg-color); 
-      color: var(--text-color); 
-    }
-    .low-performance .animate-floaty, 
-    .low-performance .animate-floaty-slow, 
-    .low-performance .animate-breathing { animation: none; }
-    .low-performance .fade-in, 
-    .no-animations .fade-in { 
+    .low-performance .animate-floaty, .low-performance .animate-floaty-slow, .low-performance .animate-breathing { animation: none; }
+    .low-performance .fade-in { transition: none; opacity: 1; transform: none; }
+    .no-animations .fade-in, .no-animations .animate-floaty, .no-animations .animate-floaty-slow, .no-animations .animate-breathing { 
       transition: none; 
-      opacity: 1; 
       transform: none; 
-    }
-    .no-animations .animate-floaty, 
-    .no-animations .animate-floaty-slow, 
-    .no-animations .animate-breathing { 
+      opacity: 1; 
       animation: none; 
     }
     .loader {
@@ -156,28 +127,10 @@
       .w-80, .w-72, .w-[50rem] { width: 100%; }
       .rounded-3xl { border-radius: 1rem; }
       .backdrop-blur-lg { backdrop-filter: none; background: rgba(30, 30, 30, 0.8); }
-      .notification { 
-        top: 1rem; 
-        bottom: auto; 
-        width: calc(100% - 2rem); 
-        max-width: 20rem; 
-        left: 50%; 
-        transform: translateX(-50%) translateY(20px); 
-      }
-      .notification.show { 
-        transform: translateX(-50%) translateY(0); 
-      }
+      .notification { top: 1rem; bottom: auto; width: calc(100% - 2rem); max-width: 20rem; }
     }
     @media (min-width: 641px) {
-      .notification { 
-        max-width: 24rem; 
-        bottom: 1rem; 
-        left: 1rem; 
-        transform: translateY(20px); 
-      }
-      .notification.show { 
-        transform: translateY(0); 
-      }
+      .notification { max-width: 24rem; bottom: 1rem; top: auto; }
     }
   </style>
 </head>
@@ -209,7 +162,7 @@
             <i class="fa-solid fa-comments"></i> Вопросы и ответы
           </h2>
           <div id="qa-list" class="mt-4 space-y-6">
-            <div class="loader"></div>
+            <!-- Вопросы будут добавлены через JS -->
           </div>
         </div>
       </div>
@@ -242,14 +195,12 @@
       if (notificationElement) {
         const span = notificationElement.querySelector('span');
         if (span) {
-          // Скрыть все остальные уведомления
-          document.querySelectorAll('.notification.show').forEach(el => el.classList.remove('show'));
           span.textContent = message;
           notificationElement.classList.add('show');
           gtag('event', 'notification_shown', { event_category: 'qa', event_label: message });
           const timeout = setTimeout(() => {
             notificationElement.classList.remove('show');
-          }, 5000);
+          }, 3000);
           const closeButton = notificationElement.querySelector('button');
           if (closeButton) {
             closeButton.addEventListener('click', () => {
@@ -257,7 +208,7 @@
               clearTimeout(timeout);
               gtag('event', 'notification_dismiss', { event_category: 'qa', event_label: 'dismiss_notification' });
               logAction('Уведомление закрыто');
-            }, { once: true });
+            });
           }
         }
       }
@@ -322,73 +273,32 @@
       document.documentElement.classList.toggle('no-animations', savedAnimations);
     };
 
-    // Проверка обновлений в qa.json
-    const checkQAUpdates = async () => {
-      const notification = document.getElementById('qaNotification');
-      if (!notification || localStorage.getItem('newsNotifications') !== 'true') {
-        logAction('Уведомления отключены или элемент не найден');
-        return;
-      }
-      try {
-        const response = await fetch('/qa.json', { cache: 'no-store' });
-        if (!response.ok) throw new Error('Ошибка загрузки qa.json');
-        const data = await response.json();
-        const lastUpdate = localStorage.getItem('lastQAUpdate') || 0;
-        const latestQuestion = data.reduce((max, q) => Math.max(max, q.timestamp || 0), 0);
-        if (latestQuestion > lastUpdate) {
-          const newQuestions = data.filter(q => (q.timestamp || 0) > lastUpdate && q.answer);
-          if (newQuestions.length > 0) {
-            const message = `Новый ответ в Q&A от @${newQuestions[0].username}: ${newQuestions[0].question.substring(0, 50)}...`;
-            if (Notification.permission === 'granted') {
-              new Notification('Новый ответ в Q&A!', {
-                body: message,
-                icon: '/assets/photo.jpg'
-              });
-            }
-            showNotification(message, notification);
-            localStorage.setItem('lastQAUpdate', latestQuestion);
-          }
-        }
-      } catch (error) {
-        logAction(`Ошибка проверки qa.json: ${error}`);
-        showNotification('Не удалось загрузить новые вопросы', notification);
-      }
-    };
-
     // Список вопросов
-    const setupQAList = async () => {
-      logAction('Запуск setupQAList');
+    const setupQAList = () => {
+      console.log('[Q&A] Запуск setupQAList');
       const qaList = document.getElementById('qa-list');
       const notification = document.getElementById('qaNotification');
       if (!qaList || !notification) {
-        logAction('Ошибка: qaList или qaNotification не найдены');
+        console.log('[Q&A] Ошибка: qaList или qaNotification не найдены');
         return;
       }
 
-      qaList.innerHTML = '<div class="loader"></div>';
-      const approvedQuestions = [
-        { username: 'Shartkku', question: 'Когда новая серия Standoff пряток? уже 2года ждём', answer: 'Серии пряток по Standoff 2 больше не будет из за того что канал заброшен.', timestamp: 1695235200000 },
-        { username: 'Johnny_Drill', question: 'когда стрим по PEAK?', answer: 'Т.к сейчас у меня нет времени на стрим, но зато скоро, будет СЕКРЕТНОЕ ДОСЬЕ, КОТОРЫЙ ПЕРЕВЕРНЕТ КОНТОРУ КАНАЛА!!! >:D', timestamp: 1695321600000 },
-        { username: 'sakhaboom_b00m', question: 'Функционирует ли бот с Discord сервером?', answer: 'Если ты имеешь ввиду, что, этот бот функционирует с Discord сервером то к сожалению нет. Однако, у нас на новом Discord сервере у нас он есть.', timestamp: 1695408000000 },
-        { username: 'vakiliner', question: 'Где можно предложить идею или улучшение для твоего сайта или бота?', answer: 'Предложение можно кидать у нас в основном Telegram канале, подписаться на него, затем нажать на три точки, затем нажать на "Сообщение каналу" и нажать на значок сообщение с $', timestamp: 1695494400000 }
-      ];
-
-      // Удаление дубликатов вопросов
-      const uniqueQuestions = approvedQuestions.filter((q, index, self) =>
-        index === self.findIndex(t => t.username === q.username && t.question === q.question)
-      );
-
       qaList.innerHTML = '';
-      if (uniqueQuestions.length === 0) {
+      const approvedQuestions = [
+        { username: 'Shartkku', question: 'Когда новая серия Standoff пряток? уже 2года ждём', answer: 'Серии пряток по Standoff 2 больше не будет из за того что канал заброшен.' },
+        { username: 'Johnny_Drill', question: 'когда стрим по PEAK?', answer: 'Т.к сейчас у меня нет времени на стрим, но зато скоро, будет СЕКРЕТНОЕ ДОСЬЕ, КОТОРЫЙ ПЕРЕВЕРНЕТ КОНТОРУ КАНАЛА!!! >:D' },
+        { username: 'sakhaboom_b00m', question: 'Функционирует ли бот с Discord сервером?', answer: 'Если ты имеешь ввиду, что, этот бот функционирует с Discord сервером то к сожалению нет. Однако, у нас на новом Discord сервере у нас он есть.' },
+        { username: 'vakiliner', question: 'Где можно предложить идею или улучшение для твоего сайта или бота?', answer: 'Предложение можно кидать у нас в основном Telegram канале, подписаться на него, затем нажать на три точки, затем нажать на "Сообщение каналу" и нажать на значок сообщение с $' }
+      ];
+      if (approvedQuestions.length === 0) {
         qaList.innerHTML = '<p class="text-sm text-slate-200">Пока нет одобренных вопросов.</p>';
-        showNotification('Пока нет новых вопросов в Q&A', notification);
         logAction('Нет одобренных вопросов для отображения');
         return;
       }
 
-      uniqueQuestions.forEach(q => {
+      approvedQuestions.forEach(q => {
         const qaItem = document.createElement('div');
-        qaItem.className = 'border-l-4 border-purple-500 pl-4 fade-in';
+        qaItem.className = 'border-l-4 border-purple-500 pl-4';
         qaItem.innerHTML = `
           <p class="text-lg font-semibold text-purple-300">${escapeHTML(q.username || 'Аноним')}</p>
           <p class="text-sm text-slate-200">${escapeHTML(q.question)}</p>
@@ -396,17 +306,24 @@
         `;
         qaList.appendChild(qaItem);
       });
+      gtag('event', 'qa_list_view', { event_category: 'qa', event_label: 'questions_displayed' });
+      logAction(`Список вопросов отображен: ${approvedQuestions.length} вопросов`);
 
-      gtag('event', 'qa_list_view', { event_category: 'qa', event_label: `questions_displayed_${uniqueQuestions.length}` });
-      logAction(`Список вопросов отображен: ${uniqueQuestions.length} вопросов`);
-
-      // Проверка новых вопросов
-      await checkQAUpdates();
+      // Показ уведомления о запуске Q&A
+      if (localStorage.getItem('newsNotifications') === 'true' && Notification.permission === 'granted') {
+        setTimeout(() => {
+          new Notification('Q&A стартовал!', {
+            body: 'Задавай вопросы в Telegram! 😎',
+            icon: '/assets/photo.jpg'
+          });
+        }, 1000);
+        showNotification('Q&A стартовал! Задавай вопросы!', notification);
+      }
     };
 
     // Инициализация
     document.addEventListener('DOMContentLoaded', () => {
-      logAction('DOMContentLoaded сработал');
+      console.log('[Q&A] DOMContentLoaded сработал');
       setupFadeIn();
       setupButtonTracking();
       setupFontSize();
@@ -414,9 +331,6 @@
       setupPerformance();
       setupAnimations();
       setupQAList();
-      if (localStorage.getItem('newsNotifications') === 'true') {
-        setInterval(checkQAUpdates, 60000);
-      }
     });
   </script>
 </body>
