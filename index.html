@@ -97,66 +97,73 @@
       --bg-color: #000000;
       --link-color: #00ff00;
     }
-    .high-contrast body { background: var(--bg-color); color: var(--text-color); }
-    .high-contrast a { color: var(--link-color); }
-    .high-contrast .bg-gradient-to-br, .high-contrast .glass, .high-contrast .glass-button {
+    .high-contrast body { 
+      background: var(--bg-color); 
+      color: var(--text-color); 
+    }
+    .high-contrast a { 
+      color: var(--link-color); 
+      text-decoration: underline; 
+    }
+    .high-contrast .bg-gradient-to-br, 
+    .high-contrast .glass, 
+    .high-contrast .glass-button {
       background: var(--bg-color);
       backdrop-filter: none;
       border-color: var(--text-color);
+      color: var(--text-color);
     }
-    .notification { 
-      position: fixed; 
-      bottom: 1rem; 
-      left: 1rem; 
-      z-index: 1000; 
-      padding: 0.75rem 2.5rem 0.75rem 1.5rem; 
+    .high-contrast .card-hover {
+      background: var(--bg-color);
+      border-color: var(--text-color);
+      color: var(--text-color);
+    }
+    .high-contrast .video-filter.active {
+      background: var(--text-color);
+      color: var(--bg-color);
+    }
+    .high-contrast .bg-gradient-to-r {
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+    .high-contrast .text-transparent {
+      color: var(--text-color);
+    }
+    .high-contrast .ring-1 {
+      border-color: var(--text-color);
+    }
+    .glass-button { 
+      background: rgba(255, 255, 255, 0.15); 
+      backdrop-filter: blur(10px); 
+      border: 1px solid rgba(255, 255, 255, 0.3); 
       border-radius: 0.75rem; 
-      background: rgba(255, 255, 255, 0.8); 
-      backdrop-filter: blur(8px); 
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
-      color: #1e293b; 
-      font-size: 0.875rem; 
-      font-weight: 500; 
-      display: flex; 
-      align-items: center; 
-      gap: 0.5rem; 
-      opacity: 0; 
-      transition: opacity 0.3s ease, transform 0.3s ease; 
-      transform: translateY(20px); 
+      color: #ffffff; 
+      font-weight: 600; 
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); 
+      transition: all 0.3s ease; 
+      cursor: pointer; 
     }
-    .notification.show { 
-      opacity: 1; 
-      transform: translateY(0); 
+    .glass-button:hover { 
+      background: rgba(255, 255, 255, 0.25); 
+      transform: scale(1.05); 
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); 
     }
-    .low-performance .notification, .no-animations .notification { 
-      transition: none; 
-      opacity: 0; 
+    .dark .glass-button { 
+      background: rgba(50, 50, 50, 0.15); 
+      border-color: rgba(200, 200, 200, 0.2); 
     }
-    .low-performance .notification.show, .no-animations .notification.show { 
-      opacity: 1; 
-      transform: translateY(0); 
+    .dark .glass-button:hover { 
+      background: rgba(50, 50, 50, 0.25); 
     }
-    .dark .notification { 
-      background: rgba(17, 24, 39, 0.8); 
-      color: #e2e8f0; 
+    @supports not (backdrop-filter: blur(10px)) { 
+      .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; } 
+      .dark .glass-button { background: rgba(50, 50, 50, 0.5); } 
     }
-    .notification button {
-      background: none;
-      border: none;
-      color: #1e293b;
-      font-size: 0.75rem;
-      cursor: pointer;
-      padding: 0.25rem;
-      pointer-events: auto;
+    .bg-gradient-to-br { 
+      background-image: linear-gradient(to bottom right, #fff5f5, #ffffff, #e0f2fe); 
     }
-    .dark .notification button {
-      color: #e2e8f0;
-    }
-    .notification button:hover {
-      color: #6366f1;
-    }
-    .dark .notification button:hover {
-      color: #93c5fd;
+    .dark .bg-gradient-to-br { 
+      background-image: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #4b5bd1); 
     }
     @media (max-width: 640px) { 
       #welcome .lg:grid-cols-2 { grid-template-columns: 1fr; }
@@ -169,44 +176,7 @@
       .animate-[floaty_5s_ease-in-out_infinite] { animation: none; } 
       iframe, video, img { max-width: 100%; height: auto; } 
       .glass-button { padding: 0.5rem 1rem; }
-      .notification { 
-        top: 1rem; 
-        bottom: auto; 
-        width: calc(100% - 2rem); 
-        max-width: 20rem; 
-        left: 50%; 
-        transform: translateX(-50%) translateY(20px); 
-      }
-      .notification.show { 
-        transform: translateX(-50%) translateY(0); 
-      }
     }
-    @media (min-width: 641px) {
-      .glass-button { padding: 0.75rem 1.5rem; }
-      .notification { 
-        max-width: 24rem; 
-        bottom: 1rem; 
-        top: auto; 
-        left: 1rem; 
-        transform: translateY(20px); 
-      }
-      .notification.show { 
-        transform: translateY(0); 
-      }
-    }
-    .glass-button { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.75rem; color: #ffffff; font-weight: 600; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; cursor: pointer; }
-    .glass-button:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); }
-    .dark .glass-button { background: rgba(50, 50, 50, 0.15); border-color: rgba(200, 200, 200, 0.2); }
-    .dark .glass-button:hover { background: rgba(50, 50, 50, 0.25); }
-    @supports not (backdrop-filter: blur(10px)) { 
-      .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; } 
-      .dark .glass-button { background: rgba(50, 50, 50, 0.5); } 
-    }
-    .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #fff5f5, #ffffff, #e0f2fe); }
-    .dark .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #4b5bd1); }
-    .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
-    .grid { display: grid; }
-    .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     @media (min-width: 1024px) {
       header { position: sticky; top: 0; z-index: 50; background: white/80 dark:bg-slate-900/80; }
       nav { height: 4rem; }
@@ -420,22 +390,10 @@
               <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Увеличивает контрастность для лучшей читаемости.</p>
               <label class="mt-3 flex flex-col gap-2">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Размер шрифта:</span>
-                <input type="range" id="fontSizeSlider" min="80" max="120" value="100" class="w-full">
+                <input type="range" id="fontSizeSlider" min="50" max="200" value="100" class="w-full">
               </label>
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Регулируй размер шрифта для удобства чтения.</p>
+              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Регулируй размер шрифта для удобства чтения (50%–200%).</p>
               <div id="appearanceNotification" class="notification" role="alert" aria-live="polite">
-                <span></span>
-                <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
-              </div>
-            </div>
-            <div class="mt-6 card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
-              <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Уведомления</h3>
-              <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="newsNotificationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500">
-                <span class="text-sm text-slate-600 dark:text-slate-300">Уведомления о новостях</span>
-              </label>
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Получай уведомления о новых постах и Q&A.</p>
-              <div id="newsNotification" class="notification" role="alert" aria-live="polite">
                 <span></span>
                 <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
               </div>
@@ -455,7 +413,7 @@
             </article>
             <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-indigo-600 to-fuchsia-600">
               <h3 class="text-lg font-semibold">Новый раздел «Настройки» и бот готов!</h3>
-              <p class="mt-2 text-sm opacity-90">Йоу, геймеры! 🎮🔥 Новый раздел «Настройки» уже на сайте — настраивай тему, шрифты, уведомления и производительность под себя! В будущем добавим ещё больше кастомизаций. 😎 Плюс, наш бот закончен и ждёт вопросов: <a href="https://t.me/MortisplayQABot" class="underline" rel="noopener" onclick="gtag('event', 'button_click', {'event_category': 'News', 'event_label': 'Settings & Bot Telegram'});">MortisplayQABot</a>.</p>
+              <p class="mt-2 text-sm opacity-90">Йоу, геймеры! 🎮🔥 Новый раздел «Настройки» уже на сайте — настраивай тему, шрифты и производительность под себя! В будущем добавим ещё больше кастомизаций. 😎 Плюс, наш бот закончен и ждёт вопросов: <a href="https://t.me/MortisplayQABot" class="underline" rel="noopener" onclick="gtag('event', 'button_click', {'event_category': 'News', 'event_label': 'Settings & Bot Telegram'});">MortisplayQABot</a>.</p>
               <p class="mt-3 text-xs opacity-90">С любовью Mortis32 &lt;3 · 18 сентября 2025</p>
             </article>
             <article class="card-hover rounded-2xl p-6 text-white bg-gradient-to-r from-indigo-500 to-purple-500">
@@ -544,7 +502,6 @@
       if (notificationElement) {
         const span = notificationElement.querySelector('span');
         if (span) {
-          // Скрыть все остальные уведомления
           document.querySelectorAll('.notification.show').forEach(el => {
             el.classList.remove('show');
           });
@@ -564,33 +521,6 @@
             }, { once: true });
           }
         }
-      }
-    };
-
-    // Проверка обновлений в qa.json
-    const checkQAUpdates = async () => {
-      try {
-        const response = await fetch('/qa.json', { cache: 'no-store' });
-        if (!response.ok) throw new Error('Ошибка загрузки qa.json');
-        const data = await response.json();
-        const lastUpdate = localStorage.getItem('lastQAUpdate') || 0;
-        const latestQuestion = data.reduce((max, q) => Math.max(max, q.timestamp || 0), 0);
-        if (latestQuestion > lastUpdate) {
-          const newQuestions = data.filter(q => (q.timestamp || 0) > lastUpdate && q.answer);
-          if (newQuestions.length > 0) {
-            const notification = document.getElementById('newsNotification');
-            if (localStorage.getItem('newsNotifications') === 'true' && Notification.permission === 'granted') {
-              new Notification('Новый ответ в Q&A!', {
-                body: `Проверь новый ответ в разделе Q&A! 😎 Вопрос от @${newQuestions[0].username}: ${newQuestions[0].question.substring(0, 50)}...`,
-                icon: '/assets/photo.jpg'
-              });
-            }
-            showNotification(`Новый ответ в Q&A от @${newQuestions[0].username}!`, notification);
-            localStorage.setItem('lastQAUpdate', latestQuestion);
-          }
-        }
-      } catch (error) {
-        logAction(`Ошибка проверки qa.json: ${error}`);
       }
     };
 
@@ -743,45 +673,6 @@
           gtag('event', 'animations_toggle', { event_category: 'settings', event_label: disableAnimations ? 'off' : 'on' });
           logAction(`Анимации: ${disableAnimations ? 'Отключены' : 'Включены'}`);
         }, 300));
-      }
-    };
-
-    // Управление уведомлениями
-    const setupNotifications = () => {
-      const toggle = document.getElementById('newsNotificationsToggle');
-      const notification = document.getElementById('newsNotification');
-      if (toggle && notification && 'Notification' in window) {
-        const savedNotifications = localStorage.getItem('newsNotifications') === 'true';
-        toggle.checked = savedNotifications;
-        toggle.addEventListener('change', debounce(() => {
-          const enableNotifications = toggle.checked;
-          localStorage.setItem('newsNotifications', enableNotifications);
-          if (enableNotifications && Notification.permission !== 'granted') {
-            Notification.requestPermission().then(permission => {
-              if (permission === 'granted') {
-                showNotification('Уведомления о новостях и Q&A включены', notification);
-              } else {
-                toggle.checked = false;
-                localStorage.setItem('newsNotifications', false);
-                showNotification('Уведомления отклонены браузером', notification);
-              }
-            });
-          } else {
-            showNotification(enableNotifications ? 'Уведомления о новостях и Q&A включены' : 'Уведомления о новостях и Q&A отключены', notification);
-          }
-          gtag('event', 'notifications_toggle', { event_category: 'settings', event_label: enableNotifications ? 'on' : 'off' });
-          logAction(`Уведомления: ${enableNotifications ? 'Включены' : 'Отключены'}`);
-        }, 300));
-        if (savedNotifications) {
-          checkQAUpdates();
-          setInterval(checkQAUpdates, 60000);
-        }
-        toggle.addEventListener('change', () => {
-          if (toggle.checked) {
-            checkQAUpdates();
-            setInterval(checkQAUpdates, 60000);
-          }
-        });
       }
     };
 
@@ -1000,7 +891,6 @@
       setupThemeSelect();
       setupPerformance();
       setupAnimations();
-      setupNotifications();
       setupFontSize();
       setupHighContrast();
       setupMenu();
