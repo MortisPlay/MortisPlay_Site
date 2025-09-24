@@ -132,6 +132,14 @@
     .high-contrast .ring-1 {
       border-color: var(--text-color);
     }
+    .high-contrast .notification {
+      background: var(--bg-color);
+      color: var(--text-color);
+      border-color: var(--text-color);
+    }
+    .high-contrast .notification button {
+      color: var(--text-color);
+    }
     .glass-button { 
       background: rgba(255, 255, 255, 0.15); 
       backdrop-filter: blur(10px); 
@@ -139,25 +147,100 @@
       border-radius: 0.75rem; 
       color: #ffffff; 
       font-weight: 600; 
+      padding: 0.5rem 1rem;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); 
       transition: all 0.3s ease; 
       cursor: pointer; 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 0.5rem;
     }
     .glass-button:hover { 
       background: rgba(255, 255, 255, 0.25); 
       transform: scale(1.05); 
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1); 
     }
+    .glass-button:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .glass-button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+    }
     .dark .glass-button { 
       background: rgba(50, 50, 50, 0.15); 
       border-color: rgba(200, 200, 200, 0.2); 
+      color: #e5e7eb;
     }
     .dark .glass-button:hover { 
       background: rgba(50, 50, 50, 0.25); 
     }
+    .dark .glass-button:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .dark .glass-button:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5);
+    }
     @supports not (backdrop-filter: blur(10px)) { 
       .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; } 
       .dark .glass-button { background: rgba(50, 50, 50, 0.5); } 
+    }
+    .notification {
+      display: none;
+      background: rgba(255, 255, 255, 0.9);
+      color: #1f2937;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      margin-top: 1rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      position: relative;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .notification.show {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .dark .notification {
+      background: rgba(17, 24, 39, 0.9);
+      color: #e5e7eb;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .notification button {
+      background: none;
+      border: none;
+      color: #1f2937;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0.25rem;
+      transition: color 0.3s ease;
+    }
+    .dark .notification button {
+      color: #e5e7eb;
+    }
+    .notification button:hover {
+      color: #6366f1;
+    }
+    .dark .notification button:hover {
+      color: #a5b4fc;
+    }
+    #settings .notification {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      margin-top: 0;
+      z-index: 1000;
+      max-width: 320px;
+    }
+    #settings .notification.show {
+      opacity: 1;
+      transform: translateY(0);
     }
     .bg-gradient-to-br { 
       background-image: linear-gradient(to bottom right, #fff5f5, #ffffff, #e0f2fe); 
@@ -176,6 +259,7 @@
       .animate-[floaty_5s_ease-in-out_infinite] { animation: none; } 
       iframe, video, img { max-width: 100%; height: auto; } 
       .glass-button { padding: 0.5rem 1rem; }
+      #settings .notification { max-width: 80%; right: 0.5rem; bottom: 0.5rem; }
     }
     @media (min-width: 1024px) {
       header { position: sticky; top: 0; z-index: 50; background: white/80 dark:bg-slate-900/80; }
@@ -488,7 +572,7 @@
       console.log(message);
     };
 
-    // Debounce для предотвращения множественных кликов
+    // Debounce для предотвращения множественных событий
     const debounce = (func, wait) => {
       let timeout;
       return (...args) => {
@@ -635,6 +719,9 @@
           gtag('event', 'theme_select', { event_category: 'settings', event_label: theme });
           logAction(`Тема выбрана: ${theme}`);
         });
+        themeSelect.addEventListener('mouseenter', () => {
+          showNotification('Выберите тему сайта', document.getElementById('appearanceNotification'));
+        });
       }
     };
 
@@ -654,6 +741,9 @@
           gtag('event', 'performance_toggle', { event_category: 'settings', event_label: isLowPerformance ? 'low' : 'normal' });
           logAction(`Режим производительности: ${isLowPerformance ? 'Лёгкий' : 'Нормальный'}`);
         }, 300));
+        toggle.addEventListener('mouseenter', () => {
+          showNotification('Включите лёгкий режим для слабых устройств', notification);
+        });
       }
     };
 
@@ -673,6 +763,53 @@
           gtag('event', 'animations_toggle', { event_category: 'settings', event_label: disableAnimations ? 'off' : 'on' });
           logAction(`Анимации: ${disableAnimations ? 'Отключены' : 'Включены'}`);
         }, 300));
+        animationsToggle.addEventListener('mouseenter', () => {
+          showNotification('Отключите анимации для улучшения производительности', notification);
+        });
+      }
+    };
+
+    // Управление размером шрифта
+    const setupFontSize = () => {
+      const slider = document.getElementById('fontSizeSlider');
+      const notification = document.getElementById('appearanceNotification');
+      if (slider && notification) {
+        const savedFontSize = localStorage.getItem('fontSize') || '100';
+        slider.value = savedFontSize;
+        root.style.setProperty('--font-scale', savedFontSize / 100);
+        slider.addEventListener('input', debounce(() => {
+          const fontSize = slider.value;
+          localStorage.setItem('fontSize', fontSize);
+          root.style.setProperty('--font-scale', fontSize / 100);
+          showNotification(`Размер шрифта: ${fontSize}%`, notification);
+          gtag('event', 'font_size_change', { event_category: 'settings', event_label: fontSize });
+          logAction(`Размер шрифта: ${fontSize}%`);
+        }, 300));
+        slider.addEventListener('mouseenter', () => {
+          showNotification('Измените размер шрифта для удобства чтения', notification);
+        });
+      }
+    };
+
+    // Управление высокой контрастностью
+    const setupHighContrast = () => {
+      const toggle = document.getElementById('highContrastToggle');
+      const notification = document.getElementById('appearanceNotification');
+      if (toggle && notification) {
+        const savedContrast = localStorage.getItem('highContrast') === 'true';
+        toggle.checked = savedContrast;
+        root.classList.toggle('high-contrast', savedContrast);
+        toggle.addEventListener('change', debounce(() => {
+          const highContrast = toggle.checked;
+          localStorage.setItem('highContrast', highContrast);
+          root.classList.toggle('high-contrast', highContrast);
+          showNotification(highContrast ? 'Высокая контрастность включена' : 'Высокая контрастность отключена', notification);
+          gtag('event', 'high_contrast_toggle', { event_category: 'settings', event_label: highContrast ? 'on' : 'off' });
+          logAction(`Контрастность: ${highContrast ? 'Высокая' : 'Нормальная'}`);
+        }, 300));
+        toggle.addEventListener('mouseenter', () => {
+          showNotification('Включите высокую контрастность для лучшей читаемости', notification);
+        });
       }
     };
 
@@ -817,44 +954,6 @@
           });
         });
         filterButtons[0].classList.add('active');
-      }
-    };
-
-    // Управление размером шрифта
-    const setupFontSize = () => {
-      const slider = document.getElementById('fontSizeSlider');
-      const notification = document.getElementById('appearanceNotification');
-      if (slider && notification) {
-        const savedFontSize = localStorage.getItem('fontSize') || '100';
-        slider.value = savedFontSize;
-        root.style.setProperty('--font-scale', savedFontSize / 100);
-        slider.addEventListener('input', debounce(() => {
-          const fontSize = slider.value;
-          localStorage.setItem('fontSize', fontSize);
-          root.style.setProperty('--font-scale', fontSize / 100);
-          showNotification(`Размер шрифта: ${fontSize}%`, notification);
-          gtag('event', 'font_size_change', { event_category: 'settings', event_label: fontSize });
-          logAction(`Размер шрифта: ${fontSize}%`);
-        }, 300));
-      }
-    };
-
-    // Управление высокой контрастностью
-    const setupHighContrast = () => {
-      const toggle = document.getElementById('highContrastToggle');
-      const notification = document.getElementById('appearanceNotification');
-      if (toggle && notification) {
-        const savedContrast = localStorage.getItem('highContrast') === 'true';
-        toggle.checked = savedContrast;
-        root.classList.toggle('high-contrast', savedContrast);
-        toggle.addEventListener('change', debounce(() => {
-          const highContrast = toggle.checked;
-          localStorage.setItem('highContrast', highContrast);
-          root.classList.toggle('high-contrast', highContrast);
-          showNotification(highContrast ? 'Высокая контрастность включена' : 'Высокая контрастность отключена', notification);
-          gtag('event', 'high_contrast_toggle', { event_category: 'settings', event_label: highContrast ? 'on' : 'off' });
-          logAction(`Контрастность: ${highContrast ? 'Высокая' : 'Нормальная'}`);
-        }, 300));
       }
     };
 
