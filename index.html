@@ -50,8 +50,8 @@
     @keyframes spin { 100% { transform: rotate(360deg); } }
     #sidebarMenu { box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
     #sidebarMenu.open { transform: translateX(0); }
-    #themeToggle { position: relative; overflow: hidden; background: linear-gradient(45deg, #facc15, #fef08a); border-radius: 0.75rem; padding: 0.5rem; }
-    #themeToggle.dark { background: linear-gradient(45deg, #1e3a8a, #3b82f6); }
+    #themeToggle { position: relative; overflow: hidden; background: linear-gradient(45deg, #facc15, #fef08a); border-radius: 0.75rem; padding: 0.5rem; color: #1f2937; }
+    #themeToggle.dark { background: linear-gradient(45deg, #1e3a8a, #3b82f6); color: #e5e7eb; }
     #themeToggle::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255, 255, 255, 0.4); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.5s ease, height 0.5s ease; }
     #themeToggle:hover::before { width: 200%; height: 200%; }
     #themeToggle i { transition: transform 0.5s ease, opacity 0.5s ease; position: relative; z-index: 1; }
@@ -59,8 +59,8 @@
     #themeToggle .glow { position: absolute; inset: 0; box-shadow: 0 0 12px rgba(255, 255, 255, 0.6); opacity: 0; transition: opacity 0.3s ease; }
     #themeToggle:hover .glow { opacity: 1; }
     .dark #themeToggle .glow { box-shadow: 0 0 12px rgba(99, 102, 241, 0.6); }
-    .particle { position: absolute; width: 4px; height: 4px; background: #ffffff; border-radius: 50%; pointer-events: none; z-index: 2; }
-    .dark .particle { background: #6366f1; }
+    .particle { position: absolute; width: 4px; height: 4px; background: #1f2937; border-radius: 50%; pointer-events: none; z-index: 2; }
+    .dark .particle { background: #e5e7eb; }
     .video-filter { transition: all 0.3s ease; }
     .video-filter.active { background: rgba(99, 102, 241, 0.3); transform: scale(1.05); }
     .dark .video-filter.active { background: rgba(99, 102, 241, 0.5); }
@@ -659,7 +659,7 @@
           }
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = root.classList.contains('dark') ? '#6366f1' : '#ffffff';
+          ctx.fillStyle = root.classList.contains('dark') ? '#e5e7eb' : '#1f2937';
           ctx.fill();
         });
         if (particles.length > 0) {
