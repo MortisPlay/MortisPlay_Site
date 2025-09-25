@@ -63,28 +63,56 @@
     .timeline-item { position: relative; }
     .timeline-item:last-child .timeline-line { display: none; }
 
-    #loader { 
-      position: fixed; 
-      inset: 0; 
-      z-index: 1000; 
-      background: rgba(0, 0, 0, 0.8); 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      transition: opacity 0.5s ease;
+    /* Оптимизация прокрутки */
+    body { 
+      overflow-y: auto; 
+      overscroll-behavior: auto; 
+      touch-action: pan-y; /* Плавная прокрутка для сенсорных устройств */
     }
-    .loader-spin { 
-      width: 64px; 
-      height: 64px; 
-      border: 6px solid rgba(255, 255, 255, 0.3); 
-      border-top-color: #fff; 
-      border-radius: 50%; 
-      animation: spin 1s linear infinite; 
+    main { 
+      min-height: 100vh; 
     }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
 
-    body { overflow-x: hidden; overscroll-behavior: none; }
-    main { overflow: auto; min-height: 100vh; }
+    /* Стили для неактивной кнопки */
+    .disabled-button {
+      cursor: not-allowed;
+      opacity: 0.6;
+      background: linear-gradient(to right, #6b7280, #4b5563);
+      pointer-events: none;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      color: #e5e7eb;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .disabled-button:hover {
+      background: linear-gradient(to right, #6b7280, #4b5563); /* Без эффекта при наведении */
+    }
+    .disabled-button::after {
+      content: 'Скоро';
+      position: absolute;
+      top: -1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: #ffffff;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .disabled-button:hover::after {
+      opacity: 1;
+    }
+
+    /* Оптимизация анимаций для производительности */
+    @media (prefers-reduced-motion: reduce) {
+      .animate-floaty, .animate-floaty-slow, .animate-breathing { animation: none; }
+    }
 
     @media (max-width: 640px) {
       .md\:grid-cols-4 { grid-template-columns: 1fr; }
@@ -98,10 +126,9 @@
       .w-[40rem] { width: 90vw; }
       .rounded-3xl { border-radius: 1rem; }
       .backdrop-blur-lg { backdrop-filter: none; background: rgba(50, 50, 50, 0.7); }
-      .loader-spin { width: 48px; height: 48px; border-width: 4px; }
       .text-lg { font-size: 1rem; line-height: 1.5; }
       .text-sm { font-size: 0.875rem; line-height: 1.5; }
-      a[class*="bg-gradient-to-r"] { padding: 0.375rem 0.75rem; box-shadow: none; }
+      a[class*="bg-gradient-to-r"], .disabled-button { padding: 0.375rem 0.75rem; box-shadow: none; }
       .max-w-5xl { max-width: 100%; }
       .timeline-line { height: 100%; }
       .top-0 { top: 0; }
@@ -120,10 +147,7 @@
   </style>
 </head>
 <body class="bg-gradient-to-br from-black via-gray-900 to-indigo-900 text-white dark">
-  <div id="loader">
-    <div class="loader-spin"></div>
-  </div>
-  <main class="relative overflow-x-hidden">
+  <main class="relative">
     <div class="absolute top-0 left-0 w-80 h-80 bg-purple-500/20 rounded-full blur-2xl animate-floaty z-[-1]"></div>
     <div class="absolute top-60 right-0 w-72 h-72 bg-pink-500/20 rounded-full blur-2xl animate-floaty-slow z-[-1]"></div>
     <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[40rem] h-[40rem] bg-indigo-500/10 rounded-full blur-[100px] animate-breathing z-[-1]"></div>
@@ -198,10 +222,13 @@
           <p class="mt-4 text-lg text-slate-200 leading-relaxed">
             Мой вайб — это музыка для поднятия настроения! Слушай мой плейлист на Spotify или следи за обновлениями. 🎶
           </p>
-          <div class="mt-4">
-            <a href="https://open.spotify.com/playlist/3UEMLQdDi830YOoOvEF1RB?si=-yT6Kq4fQ_6STsIgQiGHrw" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-teal-500 hover:to-green-500 transition-all duration-500 shadow-lg flex items-center gap-2 mx-auto w-fit md:px-4 md:py-2">
+          <div class="mt-4 flex flex-wrap justify-center gap-4">
+            <a href="https://open.spotify.com/playlist/3UEMLQdDi830YOoOvEF1RB?si=-yT6Kq4fQ_6STsIgQiGHrw" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-teal-500 hover:to-green-500 transition-all duration-500 shadow-lg flex items-center gap-2">
               <i class="fa-brands fa-spotify"></i> Слушать на Spotify
             </a>
+            <button class="disabled-button" disabled>
+              <i class="fa-brands fa-youtube"></i> YouTube Music
+            </button>
           </div>
         </div>
       </div>
@@ -213,18 +240,6 @@
     </div>
   </main>
   <script>
-    // Лоадер
-    window.addEventListener('load', () => {
-      const loader = document.getElementById('loader');
-      setTimeout(() => {
-        loader.style.opacity = '0';
-        setTimeout(() => {
-          loader.remove();
-          console.log('Лоадер удалён');
-        }, 500);
-      }, 2000);
-    });
-
     // Анимация появления
     const setupFadeIn = () => {
       const io = new IntersectionObserver(
@@ -252,10 +267,23 @@
       });
     };
 
+    // Предотвращение двойной прокрутки
+    const preventDoubleScroll = () => {
+      let lastScroll = 0;
+      window.addEventListener('wheel', (e) => {
+        const now = Date.now();
+        if (now - lastScroll < 100) {
+          e.preventDefault();
+        }
+        lastScroll = now;
+      }, { passive: false });
+    };
+
     // Инициализация
     document.addEventListener('DOMContentLoaded', () => {
       setupFadeIn();
       setupButtonTracking();
+      preventDoubleScroll();
     });
   </script>
 </body>
