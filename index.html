@@ -111,17 +111,18 @@
     .high-contrast .glass-button {
       background: var(--bg-color);
       backdrop-filter: none;
-      border-color: var(--text-color);
+      border: 2px solid var(--text-color);
       color: var(--text-color);
     }
     .high-contrast .card-hover {
       background: var(--bg-color);
-      border-color: var(--text-color);
+      border: 2px solid var(--text-color);
       color: var(--text-color);
     }
     .high-contrast .video-filter.active {
       background: var(--text-color);
       color: var(--bg-color);
+      border: 2px solid var(--bg-color);
     }
     .high-contrast .bg-gradient-to-r {
       background: var(--bg-color);
@@ -131,15 +132,27 @@
       color: var(--text-color);
     }
     .high-contrast .ring-1 {
-      border-color: var(--text-color);
+      border: 2px solid var(--text-color);
     }
     .high-contrast .notification {
       background: var(--bg-color);
       color: var(--text-color);
-      border-color: var(--text-color);
+      border: 2px solid var(--text-color);
     }
     .high-contrast .notification button {
       color: var(--text-color);
+      border: 1px solid var(--text-color);
+      padding: 0.2rem;
+      border-radius: 0.25rem;
+    }
+    .high-contrast #highContrastToggle {
+      border: 2px solid var(--text-color);
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    .high-contrast #highContrastToggle:checked {
+      background-color: var(--text-color);
+      border-color: var(--bg-color);
     }
     .glass-button {
       background: rgba(255, 255, 255, 0.15);
@@ -188,6 +201,8 @@
     @supports not (backdrop-filter: blur(10px)) {
       .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; }
       .dark .glass-button { background: rgba(50, 50, 50, 0.5); }
+      #qa, #settings, #news { background: rgba(255, 255, 255, 0.2); }
+      .dark #qa, .dark #settings, .dark #news { background: rgba(17, 24, 39, 0.4); }
     }
     .notification {
       display: none;
@@ -256,16 +271,13 @@
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      text-shadow: 0 0 4px rgba(99, 102, 241, 0.3);
     }
     .dark h2, .dark h3 {
       background: linear-gradient(to right, #a5b4fc, #f472b6);
-      text-shadow: 0 0 4px rgba(99, 102, 241, 0.5);
     }
     .high-contrast h2, .high-contrast h3 {
       background: none;
       color: var(--text-color);
-      text-shadow: none;
     }
     /* Улучшение карточек новостей */
     article.card-hover {
@@ -288,19 +300,18 @@
       background: var(--bg-color);
       color: var(--text-color);
       box-shadow: none;
+      border: 2px solid var(--text-color);
     }
     /* Фоновые эффекты для секций */
     #qa, #settings, #news {
       position: relative;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(99, 102, 241, 0.05));
-      backdrop-filter: blur(4px);
+      background: rgba(255, 255, 255, 0.2);
     }
     .dark #qa, .dark #settings, .dark #news {
-      background: linear-gradient(135deg, rgba(17, 24, 39, 0.4), rgba(99, 102, 241, 0.1));
+      background: rgba(17, 24, 39, 0.4);
     }
     .high-contrast #qa, .high-contrast #settings, .high-contrast #news {
       background: var(--bg-color);
-      backdrop-filter: none;
     }
     /* Мобильная адаптивность */
     @media (max-width: 640px) {
@@ -529,7 +540,7 @@
         </div>
       </section>
 
-      <section id="qa" class="py-16 bg-slate-50 dark:bg-slate-900/40 fade-in">
+      <section id="qa" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="text-center text-2xl md:text-3xl font-bold">Q&A</h2>
           <p class="mt-2 text-center text-slate-600 dark:text-slate-300">
@@ -543,7 +554,7 @@
         </div>
       </section>
 
-      <section id="settings" class="py-16 bg-slate-50 dark:bg-slate-900/40 fade-in">
+      <section id="settings" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="text-center text-2xl md:text-3xl font-bold">Настройки</h2>
           <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Настрой сайт под себя для максимального комфорта! 😎</p>
@@ -599,7 +610,7 @@
         </div>
       </section>
 
-      <section id="news" class="py-16 bg-slate-50 dark:bg-slate-900/40 fade-in">
+      <section id="news" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="text-center text-2xl md:text-3xl font-bold">Новости</h2>
           <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -642,7 +653,7 @@
         </div>
       </section>
 
-      <section id="contact" class="py-16 bg-slate-50 dark:bg-slate-900/40 fade-in">
+      <section id="contact" class="py-16 fade-in">
         <div class="mx-auto max-w-5xl px-4">
           <h2 class="text-center text-2xl md:text-3xl font-bold">Связь со мной</h2>
           <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Хочешь коллаб или просто поболтать? Пиши!</p>
