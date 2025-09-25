@@ -265,24 +265,25 @@
     .dark .bg-gradient-to-br {
       background-image: linear-gradient(to bottom right, #1e1b4b, #312e81, #4c1d95);
     }
-    /* Динамические заголовки */
+    /* Исправление заголовков для видимости текста */
     h2, h3 {
-      background: linear-gradient(to right, #4f46e5, #ec4899);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+      color: #4f46e5; /* Явный цвет вместо прозрачного */
+      background: none; /* Убираем градиент, чтобы текст был видимым */
+      -webkit-background-clip: none;
+      background-clip: none;
     }
     .dark h2, .dark h3 {
-      background: linear-gradient(to right, #a5b4fc, #f472b6);
+      color: #a5b4fc; /* Явный цвет для тёмной темы */
+      background: none;
     }
     .high-contrast h2, .high-contrast h3 {
+      color: var(--text-color); /* Явный цвет для высокой контрастности */
       background: none;
-      color: var(--text-color);
     }
-    /* Улучшение карточек новостей */
+    /* Исправление карточек новостей для видимости текста */
     article.card-hover {
       background: linear-gradient(to right, #4f46e5, #9333ea);
-      color: #ffffff;
+      color: #ffffff; /* Явный цвет текста */
       transition: all 0.3s ease;
     }
     article.card-hover:hover {
@@ -291,27 +292,30 @@
     }
     .dark article.card-hover {
       background: linear-gradient(to right, #6366f1, #f472b6);
-      color: #e5e7eb;
+      color: #e5e7eb; /* Явный цвет текста для тёмной темы */
     }
     .dark article.card-hover:hover {
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), 0 0 12px rgba(99, 102, 241, 0.6);
     }
     .high-contrast article.card-hover {
       background: var(--bg-color);
-      color: var(--text-color);
+      color: var(--text-color); /* Явный цвет текста для высокой контрастности */
       box-shadow: none;
       border: 2px solid var(--text-color);
     }
-    /* Фоновые эффекты для секций */
-    #qa, #settings, #news {
+    /* Обеспечение видимости текста в секциях */
+    #videos, #settings, #news, #contact, #qa, #projects {
       position: relative;
       background: rgba(255, 255, 255, 0.2);
+      color: #1f2937; /* Явный цвет текста */
     }
-    .dark #qa, .dark #settings, .dark #news {
+    .dark #videos, .dark #settings, .dark #news, .dark #contact, .dark #qa, .dark #projects {
       background: rgba(17, 24, 39, 0.4);
+      color: #e5e7eb; /* Явный цвет текста для тёмной темы */
     }
-    .high-contrast #qa, .high-contrast #settings, .high-contrast #news {
+    .high-contrast #videos, .high-contrast #settings, .high-contrast #news, .high-contrast #contact, .high-contrast #qa, .high-contrast #projects {
       background: var(--bg-color);
+      color: var(--text-color); /* Явный цвет текста для высокой контрастности */
     }
     /* Мобильная адаптивность */
     @media (max-width: 640px) {
