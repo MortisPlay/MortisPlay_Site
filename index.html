@@ -44,6 +44,10 @@
     .dark .card-hover:hover { box-shadow: 0 12px 24px rgb(0 0 0 / .3), 0 0 12px rgba(99, 102, 241, 0.6); }
     .fade-in { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
     .fade-in.is-visible { opacity: 1; transform: none; }
+    /* ФИКС: Force visibility для fade-in на мобилке (IO может глючить) */
+    @media (max-width: 640px) {
+      .fade-in { opacity: 1; transform: none; transition: none; }
+    }
     .glass { backdrop-filter: saturate(160%) blur(8px); background: linear-gradient(180deg, rgb(255 255 255 / .7), rgb(255 255 255 / .55)); }
     .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .7), rgb(17 24 39 / .55)); }
     #loader { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6366f1, #ec4899); }
@@ -619,49 +623,75 @@
         </div>
       </section>
 
+      <!-- ФИКС: Добавлен шаринг в новости -->
       <section id="news" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="text-center text-2xl md:text-3xl font-bold">Новости</h2>
           <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <article class="card-hover rounded-2xl p-6">
+            <article class="card-hover rounded-2xl p-6" data-news-title="Обновили немного сайт😎" data-news-url="https://mortisplay.ru#news">
               <h3 class="text-lg font-semibold">Обновили немного сайт😎</h3>
               <p class="mt-2 text-sm">Вернули узоры на сайт, также обновили чуть чуть дизайн и обновили бота. Также, сообщаем вам новость о том, что сайт не будет обновляться в течение месяца, ведь мы сейчас начнем заниматься контентом поэтому все изменения которые у вас попадутся на сайте, будут исправлены только когда мы закончим с контентом, если вы обнаружите проблему на сайте, пишите в Telegram: <a href="https://t.me/dimap7221" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">MortisPlay</a>. Приятного времяпровождение на сайте :3</p>
               <p class="mt-3 text-xs">С любовью Mortis32 &lt;3 · 25 сентября 2025</p>
+              <!-- ФИКС: Кнопка шаринга -->
+              <button class="share-btn glass-button mt-3 w-full text-xs" aria-label="Поделиться новостью">
+                <i class="fa-solid fa-share"></i> Поделиться
+              </button>
             </article>
-            <article class="card-hover rounded-2xl p-6">
+            <article class="card-hover rounded-2xl p-6" data-news-title="Технический перерыв завершён!" data-news-url="https://mortisplay.ru#news">
               <h3 class="text-lg font-semibold">Технический перерыв завершён!</h3>
               <p class="mt-2 text-sm">Йоу, геймеры! 🎮🔥 Сайт Mortis Play вернулся! Проверь новые фичи, обновления и Q&A. Пиши вопросы боту: <a href="https://t.me/MortisplayQABot" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener" onclick="gtag('event', 'button_click', {'event_category': 'News', 'event_label': 'Maintenance End Telegram'});">MortisplayQABot</a>. Следи за новостями в Telegram: <a href="https://t.me/MortisPlayTG" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">@MortisPlayTG</a>.</p>
               <p class="mt-3 text-xs">С любовью Mortis32 &lt;3 · 22 сентября 2025</p>
+              <button class="share-btn glass-button mt-3 w-full text-xs" aria-label="Поделиться новостью">
+                <i class="fa-solid fa-share"></i> Поделиться
+              </button>
             </article>
-            <article class="card-hover rounded-2xl p-6">
+            <article class="card-hover rounded-2xl p-6" data-news-title="Новый раздел «Настройки» и бот готов!" data-news-url="https://mortisplay.ru#news">
               <h3 class="text-lg font-semibold">Новый раздел «Настройки» и бот готов!</h3>
               <p class="mt-2 text-sm">Йоу, геймеры! 🎮🔥 Новый раздел «Настройки» уже на сайте — настраивай тему, шрифты и производительность под себя! В будущем добавим ещё больше кастомизаций. 😎 Плюс, наш бот закончен и ждёт вопросов: <a href="https://t.me/MortisplayQABot" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener" onclick="gtag('event', 'button_click', {'event_category': 'News', 'event_label': 'Settings & Bot Telegram'});">MortisplayQABot</a>.</p>
               <p class="mt-3 text-xs">С любовью Mortis32 &lt;3 · 18 сентября 2025</p>
+              <button class="share-btn glass-button mt-3 w-full text-xs" aria-label="Поделиться новостью">
+                <i class="fa-solid fa-share"></i> Поделиться
+              </button>
             </article>
-            <article class="card-hover rounded-2xl p-6">
+            <article class="card-hover rounded-2xl p-6" data-news-title="Q&A открыт!" data-news-url="https://mortisplay.ru#news">
               <h3 class="text-lg font-semibold">Q&A открыт!</h3>
               <p class="mt-2 text-sm">Йоу, геймеры! 🎮🔥 Q&A стартовал! Пиши вопросы в Telegram: <a href="https://t.me/MortisplayQABot" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener" onclick="gtag('event', 'button_click', {'event_category': 'News', 'event_label': 'Q&A Telegram'});">MortisplayQABot</a>. Раздел «Видео» теперь с категориями (Все, Стримы, Угар). «FAQ» переехал на отдельную страницу. «Биография» получила новый стиль и плейлист! 🔥</p>
               <p class="mt-3 text-xs">С любовью Mortis32 &lt;3 · 15 сентября 2025</p>
+              <button class="share-btn glass-button mt-3 w-full text-xs" aria-label="Поделиться новостью">
+                <i class="fa-solid fa-share"></i> Поделиться
+              </button>
             </article>
-            <article class="card-hover rounded-2xl p-6">
+            <article class="card-hover rounded-2xl p-6" data-news-title="Улучшена Биография!" data-news-url="https://mortisplay.ru#news">
               <h3 class="text-lg font-semibold">Улучшена Биография!</h3>
               <p class="mt-2 text-sm">Переработали страницу Биографии! Больше деталей о моём пути и планах. Проверь по кнопке "Биография"! 😎</p>
               <p class="mt-3 text-xs">С любовью Mortis32 &lt;3 · 10 сентября 2025</p>
+              <button class="share-btn glass-button mt-3 w-full text-xs" aria-label="Поделиться новостью">
+                <i class="fa-solid fa-share"></i> Поделиться
+              </button>
             </article>
-            <article class="card-hover rounded-2xl p-6">
+            <article class="card-hover rounded-2xl p-6" data-news-title="Редизайн сайта!" data-news-url="https://mortisplay.ru#news">
               <h3 class="text-lg font-semibold">Редизайн сайта!</h3>
               <p class="mt-2 text-sm">Новый дизайн сайта: красивый, уникальный, обновлённый! Оцени и следи за апдейтами! 😎</p>
               <p class="mt-3 text-xs">С любовью Mortis32 &lt;3 · 19 августа 2025</p>
+              <button class="share-btn glass-button mt-3 w-full text-xs" aria-label="Поделиться новостью">
+                <i class="fa-solid fa-share"></i> Поделиться
+              </button>
             </article>
-            <article class="card-hover rounded-2xl p-6">
+            <article class="card-hover rounded-2xl p-6" data-news-title="Форум временно убран" data-news-url="https://mortisplay.ru#news">
               <h3 class="text-lg font-semibold">Форум временно убран</h3>
               <p class="mt-2 text-sm">Спам-боты атаковали форум, поэтому мы его временно убрали. Планируем вернуть в августе с новым дизайном! Вопросы пока в Telegram: <a href="https://t.me/MortisplayQABot" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener" onclick="gtag('event', 'button_click', {'event_category': 'News', 'event_label': 'Forum Telegram'});">MortisplayQABot</a>.</p>
               <p class="mt-3 text-xs">С любовью Mortis32 &lt;3 · 27 июля 2025</p>
+              <button class="share-btn glass-button mt-3 w-full text-xs" aria-label="Поделиться новостью">
+                <i class="fa-solid fa-share"></i> Поделиться
+              </button>
             </article>
-            <article class="card-hover rounded-2xl p-6">
+            <article class="card-hover rounded-2xl p-6" data-news-title="Новые мемы!" data-news-url="https://mortisplay.ru#news">
               <h3 class="text-lg font-semibold">Новые мемы!</h3>
               <p class="mt-2 text-sm">Добавили 7 новых мемов! Проверь на сайте и удиви друзей! 😋</p>
               <p class="mt-3 text-xs">С любовью Mortis32 &lt;3 · 16 июля 2025</p>
+              <button class="share-btn glass-button mt-3 w-full text-xs" aria-label="Поделиться новостью">
+                <i class="fa-solid fa-share"></i> Поделиться
+              </button>
             </article>
           </div>
         </div>
@@ -744,6 +774,40 @@
           }
         }
       }
+    };
+
+    // ФИКС: Функция шаринга новостей
+    const setupNewsSharing = () => {
+      const shareBtns = document.querySelectorAll('.share-btn');
+      shareBtns.forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const article = e.target.closest('article');
+          const title = article.dataset.newsTitle;
+          const url = article.dataset.newsUrl || window.location.href;
+          const text = `Читай новость от Mortis Play: ${title} ${url}`;
+
+          if (navigator.share) {
+            try {
+              await navigator.share({ title, text, url });
+              gtag('event', 'news_share', { event_category: 'engagement', event_label: 'web_share' });
+            } catch (err) {
+              console.log('Share failed:', err);
+              fallbackCopy(text);
+            }
+          } else {
+            fallbackCopy(text);
+          }
+        });
+      });
+
+      const fallbackCopy = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+          showNotification('Ссылка скопирована! Поделись с друзьями 😎', document.querySelector('#performanceNotification') || document.body.appendChild(document.createElement('div')));
+          gtag('event', 'news_share', { event_category: 'engagement', event_label: 'clipboard' });
+        }).catch(() => {
+          prompt('Скопируй ссылку:', text);
+        });
+      };
     };
 
     // Управление темой
@@ -1098,7 +1162,7 @@
       sections.forEach(section => io.observe(section));
     };
 
-    // Настройка анимации появления
+    // ФИКС: Настройка анимации появления (добавлен fallback для мобилки)
     const setupFadeIn = () => {
       const io = new IntersectionObserver(
         (entries) => {
@@ -1117,6 +1181,12 @@
             io.observe(el);
           }
         });
+        // ФИКС: Fallback для мобилки — force is-visible если IO не сработал (после 1s)
+        if (window.innerWidth <= 640) {
+          setTimeout(() => {
+            fadeElements.forEach(el => el.classList.add('is-visible'));
+          }, 1000);
+        }
       } else {
         logAction('Элементы для fade-in не найдены');
       }
@@ -1232,6 +1302,7 @@
       setupSectionTracking();
       setupBackgroundParticles();
       setupParticleToggle();
+      setupNewsSharing(); // ФИКС: Инициализация шаринга
     };
 
     // Запуск приложения
