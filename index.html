@@ -65,6 +65,8 @@
     .video-filter { transition: all 0.3s ease; }
     .video-filter.active { background: rgba(99, 102, 241, 0.3); transform: scale(1.05); }
     .dark .video-filter.active { background: rgba(99, 102, 241, 0.5); }
+    /* ИЗМЕНЕНИЕ: Стиль для неактивной категории (тизер) */
+    .video-filter.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
     .video-card { transition: opacity 0.3s ease, transform 0.3s ease; }
     .video-card.hidden { opacity: 0; transform: scale(0.95); display: none; }
     body { overscroll-behavior: none; }
@@ -499,6 +501,7 @@
         </div>
       </section>
 
+      <!-- ИЗМЕНЕНИЕ: Раздел Видео с новой категорией -->
       <section id="videos" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="text-center text-2xl md:text-3xl font-bold">Мои видео</h2>
@@ -506,6 +509,8 @@
             <button class="video-filter glass-button" data-filter="all" aria-label="Показать все видео">Все</button>
             <button class="video-filter glass-button" data-filter="streams" aria-label="Показать стримы">Стримы</button>
             <button class="video-filter glass-button" data-filter="fun" aria-label="Показать угарные видео">Угар</button>
+            <!-- ИЗМЕНЕНИЕ: Новая неактивная категория как тизер -->
+            <button class="video-filter glass-button disabled" data-filter="mortisx" aria-label="MortisX–XI (Скоро, намек на будущий контент)">MortisX–XI</button>
           </div>
           <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <template id="ytCardTpl">
@@ -1117,7 +1122,7 @@
       }
     };
 
-    // Инициализация видео с категоризацией
+    // ИЗМЕНЕНИЕ: Инициализация видео с добавлением 5 новых в 'fun' и поддержкой 'mortisx'
     const setupVideos = () => {
       const tpl = document.getElementById('ytCardTpl');
       const grid = document.querySelector('#videos .mt-8.grid');
@@ -1127,7 +1132,13 @@
           { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO', category: 'fun' },
           { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)', category: 'streams' },
           { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!', category: 'fun' },
-          { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK', category: 'streams' }
+          { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK', category: 'streams' },
+          // ИЗМЕНЕНИЕ: 5 новых видео в категории 'fun' (Угар) — плейсхолдеры, замени на реальные
+          { src: 'https://rutube.ru/play/embed/3de912692f3520aad3ccf648b30f0247', title: 'ВРЕМЯ БЕЗУМИЙ В РАБОТЕ!!!', category: 'fun' },
+          { src: 'https://rutube.ru/play/embed/1cb1388800c0a573bb4c6942bc12c752', title: 'УМНЫЙ НО КОСОЙ', category: 'fun' },
+          { src: 'https://rutube.ru/play/embed/8e2f7da5ca6582d3b66ea73d39b53130', title: 'СПЕЦ ВЫПУСК!!! СМЕРТЕЛЬНЫЙ КОНТЕНТ!', category: 'fun' },
+          { src: 'https://rutube.ru/play/embed/f50e8d94d8228d9a8ffce5e37773a8e2', title: 'НОВЫЕ ВРЕМЕНА НАЧИНАЮТСЯ С РЕЛАКСА', category: 'fun' },
+          { src: 'https://rutube.ru/play/embed/522c3d4a29970e19b74f8cdfa9e2eb3e', title: 'СПЕЦ ВЫПУСК! ЧАС РАБОТЫ В ЛЕТАЛ КОМПАНИ!', category: 'fun' }
         ];
         videoData.forEach((v) => {
           const node = tpl.content.cloneNode(true);
@@ -1150,22 +1161,30 @@
 
         const filterButtons = document.querySelectorAll('.video-filter');
         filterButtons.forEach(button => {
-          button.addEventListener('click', () => {
-            const filter = button.dataset.filter;
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            const cards = document.querySelectorAll('.video-card');
-            cards.forEach(card => {
-              if (filter === 'all' || card.dataset.category === filter) {
-                card.classList.remove('hidden');
-              } else {
-                card.classList.add('hidden');
-              }
+          // ИЗМЕНЕНИЕ: Пропускаем обработку для disabled кнопок (неактивная категория)
+          if (button.classList.contains('disabled')) {
+            button.addEventListener('click', (e) => {
+              e.preventDefault(); // Блокируем клик
+              gtag('event', 'video_filter_teaser', { event_category: 'engagement', event_label: 'mortisx' });
             });
-            gtag('event', 'video_filter', { event_category: 'engagement', event_label: filter });
-          });
+          } else {
+            button.addEventListener('click', () => {
+              const filter = button.dataset.filter;
+              filterButtons.forEach(btn => btn.classList.remove('active'));
+              button.classList.add('active');
+              const cards = document.querySelectorAll('.video-card');
+              cards.forEach(card => {
+                if (filter === 'all' || card.dataset.category === filter) {
+                  card.classList.remove('hidden');
+                } else {
+                  card.classList.add('hidden');
+                }
+              });
+              gtag('event', 'video_filter', { event_category: 'engagement', event_label: filter });
+            });
+          }
         });
-        filterButtons[0].classList.add('active');
+        filterButtons[0].classList.add('active'); // Активируем "Все" по умолчанию
       }
     };
 
