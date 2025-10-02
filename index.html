@@ -504,7 +504,7 @@
             <button class="video-filter glass-button disabled" data-filter="mortisx" aria-label="MortisX–XI (Скоро, намек на будущий контент)">MortisX–XI</button>
             <button class="video-filter glass-button" data-filter="blitz" aria-label="Показать БЛИЦ Play">БЛИЦ Play</button>
           </div>
-          <p id="category-desc" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300 hidden">БЛИЦ Play: это подкаст</p>
+          <p id="category-desc" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300 hidden">БЛИЦ Play: это подкаст в котором я рассказываю про изменения на канале и не только)</p>
           <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <template id="ytCardTpl">
               <div class="video-card card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-4">
@@ -1121,8 +1121,7 @@
           { src: 'https://rutube.ru/play/embed/2c266a516ea35150036cd6298ef6db68', title: 'ВРОДЕ ОБНОВА ТОП НО НЕ СОВСЕМ...', category: 'fun' },
           { src: 'https://rutube.ru/play/embed/5b51c9a3e15b4d75bfb08783c90bcc85', title: 'БЛИЦ Play: КОНЕЦ ГОДА, ЧТО ДАЛЬШЕ?', category: 'blitz' },
           { src: 'https://rutube.ru/play/embed/171e2dae98076c82e5c49f3dfda7bb33', title: 'БЛИЦ Play: ПОСЛЕЖНИЙ РУБЕЖ!', category: 'blitz' },
-          { src: 'https://rutube.ru/play/embed/0f958e52a3a7023734bfa562186a9bce', title: 'БЛИЦ Play: ВСЕ? ВСЕ.', category: 'blitz' },
-          { src: 'invalid_src_for_fallback', title: 'БЛИЦ Play Эпизод 4', category: 'blitz' } /* Здесь onerror покажет fallback.jpg */
+          { src: 'https://rutube.ru/play/embed/0f958e52a3a7023734bfa562186a9bce', title: 'БЛИЦ Play: ВСЕ? ВСЕ.', category: 'blitz' }
         ];
         videoData.forEach((v) => {
           const node = tpl.content.cloneNode(true);
