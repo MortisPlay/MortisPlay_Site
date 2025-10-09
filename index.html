@@ -44,8 +44,6 @@
     .dark .card-hover:hover { box-shadow: 0 12px 24px rgb(0 0 0 / .3), 0 0 12px rgba(99, 102, 241, 0.6); }
     .fade-in { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
     .fade-in.is-visible { opacity: 1; transform: none; }
-    /* ФИКС: Force visibility для всех fade-in, чтобы избежать пропажи (на случай IO глюков) */
-    .fade-in { opacity: 1 !important; transform: none !important; } /* Удалить !important после теста, если OK */
     .glass { backdrop-filter: saturate(160%) blur(8px); background: linear-gradient(180deg, rgb(255 255 255 / .7), rgb(255 255 255 / .55)); }
     .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .7), rgb(17 24 39 / .55)); }
     #loader { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6366f1, #ec4899); }
@@ -70,6 +68,13 @@
     .video-filter.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
     .video-card { transition: opacity 0.3s ease, transform 0.3s ease; }
     .video-card.hidden { opacity: 0; transform: scale(0.95); display: none; }
+    .video-card:not(.hidden) { animation: fadeIn 0.3s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    .pagination-button { transition: all 0.3s ease; }
+    .pagination-button:hover { transform: scale(1.05); }
+    .pagination-button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .notification { transition: opacity 0.3s ease, transform 0.3s ease; }
+    .notification.show { opacity: 1; transform: translateY(0); }
     body { overscroll-behavior: none; }
     main { overflow: auto; min-height: 100vh; }
     .low-performance .card-hover { transition: none; }
@@ -498,12 +503,12 @@
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="text-center text-2xl md:text-3xl font-bold">Мои видео</h2>
           <div class="mt-6 flex justify-center gap-3 flex-wrap">
-            <button class="video-filter glass-button" data-filter="all" aria-label="Показать все видео">Все</button>
-            <button class="video-filter glass-button" data-filter="streams" aria-label="Показать стримы">Стримы</button>
-            <button class="video-filter glass-button" data-filter="fun" aria-label="Показать угарные видео">Угар</button>
-            <button class="video-filter glass-button" data-filter="blitz" aria-label="Показать БЛИЦ Play">БЛИЦ Play</button>
+            <button class="video-filter glass-button" data-filter="all" aria-label="Показать все видео" aria-pressed="true">Все</button>
+            <button class="video-filter glass-button" data-filter="streams" aria-label="Показать стримы" aria-pressed="false">Стримы</button>
+            <button class="video-filter glass-button" data-filter="fun" aria-label="Показать угарные видео" aria-pressed="false">Угар</button>
+            <button class="video-filter glass-button" data-filter="blitz" aria-label="Показать БЛИЦ Play" aria-pressed="false">БЛИЦ Play</button>
           </div>
-          <p id="category-desc" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300 hidden">БЛИЦ Play: это подкаст в котором я рассказываю про изменения на канале и не только.</p>
+          <p id="category-desc" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300">Все видео от Mortis Play: стримы, мемы и подкасты!</p>
           <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <template id="ytCardTpl">
               <div class="video-card card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-4">
@@ -516,6 +521,9 @@
             </template>
           </div>
           <div class="mt-6 text-center">
+            <button id="loadMoreVideos" class="glass-button pagination-button" aria-label="Загрузить ещё видео">
+              <i class="fa-solid fa-plus"></i> Загрузить ещё
+            </button>
             <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button" rel="noopener" aria-label="Смотреть все видео на YouTube">
               <i class="fa-brands fa-youtube"></i> Смотреть все видео
             </a>
@@ -603,7 +611,6 @@
         </div>
       </section>
 
-      <!-- ФИКС: Вернул раздел "Настройки" -->
       <section id="settings" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="text-center text-2xl md:text-3xl font-bold">Настройки</h2>
@@ -612,21 +619,21 @@
             <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
               <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Производительность</h3>
               <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="lowPerformanceToggle" class="rounded text-indigo-600 focus:ring-indigo-500">
+                <input type="checkbox" id="lowPerformanceToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить лёгкий режим" aria-describedby="lowPerformanceDesc">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Лёгкий режим (для слабых устройств)</span>
               </label>
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает анимации, эффекты и видео для плавной работы на слабых телефонах.</p>
+              <p id="lowPerformanceDesc" class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает анимации, эффекты и видео для плавной работы на слабых телефонах.</p>
               <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="disableAnimationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500">
+                <input type="checkbox" id="disableAnimationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить анимации" aria-describedby="disableAnimationsDesc">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Отключить анимации</span>
               </label>
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает только анимации для улучшения производительности.</p>
+              <p id="disableAnimationsDesc" class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает только анимации для улучшения производительности.</p>
               <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="disableParticlesToggle" class="rounded text-indigo-600 focus:ring-indigo-500">
+                <input type="checkbox" id="disableParticlesToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить фоновые частицы" aria-describedby="disableParticlesDesc">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Отключить фоновые частицы</span>
               </label>
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает фоновые частицы для повышения производительности.</p>
-              <div id="performanceNotification" class="notification" role="alert" aria-live="polite">
+              <p id="disableParticlesDesc" class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает фоновые частицы для повышения производительности.</p>
+              <div id="performanceNotification" class="notification" role="alert" aria-live="assertive">
                 <span></span>
                 <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
               </div>
@@ -642,19 +649,24 @@
                 </select>
               </label>
               <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="highContrastToggle" class="rounded text-indigo-600 focus:ring-indigo-500">
+                <input type="checkbox" id="highContrastToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить высокую контрастность" aria-describedby="highContrastDesc">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Высокая контрастность</span>
               </label>
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Увеличивает контрастность для лучшей читаемости.</p>
+              <p id="highContrastDesc" class="mt-2 text-xs text-slate-500 dark:text-slate-400">Увеличивает контрастность для лучшей читаемости.</p>
               <label class="mt-3 flex flex-col gap-2">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Размер шрифта:</span>
-                <input type="range" id="fontSizeSlider" min="50" max="200" value="100" class="w-full">
+                <input type="range" id="fontSizeSlider" min="50" max="200" value="100" class="w-full" aria-label="Регулировка размера шрифта" aria-valuemin="50" aria-valuemax="200" aria-valuenow="100">
               </label>
               <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Регулируй размер шрифта для удобства чтения (50%–200%).</p>
-              <div id="appearanceNotification" class="notification" role="alert" aria-live="polite">
+              <div id="appearanceNotification" class="notification" role="alert" aria-live="assertive">
                 <span></span>
                 <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
               </div>
+            </div>
+            <div class="mt-6 text-center">
+              <button id="resetSettings" class="glass-button" aria-label="Сбросить настройки">
+                <i class="fa-solid fa-rotate-left"></i> Сбросить настройки
+              </button>
             </div>
           </div>
         </div>
@@ -697,530 +709,503 @@
       </footer>
     </main>
 
-  <script nonce="${nonce}">
-    const logAction = (message) => {
-      console.log(message);
+    <script nonce="${nonce}">
+  const logAction = (message) => console.log(message);
+  const debounce = (func, wait) => {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
     };
-
-    const debounce = (func, wait) => {
-      let timeout;
-      return (...args) => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-      };
-    };
-
-    const showNotification = (message, notificationElement) => {
-      if (notificationElement) {
-        const span = notificationElement.querySelector('span');
-        if (span) {
-          document.querySelectorAll('.notification.show').forEach(el => {
-            el.classList.remove('show');
-          });
-          span.textContent = message;
-          notificationElement.classList.add('show');
-          gtag('event', 'notification_shown', { event_category: 'settings', event_label: message });
-          const timeout = setTimeout(() => {
+  };
+  let lastNotificationTime = 0;
+  const showNotification = (message, notificationElement) => {
+    const now = Date.now();
+    if (now - lastNotificationTime < 10000) return;
+    lastNotificationTime = now;
+    if (notificationElement) {
+      const span = notificationElement.querySelector('span');
+      if (span) {
+        document.querySelectorAll('.notification.show').forEach(el => el.classList.remove('show'));
+        span.textContent = message;
+        notificationElement.classList.add('show');
+        gtag('event', 'notification_shown', { event_category: 'settings', event_label: message });
+        const timeout = setTimeout(() => {
+          notificationElement.classList.remove('show');
+        }, 5000);
+        const closeButton = notificationElement.querySelector('button');
+        if (closeButton) {
+          closeButton.addEventListener('click', () => {
             notificationElement.classList.remove('show');
-          }, 5000);
-          const closeButton = notificationElement.querySelector('button');
-          if (closeButton) {
-            closeButton.addEventListener('click', () => {
-              notificationElement.classList.remove('show');
-              clearTimeout(timeout);
-              gtag('event', 'notification_click', { event_category: 'settings', event_label: 'dismiss_notification' });
-              logAction('Уведомление закрыто');
-            }, { once: true });
-          }
+            clearTimeout(timeout);
+            gtag('event', 'notification_dismiss', { event_category: 'settings', event_label: 'dismiss_notification' });
+            logAction('Уведомление закрыто');
+          }, { once: true });
         }
       }
-    };
+    }
+  };
 
-    const root = document.documentElement;
-    const setTheme = (theme) => {
-      logAction(`Тема установлена: ${theme}`);
-      localStorage.setItem('theme', theme);
-      root.classList.toggle('dark', theme === 'dark');
-      const themeToggle = document.getElementById('themeToggle');
-      if (themeToggle) {
-        const themeIcon = themeToggle.querySelector('i');
-        const themeText = themeToggle.querySelector('span');
-        if (themeIcon && themeText) {
-          themeIcon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-          themeText.textContent = theme === 'dark' ? 'Тёмная' : 'Светлая';
-        }
+  const root = document.documentElement;
+
+  const setTheme = (theme, isPreview = false) => {
+    logAction(`Тема установлена: ${theme}${isPreview ? ' (предпросмотр)' : ''}`);
+    if (!isPreview) localStorage.setItem('theme', theme);
+    root.classList.toggle('dark', theme === 'dark');
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+      const themeIcon = themeToggle.querySelector('i');
+      const themeText = themeToggle.querySelector('span');
+      if (themeIcon && themeText) {
+        themeIcon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        themeText.textContent = theme === 'dark' ? 'Тёмная' : 'Светлая';
       }
-      gtag('event', 'theme_toggle', { event_category: 'engagement', event_label: theme });
-    };
+    }
+    if (!isPreview) gtag('event', 'theme_toggle', { event_category: 'engagement', event_label: theme });
+  };
 
-    const setupThemeParticles = () => {
-      const canvas = document.getElementById('particleCanvas');
-      const themeToggle = document.getElementById('themeToggle');
-      if (!canvas || !themeToggle) return;
+  const setupVideos = () => {
+    const tpl = document.getElementById('ytCardTpl');
+    const grid = document.querySelector('#videos .mt-8.grid');
+    const loadMoreButton = document.getElementById('loadMoreVideos');
+    if (!tpl || !grid || !loadMoreButton) return;
 
-      const ctx = canvas.getContext('2d');
-      canvas.width = themeToggle.offsetWidth;
-      canvas.height = themeToggle.offsetHeight;
+    const videoData = [
+      { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning', category: 'fun' },
+      { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO', category: 'fun' },
+      { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)', category: 'streams' },
+      { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!', category: 'fun' },
+      { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK', category: 'streams' },
+      { src: 'https://rutube.ru/play/embed/3de912692f3520aad3ccf648b30f0247', title: 'ВРЕМЯ БЕЗУМИЙ В РАБОТЕ!!!', category: 'fun' },
+      { src: 'https://rutube.ru/play/embed/1cb1388800c0a573bb4c6942bc12c752', title: 'УМНЫЙ НО КОСОЙ', category: 'fun' },
+      { src: 'https://rutube.ru/play/embed/8e2f7da5ca6582d3b66ea73d39b53130', title: 'СПЕЦ ВЫПУСК!!! СМЕРТЕЛЬНЫЙ КОНТЕНТ!', category: 'fun' },
+      { src: 'https://rutube.ru/play/embed/f50e8d94d8228d9a8ffce5e37773a8e2', title: 'НОВЫЕ ВРЕМЕНА НАЧИНАЮТСЯ С РЕЛАКСА', category: 'fun' },
+      { src: 'https://rutube.ru/play/embed/522c3d4a29970e19b74f8cdfa9e2eb3e', title: 'СПЕЦ ВЫПУСК! ЧАС РАБОТЫ В ЛЕТАЛ КОМПАНИ!', category: 'fun' },
+      { src: 'https://rutube.ru/play/embed/2c266a516ea35150036cd6298ef6db68', title: 'ВРОДЕ ОБНОВА ТОП НО НЕ СОВСЕМ...', category: 'fun' },
+      { src: 'https://rutube.ru/play/embed/36faf3fd0b2c5dac09f907297925db41', title: 'НОВАЯ ВЕБКА, НОВЫЕ ГОРИЗОНТЫ!', category: 'fun' },
+      { src: 'https://rutube.ru/play/embed/5b51c9a3e15b4d75bfb08783c90bcc85', title: 'БЛИЦ Play: КОНЕЦ ГОДА, ЧТО ДАЛЬШЕ?', category: 'blitz' },
+      { src: 'https://rutube.ru/play/embed/171e2dae98076c82e5c49f3dfda7bb33', title: 'БЛИЦ Play: ПОСЛЕЖНИЙ РУБЕЖ!', category: 'blitz' },
+      { src: 'https://rutube.ru/play/embed/0f958e52a3a7023734bfa562186a9bce', title: 'БЛИЦ Play: ВСЕ? ВСЕ.', category: 'blitz' }
+    ];
 
-      const particles = [];
-      const createParticle = (x, y) => {
-        return {
-          x, y,
-          vx: (Math.random() - 0.5) * 3,
-          vy: (Math.random() - 0.5) * 3,
-          size: Math.random() * 2 + 1,
-          life: 15
-        };
-      };
+    let currentPage = 1;
+    const videosPerPage = 4;
 
-      const animateParticles = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach((p, i) => {
-          p.x += p.vx;
-          p.y += p.vy;
-          p.life--;
-          if (p.life <= 0) {
-            particles.splice(i, 1);
-            return;
-          }
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = root.classList.contains('dark') ? '#e5e7eb' : '#1f2937';
-          ctx.fill();
-        });
-        if (particles.length > 0) {
-          requestAnimationFrame(animateParticles);
-        }
-      };
-
-      themeToggle.addEventListener('click', (e) => {
-        const rect = themeToggle.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        for (let i = 0; i < 5; i++) {
-          particles.push(createParticle(x, y));
-        }
-        if (particles.length > 0) {
-          animateParticles();
+    const renderVideos = (videos, append = false) => {
+      if (!append) grid.innerHTML = '';
+      videos.forEach((v) => {
+        const node = tpl.content.cloneNode(true);
+        const iframe = node.querySelector('iframe');
+        const title = node.querySelector('p');
+        const card = node.querySelector('.video-card');
+        const fallbackImg = node.querySelector('img');
+        if (iframe && title && card && fallbackImg) {
+          iframe.src = v.src;
+          iframe.setAttribute('title', `Видео: ${v.title}`);
+          iframe.onerror = () => {
+            iframe.classList.add('hidden');
+            fallbackImg.classList.remove('hidden');
+            logAction(`Ошибка загрузки видео: ${v.title}`);
+          };
+          title.textContent = v.title;
+          card.dataset.category = v.category;
+          grid.appendChild(node);
         }
       });
+      loadMoreButton.disabled = currentPage * videosPerPage >= videoData.length;
     };
 
-    const setupBackgroundParticles = () => {
-      const canvas = document.getElementById('backgroundParticles');
-      if (!canvas) return;
+    const loadMoreVideos = () => {
+      currentPage++;
+      const start = (currentPage - 1) * videosPerPage;
+      const end = start + videosPerPage;
+      const videosToShow = videoData.slice(start, end);
+      renderVideos(videosToShow, true);
+      gtag('event', 'load_more_videos', { event_category: 'videos', event_label: `page_${currentPage}` });
+      logAction(`Загружено ещё ${videosToShow.length} видео`);
+    };
 
-      const ctx = canvas.getContext('2d');
-      let particles = [];
+    renderVideos(videoData.slice(0, videosPerPage));
 
-      const resizeCanvas = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      };
-      resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
+    loadMoreButton.addEventListener('click', loadMoreVideos);
 
-      const createParticle = () => {
-        return {
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 2,
-          vy: (Math.random() - 0.5) * 2,
-          size: Math.random() * 3 + 1,
-          life: Math.random() * 100 + 50,
-          opacity: Math.random() * 0.5 + 0.2
-        };
-      };
+    const filterButtons = document.querySelectorAll('.video-filter');
+    const categoryDesc = document.getElementById('category-desc');
+    const categoryDescriptions = {
+      all: 'Все видео от Mortis Play: стримы, мемы и подкасты!',
+      streams: 'Живые трансляции с играми и общением.',
+      fun: 'Смешные моменты, мемы и угарные ситуации!',
+      blitz: 'БЛИЦ Play: подкасты с новостями и обновлениями канала.'
+    };
 
-      const animateBackgroundParticles = () => {
-        if (root.classList.contains('no-particles') || root.classList.contains('low-performance') || root.classList.contains('no-animations')) {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          return;
-        }
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        if (particles.length < 50 && Math.random() > 0.5) {
-          particles.push(createParticle());
-        }
-        particles.forEach((p, i) => {
-          p.x += p.vx;
-          p.y += p.vy;
-          p.life--;
-          if (p.life <= 0 || p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height) {
-            particles.splice(i, 1);
-            return;
-          }
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = root.classList.contains('dark') ? `rgba(165, 180, 252, ${p.opacity})` : `rgba(99, 102, 241, ${p.opacity})`;
-          ctx.fill();
+    filterButtons.forEach(button => {
+      if (button.classList.contains('disabled')) {
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          gtag('event', 'video_filter_teaser', { event_category: 'engagement', event_label: 'mortisx' });
         });
-        requestAnimationFrame(animateBackgroundParticles);
-      };
-
-      if (!root.classList.contains('no-particles')) {
-        animateBackgroundParticles();
-      }
-    };
-
-    const setupParticleToggle = () => {
-      const toggle = document.getElementById('disableParticlesToggle');
-      const notification = document.getElementById('performanceNotification');
-      if (toggle && notification) {
-        const savedParticles = localStorage.getItem('disableParticles') === 'true';
-        toggle.checked = savedParticles;
-        root.classList.toggle('no-particles', savedParticles);
-        toggle.addEventListener('change', debounce(() => {
-          const disableParticles = toggle.checked;
-          localStorage.setItem('disableParticles', disableParticles);
-          root.classList.toggle('no-particles', disableParticles);
-          showNotification(disableParticles ? 'Фоновые частицы отключены' : 'Фоновые частицы включены', notification);
-          gtag('event', 'particles_toggle', { event_category: 'settings', event_label: disableParticles ? 'off' : 'on' });
-          logAction(`Фоновые частицы: ${disableParticles ? 'Отключены' : 'Включены'}`);
-        }, 300));
-        toggle.addEventListener('mouseenter', () => {
-          showNotification('Отключите фоновые частицы для улучшения производительности', notification);
-        });
-      }
-    };
-
-    const initializeTheme = () => {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme && savedTheme !== 'auto') {
-        setTheme(savedTheme);
-      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        setTheme('dark');
       } else {
-        setTheme('light');
+        button.addEventListener('click', () => {
+          const filter = button.dataset.filter;
+          filterButtons.forEach(btn => btn.setAttribute('aria-pressed', 'false'));
+          button.setAttribute('aria-pressed', 'true');
+          filterButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          const filteredVideos = filter === 'all' ? videoData : videoData.filter(v => v.category === filter);
+          currentPage = 1;
+          renderVideos(filteredVideos.slice(0, videosPerPage));
+          categoryDesc.textContent = categoryDescriptions[filter] || '';
+          categoryDesc.classList.toggle('hidden', !categoryDescriptions[filter]);
+          gtag('event', 'video_filter', { event_category: 'engagement', event_label: filter });
+          logAction(`Фильтр видео: ${filter}`);
+        });
+        button.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            button.click();
+          }
+        });
       }
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (localStorage.getItem('theme') === 'auto') {
-          setTheme(e.matches ? 'dark' : 'light');
-        }
-      });
-      const themeToggle = document.getElementById('themeToggle');
-      if (themeToggle) {
-        themeToggle.addEventListener('click', debounce(() => {
-          const currentTheme = localStorage.getItem('theme') || 'light';
-          setTheme(currentTheme === 'light' ? 'dark' : 'light');
-        }, 300));
-      }
-      setupThemeParticles();
-    };
+    });
 
-    const setupThemeSelect = () => {
-      const themeSelect = document.getElementById('themeSelect');
-      if (themeSelect) {
-        const savedTheme = localStorage.getItem('theme') || 'auto';
-        themeSelect.value = savedTheme;
-        setTheme(savedTheme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : savedTheme);
-        themeSelect.addEventListener('change', () => {
-          const theme = themeSelect.value;
-          setTheme(theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : theme);
+    document.querySelector('.video-filter[data-filter="all"]').click();
+  };
+
+  const setupThemeSelect = () => {
+    const themeSelect = document.getElementById('themeSelect');
+    if (themeSelect) {
+      const savedTheme = localStorage.getItem('theme') || 'auto';
+      themeSelect.value = savedTheme;
+      setTheme(savedTheme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : savedTheme);
+      let previewTimeout;
+      themeSelect.addEventListener('change', () => {
+        const theme = themeSelect.value;
+        const effectiveTheme = theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : theme;
+        clearTimeout(previewTimeout);
+        setTheme(effectiveTheme, true);
+        showNotification(`Предпросмотр темы: ${theme === 'auto' ? 'Авто' : theme === 'light' ? 'Светлая' : 'Тёмная'}`, document.getElementById('appearanceNotification'));
+        previewTimeout = setTimeout(() => {
+          setTheme(effectiveTheme);
           showNotification(`Тема: ${theme === 'auto' ? 'Авто' : theme === 'light' ? 'Светлая' : 'Тёмная'}`, document.getElementById('appearanceNotification'));
           gtag('event', 'theme_select', { event_category: 'settings', event_label: theme });
           logAction(`Тема выбрана: ${theme}`);
-        });
-        themeSelect.addEventListener('mouseenter', () => {
-          showNotification('Выберите тему сайта', document.getElementById('appearanceNotification'));
-        });
-      }
+        }, 2000);
+      });
+    }
+  };
+
+  const setupPerformance = () => {
+    const toggle = document.getElementById('lowPerformanceToggle');
+    const notification = document.getElementById('performanceNotification');
+    if (toggle && notification) {
+      const savedMode = localStorage.getItem('lowPerformance') === 'true';
+      toggle.checked = savedMode;
+      root.classList.toggle('low-performance', savedMode);
+      toggle.addEventListener('change', debounce(() => {
+        const isLowPerformance = toggle.checked;
+        localStorage.setItem('lowPerformance', isLowPerformance);
+        root.classList.toggle('low-performance', isLowPerformance);
+        showNotification(isLowPerformance ? 'Лёгкий режим включён' : 'Лёгкий режим выключен', notification);
+        gtag('event', 'performance_toggle', { event_category: 'settings', event_label: isLowPerformance ? 'low' : 'normal' });
+        logAction(`Режим производительности: ${isLowPerformance ? 'Лёгкий' : 'Нормальный'}`);
+      }, 300));
+    }
+  };
+
+  const setupAnimations = () => {
+    const animationsToggle = document.getElementById('disableAnimationsToggle');
+    const notification = document.getElementById('performanceNotification');
+    if (animationsToggle && notification) {
+      const savedAnimations = localStorage.getItem('disableAnimations') === 'true';
+      animationsToggle.checked = savedAnimations;
+      root.classList.toggle('no-animations', savedAnimations);
+      animationsToggle.addEventListener('change', debounce(() => {
+        const disableAnimations = animationsToggle.checked;
+        localStorage.setItem('disableAnimations', disableAnimations);
+        root.classList.toggle('no-animations', disableAnimations);
+        showNotification(disableAnimations ? 'Анимации отключены' : 'Анимации включены', notification);
+        gtag('event', 'animations_toggle', { event_category: 'settings', event_label: disableAnimations ? 'off' : 'on' });
+        logAction(`Анимации: ${disableAnimations ? 'Отключены' : 'Включены'}`);
+      }, 300));
+    }
+  };
+
+  const setupParticleToggle = () => {
+    const toggle = document.getElementById('disableParticlesToggle');
+    const notification = document.getElementById('performanceNotification');
+    if (toggle && notification) {
+      const savedParticles = localStorage.getItem('disableParticles') === 'true';
+      toggle.checked = savedParticles;
+      root.classList.toggle('no-particles', savedParticles);
+      toggle.addEventListener('change', debounce(() => {
+        const disableParticles = toggle.checked;
+        localStorage.setItem('disableParticles', disableParticles);
+        root.classList.toggle('no-particles', disableParticles);
+        showNotification(disableParticles ? 'Фоновые частицы отключены' : 'Фоновые частицы включены', notification);
+        gtag('event', 'particles_toggle', { event_category: 'settings', event_label: disableParticles ? 'off' : 'on' });
+        logAction(`Фоновые частицы: ${disableParticles ? 'Отключены' : 'Включены'}`);
+      }, 300));
+    }
+  };
+
+  const setupFontSize = () => {
+    const slider = document.getElementById('fontSizeSlider');
+    const notification = document.getElementById('appearanceNotification');
+    if (slider && notification) {
+      const savedFontSize = localStorage.getItem('fontSize') || '100';
+      slider.value = savedFontSize;
+      slider.setAttribute('aria-valuenow', savedFontSize);
+      root.style.setProperty('--font-scale', savedFontSize / 100);
+      slider.addEventListener('input', debounce(() => {
+        const fontSize = slider.value;
+        localStorage.setItem('fontSize', fontSize);
+        slider.setAttribute('aria-valuenow', fontSize);
+        root.style.setProperty('--font-scale', fontSize / 100);
+        showNotification(`Размер шрифта: ${fontSize}%`, notification);
+        gtag('event', 'font_size_change', { event_category: 'settings', event_label: fontSize });
+        logAction(`Размер шрифта: ${fontSize}%`);
+      }, 300));
+    }
+  };
+
+  const setupHighContrast = () => {
+    const toggle = document.getElementById('highContrastToggle');
+    const notification = document.getElementById('appearanceNotification');
+    if (toggle && notification) {
+      const savedContrast = localStorage.getItem('highContrast') === 'true';
+      toggle.checked = savedContrast;
+      root.classList.toggle('high-contrast', savedContrast);
+      toggle.addEventListener('change', debounce(() => {
+        const highContrast = toggle.checked;
+        localStorage.setItem('highContrast', highContrast);
+        root.classList.toggle('high-contrast', highContrast);
+        showNotification(highContrast ? 'Высокая контрастность включена' : 'Высокая контрастность отключена', notification);
+        gtag('event', 'high_contrast_toggle', { event_category: 'settings', event_label: highContrast ? 'on' : 'off' });
+        logAction(`Контрастность: ${highContrast ? 'Высокая' : 'Нормальная'}`);
+      }, 300));
+    }
+  };
+
+  const setupResetSettings = () => {
+    const resetButton = document.getElementById('resetSettings');
+    const notification = document.getElementById('appearanceNotification');
+    if (resetButton && notification) {
+      resetButton.addEventListener('click', () => {
+        localStorage.removeItem('theme');
+        localStorage.removeItem('lowPerformance');
+        localStorage.removeItem('disableAnimations');
+        localStorage.removeItem('disableParticles');
+        localStorage.removeItem('fontSize');
+        localStorage.removeItem('highContrast');
+        document.getElementById('themeSelect').value = 'auto';
+        document.getElementById('lowPerformanceToggle').checked = false;
+        document.getElementById('disableAnimationsToggle').checked = false;
+        document.getElementById('disableParticlesToggle').checked = false;
+        document.getElementById('fontSizeSlider').value = 100;
+        document.getElementById('fontSizeSlider').setAttribute('aria-valuenow', 100);
+        document.getElementById('highContrastToggle').checked = false;
+        root.classList.remove('dark', 'low-performance', 'no-animations', 'no-particles', 'high-contrast');
+        root.style.setProperty('--font-scale', 1);
+        const effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        setTheme(effectiveTheme);
+        showNotification('Настройки сброшены', notification);
+        gtag('event', 'reset_settings', { event_category: 'settings', event_label: 'reset' });
+        logAction('Настройки сброшены');
+      });
+    }
+  };
+
+  const setupThemeParticles = () => {
+    const canvas = document.getElementById('particleCanvas');
+    const themeToggle = document.getElementById('themeToggle');
+    if (!canvas || !themeToggle) return;
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = themeToggle.offsetWidth;
+    canvas.height = themeToggle.offsetHeight;
+
+    const particles = [];
+    const createParticle = (x, y) => {
+      return {
+        x,
+        y,
+        vx: (Math.random() - 0.5) * 2,
+        vy: (Math.random() - 0.5) * 2,
+        life: Math.random() * 20 + 20,
+        maxLife: Math.random() * 20 + 20
+      };
     };
 
-    const setupPerformance = () => {
-      const toggle = document.getElementById('lowPerformanceToggle');
-      const notification = document.getElementById('performanceNotification');
-      if (toggle && notification) {
-        const savedMode = localStorage.getItem('lowPerformance') === 'true';
-        toggle.checked = savedMode;
-        root.classList.toggle('low-performance', savedMode);
-        toggle.addEventListener('change', debounce(() => {
-          const isLowPerformance = toggle.checked;
-          localStorage.setItem('lowPerformance', isLowPerformance);
-          root.classList.toggle('low-performance', isLowPerformance);
-          showNotification(isLowPerformance ? 'Лёгкий режим включён' : 'Лёгкий режим выключен', notification);
-          gtag('event', 'performance_toggle', { event_category: 'settings', event_label: isLowPerformance ? 'low' : 'normal' });
-          logAction(`Режим производительности: ${isLowPerformance ? 'Лёгкий' : 'Нормальный'}`);
-        }, 300));
-        toggle.addEventListener('mouseenter', () => {
-          showNotification('Включите лёгкий режим для слабых устройств', notification);
-        });
-      }
-    };
-
-    const setupAnimations = () => {
-      const animationsToggle = document.getElementById('disableAnimationsToggle');
-      const notification = document.getElementById('performanceNotification');
-      if (animationsToggle && notification) {
-        const savedAnimations = localStorage.getItem('disableAnimations') === 'true';
-        animationsToggle.checked = savedAnimations;
-        root.classList.toggle('no-animations', savedAnimations);
-        animationsToggle.addEventListener('change', debounce(() => {
-          const disableAnimations = animationsToggle.checked;
-          localStorage.setItem('disableAnimations', disableAnimations);
-          root.classList.toggle('no-animations', disableAnimations);
-          showNotification(disableAnimations ? 'Анимации отключены' : 'Анимации включены', notification);
-          gtag('event', 'animations_toggle', { event_category: 'settings', event_label: disableAnimations ? 'off' : 'on' });
-          logAction(`Анимации: ${disableAnimations ? 'Отключены' : 'Включены'}`);
-        }, 300));
-        animationsToggle.addEventListener('mouseenter', () => {
-          showNotification('Отключите анимации для улучшения производительности', notification);
-        });
-      }
-    };
-
-    const setupFontSize = () => {
-      const slider = document.getElementById('fontSizeSlider');
-      const notification = document.getElementById('appearanceNotification');
-      if (slider && notification) {
-        const savedFontSize = localStorage.getItem('fontSize') || '100';
-        slider.value = savedFontSize;
-        root.style.setProperty('--font-scale', savedFontSize / 100);
-        slider.addEventListener('input', debounce(() => {
-          const fontSize = slider.value;
-          localStorage.setItem('fontSize', fontSize);
-          root.style.setProperty('--font-scale', fontSize / 100);
-          showNotification(`Размер шрифта: ${fontSize}%`, notification);
-          gtag('event', 'font_size_change', { event_category: 'settings', event_label: fontSize });
-          logAction(`Размер шрифта: ${fontSize}%`);
-        }, 300));
-        slider.addEventListener('mouseenter', () => {
-          showNotification('Измените размер шрифта для удобства чтения', notification);
-        });
-      }
-    };
-
-    const setupHighContrast = () => {
-      const toggle = document.getElementById('highContrastToggle');
-      const notification = document.getElementById('appearanceNotification');
-      if (toggle && notification) {
-        const savedContrast = localStorage.getItem('highContrast') === 'true';
-        toggle.checked = savedContrast;
-        root.classList.toggle('high-contrast', savedContrast);
-        toggle.addEventListener('change', debounce(() => {
-          const highContrast = toggle.checked;
-          localStorage.setItem('highContrast', highContrast);
-          root.classList.toggle('high-contrast', highContrast);
-          showNotification(highContrast ? 'Высокая контрастность включена' : 'Высокая контрастность отключена', notification);
-          gtag('event', 'high_contrast_toggle', { event_category: 'settings', event_label: highContrast ? 'on' : 'off' });
-          logAction(`Контрастность: ${highContrast ? 'Высокая' : 'Нормальная'}`);
-        }, 300));
-        toggle.addEventListener('mouseenter', () => {
-          showNotification('Включите высокую контрастность для лучшей читаемости', notification);
-        });
-      }
-    };
-
-    const setupMenu = () => {
-      const toggle = document.getElementById('menuToggle');
-      const close = document.getElementById('closeMenu');
-      const sidebar = document.getElementById('sidebarMenu');
-
-      if (toggle && sidebar) {
-        toggle.addEventListener('click', debounce(() => {
-          sidebar.classList.add('open');
-          toggle.setAttribute('aria-expanded', 'true');
-          gtag('event', 'menu_open', { event_category: 'engagement', event_label: 'mobile_menu' });
-        }, 300));
-      }
-      if (close && sidebar) {
-        close.addEventListener('click', () => {
-          sidebar.classList.remove('open');
-          if (toggle) toggle.setAttribute('aria-expanded', 'false');
-          gtag('event', 'menu_close', { event_category: 'engagement', event_label: 'mobile_menu' });
-        });
-      }
-      document.addEventListener('click', (e) => {
-        if (sidebar && toggle && !sidebar.contains(e.target) && e.target !== toggle) {
-          sidebar.classList.remove('open');
-          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    const updateParticles = () => {
+      if (root.classList.contains('no-particles')) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 1;
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+        } else {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+          ctx.fillStyle = root.classList.contains('dark') ? '#e5e7eb' : '#1f2937';
+          ctx.fill();
         }
       });
-    };
-
-    const setupNavTracking = () => {
-      const navLinks = document.querySelectorAll('nav a');
-      navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-          const section = e.target.getAttribute('href').substring(1);
-          gtag('event', 'nav_click', { event_category: 'navigation', event_label: section });
-        });
-      });
-    };
-
-    const setupButtonTracking = () => {
-      const buttons = document.querySelectorAll('.glass-button');
-      buttons.forEach(button => {
-        button.addEventListener('click', (e) => {
-          const label = e.target.textContent.trim();
-          gtag('event', 'button_click', { event_category: 'engagement', event_label: label });
-        });
-      });
-    };
-
-    const setupSectionTracking = () => {
-      const sections = document.querySelectorAll('section');
-      const io = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const sectionId = entry.target.id;
-              gtag('event', 'section_view', { event_category: 'engagement', event_label: sectionId });
-              io.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.2, rootMargin: '-50px' }
-      );
-      sections.forEach(section => io.observe(section));
-    };
-
-    const setupFadeIn = () => {
-      const io = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && !root.classList.contains('low-performance') && !root.classList.contains('no-animations')) {
-              entry.target.classList.add('is-visible');
-            }
-          });
-        },
-        { threshold: 0.2, rootMargin: '-50px' }
-      );
-      const fadeElements = document.querySelectorAll('.fade-in');
-      if (fadeElements.length > 0) {
-        fadeElements.forEach((el) => {
-          if (el instanceof Element) {
-            io.observe(el);
-          }
-        });
-        if (window.innerWidth <= 640) {
-          setTimeout(() => {
-            fadeElements.forEach(el => el.classList.add('is-visible'));
-          }, 1000);
-        }
-      } else {
-        logAction('Элементы для fade-in не найдены');
+      if (Math.random() < 0.2) {
+        const rect = themeToggle.getBoundingClientRect();
+        particles.push(createParticle(rect.width / 2, rect.height / 2));
       }
+      requestAnimationFrame(updateParticles);
     };
 
-    const setupVideos = () => {
-      const tpl = document.getElementById('ytCardTpl');
-      const grid = document.querySelector('#videos .mt-8.grid');
-      if (tpl && grid) {
-        const videoData = [
-          { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning', category: 'fun' },
-          { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO', category: 'fun' },
-          { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)', category: 'streams' },
-          { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!', category: 'fun' },
-          { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK', category: 'streams' },
-          { src: 'https://rutube.ru/play/embed/3de912692f3520aad3ccf648b30f0247', title: 'ВРЕМЯ БЕЗУМИЙ В РАБОТЕ!!!', category: 'fun' },
-          { src: 'https://rutube.ru/play/embed/1cb1388800c0a573bb4c6942bc12c752', title: 'УМНЫЙ НО КОСОЙ', category: 'fun' },
-          { src: 'https://rutube.ru/play/embed/8e2f7da5ca6582d3b66ea73d39b53130', title: 'СПЕЦ ВЫПУСК!!! СМЕРТЕЛЬНЫЙ КОНТЕНТ!', category: 'fun' },
-          { src: 'https://rutube.ru/play/embed/f50e8d94d8228d9a8ffce5e37773a8e2', title: 'НОВЫЕ ВРЕМЕНА НАЧИНАЮТСЯ С РЕЛАКСА', category: 'fun' },
-          { src: 'https://rutube.ru/play/embed/522c3d4a29970e19b74f8cdfa9e2eb3e', title: 'СПЕЦ ВЫПУСК! ЧАС РАБОТЫ В ЛЕТАЛ КОМПАНИ!', category: 'fun' },
-          { src: 'https://rutube.ru/play/embed/2c266a516ea35150036cd6298ef6db68', title: 'ВРОДЕ ОБНОВА ТОП НО НЕ СОВСЕМ...', category: 'fun' },
-          { src: 'https://rutube.ru/play/embed/36faf3fd0b2c5dac09f907297925db41', title: 'НОВАЯ ВЕБКА, НОВЫЕ ГОРИЗОНТЫ!', category: 'fun' },
-          { src: 'https://rutube.ru/play/embed/5b51c9a3e15b4d75bfb08783c90bcc85', title: 'БЛИЦ Play: КОНЕЦ ГОДА, ЧТО ДАЛЬШЕ?', category: 'blitz' },
-          { src: 'https://rutube.ru/play/embed/171e2dae98076c82e5c49f3dfda7bb33', title: 'БЛИЦ Play: ПОСЛЕЖНИЙ РУБЕЖ!', category: 'blitz' },
-          { src: 'https://rutube.ru/play/embed/0f958e52a3a7023734bfa562186a9bce', title: 'БЛИЦ Play: ВСЕ? ВСЕ.', category: 'blitz' }
-        ];
-        videoData.forEach((v) => {
-          const node = tpl.content.cloneNode(true);
-          const iframe = node.querySelector('iframe');
-          const title = node.querySelector('p');
-          const card = node.querySelector('.video-card');
-          const fallbackImg = node.querySelector('img');
-          if (iframe && title && card && fallbackImg) {
-            iframe.src = v.src;
-            iframe.setAttribute('title', `Видео: ${v.title}`);
-            iframe.onerror = () => {
-              iframe.classList.add('hidden');
-              fallbackImg.classList.remove('hidden');
-            };
-            title.textContent = v.title;
-            card.dataset.category = v.category;
-            grid.appendChild(node);
-          }
-        });
-
-        const filterButtons = document.querySelectorAll('.video-filter');
-        const categoryDesc = document.getElementById('category-desc');
-        filterButtons.forEach(button => {
-          if (button.classList.contains('disabled')) {
-            button.addEventListener('click', (e) => {
-              e.preventDefault();
-              gtag('event', 'video_filter_teaser', { event_category: 'engagement', event_label: 'mortisx' });
-            });
-          } else {
-            button.addEventListener('click', () => {
-              const filter = button.dataset.filter;
-              filterButtons.forEach(btn => btn.classList.remove('active'));
-              button.classList.add('active');
-              const cards = document.querySelectorAll('.video-card');
-              cards.forEach(card => {
-                if (filter === 'all' || card.dataset.category === filter) {
-                  card.classList.remove('hidden');
-                } else {
-                  card.classList.add('hidden');
-                }
-              });
-              if (filter === 'blitz') {
-                categoryDesc.classList.remove('hidden');
-              } else {
-                categoryDesc.classList.add('hidden');
-              }
-              gtag('event', 'video_filter', { event_category: 'engagement', event_label: filter });
-            });
-          }
-        });
-        filterButtons[0].classList.add('active');
+    themeToggle.addEventListener('click', () => {
+      const theme = root.classList.contains('dark') ? 'light' : 'dark';
+      setTheme(theme);
+      particles.length = 0;
+      for (let i = 0; i < 5; i++) {
+        particles.push(createParticle(themeToggle.offsetWidth / 2, themeToggle.offsetHeight / 2));
       }
+    });
+
+    updateParticles();
+  };
+
+  const setupBackgroundParticles = () => {
+    const canvas = document.getElementById('backgroundParticles');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+    const particleCount = 50;
+
+    const createParticle = () => {
+      return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        size: Math.random() * 3 + 1,
+        life: Math.random() * 100 + 100
+      };
     };
 
-    const setupLoader = () => {
-      window.addEventListener('load', () => {
-        logAction('Загрузка завершена');
-        const loader = document.getElementById('loader');
-        const site = document.getElementById('siteContent');
-        if (loader && site) {
-          loader.classList.add('opacity-0', 'transition', 'duration-700');
-          loader.addEventListener('transitionend', () => {
-            loader.style.display = 'none';
-            site.classList.remove('hidden');
-            logAction('Лоадер скрыт');
-          }, { once: true });
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(createParticle());
+    }
+
+    const updateBackgroundParticles = () => {
+      if (root.classList.contains('no-particles')) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 1;
+        if (p.life <= 0 || p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height) {
+          particles.splice(i, 1);
+          particles.push(createParticle());
+        } else {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = root.classList.contains('dark') ? 'rgba(229, 231, 235, 0.5)' : 'rgba(31, 41, 55, 0.5)';
+          ctx.fill();
         }
       });
+      requestAnimationFrame(updateBackgroundParticles);
+    };
 
-      setTimeout(() => {
-        logAction('Таймаут 5с сработал');
-        const loader = document.getElementById('loader');
-        const site = document.getElementById('siteContent');
-        if (loader && site) {
-          loader.style.display = 'none';
-          site.classList.remove('hidden');
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    updateBackgroundParticles();
+  };
+
+  const setupSidebar = () => {
+    const menuToggle = document.getElementById('menuToggle');
+    const closeMenu = document.getElementById('closeMenu');
+    const sidebarMenu = document.getElementById('sidebarMenu');
+    if (menuToggle && closeMenu && sidebarMenu) {
+      menuToggle.addEventListener('click', () => {
+        sidebarMenu.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', sidebarMenu.classList.contains('open'));
+        gtag('event', 'sidebar_toggle', { event_category: 'navigation', event_label: 'open' });
+        logAction('Боковое меню открыто');
+      });
+      closeMenu.addEventListener('click', () => {
+        sidebarMenu.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        gtag('event', 'sidebar_toggle', { event_category: 'navigation', event_label: 'close' });
+        logAction('Боковое меню закрыто');
+      });
+      sidebarMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          sidebarMenu.classList.remove('open');
+          menuToggle.setAttribute('aria-expanded', 'false');
+          gtag('event', 'sidebar_link_click', { event_category: 'navigation', event_label: link.getAttribute('href') });
+          logAction(`Переход по ссылке бокового меню: ${link.getAttribute('href')}`);
+        });
+      });
+    }
+  };
+
+  const setupSmoothScroll = () => {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = anchor.getAttribute('href').substring(1);
+        const target = document.getElementById(targetId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          gtag('event', 'smooth_scroll', { event_category: 'navigation', event_label: targetId });
+          logAction(`Плавная прокрутка к секции: ${targetId}`);
         }
-      }, 5000);
-    };
+      });
+    });
+  };
 
-    const initializeApp = () => {
-      initializeTheme();
-      setupThemeSelect();
-      setupPerformance();
-      setupAnimations();
-      setupFontSize();
-      setupHighContrast();
-      setupMenu();
-      setupFadeIn();
-      setupVideos();
-      setupLoader();
-      setupNavTracking();
-      setupButtonTracking();
-      setupSectionTracking();
-      setupBackgroundParticles();
-      setupParticleToggle();
-    };
+  const setupIntersectionObserver = () => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
 
-    document.addEventListener('DOMContentLoaded', initializeApp);
-  </script>
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+  };
+
+  const init = () => {
+    document.getElementById('loader').remove();
+    document.getElementById('siteContent').classList.remove('hidden');
+    setupVideos();
+    setupThemeSelect();
+    setupPerformance();
+    setupAnimations();
+    setupParticleToggle();
+    setupFontSize();
+    setupHighContrast();
+    setupResetSettings();
+    setupThemeParticles();
+    setupBackgroundParticles();
+    setupSidebar();
+    setupSmoothScroll();
+    setupIntersectionObserver();
+    logAction('Сайт инициализирован');
+  };
+
+  window.addEventListener('load', init);
+</script>
 </body>
 </html>
