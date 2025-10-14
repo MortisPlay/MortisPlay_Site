@@ -502,24 +502,26 @@
       </section>
 
       <section id="profile" class="py-16 fade-in">
-        <div class="mx-auto max-w-7xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Твой профиль</h2>
-          <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Кастомизируй свой вайб и зарабатывай бейджи! 😎</p>
-          <div class="mt-8 max-w-md mx-auto">
-            <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
-              <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Аватар</h3>
-              <img id="userAvatar" src="/assets/fallback.jpg" alt="Аватар пользователя" class="w-24 h-24 rounded-full mx-auto">
-              <input type="file" id="avatarUpload" accept="image/*" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2">
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Загрузи свой аватар (до 1МБ).</p>
-              <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Имя пользователя</h3>
-              <input type="text" id="usernameInput" maxlength="20" placeholder="Введи своё имя" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2 text-sm text-slate-700 dark:text-slate-300">
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Максимум 20 символов.</p>
-              <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Бейджи</h3>
-              <div id="badges" class="flex flex-wrap gap-2"></div>
-            </div>
-          </div>
-        </div>
-      </section>
+  <div class="mx-auto max-w-7xl px-4">
+    <h2 class="text-center text-2xl md:text-3xl font-bold">Твой профиль</h2>
+    <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Кастомизируй свой вайб и зарабатывай бейджи! 😎</p>
+    <div class="mt-8 max-w-md mx-auto">
+      <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
+        <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Аватар</h3>
+        <img id="userAvatar" src="/assets/fallback.jpg" alt="Аватар пользователя" class="w-24 h-24 rounded-full mx-auto">
+        <input type="file" id="avatarUpload" accept="image/*" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2">
+        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Загрузи свой аватар (до 1МБ).</p>
+        <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Имя пользователя</h3>
+        <input type="text" id="usernameInput" maxlength="20" placeholder="Введи своё имя" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2 text-sm text-slate-700 dark:text-slate-300">
+        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Максимум 20 символов.</p>
+        <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Бейджи</h3>
+        <div id="badges" class="flex flex-wrap gap-2"></div>
+        <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Доступные бейджи</h3>
+        <div id="badgeList" class="mt-2 space-y-2"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
       <section id="videos" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
@@ -724,536 +726,581 @@
 
     <script nonce="${nonce}">
   const logAction = (message) => console.log(message);
-  const debounce = (func, wait) => {
-    let timeout;
-    return (...args) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
+const debounce = (func, wait) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
   };
+};
 
-  let lastNotificationTime = 0;
-  const showNotification = (message, notificationElement) => {
-    const now = Date.now();
-    if (now - lastNotificationTime < 10000) return;
-    lastNotificationTime = now;
-    if (notificationElement) {
-      const span = notificationElement.querySelector('span');
-      if (span) {
-        document.querySelectorAll('.notification.show').forEach(el => el.classList.remove('show'));
-        span.textContent = message;
-        notificationElement.classList.add('show');
-        gtag('event', 'notification_shown', { event_category: 'settings', event_label: message });
-        const timeout = setTimeout(() => {
-          notificationElement.classList.remove('show');
-        }, 5000);
-        const closeButton = notificationElement.querySelector('button');
-        if (closeButton) {
-          closeButton.addEventListener('click', () => {
-            notificationElement.classList.remove('show');
-            clearTimeout(timeout);
-            gtag('event', 'notification_dismiss', { event_category: 'settings', event_label: 'dismiss_notification' });
-            logAction('Уведомление закрыто');
-          }, { once: true });
-        }
-      }
-    }
-  };
-
-  const root = document.documentElement;
-
-  const setTheme = (theme, isPreview = false) => {
-    logAction(`Тема установлена: ${theme}${isPreview ? ' (предпросмотр)' : ''}`);
-    if (!isPreview) localStorage.setItem('theme', theme);
-    root.classList.toggle('dark', theme === 'dark');
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-      const themeIcon = themeToggle.querySelector('i');
-      const themeText = themeToggle.querySelector('span');
-      if (themeIcon && themeText) {
-        themeIcon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-        themeText.textContent = theme === 'dark' ? 'Тёмная' : 'Светлая';
-      }
-    }
-    if (!isPreview) gtag('event', 'theme_toggle', { event_category: 'engagement', event_label: theme });
-  };
-
-  const setupThemeToggle = () => {
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-      themeToggle.addEventListener('click', () => {
-        const isDark = root.classList.contains('dark');
-        setTheme(isDark ? 'light' : 'dark');
-      });
-    }
-  };
-
-  const setupThemeSelect = () => {
-    const themeSelect = document.getElementById('themeSelect');
-    if (themeSelect) {
-      const savedTheme = localStorage.getItem('theme') || 'auto';
-      themeSelect.value = savedTheme;
-      setTheme(savedTheme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : savedTheme);
-      let previewTimeout;
-      themeSelect.addEventListener('change', () => {
-        const theme = themeSelect.value;
-        const effectiveTheme = theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : theme;
-        clearTimeout(previewTimeout);
-        setTheme(effectiveTheme, true);
-        showNotification(`Предпросмотр темы: ${theme === 'auto' ? 'Авто' : theme === 'light' ? 'Светлая' : 'Тёмная'}`, document.getElementById('appearanceNotification'));
-        previewTimeout = setTimeout(() => {
-          setTheme(effectiveTheme);
-          showNotification(`Тема: ${theme === 'auto' ? 'Авто' : theme === 'light' ? 'Светлая' : 'Тёмная'}`, document.getElementById('appearanceNotification'));
-          gtag('event', 'theme_select', { event_category: 'settings', event_label: theme });
-          logAction(`Тема выбрана: ${theme}`);
-        }, 2000);
-      });
-    }
-  };
-
-  const setupPerformance = () => {
-    const toggle = document.getElementById('lowPerformanceToggle');
-    const notification = document.getElementById('performanceNotification');
-    if (toggle && notification) {
-      const savedMode = localStorage.getItem('lowPerformance') === 'true';
-      toggle.checked = savedMode;
-      root.classList.toggle('low-performance', savedMode);
-      toggle.addEventListener('change', debounce(() => {
-        const isLowPerformance = toggle.checked;
-        localStorage.setItem('lowPerformance', isLowPerformance);
-        root.classList.toggle('low-performance', isLowPerformance);
-        showNotification(isLowPerformance ? 'Лёгкий режим включён' : 'Лёгкий режим выключен', notification);
-        gtag('event', 'performance_toggle', { event_category: 'settings', event_label: isLowPerformance ? 'low' : 'normal' });
-        logAction(`Режим производительности: ${isLowPerformance ? 'Лёгкий' : 'Нормальный'}`);
-      }, 300));
-    }
-  };
-
-  const setupAnimations = () => {
-    const animationsToggle = document.getElementById('disableAnimationsToggle');
-    const notification = document.getElementById('performanceNotification');
-    if (animationsToggle && notification) {
-      const savedAnimations = localStorage.getItem('disableAnimations') === 'true';
-      animationsToggle.checked = savedAnimations;
-      root.classList.toggle('no-animations', savedAnimations);
-      animationsToggle.addEventListener('change', debounce(() => {
-        const disableAnimations = animationsToggle.checked;
-        localStorage.setItem('disableAnimations', disableAnimations);
-        root.classList.toggle('no-animations', disableAnimations);
-        showNotification(disableAnimations ? 'Анимации отключены' : 'Анимации включены', notification);
-        gtag('event', 'animations_toggle', { event_category: 'settings', event_label: disableAnimations ? 'off' : 'on' });
-        logAction(`Анимации: ${disableAnimations ? 'Отключены' : 'Включены'}`);
-      }, 300));
-    }
-  };
-
-  const setupParticleToggle = () => {
-    const toggle = document.getElementById('disableParticlesToggle');
-    const notification = document.getElementById('performanceNotification');
-    if (toggle && notification) {
-      const savedParticles = localStorage.getItem('disableParticles') === 'true';
-      toggle.checked = savedParticles;
-      root.classList.toggle('no-particles', savedParticles);
-      toggle.addEventListener('change', debounce(() => {
-        const disableParticles = toggle.checked;
-        localStorage.setItem('disableParticles', disableParticles);
-        root.classList.toggle('no-particles', disableParticles);
-        showNotification(disableParticles ? 'Фоновые частицы отключены' : 'Фоновые частицы включены', notification);
-        gtag('event', 'particles_toggle', { event_category: 'settings', event_label: disableParticles ? 'off' : 'on' });
-        logAction(`Фоновые частицы: ${disableParticles ? 'Отключены' : 'Включены'}`);
-      }, 300));
-    }
-  };
-
-  const setupFontSize = () => {
-    const slider = document.getElementById('fontSizeSlider');
-    const notification = document.getElementById('appearanceNotification');
-    if (slider && notification) {
-      const savedFontSize = localStorage.getItem('fontSize') || '100';
-      slider.value = savedFontSize;
-      root.style.setProperty('--font-scale', savedFontSize / 100);
-      slider.addEventListener('input', debounce(() => {
-        const fontSize = slider.value;
-        root.style.setProperty('--font-scale', fontSize / 100);
-        showNotification(`Размер шрифта: ${fontSize}%`, notification);
-        localStorage.setItem('fontSize', fontSize);
-        gtag('event', 'font_size_change', { event_category: 'settings', event_label: fontSize });
-        logAction(`Размер шрифта изменён: ${fontSize}%`);
-      }, 300));
-    }
-  };
-
-  const setupHighContrast = () => {
-    const toggle = document.getElementById('highContrastToggle');
-    const notification = document.getElementById('appearanceNotification');
-    if (toggle && notification) {
-      const savedHighContrast = localStorage.getItem('highContrast') === 'true';
-      toggle.checked = savedHighContrast;
-      root.classList.toggle('high-contrast', savedHighContrast);
-      toggle.addEventListener('change', debounce(() => {
-        const highContrast = toggle.checked;
-        localStorage.setItem('highContrast', highContrast);
-        root.classList.toggle('high-contrast', highContrast);
-        showNotification(highContrast ? 'Высокая контрастность включена' : 'Высокая контрастность выключена', notification);
-        gtag('event', 'high_contrast_toggle', { event_category: 'settings', event_label: highContrast ? 'on' : 'off' });
-        logAction(`Высокая контрастность: ${highContrast ? 'Включена' : 'Выключена'}`);
-      }, 300));
-    }
-  };
-
-  const setupResetSettings = () => {
-    const resetButton = document.getElementById('resetSettings');
-    const notification = document.getElementById('appearanceNotification');
-    if (resetButton && notification) {
-      resetButton.addEventListener('click', () => {
-        localStorage.removeItem('theme');
-        localStorage.removeItem('lowPerformance');
-        localStorage.removeItem('disableAnimations');
-        localStorage.removeItem('disableParticles');
-        localStorage.removeItem('fontSize');
-        localStorage.removeItem('highContrast');
-        localStorage.removeItem('userAvatar');
-        localStorage.removeItem('userBadges');
-        localStorage.removeItem('username');
-        root.classList.remove('dark', 'low-performance', 'no-animations', 'no-particles', 'high-contrast');
-        root.style.setProperty('--font-scale', '1');
-        const themeSelect = document.getElementById('themeSelect');
-        const lowPerformanceToggle = document.getElementById('lowPerformanceToggle');
-        const animationsToggle = document.getElementById('disableAnimationsToggle');
-        const particleToggle = document.getElementById('disableParticlesToggle');
-        const fontSizeSlider = document.getElementById('fontSizeSlider');
-        const highContrastToggle = document.getElementById('highContrastToggle');
-        const userAvatar = document.getElementById('userAvatar');
-        const usernameInput = document.getElementById('usernameInput');
-        const badges = document.getElementById('badges');
-        if (themeSelect) themeSelect.value = 'auto';
-        if (lowPerformanceToggle) lowPerformanceToggle.checked = false;
-        if (animationsToggle) animationsToggle.checked = false;
-        if (particleToggle) particleToggle.checked = false;
-        if (fontSizeSlider) fontSizeSlider.value = '100';
-        if (highContrastToggle) highContrastToggle.checked = false;
-        if (userAvatar) userAvatar.src = '/assets/fallback.jpg';
-        if (usernameInput) usernameInput.value = '';
-        if (badges) badges.innerHTML = '';
-        setTheme('auto');
-        showNotification('Настройки сброшены', notification);
-        gtag('event', 'reset_settings', { event_category: 'settings', event_label: 'reset' });
-        logAction('Настройки сброшены');
-      });
-    }
-  };
-
-  const setupProfile = () => {
-    const avatarUpload = document.getElementById('avatarUpload');
-    const userAvatar = document.getElementById('userAvatar');
-    const usernameInput = document.getElementById('usernameInput');
-    const badges = document.getElementById('badges');
-    const notification = document.getElementById('appearanceNotification');
-
-    if (avatarUpload && userAvatar && notification) {
-      const savedAvatar = localStorage.getItem('userAvatar');
-      if (savedAvatar) userAvatar.src = savedAvatar;
-      avatarUpload.addEventListener('change', () => {
-        const file = avatarUpload.files[0];
-        if (file && file.size <= 1024 * 1024) {
-          const reader = new FileReader();
-          reader.onload = () => {
-            userAvatar.src = reader.result;
-            localStorage.setItem('userAvatar', reader.result);
-            showNotification('Аватар обновлён', notification);
-            gtag('event', 'avatar_upload', { event_category: 'profile', event_label: 'avatar_updated' });
-            logAction('Аватар обновлён');
-          };
-          reader.readAsDataURL(file);
-        } else {
-          showNotification('Файл слишком большой (макс. 1МБ)', notification);
-          logAction('Ошибка загрузки аватара: превышен размер');
-        }
-      });
-    }
-
-    if (usernameInput && notification) {
-      const savedUsername = localStorage.getItem('username');
-      if (savedUsername) usernameInput.value = savedUsername;
-      usernameInput.addEventListener('input', debounce(() => {
-        const username = usernameInput.value.trim();
-        if (username.length <= 20) {
-          localStorage.setItem('username', username);
-          showNotification('Имя пользователя обновлено', notification);
-          gtag('event', 'username_update', { event_category: 'profile', event_label: 'username_updated' });
-          logAction(`Имя пользователя обновлено: ${username}`);
-        } else {
-          showNotification('Имя не должно превышать 20 символов', notification);
-          logAction('Ошибка обновления имени: превышена длина');
-        }
-      }, 500));
-    }
-
-    if (badges) {
-      const badgeList = [
-        { name: 'Фанат', icon: 'fa-solid fa-star', earned: true },
-        { name: 'Стример', icon: 'fa-solid fa-video', earned: false },
-        { name: 'Легенда', icon: 'fa-solid fa-crown', earned: false },
-        { name: 'Мемолог', icon: 'fa-solid fa-laugh', earned: true },
-      ];
-      const savedBadges = JSON.parse(localStorage.getItem('userBadges')) || [];
-      badgeList.forEach(badge => {
-        if (badge.earned || savedBadges.includes(badge.name)) {
-          const badgeEl = document.createElement('span');
-          badgeEl.className = 'badge inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-600 text-white text-xs animate-[badgePop_0.5s_ease_forwards]';
-          badgeEl.innerHTML = `<i class="${badge.icon}"></i>${badge.name}`;
-          badges.appendChild(badgeEl);
-        }
-      });
-      setTimeout(() => {
-        if (!savedBadges.includes('Легенда')) {
-          savedBadges.push('Легенда');
-          localStorage.setItem('userBadges', JSON.stringify(savedBadges));
-          const badgeEl = document.createElement('span');
-          badgeEl.className = 'badge inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-600 text-white text-xs animate-[badgePop_0.5s_ease_forwards]';
-          badgeEl.innerHTML = '<i class="fa-solid fa-crown"></i>Легенда';
-          badges.appendChild(badgeEl);
-          showNotification('Новый бейдж: Легенда!', notification);
-          gtag('event', 'badge_earned', { event_category: 'profile', event_label: 'Легенда' });
-          logAction('Получен новый бейдж: Легенда');
-        }
+let lastNotificationTime = 0;
+const showNotification = (message, notificationElement) => {
+  const now = Date.now();
+  if (now - lastNotificationTime < 10000) return;
+  lastNotificationTime = now;
+  if (notificationElement) {
+    const span = notificationElement.querySelector('span');
+    if (span) {
+      document.querySelectorAll('.notification.show').forEach(el => el.classList.remove('show'));
+      span.textContent = message;
+      notificationElement.classList.add('show');
+      gtag('event', 'notification_shown', { event_category: 'settings', event_label: message });
+      const timeout = setTimeout(() => {
+        notificationElement.classList.remove('show');
       }, 5000);
+      const closeButton = notificationElement.querySelector('button');
+      if (closeButton) {
+        closeButton.addEventListener('click', () => {
+          notificationElement.classList.remove('show');
+          clearTimeout(timeout);
+          gtag('event', 'notification_dismiss', { event_category: 'settings', event_label: 'dismiss_notification' });
+          logAction('Уведомление закрыто');
+        }, { once: true });
+      }
     }
-  };
+  }
+};
 
-  const setupVideos = () => {
-    const tpl = document.getElementById('ytCardTpl');
-    const grid = document.querySelector('#videos .mt-8.grid');
-    const loadMoreButton = document.getElementById('loadMoreVideos');
-    const notification = document.getElementById('appearanceNotification');
-    if (!tpl || !grid || !loadMoreButton || !notification) return;
+const root = document.documentElement;
 
-    const videoData = [
-      { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning', category: 'fun' },
-      { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO', category: 'fun' },
-      { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)', category: 'streams' },
-      { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!', category: 'fun' },
-      { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK', category: 'streams' },
-      { src: 'https://rutube.ru/play/embed/3de912692f3520aad3ccf648b30f0247', title: 'ВРЕМЯ БЕЗУМИЙ В РАБОТЕ!!!', category: 'fun' },
-      { src: 'https://rutube.ru/play/embed/1cb1388800c0a573bb4c6942bc12c752', title: 'УМНЫЙ НО КОСОЙ', category: 'fun' },
-      { src: 'https://rutube.ru/play/embed/8e2f7da5ca6582d3b66ea73d39b53130', title: 'СПЕЦ ВЫПУСК!!! СМЕРТЕЛЬНЫЙ КОНТЕНТ!', category: 'fun' },
-      { src: 'https://rutube.ru/play/embed/f50e8d94d8228d9a8ffce5e37773a8e2', title: 'НОВЫЕ ВРЕМЕНА НАЧИНАЮТСЯ С РЕЛАКСА', category: 'fun' },
-      { src: 'https://rutube.ru/play/embed/522c3d4a29970e19b74f8cdfa9e2eb3e', title: 'СПЕЦ ВЫПУСК! ЧАС РАБОТЫ В ЛЕТАЛ КОМПАНИ!', category: 'fun' },
-      { src: 'https://rutube.ru/play/embed/2c266a516ea35150036cd6298ef6db68', title: 'ВРОДЕ ОБНОВА ТОП НО НЕ СОВСЕМ...', category: 'fun' },
-      { src: 'https://rutube.ru/play/embed/36faf3fd0b2c5dac09f907297925db41', title: 'НОВАЯ ВЕБКА, НОВЫЕ ГОРИЗОНТЫ!', category: 'fun' },
-      { src: 'https://rutube.ru/play/embed/5b51c9a3e15b4d75bfb08783c90bcc85', title: 'БЛИЦ Play: КОНЕЦ ГОДА, ЧТО ДАЛЬШЕ?', category: 'blitz' },
-      { src: 'https://rutube.ru/play/embed/171e2dae98076c82e5c49f3dfda7bb33', title: 'БЛИЦ Play: ПОСЛЕЖНИЙ РУБЕЖ!', category: 'blitz' },
-      { src: 'https://rutube.ru/play/embed/0f958e52a3a7023734bfa562186a9bce', title: 'БЛИЦ Play: ВСЕ? ВСЕ.', category: 'blitz' }
-    ];
+const setTheme = (theme, isPreview = false) => {
+  logAction(`Тема установлена: ${theme}${isPreview ? ' (предпросмотр)' : ''}`);
+  if (!isPreview) localStorage.setItem('theme', theme);
+  root.classList.toggle('dark', theme === 'dark');
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    const themeIcon = themeToggle.querySelector('i');
+    const themeText = themeToggle.querySelector('span');
+    if (themeIcon && themeText) {
+      themeIcon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+      themeText.textContent = theme === 'dark' ? 'Тёмная' : 'Светлая';
+    }
+  }
+  if (!isPreview) gtag('event', 'theme_toggle', { event_category: 'engagement', event_label: theme });
+};
 
-    let currentPage = 1;
-    const videosPerPage = 4;
-
-    const renderVideos = (videos, append = false) => {
-      if (!append) grid.innerHTML = '';
-      videos.forEach((v) => {
-        const node = tpl.content.cloneNode(true);
-        const iframe = node.querySelector('iframe');
-        const title = node.querySelector('p');
-        const card = node.querySelector('.video-card');
-        const fallbackImg = node.querySelector('img');
-        if (iframe && title && card && fallbackImg) {
-          iframe.src = v.src;
-          iframe.setAttribute('title', `Видео: ${v.title}`);
-          iframe.onerror = () => {
-            iframe.classList.add('hidden');
-            fallbackImg.classList.remove('hidden');
-            logAction(`Ошибка загрузки видео: ${v.title}`);
-          };
-          title.textContent = v.title;
-          card.dataset.category = v.category;
-          grid.appendChild(node);
-        }
-      });
-      loadMoreButton.disabled = currentPage * videosPerPage >= videoData.length;
-    };
-
-    const loadMoreVideos = () => {
-      currentPage++;
-      const start = (currentPage - 1) * videosPerPage;
-      const end = start + videosPerPage;
-      const videosToShow = videoData.slice(start, end);
-      renderVideos(videosToShow, true);
-      gtag('event', 'load_more_videos', { event_category: 'videos', event_label: `page_${currentPage}` });
-      logAction(`Загружено ещё ${videosToShow.length} видео`);
-    };
-
-    renderVideos(videoData.slice(0, videosPerPage));
-
-    loadMoreButton.addEventListener('click', loadMoreVideos);
-
-    const filterButtons = document.querySelectorAll('.video-filter');
-    const categoryDesc = document.getElementById('category-desc');
-    const categoryDescriptions = {
-      all: 'Все видео от Mortis Play: стримы, мемы и подкасты!',
-      streams: 'Стримы с эпичными моментами и геймплеем!',
-      fun: 'Угарные видео и мемы для настроения!',
-      blitz: 'Короткие и динамичные БЛИЦ Play ролики!'
-    };
-
-    filterButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const filter = button.dataset.filter;
-        filterButtons.forEach(btn => {
-          btn.classList.toggle('active', btn === button);
-          btn.setAttribute('aria-pressed', btn === button);
-        });
-        const filteredVideos = filter === 'all' ? videoData : videoData.filter(v => v.category === filter);
-        currentPage = 1;
-        renderVideos(filteredVideos.slice(0, videosPerPage));
-        categoryDesc.textContent = categoryDescriptions[filter];
-        gtag('event', 'video_filter', { event_category: 'videos', event_label: filter });
-        logAction(`Фильтр видео: ${filter}`);
-      });
+const setupThemeToggle = () => {
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isDark = root.classList.contains('dark');
+      setTheme(isDark ? 'light' : 'dark');
     });
+  }
+};
+
+const setupThemeSelect = () => {
+  const themeSelect = document.getElementById('themeSelect');
+  if (themeSelect) {
+    const savedTheme = localStorage.getItem('theme') || 'auto';
+    themeSelect.value = savedTheme;
+    setTheme(savedTheme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : savedTheme);
+    let previewTimeout;
+    themeSelect.addEventListener('change', () => {
+      const theme = themeSelect.value;
+      const effectiveTheme = theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : theme;
+      clearTimeout(previewTimeout);
+      setTheme(effectiveTheme, true);
+      showNotification(`Предпросмотр темы: ${theme === 'auto' ? 'Авто' : theme === 'light' ? 'Светлая' : 'Тёмная'}`, document.getElementById('appearanceNotification'));
+      previewTimeout = setTimeout(() => {
+        setTheme(effectiveTheme);
+        showNotification(`Тема: ${theme === 'auto' ? 'Авто' : theme === 'light' ? 'Светлая' : 'Тёмная'}`, document.getElementById('appearanceNotification'));
+        gtag('event', 'theme_select', { event_category: 'settings', event_label: theme });
+        logAction(`Тема выбрана: ${theme}`);
+      }, 2000);
+    });
+  }
+};
+
+const setupPerformance = () => {
+  const toggle = document.getElementById('lowPerformanceToggle');
+  const notification = document.getElementById('performanceNotification');
+  if (toggle && notification) {
+    const savedMode = localStorage.getItem('lowPerformance') === 'true';
+    toggle.checked = savedMode;
+    root.classList.toggle('low-performance', savedMode);
+    toggle.addEventListener('change', debounce(() => {
+      const isLowPerformance = toggle.checked;
+      localStorage.setItem('lowPerformance', isLowPerformance);
+      root.classList.toggle('low-performance', isLowPerformance);
+      showNotification(isLowPerformance ? 'Лёгкий режим включён' : 'Лёгкий режим выключен', notification);
+      gtag('event', 'performance_toggle', { event_category: 'settings', event_label: isLowPerformance ? 'low' : 'normal' });
+      logAction(`Режим производительности: ${isLowPerformance ? 'Лёгкий' : 'Нормальный'}`);
+    }, 300));
+  }
+};
+
+const setupAnimations = () => {
+  const animationsToggle = document.getElementById('disableAnimationsToggle');
+  const notification = document.getElementById('performanceNotification');
+  if (animationsToggle && notification) {
+    const savedAnimations = localStorage.getItem('disableAnimations') === 'true';
+    animationsToggle.checked = savedAnimations;
+    root.classList.toggle('no-animations', savedAnimations);
+    animationsToggle.addEventListener('change', debounce(() => {
+      const disableAnimations = animationsToggle.checked;
+      localStorage.setItem('disableAnimations', disableAnimations);
+      root.classList.toggle('no-animations', disableAnimations);
+      showNotification(disableAnimations ? 'Анимации отключены' : 'Анимации включены', notification);
+      gtag('event', 'animations_toggle', { event_category: 'settings', event_label: disableAnimations ? 'off' : 'on' });
+      logAction(`Анимации: ${disableAnimations ? 'Отключены' : 'Включены'}`);
+    }, 300));
+  }
+};
+
+const setupParticleToggle = () => {
+  const toggle = document.getElementById('disableParticlesToggle');
+  const notification = document.getElementById('performanceNotification');
+  if (toggle && notification) {
+    const savedParticles = localStorage.getItem('disableParticles') === 'true';
+    toggle.checked = savedParticles;
+    root.classList.toggle('no-particles', savedParticles);
+    toggle.addEventListener('change', debounce(() => {
+      const disableParticles = toggle.checked;
+      localStorage.setItem('disableParticles', disableParticles);
+      root.classList.toggle('no-particles', disableParticles);
+      showNotification(disableParticles ? 'Фоновые частицы отключены' : 'Фоновые частицы включены', notification);
+      gtag('event', 'particles_toggle', { event_category: 'settings', event_label: disableParticles ? 'off' : 'on' });
+      logAction(`Фоновые частицы: ${disableParticles ? 'Отключены' : 'Включены'}`);
+    }, 300));
+  }
+};
+
+const setupFontSize = () => {
+  const slider = document.getElementById('fontSizeSlider');
+  const notification = document.getElementById('appearanceNotification');
+  if (slider && notification) {
+    const savedFontSize = localStorage.getItem('fontSize') || '100';
+    slider.value = savedFontSize;
+    root.style.setProperty('--font-scale', savedFontSize / 100);
+    slider.addEventListener('input', debounce(() => {
+      const fontSize = slider.value;
+      root.style.setProperty('--font-scale', fontSize / 100);
+      showNotification(`Размер шрифта: ${fontSize}%`, notification);
+      localStorage.setItem('fontSize', fontSize);
+      gtag('event', 'font_size_change', { event_category: 'settings', event_label: fontSize });
+      logAction(`Размер шрифта изменён: ${fontSize}%`);
+    }, 300));
+  }
+};
+
+const setupHighContrast = () => {
+  const toggle = document.getElementById('highContrastToggle');
+  const notification = document.getElementById('appearanceNotification');
+  if (toggle && notification) {
+    const savedHighContrast = localStorage.getItem('highContrast') === 'true';
+    toggle.checked = savedHighContrast;
+    root.classList.toggle('high-contrast', savedHighContrast);
+    toggle.addEventListener('change', debounce(() => {
+      const highContrast = toggle.checked;
+      localStorage.setItem('highContrast', highContrast);
+      root.classList.toggle('high-contrast', highContrast);
+      showNotification(highContrast ? 'Высокая контрастность включена' : 'Высокая контрастность выключена', notification);
+      gtag('event', 'high_contrast_toggle', { event_category: 'settings', event_label: highContrast ? 'on' : 'off' });
+      logAction(`Высокая контрастность: ${highContrast ? 'Включена' : 'Выключена'}`);
+    }, 300));
+  }
+};
+
+const setupResetSettings = () => {
+  const resetButton = document.getElementById('resetSettings');
+  const notification = document.getElementById('appearanceNotification');
+  if (resetButton && notification) {
+    resetButton.addEventListener('click', () => {
+      localStorage.removeItem('theme');
+      localStorage.removeItem('lowPerformance');
+      localStorage.removeItem('disableAnimations');
+      localStorage.removeItem('disableParticles');
+      localStorage.removeItem('fontSize');
+      localStorage.removeItem('highContrast');
+      localStorage.removeItem('userAvatar');
+      localStorage.removeItem('userBadges');
+      localStorage.removeItem('username');
+      localStorage.removeItem('watchedVideos');
+      root.classList.remove('dark', 'low-performance', 'no-animations', 'no-particles', 'high-contrast');
+      root.style.setProperty('--font-scale', '1');
+      const themeSelect = document.getElementById('themeSelect');
+      const lowPerformanceToggle = document.getElementById('lowPerformanceToggle');
+      const animationsToggle = document.getElementById('disableAnimationsToggle');
+      const particleToggle = document.getElementById('disableParticlesToggle');
+      const fontSizeSlider = document.getElementById('fontSizeSlider');
+      const highContrastToggle = document.getElementById('highContrastToggle');
+      const userAvatar = document.getElementById('userAvatar');
+      const usernameInput = document.getElementById('usernameInput');
+      const badges = document.getElementById('badges');
+      const badgeList = document.getElementById('badgeList');
+      if (themeSelect) themeSelect.value = 'auto';
+      if (lowPerformanceToggle) lowPerformanceToggle.checked = false;
+      if (animationsToggle) animationsToggle.checked = false;
+      if (particleToggle) particleToggle.checked = false;
+      if (fontSizeSlider) fontSizeSlider.value = '100';
+      if (highContrastToggle) highContrastToggle.checked = false;
+      if (userAvatar) userAvatar.src = '/assets/fallback.jpg';
+      if (usernameInput) usernameInput.value = '';
+      if (badges) badges.innerHTML = '';
+      if (badgeList) badgeList.innerHTML = '';
+      setTheme('auto');
+      setupBadges();
+      showNotification('Настройки сброшены', notification);
+      gtag('event', 'reset_settings', { event_category: 'settings', event_label: 'reset' });
+      logAction('Настройки сброшены');
+    });
+  }
+};
+
+const setupProfile = () => {
+  const avatarUpload = document.getElementById('avatarUpload');
+  const userAvatar = document.getElementById('userAvatar');
+  const usernameInput = document.getElementById('usernameInput');
+  const badges = document.getElementById('badges');
+  const notification = document.getElementById('appearanceNotification');
+
+  if (avatarUpload && userAvatar && notification) {
+    const savedAvatar = localStorage.getItem('userAvatar');
+    if (savedAvatar) userAvatar.src = savedAvatar;
+    avatarUpload.addEventListener('change', () => {
+      const file = avatarUpload.files[0];
+      if (file && file.size <= 1024 * 1024) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          userAvatar.src = reader.result;
+          localStorage.setItem('userAvatar', reader.result);
+          showNotification('Аватар обновлён', notification);
+          gtag('event', 'avatar_upload', { event_category: 'profile', event_label: 'avatar_updated' });
+          logAction('Аватар обновлён');
+          checkBadgeConditions();
+        };
+        reader.readAsDataURL(file);
+      } else {
+        showNotification('Файл слишком большой (макс. 1МБ)', notification);
+        logAction('Ошибка загрузки аватара: превышен размер');
+      }
+    });
+  }
+
+  if (usernameInput && notification) {
+    const savedUsername = localStorage.getItem('username');
+    if (savedUsername) usernameInput.value = savedUsername;
+    usernameInput.addEventListener('input', debounce(() => {
+      const username = usernameInput.value.trim();
+      if (username.length <= 20) {
+        localStorage.setItem('username', username);
+        showNotification('Имя пользователя обновлено', notification);
+        gtag('event', 'username_update', { event_category: 'profile', event_label: 'username_updated' });
+        logAction(`Имя пользователя обновлено: ${username}`);
+        checkBadgeConditions();
+      } else {
+        showNotification('Имя не должно превышать 20 символов', notification);
+        logAction('Ошибка обновления имени: превышена длина');
+      }
+    }, 500));
+  }
+
+  if (badges) {
+    setupBadges();
+  }
+};
+
+const setupBadges = () => {
+  const badges = document.getElementById('badges');
+  const badgeList = document.getElementById('badgeList');
+  const notification = document.getElementById('appearanceNotification');
+  if (!badges || !badgeList || !notification) return;
+
+  const badgeDefinitions = [
+    { name: 'Фанат', icon: 'fa-solid fa-star', description: 'Выдаётся за посещение сайта!', earned: () => true },
+    { name: 'Мемолог', icon: 'fa-solid fa-laugh', description: 'Посмотрите 4 видео в категории «Угар»', earned: () => {
+      const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
+      return Object.values(watchedVideos).filter(v => v.category === 'fun').length >= 4;
+    }},
+    { name: 'Стример', icon: 'fa-solid fa-video', description: 'Загрузите аватар и установите имя пользователя', earned: () => {
+      return !!localStorage.getItem('userAvatar') && !!localStorage.getItem('username');
+    }},
+    { name: 'Легенда', icon: 'fa-solid fa-crown', description: 'Получите все остальные бейджи', earned: () => {
+      const savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
+      return savedBadges.includes('Фанат') && savedBadges.includes('Мемолог') && savedBadges.includes('Стример');
+    }},
+  ];
+
+  const savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
+  
+  // Очищаем и отображаем полученные бейджи
+  badges.innerHTML = '';
+  badgeDefinitions.forEach(badge => {
+    if (savedBadges.includes(badge.name) || badge.earned()) {
+      if (!savedBadges.includes(badge.name)) {
+        savedBadges.push(badge.name);
+        localStorage.setItem('userBadges', JSON.stringify(savedBadges));
+        showNotification(`Новый бейдж: ${badge.name}!`, notification);
+        gtag('event', 'badge_earned', { event_category: 'profile', event_label: badge.name });
+        logAction(`Получен новый бейдж: ${badge.name}`);
+      }
+      const badgeEl = document.createElement('span');
+      badgeEl.className = 'badge inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-600 text-white text-xs animate-[badgePop_0.5s_ease_forwards]';
+      badgeEl.innerHTML = `<i class="${badge.icon}"></i>${badge.name}`;
+      badges.appendChild(badgeEl);
+    }
+  });
+
+  // Отображаем список всех бейджей с требованиями
+  badgeList.innerHTML = '';
+  badgeDefinitions.forEach(badge => {
+    const badgeItem = document.createElement('div');
+    badgeItem.className = 'flex items-center gap-2 text-sm';
+    const status = savedBadges.includes(badge.name) || badge.earned() ? '✅' : '🔒';
+    badgeItem.innerHTML = `
+      <i class="${badge.icon} ${savedBadges.includes(badge.name) || badge.earned() ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600'}"></i>
+      <span class="${savedBadges.includes(badge.name) || badge.earned() ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600'}">${badge.name}: ${badge.description}</span>
+      <span>${status}</span>
+    `;
+    badgeList.appendChild(badgeItem);
+  });
+};
+
+const checkBadgeConditions = () => {
+  setupBadges(); // Проверяем и обновляем бейджи после каждого действия
+};
+
+const setupVideos = () => {
+  const tpl = document.getElementById('ytCardTpl');
+  const grid = document.querySelector('#videos .mt-8.grid');
+  const loadMoreButton = document.getElementById('loadMoreVideos');
+  const notification = document.getElementById('appearanceNotification');
+  if (!tpl || !grid || !loadMoreButton || !notification) return;
+
+  const videoData = [
+    { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning', category: 'fun' },
+    { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO', category: 'fun' },
+    { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)', category: 'streams' },
+    { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!', category: 'fun' },
+    { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK', category: 'streams' },
+    { src: 'https://rutube.ru/play/embed/3de912692f3520aad3ccf648b30f0247', title: 'ВРЕМЯ БЕЗУМИЙ В РАБОТЕ!!!', category: 'fun' },
+    { src: 'https://rutube.ru/play/embed/1cb1388800c0a573bb4c6942bc12c752', title: 'УМНЫЙ НО КОСОЙ', category: 'fun' },
+    { src: 'https://rutube.ru/play/embed/8e2f7da5ca6582d3b66ea73d39b53130', title: 'СПЕЦ ВЫПУСК!!! СМЕРТЕЛЬНЫЙ КОНТЕНТ!', category: 'fun' },
+    { src: 'https://rutube.ru/play/embed/f50e8d94d8228d9a8ffce5e37773a8e2', title: 'НОВЫЕ ВРЕМЕНА НАЧИНАЮТСЯ С РЕЛАКСА', category: 'fun' },
+    { src: 'https://rutube.ru/play/embed/522c3d4a29970e19b74f8cdfa9e2eb3e', title: 'СПЕЦ ВЫПУСК! ЧАС РАБОТЫ В ЛЕТАЛ КОМПАНИ!', category: 'fun' },
+    { src: 'https://rutube.ru/play/embed/2c266a516ea35150036cd6298ef6db68', title: 'ВРОДЕ ОБНОВА ТОП НО НЕ СОВСЕМ...', category: 'fun' },
+    { src: 'https://rutube.ru/play/embed/36faf3fd0b2c5dac09f907297925db41', title: 'НОВАЯ ВЕБКА, НОВЫЕ ГОРИЗОНТЫ!', category: 'fun' },
+    { src: 'https://rutube.ru/play/embed/5b51c9a3e15b4d75bfb08783c90bcc85', title: 'БЛИЦ Play: КОНЕЦ ГОДА, ЧТО ДАЛЬШЕ?', category: 'blitz' },
+    { src: 'https://rutube.ru/play/embed/171e2dae98076c82e5c49f3dfda7bb33', title: 'БЛИЦ Play: ПОСЛЕЖНИЙ РУБЕЖ!', category: 'blitz' },
+    { src: 'https://rutube.ru/play/embed/0f958e52a3a7023734bfa562186a9bce', title: 'БЛИЦ Play: ВСЕ? ВСЕ.', category: 'blitz' }
+  ];
+
+  let currentPage = 1;
+  const videosPerPage = 4;
+
+  const renderVideos = (videos, append = false) => {
+    if (!append) grid.innerHTML = '';
+    videos.forEach((v) => {
+      const node = tpl.content.cloneNode(true);
+      const iframe = node.querySelector('iframe');
+      const title = node.querySelector('p');
+      const card = node.querySelector('.video-card');
+      const fallbackImg = node.querySelector('img');
+      if (iframe && title && card && fallbackImg) {
+        iframe.src = v.src;
+        iframe.setAttribute('title', `Видео: ${v.title}`);
+        iframe.onload = () => {
+          const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
+          watchedVideos[v.title] = { category: v.category, watched: true };
+          localStorage.setItem('watchedVideos', JSON.stringify(watchedVideos));
+          checkBadgeConditions();
+        };
+        iframe.onerror = () => {
+          iframe.classList.add('hidden');
+          fallbackImg.classList.remove('hidden');
+          logAction(`Ошибка загрузки видео: ${v.title}`);
+        };
+        title.textContent = v.title;
+        card.dataset.category = v.category;
+        grid.appendChild(node);
+      }
+    });
+    loadMoreButton.disabled = currentPage * videosPerPage >= videoData.length;
   };
 
-  const setupNavigation = () => {
-    const menuToggle = document.getElementById('menuToggle');
-    const sidebarMenu = document.getElementById('sidebarMenu');
-    const closeMenu = document.getElementById('closeMenu');
-    if (menuToggle && sidebarMenu && closeMenu) {
-      menuToggle.addEventListener('click', () => {
-        sidebarMenu.classList.toggle('open');
-        menuToggle.setAttribute('aria-expanded', sidebarMenu.classList.contains('open'));
-        gtag('event', 'menu_toggle', { event_category: 'navigation', event_label: sidebarMenu.classList.contains('open') ? 'open' : 'close' });
-        logAction(`Меню: ${sidebarMenu.classList.contains('open') ? 'Открыто' : 'Закрыто'}`);
+  const loadMoreVideos = () => {
+    currentPage++;
+    const start = (currentPage - 1) * videosPerPage;
+    const end = start + videosPerPage;
+    const videosToShow = videoData.slice(start, end);
+    renderVideos(videosToShow, true);
+    gtag('event', 'load_more_videos', { event_category: 'videos', event_label: `page_${currentPage}` });
+    logAction(`Загружено ещё ${videosToShow.length} видео`);
+  };
+
+  renderVideos(videoData.slice(0, videosPerPage));
+
+  loadMoreButton.addEventListener('click', loadMoreVideos);
+
+  const filterButtons = document.querySelectorAll('.video-filter');
+  const categoryDesc = document.getElementById('category-desc');
+  const categoryDescriptions = {
+    all: 'Все видео от Mortis Play: стримы, мемы и подкасты!',
+    streams: 'Стримы с эпичными моментами и геймплеем!',
+    fun: 'Угарные видео и мемы для настроения!',
+    blitz: 'Короткие и динамичные БЛИЦ Play ролики!'
+  };
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+      filterButtons.forEach(btn => {
+        btn.classList.toggle('active', btn === button);
+        btn.setAttribute('aria-pressed', btn === button);
       });
-      closeMenu.addEventListener('click', () => {
+      const filteredVideos = filter === 'all' ? videoData : videoData.filter(v => v.category === filter);
+      currentPage = 1;
+      renderVideos(filteredVideos.slice(0, videosPerPage));
+      categoryDesc.textContent = categoryDescriptions[filter];
+      gtag('event', 'video_filter', { event_category: 'videos', event_label: filter });
+      logAction(`Фильтр видео: ${filter}`);
+    });
+  });
+};
+
+const setupNavigation = () => {
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebarMenu = document.getElementById('sidebarMenu');
+  const closeMenu = document.getElementById('closeMenu');
+  if (menuToggle && sidebarMenu && closeMenu) {
+    menuToggle.addEventListener('click', () => {
+      sidebarMenu.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', sidebarMenu.classList.contains('open'));
+      gtag('event', 'menu_toggle', { event_category: 'navigation', event_label: sidebarMenu.classList.contains('open') ? 'open' : 'close' });
+      logAction(`Меню: ${sidebarMenu.classList.contains('open') ? 'Открыто' : 'Закрыто'}`);
+    });
+    closeMenu.addEventListener('click', () => {
+      sidebarMenu.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      gtag('event', 'menu_close', { event_category: 'navigation', event_label: 'close' });
+      logAction('Меню закрыто');
+    });
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = anchor.getAttribute('href').substring(1);
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+        gtag('event', 'nav_click', { event_category: 'navigation', event_label: targetId });
+        logAction(`Переход к секции: ${targetId}`);
+      }
+      if (sidebarMenu && sidebarMenu.classList.contains('open')) {
         sidebarMenu.classList.remove('open');
         menuToggle.setAttribute('aria-expanded', 'false');
-        gtag('event', 'menu_close', { event_category: 'navigation', event_label: 'close' });
-        logAction('Меню закрыто');
-      });
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = anchor.getAttribute('href').substring(1);
-        const target = document.getElementById(targetId);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-          gtag('event', 'nav_click', { event_category: 'navigation', event_label: targetId });
-          logAction(`Переход к секции: ${targetId}`);
-        }
-        if (sidebarMenu && sidebarMenu.classList.contains('open')) {
-          sidebarMenu.classList.remove('open');
-          menuToggle.setAttribute('aria-expanded', 'false');
-        }
-      });
+      }
     });
+  });
+};
+
+const setupParticles = () => {
+  const canvas = document.getElementById('backgroundParticles');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = [];
+  const particleCount = Math.floor(window.innerWidth / 20);
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 3 + 1,
+      speedX: Math.random() * 0.5 - 0.25,
+      speedY: Math.random() * 0.5 - 0.25
+    });
+  }
+
+  const animateParticles = () => {
+    if (root.classList.contains('no-particles') || root.classList.contains('low-performance')) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.speedX;
+      p.y += p.speedY;
+      if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = root.classList.contains('dark') ? '#e5e7eb' : '#1f2937';
+      ctx.fill();
+    });
+    requestAnimationFrame(animateParticles);
   };
 
-  const setupParticles = () => {
-    const canvas = document.getElementById('backgroundParticles');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+  window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
-    const particles = [];
-    const particleCount = Math.floor(window.innerWidth / 20);
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 3 + 1,
-        speedX: Math.random() * 0.5 - 0.25,
-        speedY: Math.random() * 0.5 - 0.25
-      });
-    }
-
-    const animateParticles = () => {
-      if (root.classList.contains('no-particles') || root.classList.contains('low-performance')) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        p.x += p.speedX;
-        p.y += p.speedY;
-        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = root.classList.contains('dark') ? '#e5e7eb' : '#1f2937';
-        ctx.fill();
-      });
-      requestAnimationFrame(animateParticles);
-    };
-
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-
-    animateParticles();
-  };
-
-  const setupFadeIn = () => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-  };
-
-  const setupVideoErrorHandling = () => {
-    const video = document.querySelector('.banner-video');
-    if (video) {
-      video.addEventListener('error', () => {
-        const fallbackImg = video.nextElementSibling;
-        if (fallbackImg) {
-          video.classList.add('hidden');
-          fallbackImg.classList.remove('hidden');
-          logAction('Ошибка загрузки видео в баннере');
-        }
-      });
-    }
-  };
-
-  const setupLoader = () => {
-    const loader = document.getElementById('loader');
-    const siteContent = document.getElementById('siteContent');
-    if (loader && siteContent) {
-      const hideLoader = () => {
-        loader.style.display = 'none';
-        siteContent.classList.remove('hidden');
-        gtag('event', 'page_load', { event_category: 'performance', event_label: 'site_loaded' });
-        logAction('Сайт загружен');
-      };
-      window.addEventListener('load', () => {
-        setTimeout(hideLoader, 500);
-      });
-      setTimeout(hideLoader, 10000); // Скрыть через 10 секунд, если событие load не сработает
-    }
-  };
-
-  document.addEventListener('DOMContentLoaded', () => {
-    setupThemeToggle();
-    setupThemeSelect();
-    setupPerformance();
-    setupAnimations();
-    setupParticleToggle();
-    setupFontSize();
-    setupHighContrast();
-    setupResetSettings();
-    setupProfile();
-    setupVideos();
-    setupNavigation();
-    setupParticles();
-    setupFadeIn();
-    setupLoader();
-    setupVideoErrorHandling();
   });
+
+  animateParticles();
+};
+
+const setupFadeIn = () => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+};
+
+const setupVideoErrorHandling = () => {
+  const video = document.querySelector('.banner-video');
+  if (video) {
+    video.addEventListener('error', () => {
+      const fallbackImg = video.nextElementSibling;
+      if (fallbackImg) {
+        video.classList.add('hidden');
+        fallbackImg.classList.remove('hidden');
+        logAction('Ошибка загрузки видео в баннере');
+      }
+    });
+  }
+};
+
+const setupLoader = () => {
+  const loader = document.getElementById('loader');
+  const siteContent = document.getElementById('siteContent');
+  if (loader && siteContent) {
+    const hideLoader = () => {
+      loader.style.display = 'none';
+      siteContent.classList.remove('hidden');
+      gtag('event', 'page_load', { event_category: 'performance', event_label: 'site_loaded' });
+      logAction('Сайт загружен');
+    };
+    window.addEventListener('load', () => {
+      setTimeout(hideLoader, 500);
+    });
+    setTimeout(hideLoader, 10000);
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  setupThemeToggle();
+  setupThemeSelect();
+  setupPerformance();
+  setupAnimations();
+  setupParticleToggle();
+  setupFontSize();
+  setupHighContrast();
+  setupResetSettings();
+  setupProfile();
+  setupVideos();
+  setupNavigation();
+  setupParticles();
+  setupFadeIn();
+  setupLoader();
+  setupVideoErrorHandling();
+});
 </script>
 </body>
 </html>
