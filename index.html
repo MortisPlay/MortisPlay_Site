@@ -40,6 +40,7 @@
   <style>
     @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
     @keyframes badgePop { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes glow { 0% { box-shadow: 0 0 5px rgba(99, 102, 241, 0.5); } 100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.8); } }
     .card-hover { transition: transform .25s ease, box-shadow .25s ease; }
     .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgb(0 0 0 / .15), 0 0 12px rgba(147, 51, 234, 0.5); }
     .dark .card-hover:hover { box-shadow: 0 12px 24px rgb(0 0 0 / .3), 0 0 12px rgba(99, 102, 241, 0.6); }
@@ -86,7 +87,7 @@
     .low-performance .banner-video, .low-performance .banner-quote { display: none; }
     .banner-fallback { display: none; }
     .low-performance .banner-fallback { display: block; }
-    .no-animations .fade-in, .no-animations .card-hover, .no-animations .animate-[floaty_5s_ease-in-out_infinite], .no-animations .bg-particles {
+    .no-animations .fade-in, .no-animations .card-hover, .no-animations .animate-[floaty_5s_ease-in-out_infinite], .no-animations .bg-particles, .no-animations .badge-earned {
       transition: none;
       transform: none;
       opacity: 1;
@@ -323,6 +324,13 @@
       color: var(--text-color);
     }
     .badge { animation: badgePop 0.5s ease forwards; }
+    .badge-earned { animation: badgePop 0.5s ease forwards, glow 1s ease-in-out infinite alternate; }
+    .progress-bar { position: relative; height: 0.5rem; width: 6rem; background: #e5e7eb; border-radius: 9999px; overflow: hidden; }
+    .dark .progress-bar { background: #4b5563; }
+    .progress-bar-fill { height: 100%; background: #4f46e5; transition: width 0.3s ease; }
+    .dark .progress-bar-fill { background: #a5b4fc; }
+    .high-contrast .progress-bar { background: var(--bg-color); border: 1px solid var(--text-color); }
+    .high-contrast .progress-bar-fill { background: var(--text-color); }
     @media (max-width: 640px) {
       .glass-button {
         padding: 0.4rem 0.8rem;
@@ -435,7 +443,7 @@
             <i class="fa-solid fa-xmark"></i>
           </button>
           <div class="flex items-center gap-2 mb-6">
-            <img src="/assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror="this.src='/assets/fallback.jpg';">
+            <img src="/assets/photo.jpg" alt="Mortis Play Logo" class="h-8 w-8 rounded-lg object-cover" onerror признаки="/assets/fallback.jpg';">
             <span class="font-semibold tracking-tight text-slate-900 dark:text-white">Mortis Play</span>
           </div>
           <nav class="space-y-2">
@@ -453,7 +461,7 @@
 
     <main>
       <section id="welcome" class="relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-2xl z-[-1]"></div>
+        <div class="absolute top-0 left-0 w-64 h-64 bgے-indigo-500/20 rounded-full blur-2xl z-[-1]"></div>
         <div class="absolute top-40 right-0 w-64 h-64 bg-fuchsia-500/20 rounded-full blur-2xl z-[-1]"></div>
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div class="grid lg:grid-cols-2 gap-10 items-center">
@@ -502,26 +510,26 @@
       </section>
 
       <section id="profile" class="py-16 fade-in">
-  <div class="mx-auto max-w-7xl px-4">
-    <h2 class="text-center text-2xl md:text-3xl font-bold">Твой профиль</h2>
-    <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Кастомизируй свой вайб и зарабатывай бейджи! 😎</p>
-    <div class="mt-8 max-w-md mx-auto">
-      <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
-        <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Аватар</h3>
-        <img id="userAvatar" src="/assets/fallback.jpg" alt="Аватар пользователя" class="w-24 h-24 rounded-full mx-auto">
-        <input type="file" id="avatarUpload" accept="image/*" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2">
-        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Загрузи свой аватар (до 1МБ).</p>
-        <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Имя пользователя</h3>
-        <input type="text" id="usernameInput" maxlength="20" placeholder="Введи своё имя" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2 text-sm text-slate-700 dark:text-slate-300">
-        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Максимум 20 символов.</p>
-        <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Бейджи</h3>
-        <div id="badges" class="flex flex-wrap gap-2"></div>
-        <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Доступные бейджи</h3>
-        <div id="badgeList" class="mt-2 space-y-2"></div>
-      </div>
-    </div>
-  </div>
-</section>
+        <div class="mx-auto max-w-7xl px-4">
+          <h2 class="text-center text-2xl md:text-3xl font-bold">Твой профиль</h2>
+          <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Кастомизируй свой вайб и зарабатывай бейджи! 😎</p>
+          <div class="mt-8 max-w-md mx-auto">
+            <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
+              <h3 class="font-semibold text-indigo-600 dark Deco-text-indigo-400">Аватар</h3>
+              <img id="userAvatar" src="/assets/fallback.jpg" alt="Аватар пользователя" class="w-24 h-24 rounded-full mx-auto">
+              <input type="file" id="avatarUpload" accept="image/*" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2">
+              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Загрузи свой аватар (до 1МБ).</p>
+              <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Имя пользователя</h3>
+              <input type="text" id="usernameInput" maxlength="20" placeholder="Введи своё имя" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2 text-sm text-slate-700 dark:text-slate-300">
+              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Максимум 20 символов.</p>
+              <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Бейджи</h3>
+              <div id="badges" class="flex flex-wrap gap-2"></div>
+              <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Доступные бейджи</h3>
+              <div id="badgeList" class="mt-2 space-y-2"></div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section id="videos" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
@@ -555,23 +563,6 @@
         </div>
       </section>
 
-      <section id="projects" class="py-16 fade-in">
-        <div class="mx-auto max-w-7xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Мои проекты</h2>
-          <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
-              <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">1 сезон «Типичный случай»</h3>
-                <span class="text-xs px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700">50%</span>
-              </div>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Серия стримов с мемами и безумными челленджами.</p>
-              <div class="mt-3 h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700">
-                <div class="h-full w-1/2 rounded-full bg-indigo-600" data-progress="50"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section id="news" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
@@ -579,7 +570,7 @@
           <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <article class="card-hover rounded-2xl p-6">
               <h3 class="text-lg font-semibold">ВЕРНУЛИ ПРОФИЛЬ! Время выполнять задания!!!</h3>
-              <p class="mt-2 text-sm">Ну что друзья, мы потихоньку занимаемся обновлением сайта, и чтобы вас заинтриговать к нему, мы вернули "Профиль" но немного улучшенный, в нем вы можете делать никнейм себе (макс. 20 символов) и получать бэйджики за выполнение различных квестов на сайте. Позже, со временем мы подробно добавим как выполнять эти квесты. Также убрали раздел Q&A. Скоро увидимся ;)</p>
+              <p class="mt-2 text-sm">Ну что друзья, мы потихоньку занимаемся обновлением сайта, и чтобы вас заинтриговать к нему, мы вернули "Профиль" но немного улучшенный, в нем вы можете делать никнейм себе (макс. 20 символов) и получать бейджики за выполнение различных квестов на сайте. Позже, со временем мы подробно добавим как выполнять эти квесты. Также убрали раздел Q&A. Скоро увидимся ;)</p>
               <p class="mt-3 text-xs">С любовью Mortis32 &lt;3 · 14 октября 2025</p>        
             </article>
             <article class="card-hover rounded-2xl p-6">
@@ -648,6 +639,11 @@
                 <span class="text-sm text-slate-600 dark:text-slate-300">Отключить фоновые частицы</span>
               </label>
               <p id="disableParticlesDesc" class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает фоновые частицы для повышения производительности.</p>
+              <label class="mt-3 flex items-center gap-2">
+                <input type="checkbox" id="disableBadgeNotifications" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить уведомления о бейджах" aria-describedby="disableBadgeNotificationsDesc">
+                <span class="text-sm text-slate-600 dark:text-slate-300">Отключить уведомления о бейджах</span>
+              </label>
+              <p id="disableBadgeNotificationsDesc" class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает уведомления о получении новых бейджей.</p>
               <div id="performanceNotification" class="notification" role="alert" aria-live="assertive">
                 <span></span>
                 <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
@@ -739,7 +735,7 @@ const showNotification = (message, notificationElement) => {
   const now = Date.now();
   if (now - lastNotificationTime < 10000) return;
   lastNotificationTime = now;
-  if (notificationElement) {
+  if (notificationElement && !localStorage.getItem('disableBadgeNotifications') === 'true') {
     const span = notificationElement.querySelector('span');
     if (span) {
       document.querySelectorAll('.notification.show').forEach(el => el.classList.remove('show'));
@@ -840,7 +836,7 @@ const setupAnimations = () => {
     root.classList.toggle('no-animations', savedAnimations);
     animationsToggle.addEventListener('change', debounce(() => {
       const disableAnimations = animationsToggle.checked;
-      localStorage.setItem('disableAnimations', disableAnimations);
+      localStorage.setItem('disableAnimations', disableAnimations);
       root.classList.toggle('no-animations', disableAnimations);
       showNotification(disableAnimations ? 'Анимации отключены' : 'Анимации включены', notification);
       gtag('event', 'animations_toggle', { event_category: 'settings', event_label: disableAnimations ? 'off' : 'on' });
@@ -863,6 +859,22 @@ const setupParticleToggle = () => {
       showNotification(disableParticles ? 'Фоновые частицы отключены' : 'Фоновые частицы включены', notification);
       gtag('event', 'particles_toggle', { event_category: 'settings', event_label: disableParticles ? 'off' : 'on' });
       logAction(`Фоновые частицы: ${disableParticles ? 'Отключены' : 'Включены'}`);
+    }, 300));
+  }
+};
+
+const setupBadgeNotifications = () => {
+  const toggle = document.getElementById('disableBadgeNotifications');
+  const notification = document.getElementById('performanceNotification');
+  if (toggle && notification) {
+    const savedBadgeNotifications = localStorage.getItem('disableBadgeNotifications') === 'true';
+    toggle.checked = savedBadgeNotifications;
+    toggle.addEventListener('change', debounce(() => {
+      const disableBadgeNotifications = toggle.checked;
+      localStorage.setItem('disableBadgeNotifications', disableBadgeNotifications);
+      showNotification(disableBadgeNotifications ? 'Уведомления о бейджах отключены' : 'Уведомления о бейджах включены', notification);
+      gtag('event', 'badge_notifications_toggle', { event_category: 'settings', event_label: disableBadgeNotifications ? 'off' : 'on' });
+      logAction(`Уведомления о бейджах: ${disableBadgeNotifications ? 'Отключены' : 'Включены'}`);
     }, 300));
   }
 };
@@ -912,18 +924,26 @@ const setupResetSettings = () => {
       localStorage.removeItem('lowPerformance');
       localStorage.removeItem('disableAnimations');
       localStorage.removeItem('disableParticles');
+      localStorage.removeItem('disableBadgeNotifications');
       localStorage.removeItem('fontSize');
       localStorage.removeItem('highContrast');
       localStorage.removeItem('userAvatar');
       localStorage.removeItem('userBadges');
       localStorage.removeItem('username');
       localStorage.removeItem('watchedVideos');
+      localStorage.removeItem('quoteClicks');
+      localStorage.removeItem('qaSubmitted');
+      localStorage.removeItem('donationClicked');
+      localStorage.removeItem('siteVisits');
+      localStorage.removeItem('themeChanges');
+      localStorage.removeItem('socialClicks');
       root.classList.remove('dark', 'low-performance', 'no-animations', 'no-particles', 'high-contrast');
       root.style.setProperty('--font-scale', '1');
       const themeSelect = document.getElementById('themeSelect');
       const lowPerformanceToggle = document.getElementById('lowPerformanceToggle');
       const animationsToggle = document.getElementById('disableAnimationsToggle');
       const particleToggle = document.getElementById('disableParticlesToggle');
+      const badgeNotificationsToggle = document.getElementById('disableBadgeNotifications');
       const fontSizeSlider = document.getElementById('fontSizeSlider');
       const highContrastToggle = document.getElementById('highContrastToggle');
       const userAvatar = document.getElementById('userAvatar');
@@ -934,6 +954,7 @@ const setupResetSettings = () => {
       if (lowPerformanceToggle) lowPerformanceToggle.checked = false;
       if (animationsToggle) animationsToggle.checked = false;
       if (particleToggle) particleToggle.checked = false;
+      if (badgeNotificationsToggle) badgeNotificationsToggle.checked = false;
       if (fontSizeSlider) fontSizeSlider.value = '100';
       if (highContrastToggle) highContrastToggle.checked = false;
       if (userAvatar) userAvatar.src = '/assets/fallback.jpg';
@@ -953,7 +974,6 @@ const setupProfile = () => {
   const avatarUpload = document.getElementById('avatarUpload');
   const userAvatar = document.getElementById('userAvatar');
   const usernameInput = document.getElementById('usernameInput');
-  const badges = document.getElementById('badges');
   const notification = document.getElementById('appearanceNotification');
 
   if (avatarUpload && userAvatar && notification) {
@@ -992,84 +1012,111 @@ const setupProfile = () => {
         checkBadgeConditions();
       } else {
         showNotification('Имя не должно превышать 20 символов', notification);
-        logAction('Ошибка обновления имени: превышена длина');
+        logAction('Ошибка: имя пользователя слишком длинное');
       }
-    }, 500));
-  }
-
-  if (badges) {
-    setupBadges();
+    }, 300));
   }
 };
 
 const setupBadges = () => {
-  const badges = document.getElementById('badges');
-  const badgeList = document.getElementById('badgeList');
+  const badgesContainer = document.getElementById('badges');
+  const badgeListContainer = document.getElementById('badgeList');
   const notification = document.getElementById('appearanceNotification');
-  if (!badges || !badgeList || !notification) return;
 
-  const badgeDefinitions = [
-    { name: 'Фанат', icon: 'fa-solid fa-star', description: 'Выдаётся за посещение сайта!', earned: () => true },
-    { name: 'Мемолог', icon: 'fa-solid fa-laugh', description: 'Посмотрите 4 видео в категории «Угар»', earned: () => {
-      const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-      return Object.values(watchedVideos).filter(v => v.category === 'fun').length >= 4;
+  if (!badgesContainer || !badgeListContainer || !notification) return;
+
+  const badges = [
+    { id: 'profile_setup', name: 'Новичок', description: 'Настрой профиль (аватар и имя)', icon: 'fa-solid fa-user-check', progress: () => {
+      const avatar = localStorage.getItem('userAvatar');
+      const username = localStorage.getItem('username');
+      return (avatar ? 50 : 0) + (username ? 50 : 0);
     }},
-    { name: 'Стример', icon: 'fa-solid fa-video', description: 'Загрузите аватар и установите имя пользователя', earned: () => {
-      return !!localStorage.getItem('userAvatar') && !!localStorage.getItem('username');
+    { id: 'watcher', name: 'Зритель', description: 'Посмотри 5 видео', icon: 'fa-solid fa-eye', progress: () => {
+      const watched = JSON.parse(localStorage.getItem('watchedVideos') || '[]').length;
+      return Math.min(watched * 20, 100);
     }},
-    { name: 'Легенда', icon: 'fa-solid fa-crown', description: 'Получите все остальные бейджи', earned: () => {
-      const savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
-      return savedBadges.includes('Фанат') && savedBadges.includes('Мемолог') && savedBadges.includes('Стример');
+    { id: 'fan', name: 'Фанат', description: 'Посмотри 10 видео', icon: 'fa-solid fa-star', progress: () => {
+      const watched = JSON.parse(localStorage.getItem('watchedVideos') || '[]').length;
+      return Math.min(watched * 10, 100);
     }},
+    { id: 'quote_master', name: 'Мастер цитат', description: 'Кликни на цитату 3 раза', icon: 'fa-solid fa-quote-left', progress: () => {
+      const clicks = parseInt(localStorage.getItem('quoteClicks') || '0');
+      return Math.min(clicks * 33.33, 100);
+    }},
+    { id: 'qa_participant', name: 'Участник Q&A', description: 'Задай вопрос для Q&A', icon: 'fa-solid fa-question-circle', progress: () => {
+      return localStorage.getItem('qaSubmitted') === 'true' ? 100 : 0;
+    }},
+    { id: 'supporter', name: 'Поддержка', description: 'Кликни на кнопку поддержки', icon: 'fa-solid fa-hand-holding-dollar', progress: () => {
+      return localStorage.getItem('donationClicked') === 'true' ? 100 : 0;
+    }},
+    { id: 'loyal_fan', name: 'Лояльный фанат', description: 'Посети сайт 10 раз', icon: 'fa-solid fa-heart', progress: () => {
+      const visits = parseInt(localStorage.getItem('siteVisits') || '0');
+      return Math.min(visits * 10, 100);
+    }, rarity: 'rare'},
+    { id: 'theme_explorer', name: 'Исследователь тем', description: 'Смени тему 5 раз', icon: 'fa-solid fa-palette', progress: () => {
+      const changes = parseInt(localStorage.getItem('themeChanges') || '0');
+      return Math.min(changes * 20, 100);
+    }, rarity: 'rare'},
+    { id: 'social_star', name: 'Социальная звезда', description: 'Перейди по 3 социальным ссылкам', icon: 'fa-solid fa-share-alt', progress: () => {
+      const clicks = parseInt(localStorage.getItem('socialClicks') || '0');
+      return Math.min(clicks * 33.33, 100);
+    }, rarity: 'epic'}
   ];
 
   const savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
   
-  // Очищаем и отображаем полученные бейджи
-  badges.innerHTML = '';
-  badgeDefinitions.forEach(badge => {
-    if (savedBadges.includes(badge.name) || badge.earned()) {
-      if (!savedBadges.includes(badge.name)) {
-        savedBadges.push(badge.name);
-        localStorage.setItem('userBadges', JSON.stringify(savedBadges));
-        showNotification(`Новый бейдж: ${badge.name}!`, notification);
-        gtag('event', 'badge_earned', { event_category: 'profile', event_label: badge.name });
-        logAction(`Получен новый бейдж: ${badge.name}`);
+  const updateBadges = () => {
+    badgesContainer.innerHTML = '';
+    badgeListContainer.innerHTML = '';
+    
+    badges.forEach(badge => {
+      const isEarned = savedBadges.includes(badge.id);
+      const progress = badge.progress();
+      
+      const badgeElement = document.createElement('div');
+      badgeElement.className = `flex items-center gap-2 p-2 rounded-lg ${isEarned ? 'badge-earned bg-indigo-100 dark:bg-indigo-900' : 'badge bg-slate-100 dark:bg-slate-700'}`;
+      badgeElement.innerHTML = `
+        <i class="${badge.icon} text-indigo-600 dark:text-indigo-400"></i>
+        <div class="flex-1">
+          <span class="font-semibold">${badge.name}</span>
+          ${badge.rarity ? `<span class="ml-2 text-xs px-2 py-1 rounded-full ${badge.rarity === 'rare' ? 'bg-yellow-200 text-yellow-800' : 'bg-purple-200 text-purple-800'}">${badge.rarity === 'rare' ? 'Редкий' : 'Эпический'}</span>` : ''}
+          <p class="text-xs text-slate-600 dark:text-slate-300">${badge.description}</p>
+          <div class="progress-bar mt-1">
+            <div class="progress-bar-fill" style="width: ${progress}%"></div>
+          </div>
+        </div>
+      `;
+      
+      if (isEarned) {
+        badgesContainer.appendChild(badgeElement);
+      } else {
+        badgeListContainer.appendChild(badgeElement);
       }
-      const badgeEl = document.createElement('span');
-      badgeEl.className = 'badge inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-600 text-white text-xs animate-[badgePop_0.5s_ease_forwards]';
-      badgeEl.innerHTML = `<i class="${badge.icon}"></i>${badge.name}`;
-      badges.appendChild(badgeEl);
-    }
-  });
+    });
+  };
 
-  // Отображаем список всех бейджей с требованиями
-  badgeList.innerHTML = '';
-  badgeDefinitions.forEach(badge => {
-    const badgeItem = document.createElement('div');
-    badgeItem.className = 'flex items-center gap-2 text-sm';
-    const status = savedBadges.includes(badge.name) || badge.earned() ? '✅' : '🔒';
-    badgeItem.innerHTML = `
-      <i class="${badge.icon} ${savedBadges.includes(badge.name) || badge.earned() ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600'}"></i>
-      <span class="${savedBadges.includes(badge.name) || badge.earned() ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600'}">${badge.name}: ${badge.description}</span>
-      <span>${status}</span>
-    `;
-    badgeList.appendChild(badgeItem);
-  });
-};
+  const checkBadgeConditions = () => {
+    badges.forEach(badge => {
+      const progress = badge.progress();
+      if (progress >= 100 && !savedBadges.includes(badge.id)) {
+        savedBadges.push(badge.id);
+        localStorage.setItem('userBadges', JSON.stringify(savedBadges));
+        if (!localStorage.getItem('disableBadgeNotifications') === 'true') {
+          showNotification(`Бейдж "${badge.name}" получен!`, notification);
+        }
+        gtag('event', 'badge_earned', { event_category: 'profile', event_label: badge.id });
+        logAction(`Бейдж получен: ${badge.name}`);
+      }
+    });
+    updateBadges();
+  };
 
-const checkBadgeConditions = () => {
-  setupBadges(); // Проверяем и обновляем бейджи после каждого действия
+  updateBadges();
+  window.checkBadgeConditions = checkBadgeConditions;
 };
 
 const setupVideos = () => {
-  const tpl = document.getElementById('ytCardTpl');
-  const grid = document.querySelector('#videos .mt-8.grid');
-  const loadMoreButton = document.getElementById('loadMoreVideos');
-  const notification = document.getElementById('appearanceNotification');
-  if (!tpl || !grid || !loadMoreButton || !notification) return;
-
-  const videoData = [
+  const videos = [
     { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning', category: 'fun' },
     { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO', category: 'fun' },
     { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)', category: 'streams' },
@@ -1087,146 +1134,243 @@ const setupVideos = () => {
     { src: 'https://rutube.ru/play/embed/0f958e52a3a7023734bfa562186a9bce', title: 'БЛИЦ Play: ВСЕ? ВСЕ.', category: 'blitz' }
   ];
 
-  let currentPage = 1;
-  const videosPerPage = 4;
+  const videoContainer = document.querySelector('#videos .grid');
+  const loadMoreButton = document.getElementById('loadMoreVideos');
+  const ytCardTpl = document.getElementById('ytCardTpl');
+  const videoFilters = document.querySelectorAll('.video-filter');
+  let displayedVideos = 0;
+  const videosPerPage = 3;
 
-  const renderVideos = (videos, append = false) => {
-    if (!append) grid.innerHTML = '';
-    videos.forEach((v) => {
-      const node = tpl.content.cloneNode(true);
-      const iframe = node.querySelector('iframe');
-      const title = node.querySelector('p');
-      const card = node.querySelector('.video-card');
-      const fallbackImg = node.querySelector('img');
-      if (iframe && title && card && fallbackImg) {
-        iframe.src = v.src;
-        iframe.setAttribute('title', `Видео: ${v.title}`);
-        iframe.onload = () => {
-          const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-          watchedVideos[v.title] = { category: v.category, watched: true };
-          localStorage.setItem('watchedVideos', JSON.stringify(watchedVideos));
-          checkBadgeConditions();
-        };
-        iframe.onerror = () => {
-          iframe.classList.add('hidden');
-          fallbackImg.classList.remove('hidden');
-          logAction(`Ошибка загрузки видео: ${v.title}`);
-        };
-        title.textContent = v.title;
-        card.dataset.category = v.category;
-        grid.appendChild(node);
-      }
+  const loadVideos = (filter = 'all') => {
+    videoContainer.innerHTML = '';
+    displayedVideos = 0;
+    const filteredVideos = filter === 'all' ? videos : videos.filter(v => v.category === filter);
+    
+    filteredVideos.slice(0, videosPerPage).forEach(video => {
+      const card = ytCardTpl.content.cloneNode(true);
+      const iframe = card.querySelector('iframe');
+      const description = card.querySelector('p');
+      const videoCard = card.querySelector('.video-card');
+      iframe.src = video.url;
+      iframe.title = video.title;
+      description.textContent = video.title;
+      videoCard.dataset.id = video.id;
+      videoContainer.appendChild(card);
+      displayedVideos++;
     });
-    loadMoreButton.disabled = currentPage * videosPerPage >= videoData.length;
+
+    loadMoreButton.disabled = displayedVideos >= filteredVideos.length;
   };
 
-  const loadMoreVideos = () => {
-    currentPage++;
-    const start = (currentPage - 1) * videosPerPage;
-    const end = start + videosPerPage;
-    const videosToShow = videoData.slice(start, end);
-    renderVideos(videosToShow, true);
-    gtag('event', 'load_more_videos', { event_category: 'videos', event_label: `page_${currentPage}` });
-    logAction(`Загружено ещё ${videosToShow.length} видео`);
-  };
-
-  renderVideos(videoData.slice(0, videosPerPage));
-
-  loadMoreButton.addEventListener('click', loadMoreVideos);
-
-  const filterButtons = document.querySelectorAll('.video-filter');
-  const categoryDesc = document.getElementById('category-desc');
-  const categoryDescriptions = {
-    all: 'Все видео от Mortis Play: стримы, мемы и подкасты!',
-    streams: 'Стримы с эпичными моментами и геймплеем!',
-    fun: 'Угарные видео и мемы для настроения!',
-    blitz: 'Короткие и динамичные БЛИЦ Play ролики!'
-  };
-
-  filterButtons.forEach(button => {
+  videoFilters.forEach(button => {
     button.addEventListener('click', () => {
-      const filter = button.dataset.filter;
-      filterButtons.forEach(btn => {
-        btn.classList.toggle('active', btn === button);
-        btn.setAttribute('aria-pressed', btn === button);
+      videoFilters.forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-pressed', 'false');
       });
-      const filteredVideos = filter === 'all' ? videoData : videoData.filter(v => v.category === filter);
-      currentPage = 1;
-      renderVideos(filteredVideos.slice(0, videosPerPage));
-      categoryDesc.textContent = categoryDescriptions[filter];
-      gtag('event', 'video_filter', { event_category: 'videos', event_label: filter });
-      logAction(`Фильтр видео: ${filter}`);
+      button.classList.add('active');
+      button.setAttribute('aria-pressed', 'true');
+      loadVideos(button.dataset.filter);
+      const desc = document.getElementById('category-desc');
+      desc.textContent = button.dataset.filter === 'all' ? 'Все видео от Mortis Play: стримы, мемы и подкасты!' :
+        button.dataset.filter === 'streams' ? 'Эпичные стримы от Mortis Play!' :
+        button.dataset.filter === 'fun' ? 'Угарные мемы и весёлые моменты!' :
+        'Быстрые катки и динамичные игры!';
+      gtag('event', 'video_filter', { event_category: 'videos', event_label: button.dataset.filter });
+      logAction(`Фильтр видео: ${button.dataset.filter}`);
     });
   });
+
+  loadMoreButton.addEventListener('click', () => {
+    const activeFilter = document.querySelector('.video-filter.active').dataset.filter;
+    const filteredVideos = activeFilter === 'all' ? videos : videos.filter(v => v.category === activeFilter);
+    const nextVideos = filteredVideos.slice(displayedVideos, displayedVideos + videosPerPage);
+    
+    nextVideos.forEach(video => {
+      const card = ytCardTpl.content.cloneNode(true);
+      const iframe = card.querySelector('iframe');
+      const description = card.querySelector('p');
+      const videoCard = card.querySelector('.video-card');
+      iframe.src = video.url;
+      iframe.title = video.title;
+      description.textContent = video.title;
+      videoCard.dataset.id = video.id;
+      videoContainer.appendChild(card);
+      displayedVideos++;
+    });
+
+    loadMoreButton.disabled = displayedVideos >= filteredVideos.length;
+    gtag('event', 'load_more_videos', { event_category: 'videos', event_label: 'load_more' });
+    logAction('Загружено больше видео');
+  });
+
+  videoContainer.addEventListener('click', (e) => {
+    const videoCard = e.target.closest('.video-card');
+    if (videoCard) {
+      const videoId = videoCard.dataset.id;
+      const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '[]');
+      if (!watchedVideos.includes(videoId)) {
+        watchedVideos.push(videoId);
+        localStorage.setItem('watchedVideos', JSON.stringify(watchedVideos));
+        checkBadgeConditions();
+      }
+    }
+  });
+
+  loadVideos();
 };
 
-const setupNavigation = () => {
+const setupSidebar = () => {
   const menuToggle = document.getElementById('menuToggle');
   const sidebarMenu = document.getElementById('sidebarMenu');
   const closeMenu = document.getElementById('closeMenu');
+
   if (menuToggle && sidebarMenu && closeMenu) {
     menuToggle.addEventListener('click', () => {
       sidebarMenu.classList.toggle('open');
       menuToggle.setAttribute('aria-expanded', sidebarMenu.classList.contains('open'));
-      gtag('event', 'menu_toggle', { event_category: 'navigation', event_label: sidebarMenu.classList.contains('open') ? 'open' : 'close' });
-      logAction(`Меню: ${sidebarMenu.classList.contains('open') ? 'Открыто' : 'Закрыто'}`);
+      gtag('event', 'sidebar_toggle', { event_category: 'navigation', event_label: 'open' });
+      logAction('Боковое меню открыто');
     });
+
     closeMenu.addEventListener('click', () => {
       sidebarMenu.classList.remove('open');
       menuToggle.setAttribute('aria-expanded', 'false');
-      gtag('event', 'menu_close', { event_category: 'navigation', event_label: 'close' });
-      logAction('Меню закрыто');
+      gtag('event', 'sidebar_toggle', { event_category: 'navigation', event_label: 'close' });
+      logAction('Боковое меню закрыто');
     });
-  }
 
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', (e) => {
-      e.preventDefault();
-      const targetId = anchor.getAttribute('href').substring(1);
-      const target = document.getElementById(targetId);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-        gtag('event', 'nav_click', { event_category: 'navigation', event_label: targetId });
-        logAction(`Переход к секции: ${targetId}`);
-      }
-      if (sidebarMenu && sidebarMenu.classList.contains('open')) {
+    sidebarMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
         sidebarMenu.classList.remove('open');
         menuToggle.setAttribute('aria-expanded', 'false');
-      }
+        gtag('event', 'sidebar_navigation', { event_category: 'navigation', event_label: link.href });
+        logAction(`Переход по ссылке в боковом меню: ${link.href}`);
+      });
+    });
+  }
+};
+
+const setupQuoteInteraction = () => {
+  const quote = document.querySelector('.banner-quote');
+  if (quote) {
+    quote.addEventListener('click', () => {
+      let clicks = parseInt(localStorage.getItem('quoteClicks') || '0');
+      clicks++;
+      localStorage.setItem('quoteClicks', clicks);
+      checkBadgeConditions();
+      gtag('event', 'quote_click', { event_category: 'engagement', event_label: 'quote_interaction' });
+      logAction(`Клик по цитате: ${clicks}`);
+    });
+  }
+};
+
+const setupQAButton = () => {
+  const qaButton = document.getElementById('qaButton');
+  if (qaButton) {
+    qaButton.addEventListener('click', () => {
+      localStorage.setItem('qaSubmitted', 'true');
+      checkBadgeConditions();
+      gtag('event', 'qa_button_click', { event_category: 'engagement', event_label: 'qa_submitted' });
+      logAction('Кнопка Q&A нажата');
+    });
+  }
+};
+
+const setupDonationButton = () => {
+  const donationButton = document.querySelector('a[href="https://www.donationalerts.com/r/mortis32"]');
+  if (donationButton) {
+    donationButton.addEventListener('click', () => {
+      localStorage.setItem('donationClicked', 'true');
+      checkBadgeConditions();
+      gtag('event', 'donation_button_click', { event_category: 'engagement', event_label: 'donation_clicked' });
+      logAction('Кнопка поддержки нажата');
+    });
+  }
+};
+
+const setupSocialLinks = () => {
+  const socialLinks = document.querySelectorAll('#contact a[href*="t.me"], #contact a[href*="youtube.com"], #contact a[href*="twitch.tv"], #contact a[href*="tiktok.com"], #contact a[href*="discord.gg"]');
+  socialLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      let clicks = parseInt(localStorage.getItem('socialClicks') || '0');
+      clicks++;
+      localStorage.setItem('socialClicks', clicks);
+      checkBadgeConditions();
+      gtag('event', 'social_link_click', { event_category: 'engagement', event_label: link.href });
+      logAction(`Клик по социальной ссылке: ${link.href}`);
     });
   });
+};
+
+const setupSiteVisits = () => {
+  let visits = parseInt(localStorage.getItem('siteVisits') || '0');
+  visits++;
+  localStorage.setItem('siteVisits', visits);
+  checkBadgeConditions();
+  gtag('event', 'site_visit', { event_category: 'engagement', event_label: `visit_${visits}` });
+  logAction(`Посещение сайта: ${visits}`);
+};
+
+const setupThemeChangeTracking = () => {
+  const themeSelect = document.getElementById('themeSelect');
+  if (themeSelect) {
+    themeSelect.addEventListener('change', () => {
+      let changes = parseInt(localStorage.getItem('themeChanges') || '0');
+      changes++;
+      localStorage.setItem('themeChanges', changes);
+      checkBadgeConditions();
+      logAction(`Смена темы: ${changes}`);
+    });
+  }
+};
+
+const setupIntersectionObserver = () => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(element => observer.observe(element));
 };
 
 const setupParticles = () => {
   const canvas = document.getElementById('backgroundParticles');
   if (!canvas) return;
+
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
   const particles = [];
-  const particleCount = Math.floor(window.innerWidth / 20);
+  const particleCount = window.innerWidth < 640 ? 50 : 100;
+
   for (let i = 0; i < particleCount; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      size: Math.random() * 3 + 1,
-      speedX: Math.random() * 0.5 - 0.25,
-      speedY: Math.random() * 0.5 - 0.25
+      radius: Math.random() * 2 + 1,
+      speedX: (Math.random() - 0.5) * 2,
+      speedY: (Math.random() - 0.5) * 2
     });
   }
 
   const animateParticles = () => {
     if (root.classList.contains('no-particles') || root.classList.contains('low-performance')) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      p.x += p.speedX;
-      p.y += p.speedY;
-      if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+    particles.forEach(particle => {
+      particle.x += particle.speedX;
+      particle.y += particle.speedY;
+
+      if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+      if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
+
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = root.classList.contains('dark') ? '#e5e7eb' : '#1f2937';
+      ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+      ctx.fillStyle = root.classList.contains('dark') ? 'rgba(229, 231, 235, 0.3)' : 'rgba(31, 41, 55, 0.3)';
       ctx.fill();
     });
     requestAnimationFrame(animateParticles);
@@ -1240,66 +1384,77 @@ const setupParticles = () => {
   animateParticles();
 };
 
-const setupFadeIn = () => {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
+const setupThemeToggleParticles = () => {
+  const canvas = document.getElementById('particleCanvas');
+  if (!canvas) return;
 
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-};
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
 
-const setupVideoErrorHandling = () => {
-  const video = document.querySelector('.banner-video');
-  if (video) {
-    video.addEventListener('error', () => {
-      const fallbackImg = video.nextElementSibling;
-      if (fallbackImg) {
-        video.classList.add('hidden');
-        fallbackImg.classList.remove('hidden');
-        logAction('Ошибка загрузки видео в баннере');
-      }
+  const particles = [];
+  const particleCount = 20;
+
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 2 + 1,
+      speedX: (Math.random() - 0.5) * 3,
+      speedY: (Math.random() - 0.5) * 3
     });
   }
-};
 
-const setupLoader = () => {
-  const loader = document.getElementById('loader');
-  const siteContent = document.getElementById('siteContent');
-  if (loader && siteContent) {
-    const hideLoader = () => {
-      loader.style.display = 'none';
-      siteContent.classList.remove('hidden');
-      gtag('event', 'page_load', { event_category: 'performance', event_label: 'site_loaded' });
-      logAction('Сайт загружен');
-    };
-    window.addEventListener('load', () => {
-      setTimeout(hideLoader, 500);
+  const animateParticles = () => {
+    if (root.classList.contains('no-particles') || root.classList.contains('low-performance')) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(particle => {
+      particle.x += particle.speedX;
+      particle.y += particle.speedY;
+
+      if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+      if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
+
+      ctx.beginPath();
+      ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+      ctx.fillStyle = root.classList.contains('dark') ? 'rgba(165, 180, 252, 0.5)' : 'rgba(99, 102, 241, 0.5)';
+      ctx.fill();
     });
-    setTimeout(hideLoader, 10000);
-  }
+    requestAnimationFrame(animateParticles);
+  };
+
+  animateParticles();
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('loader').classList.add('hidden');
+  document.getElementById('siteContent').classList.remove('hidden');
+  
   setupThemeToggle();
   setupThemeSelect();
   setupPerformance();
   setupAnimations();
   setupParticleToggle();
+  setupBadgeNotifications();
   setupFontSize();
   setupHighContrast();
   setupResetSettings();
   setupProfile();
+  setupBadges();
   setupVideos();
-  setupNavigation();
+  setupSidebar();
+  setupQuoteInteraction();
+  setupQAButton();
+  setupDonationButton();
+  setupSocialLinks();
+  setupSiteVisits();
+  setupThemeChangeTracking();
+  setupIntersectionObserver();
   setupParticles();
-  setupFadeIn();
-  setupLoader();
-  setupVideoErrorHandling();
+  setupThemeToggleParticles();
+
+  gtag('event', 'page_load', { event_category: 'performance', event_label: 'site_loaded' });
+  logAction('Сайт загружен');
 });
 </script>
 </body>
