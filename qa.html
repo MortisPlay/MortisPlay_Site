@@ -4,16 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mortis Play — Q&A</title>
-  <meta name="description" content="Задай свой вопрос Mortis Play и смотри ответы на лучшие вопросы!" />
+  <meta name="description" content="Ознакомьтесь с вопросами и ответами от Mortis Play!" />
   <meta name="robots" content="index,follow" />
   <meta property="og:title" content="Mortis Play — Q&A" />
-  <meta property="og:description" content="Интерактивное Q&A с Mortis Play: задавай вопросы и получай ответы!" />
+  <meta property="og:description" content="Архив вопросов и ответов от Mortis Play." />
   <meta property="og:image" content="https://mortisplay.ru/assets/og-image-qa.jpg" />
   <meta property="og:url" content="https://mortisplay.ru/qa.html" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Mortis Play — Q&A" />
-  <meta name="twitter:description" content="Интерактивное Q&A с Mortis Play: задавай вопросы и получай ответы!" />
+  <meta name="twitter:description" content="Архив вопросов и ответов от Mortis Play." />
   <meta name="twitter:image" content="https://mortisplay.ru/assets/twitter-image-qa.jpg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -30,31 +30,44 @@
       font-size: calc(1rem * var(--font-scale)); 
       background: linear-gradient(to bottom right, #0d0d0d, #1a1a1a, #2d2d2d); 
       color: #e5e7eb; 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
     .text-4xl { font-size: calc(2.25rem * var(--font-scale)); }
     .text-2xl { font-size: calc(1.5rem * var(--font-scale)); }
     .text-lg { font-size: calc(1.125rem * var(--font-scale)); }
     .text-sm { font-size: calc(0.875rem * var(--font-scale)); }
-    @keyframes floaty { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-20px) translateX(10px); } }
-    @keyframes breathing { 0%,100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.05); } }
-    .animate-floaty { animation: floaty 8s ease-in-out infinite; }
-    .animate-floaty-slow { animation: floaty 10s ease-in-out infinite; }
-    .animate-breathing { animation: breathing 10s ease-in-out infinite; }
-    .neon-title { 
-      transition: all 0.5s ease; 
-      color: #e5e7eb; 
-      background: linear-gradient(to right, #a5b4fc, #f9a8d4, #a5b4fc); 
-    }
-    .neon-title:hover { filter: brightness(1.3); }
+    @keyframes floaty { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-15px) translateX(5px); } }
+    .animate-floaty { animation: floaty 6s ease-in-out infinite; }
+    .animate-floaty-slow { animation: floaty 8s ease-in-out infinite; }
     .fade-in { 
       opacity: 0; 
-      transform: translateY(20px); 
-      transition: opacity 0.6s ease, transform 0.6s ease; 
+      transform: translateY(15px); 
+      transition: opacity 0.5s ease, transform 0.5s ease; 
     }
     .fade-in.is-visible { opacity: 1; transform: translateY(0); }
     .card {
-      background: rgba(30, 30, 30, 0.8);
-      border-color: rgba(120, 120, 120, 0.3);
+      background: rgba(30, 30, 30, 0.85);
+      border: 1px solid rgba(120, 120, 120, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .title-gradient { 
+      color: #ffffff; 
+      background: linear-gradient(to right, #a5b4fc, #f9a8d4); 
+      -webkit-background-clip: text; 
+      background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+      transition: filter 0.3s ease;
+    }
+    .title-gradient:hover { filter: brightness(1.2); }
+    .disabled-button {
+      background: rgba(100, 100, 100, 0.5);
+      color: #9ca3af;
+      cursor: not-allowed;
+      pointer-events: none;
     }
     h1, h2, h3 { color: #e5e7eb; }
     p, li, span { color: #d1d5db; }
@@ -64,16 +77,21 @@
       --link-color: #00ff00; 
     }
     .high-contrast body { background: var(--bg-color); color: var(--text-color); }
-    .high-contrast a { color: var(--link-color); }
-    .high-contrast .card { background: var(--bg-color); border-color: var(--text-color); }
-    .high-contrast .neon-title { color: #ffffff; background: none; }
+    .high-contrast a { color: var(--link-color); text-decoration: underline; }
+    .high-contrast .card { background: var(--bg-color); border: 2px solid var(--text-color); }
+    .high-contrast .title-gradient { color: var(--text-color); background: none; -webkit-text-fill-color: var(--text-color); }
     .high-contrast .bg-gradient-to-r { 
       background: var(--bg-color); 
       color: var(--text-color); 
+      border: 2px solid var(--text-color);
+    }
+    .high-contrast .disabled-button {
+      background: var(--bg-color);
+      color: var(--text-color);
+      border: 2px solid var(--text-color);
     }
     .low-performance .animate-floaty, 
-    .low-performance .animate-floaty-slow, 
-    .low-performance .animate-breathing { animation: none; }
+    .low-performance .animate-floaty-slow { animation: none; }
     .low-performance .fade-in, 
     .no-animations .fade-in { 
       transition: none; 
@@ -81,21 +99,20 @@
       transform: none; 
     }
     .no-animations .animate-floaty, 
-    .no-animations .animate-floaty-slow, 
-    .no-animations .animate-breathing { 
+    .no-animations .animate-floaty-slow { 
       animation: none; 
     }
     .loader {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100px;
+      height: 80px;
     }
     .loader::before {
       content: '';
-      width: 24px;
-      height: 24px;
-      border: 4px solid #a5b4fc;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #a5b4fc;
       border-top-color: transparent;
       border-radius: 50%;
       animation: spin 1s linear infinite;
@@ -105,60 +122,59 @@
     }
     @media (max-width: 640px) {
       .md\:grid-cols-4 { grid-template-columns: 1fr; }
-      .text-4xl { font-size: calc(2rem * var(--font-scale)); }
-      .text-2xl { font-size: calc(1.5rem * var(--font-scale)); }
-      .px-4 { padding-left: 1rem; padding-right: 1rem; }
-      .py-24 { padding-top: 4rem; padding-bottom: 4rem; }
+      .text-4xl { font-size: calc(1.75rem * var(--font-scale)); }
+      .text-2xl { font-size: calc(1.25rem * var(--font-scale)); }
+      .px-4 { padding-left: 0.75rem; padding-right: 0.75rem; }
+      .py-24 { padding-top: 3rem; padding-bottom: 3rem; }
       .w-80, .w-72, .w-[50rem] { width: 100%; }
-      .rounded-3xl { border-radius: 1rem; }
-      .backdrop-blur-lg { backdrop-filter: none; background: rgba(30, 30, 30, 0.8); }
+      .rounded-3xl { border-radius: 0.75rem; }
+      .backdrop-blur-lg { backdrop-filter: none; background: rgba(30, 30, 30, 0.85); }
+      .card:hover { transform: none; }
     }
   </style>
 </head>
 <body class="min-h-screen">
   <main class="relative min-h-screen overflow-hidden">
-    <div class="absolute -top-20 -left-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-floaty"></div>
-    <div class="absolute top-60 -right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-floaty-slow"></div>
-    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[50rem] bg-indigo-500/10 rounded-full blur-[200px] animate-breathing"></div>
-    <div class="mx-auto max-w-5xl px-4 py-24 relative z-10">
-      <h1 id="qaTitle" class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] text-center">
-        Q&A
+    <div class="absolute -top-10 -left-10 w-80 h-80 bg-purple-500/15 rounded-full blur-2xl animate-floaty"></div>
+    <div class="absolute top-40 -right-10 w-72 h-72 bg-pink-500/15 rounded-full blur-2xl animate-floaty-slow"></div>
+    <div class="mx-auto max-w-5xl px-4 py-16 relative z-10">
+      <h1 id="qaTitle" class="title-gradient text-4xl md:text-5xl font-bold tracking-tight text-center">
+        Q&A с Mortis Play
       </h1>
-      <div class="mt-16 grid gap-10">
-        <div class="backdrop-blur-lg card border rounded-3xl p-8 shadow-lg fade-in">
+      <p class="mt-4 text-lg text-center text-slate-300">Архив вопросов и ответов. Задавайте вопросы, когда Q&A снова откроется! 😎</p>
+      <div class="mt-12 grid gap-8">
+        <div class="backdrop-blur-lg card border rounded-2xl p-6 shadow-md fade-in">
           <h2 class="text-2xl font-semibold text-purple-300 flex items-center gap-2">
             <i class="fa-solid fa-question-circle"></i> Задать вопрос
           </h2>
-          <p id="qaStatus" class="mt-4 text-lg text-slate-200 leading-relaxed">
-            Q&A открыт! Задавай свои вопросы в Telegram бота, я отвечу на лучшие! 😎
+          <p id="qaStatus" class="mt-4 text-lg text-slate-300 leading-relaxed">
+            Q&A временно закрыт. Следите за обновлениями в Telegram канале: <a href="https://t.me/MortisPlayTG" class="underline text-indigo-400 hover:text-indigo-300" rel="noopener">@MortisPlayTG</a>!
           </p>
           <div class="mt-6 flex justify-center">
-            <a id="qaSubmitButton" href="https://t.me/MortisplayQABot" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg flex items-center gap-2" rel="noopener" aria-label="Задать вопрос в Telegram">
+            <button id="qaSubmitButton" class="px-4 py-2 rounded-full disabled-button flex items-center gap-2" disabled aria-label="Задать вопрос в Telegram (неактивно)">
               <i class="fa-brands fa-telegram"></i> Задать вопрос в Telegram
-            </a>
+            </button>
           </div>
         </div>
-        <div class="backdrop-blur-lg card border rounded-3xl p-8 shadow-lg fade-in">
+        <div class="backdrop-blur-lg card border rounded-2xl p-6 shadow-md fade-in">
           <h2 class="text-2xl font-semibold text-indigo-300 flex items-center gap-2">
             <i class="fa-solid fa-comments"></i> Вопросы и ответы
           </h2>
-          <div id="qa-list" class="mt-4 space-y-6">
-            <!-- Вопросы будут добавлены через JS -->
+          <div id="qa-list" class="mt-4 space-y-4">
+            <div class="loader" aria-label="Загрузка вопросов"></div>
           </div>
         </div>
       </div>
-      <div class="mt-12 text-center">
-        <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg inline-flex items-center gap-2" aria-label="Вернуться на главную">
+      <div class="mt-10 text-center">
+        <a href="/" class="px-6 py-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 shadow-md inline-flex items-center gap-2" aria-label="Вернуться на главную">
           <i class="fa-solid fa-arrow-left"></i> На главную
         </a>
       </div>
     </div>
   </main>
   <script nonce="${crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '')}">
-    // Логирование
     const logAction = (message) => console.log(`[Q&A] ${message}`);
 
-    // Debounce
     const debounce = (func, wait) => {
       let timeout;
       return (...args) => {
@@ -167,113 +183,167 @@
       };
     };
 
-    // Экранирование HTML
     const escapeHTML = (str) => {
       const div = document.createElement('div');
       div.textContent = str;
       return div.innerHTML;
     };
 
-    // Анимация появления
     const setupFadeIn = () => {
-      const io = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && !document.documentElement.classList.contains('low-performance') && !document.documentElement.classList.contains('no-animations')) {
-              entry.target.classList.add('is-visible');
-              io.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-      document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+      try {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting && !document.documentElement.classList.contains('low-performance') && !document.documentElement.classList.contains('no-animations')) {
+                entry.target.classList.add('is-visible');
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+        document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+        logAction('IntersectionObserver для fade-in настроен');
+      } catch (e) {
+        logAction('Ошибка в setupFadeIn: ' + e.message);
+      }
     };
 
-    // Отслеживание кликов
     const setupButtonTracking = () => {
-      const buttons = document.querySelectorAll('a[class*="bg-gradient-to-r"]');
-      buttons.forEach(button => {
-        button.addEventListener('click', (e) => {
-          const label = e.target.textContent.trim();
-          gtag('event', 'button_click', { event_category: 'qa', event_label: label });
-          logAction(`Клик по кнопке: ${label}`);
+      try {
+        const buttons = document.querySelectorAll('a[class*="bg-gradient-to-r"]');
+        buttons.forEach(button => {
+          button.addEventListener('click', (e) => {
+            const label = e.target.textContent.trim();
+            gtag('event', 'button_click', { event_category: 'qa', event_label: label });
+            logAction(`Клик по кнопке: ${label}`);
+          });
         });
-      });
+        logAction('Трекинг кнопок настроен');
+      } catch (e) {
+        logAction('Ошибка в setupButtonTracking: ' + e.message);
+      }
     };
 
-    // Управление размером шрифта
     const setupFontSize = () => {
-      const savedFontSize = localStorage.getItem('fontSize') || '100';
-      document.documentElement.style.setProperty('--font-scale', savedFontSize / 100);
+      try {
+        const savedFontSize = localStorage.getItem('fontSize') || '100';
+        document.documentElement.style.setProperty('--font-scale', savedFontSize / 100);
+        logAction(`Размер шрифта установлен: ${savedFontSize}%`);
+      } catch (e) {
+        logAction('Ошибка в setupFontSize: ' + e.message);
+      }
     };
 
-    // Управление высокой контрастностью
     const setupHighContrast = () => {
-      const savedContrast = localStorage.getItem('highContrast') === 'true';
-      document.documentElement.classList.toggle('high-contrast', savedContrast);
+      try {
+        const savedContrast = localStorage.getItem('highContrast') === 'true';
+        document.documentElement.classList.toggle('high-contrast', savedContrast);
+        logAction(`Высокая контрастность: ${savedContrast ? 'включена' : 'выключена'}`);
+      } catch (e) {
+        logAction('Ошибка в setupHighContrast: ' + e.message);
+      }
     };
 
-    // Управление производительностью
     const setupPerformance = () => {
-      const savedMode = localStorage.getItem('lowPerformance') === 'true';
-      document.documentElement.classList.toggle('low-performance', savedMode);
+      try {
+        const savedMode = localStorage.getItem('lowPerformance') === 'true';
+        document.documentElement.classList.toggle('low-performance', savedMode);
+        logAction(`Режим производительности: ${savedMode ? 'лёгкий' : 'нормальный'}`);
+      } catch (e) {
+        logAction('Ошибка в setupPerformance: ' + e.message);
+      }
     };
 
-    // Управление анимациями
     const setupAnimations = () => {
-      const savedAnimations = localStorage.getItem('disableAnimations') === 'true';
-      document.documentElement.classList.toggle('no-animations', savedAnimations);
+      try {
+        const savedAnimations = localStorage.getItem('disableAnimations') === 'true';
+        document.documentElement.classList.toggle('no-animations', savedAnimations);
+        logAction(`Анимации: ${savedAnimations ? 'отключены' : 'включены'}`);
+      } catch (e) {
+        logAction('Ошибка в setupAnimations: ' + e.message);
+      }
     };
 
-    // Список вопросов
     const setupQAList = () => {
-      logAction('Запуск setupQAList');
-      const qaList = document.getElementById('qa-list');
-      if (!qaList) {
-        logAction('Ошибка: qaList не найден');
-        return;
-      }
+      try {
+        logAction('Запуск setupQAList');
+        const qaList = document.getElementById('qa-list');
+        if (!qaList) {
+          logAction('Ошибка: qaList не найден');
+          return;
+        }
 
-      qaList.innerHTML = '';
-      const approvedQuestions = [
-        { username: 'Shartkku', question: 'Когда новая серия Standoff пряток? уже 2года ждём', answer: 'Серии пряток по Standoff 2 больше не будет из за того что канал заброшен.' },
-        { username: 'Johnny_Drill', question: 'когда стрим по PEAK?', answer: 'Т.к сейчас у меня нет времени на стрим, но зато скоро, будет СЕКРЕТНОЕ ДОСЬЕ, КОТОРЫЙ ПЕРЕВЕРНЕТ КОНТОРУ КАНАЛА!!! >:D' },
-        { username: 'sakhaboom_b00m', question: 'Функционирует ли бот с Discord сервером?', answer: 'Если ты имеешь ввиду, что, этот бот функционирует с Discord сервером то к сожалению нет. Однако, у нас на новом Discord сервере у нас он есть.' },
-        { username: 'vakiliner', question: 'Где можно предложить идею или улучшение для твоего сайта или бота?', answer: 'Предложение можно кидать у нас в основном Telegram канале, подписаться на него, затем нажать на три точки, затем нажать на "Сообщение каналу" и нажать на значок сообщение с $' },
-        { username: 'Shartkku', question: 'В каком году ты начал играть в кс?', answer: 'В 2020-2021 году.' },
-        { username: 'vakiliner', question: 'Какая твоя любимая игра?', answer: 'На данный момент моя любимая игра это CS2, а за месяца мне понравились эти игры: PEAK, REPO и др.' }
-      ];
-      if (approvedQuestions.length === 0) {
-        qaList.innerHTML = '<p class="text-sm text-slate-200">Пока нет одобренных вопросов.</p>';
-        logAction('Нет одобренных вопросов для отображения');
-        return;
-      }
+        qaList.innerHTML = '';
+        const approvedQuestions = [
+          { username: 'Shartkku', question: 'Когда новая серия Standoff пряток? уже 2 года ждём', answer: 'Серии пряток по Standoff 2 больше не будет из-за того, что канал заброшен.' },
+          { username: 'Johnny_Drill', question: 'Когда стрим по PEAK?', answer: 'Сейчас времени на стрим нет, но скоро будет СЕКРЕТНОЕ ДОСЬЕ, которое перевернёт контору канала!!! >:D' },
+          { username: 'sakhaboom_b00m', question: 'Функционирует ли бот с Discord сервером?', answer: 'Если ты про связь бота с Discord, то, к сожалению, нет. Но на нашем новом Discord-сервере есть свой бот!' },
+          { username: 'vakiliner', question: 'Где можно предложить идею или улучшение для твоего сайта или бота?', answer: 'Предложения можно отправлять в основном Telegram-канале: подпишись, нажми на три точки, выбери "Сообщение каналу" и отправь с иконкой $.' },
+          { username: 'Shartkku', question: 'В каком году ты начал играть в КС?', answer: 'В 2020–2021 году.' },
+          { username: 'vakiliner', question: 'Какая твоя любимая игра?', answer: 'Сейчас это CS2, а за последний месяц понравились: PEAK, REPO и другие.' }
+        ];
 
-      approvedQuestions.forEach(q => {
-        const qaItem = document.createElement('div');
-        qaItem.className = 'border-l-4 border-purple-500 pl-4';
-        qaItem.innerHTML = `
-          <p class="text-lg font-semibold text-purple-300">${escapeHTML(q.username || 'Аноним')}</p>
-          <p class="text-sm text-slate-200">${escapeHTML(q.question)}</p>
-          <p class="mt-2 text-sm text-indigo-300"><strong>Ответ:</strong> ${escapeHTML(q.answer)}</p>
-        `;
-        qaList.appendChild(qaItem);
-      });
-      gtag('event', 'qa_list_view', { event_category: 'qa', event_label: `questions_displayed_${approvedQuestions.length}` });
-      logAction(`Список вопросов отображён: ${approvedQuestions.length} вопросов`);
+        if (approvedQuestions.length === 0) {
+          qaList.innerHTML = '<p class="text-sm text-slate-300">Пока нет одобренных вопросов.</p>';
+          logAction('Нет одобренных вопросов для отображения');
+          return;
+        }
+
+        approvedQuestions.forEach(q => {
+          const qaItem = document.createElement('div');
+          qaItem.className = 'border-l-2 border-purple-400 pl-4 py-2 hover:bg-indigo-500/10 rounded-lg transition-all';
+          qaItem.innerHTML = `
+            <p class="text-lg font-medium text-purple-200 flex items-center gap-2">
+              <i class="fa-solid fa-user text-sm"></i> ${escapeHTML(q.username || 'Аноним')}
+            </p>
+            <p class="text-sm text-slate-200 mt-1"><strong>Вопрос:</strong> ${escapeHTML(q.question)}</p>
+            <p class="text-sm text-indigo-200 mt-2"><strong>Ответ:</strong> ${escapeHTML(q.answer)}</p>
+          `;
+          qaList.appendChild(qaItem);
+        });
+
+        gtag('event', 'qa_list_view', { event_category: 'qa', event_label: `questions_displayed_${approvedQuestions.length}` });
+        logAction(`Список вопросов отображён: ${approvedQuestions.length} вопросов`);
+      } catch (e) {
+        logAction('Ошибка в setupQAList: ' + e.message);
+      }
     };
 
-    // Инициализация
+    // Синхронизация настроек между вкладками
+    window.addEventListener('storage', (e) => {
+      try {
+        if (e.key === 'fontSize') {
+          document.documentElement.style.setProperty('--font-scale', e.newValue / 100);
+          logAction(`Синхронизация размера шрифта: ${e.newValue}%`);
+        } else if (e.key === 'highContrast') {
+          document.documentElement.classList.toggle('high-contrast', e.newValue === 'true');
+          logAction(`Синхронизация высокой контрастности: ${e.newValue}`);
+        } else if (e.key === 'lowPerformance') {
+          document.documentElement.classList.toggle('low-performance', e.newValue === 'true');
+          logAction(`Синхронизация режима производительности: ${e.newValue}`);
+        } else if (e.key === 'disableAnimations') {
+          document.documentElement.classList.toggle('no-animations', e.newValue === 'true');
+          logAction(`Синхронизация анимаций: ${e.newValue}`);
+        }
+      } catch (err) {
+        logAction('Ошибка в обработчике storage: ' + err.message);
+      }
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
-      logAction('DOMContentLoaded сработал');
-      setupFadeIn();
-      setupButtonTracking();
-      setupFontSize();
-      setupHighContrast();
-      setupPerformance();
-      setupAnimations();
-      setupQAList();
+      try {
+        logAction('DOMContentLoaded сработал');
+        setupFadeIn();
+        setupButtonTracking();
+        setupFontSize();
+        setupHighContrast();
+        setupPerformance();
+        setupAnimations();
+        setupQAList();
+      } catch (e) {
+        logAction('Ошибка при инициализации: ' + e.message);
+      }
     });
   </script>
 </body>
