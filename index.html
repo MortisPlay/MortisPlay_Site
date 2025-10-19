@@ -728,9 +728,8 @@
         </div>
       </footer>
     </main>
-
-    <script nonce="${nonce}">
-  const logAction = (message) => console.log(message);
+     <script nonce="${nonce}">
+    const logAction = (message) => console.log(message);
 const debounce = (func, wait) => {
   let timeout;
   return (...args) => {
@@ -750,6 +749,7 @@ const showNotification = (message, notificationElement) => {
       document.querySelectorAll('.notification.show').forEach(el => el.classList.remove('show'));
       span.textContent = message;
       notificationElement.classList.add('show');
+      notificationElement.focus(); // Автофокус для доступности
       gtag('event', 'notification_shown', { event_category: 'settings', event_label: message });
       const timeout = setTimeout(() => {
         notificationElement.classList.remove('show');
@@ -769,10 +769,47 @@ const showNotification = (message, notificationElement) => {
 
 const root = document.documentElement;
 
+// Safe localStorage с fallback
+const safeLocalStorage = {
+  getItem: (key, defaultValue = null) => {
+    try {
+      return localStorage.getItem(key) || defaultValue;
+    } catch (e) {
+      logAction(`Ошибка localStorage.getItem(${key}): ${e.message}. Fallback на sessionStorage.`);
+      try {
+        return sessionStorage.getItem(key) || defaultValue;
+      } catch (e2) {
+        logAction(`Ошибка sessionStorage.getItem(${key}): ${e2.message}. Возврат default.`);
+        return defaultValue;
+      }
+    }
+  },
+  setItem: (key, value) => {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      logAction(`Ошибка localStorage.setItem(${key}): ${e.message}. Fallback на sessionStorage.`);
+      try {
+        sessionStorage.setItem(key, value);
+      } catch (e2) {
+        logAction(`Ошибка sessionStorage.setItem(${key}): ${e2.message}. Игнорируем.`);
+      }
+    }
+  },
+  removeItem: (key) => {
+    try {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    } catch (e) {
+      logAction(`Ошибка removeItem(${key}): ${e.message}.`);
+    }
+  }
+};
+
 const setTheme = (theme, isPreview = false) => {
   try {
     logAction(`Тема установлена: ${theme}${isPreview ? ' (предпросмотр)' : ''}`);
-    if (!isPreview) localStorage.setItem('theme', theme);
+    if (!isPreview) safeLocalStorage.setItem('theme', theme);
     root.classList.toggle('dark', theme === 'dark');
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
@@ -782,6 +819,7 @@ const setTheme = (theme, isPreview = false) => {
         themeIcon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
         themeText.textContent = theme === 'dark' ? 'Тёмная' : 'Светлая';
       }
+      themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на тёмную тему');
     }
     if (!isPreview) gtag('event', 'theme_toggle', { event_category: 'engagement', event_label: theme });
   } catch (e) {
@@ -802,13 +840,7 @@ const setupThemeToggle = () => {
 const setupThemeSelect = () => {
   const themeSelect = document.getElementById('themeSelect');
   if (themeSelect) {
-    let savedTheme;
-    try {
-      savedTheme = localStorage.getItem('theme') || 'auto';
-    } catch (e) {
-      savedTheme = 'auto';
-      logAction('Ошибка чтения localStorage для theme: ' + e.message);
-    }
+    let savedTheme = safeLocalStorage.getItem('theme', 'auto');
     themeSelect.value = savedTheme;
     setTheme(savedTheme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : savedTheme);
     let previewTimeout;
@@ -832,22 +864,12 @@ const setupPerformance = () => {
   const toggle = document.getElementById('lowPerformanceToggle');
   const notification = document.getElementById('performanceNotification');
   if (toggle && notification) {
-    let savedMode;
-    try {
-      savedMode = localStorage.getItem('lowPerformance') === 'true';
-    } catch (e) {
-      savedMode = false;
-      logAction('Ошибка чтения localStorage для lowPerformance: ' + e.message);
-    }
+    let savedMode = safeLocalStorage.getItem('lowPerformance', 'false') === 'true';
     toggle.checked = savedMode;
     root.classList.toggle('low-performance', savedMode);
     toggle.addEventListener('change', debounce(() => {
       const isLowPerformance = toggle.checked;
-      try {
-        localStorage.setItem('lowPerformance', isLowPerformance);
-      } catch (e) {
-        logAction('Ошибка записи localStorage для lowPerformance: ' + e.message);
-      }
+      safeLocalStorage.setItem('lowPerformance', isLowPerformance);
       root.classList.toggle('low-performance', isLowPerformance);
       showNotification(isLowPerformance ? 'Лёгкий режим включён' : 'Лёгкий режим выключен', notification);
       gtag('event', 'performance_toggle', { event_category: 'settings', event_label: isLowPerformance ? 'low' : 'normal' });
@@ -860,22 +882,12 @@ const setupAnimations = () => {
   const animationsToggle = document.getElementById('disableAnimationsToggle');
   const notification = document.getElementById('performanceNotification');
   if (animationsToggle && notification) {
-    let savedAnimations;
-    try {
-      savedAnimations = localStorage.getItem('disableAnimations') === 'true';
-    } catch (e) {
-      savedAnimations = false;
-      logAction('Ошибка чтения localStorage для disableAnimations: ' + e.message);
-    }
+    let savedAnimations = safeLocalStorage.getItem('disableAnimations', 'false') === 'true';
     animationsToggle.checked = savedAnimations;
     root.classList.toggle('no-animations', savedAnimations);
     animationsToggle.addEventListener('change', debounce(() => {
       const disableAnimations = animationsToggle.checked;
-      try {
-        localStorage.setItem('disableAnimations', disableAnimations);
-      } catch (e) {
-        logAction('Ошибка записи localStorage для disableAnimations: ' + e.message);
-      }
+      safeLocalStorage.setItem('disableAnimations', disableAnimations);
       root.classList.toggle('no-animations', disableAnimations);
       showNotification(disableAnimations ? 'Анимации отключены' : 'Анимации включены', notification);
       gtag('event', 'animations_toggle', { event_category: 'settings', event_label: disableAnimations ? 'off' : 'on' });
@@ -888,22 +900,12 @@ const setupParticleToggle = () => {
   const toggle = document.getElementById('disableParticlesToggle');
   const notification = document.getElementById('performanceNotification');
   if (toggle && notification) {
-    let savedParticles;
-    try {
-      savedParticles = localStorage.getItem('disableParticles') === 'true';
-    } catch (e) {
-      savedParticles = false;
-      logAction('Ошибка чтения localStorage для disableParticles: ' + e.message);
-    }
+    let savedParticles = safeLocalStorage.getItem('disableParticles', 'false') === 'true';
     toggle.checked = savedParticles;
     root.classList.toggle('no-particles', savedParticles);
     toggle.addEventListener('change', debounce(() => {
       const disableParticles = toggle.checked;
-      try {
-        localStorage.setItem('disableParticles', disableParticles);
-      } catch (e) {
-        logAction('Ошибка записи localStorage для disableParticles: ' + e.message);
-      }
+      safeLocalStorage.setItem('disableParticles', disableParticles);
       root.classList.toggle('no-particles', disableParticles);
       showNotification(disableParticles ? 'Фоновые частицы отключены' : 'Фоновые частицы включены', notification);
       gtag('event', 'particles_toggle', { event_category: 'settings', event_label: disableParticles ? 'off' : 'on' });
@@ -916,24 +918,14 @@ const setupFontSize = () => {
   const slider = document.getElementById('fontSizeSlider');
   const notification = document.getElementById('appearanceNotification');
   if (slider && notification) {
-    let savedFontSize;
-    try {
-      savedFontSize = localStorage.getItem('fontSize') || '100';
-    } catch (e) {
-      savedFontSize = '100';
-      logAction('Ошибка чтения localStorage для fontSize: ' + e.message);
-    }
+    let savedFontSize = safeLocalStorage.getItem('fontSize', '100');
     slider.value = savedFontSize;
     root.style.setProperty('--font-scale', savedFontSize / 100);
     slider.addEventListener('input', debounce(() => {
       const fontSize = slider.value;
       root.style.setProperty('--font-scale', fontSize / 100);
       showNotification(`Размер шрифта: ${fontSize}%`, notification);
-      try {
-        localStorage.setItem('fontSize', fontSize);
-      } catch (e) {
-        logAction('Ошибка записи localStorage для fontSize: ' + e.message);
-      }
+      safeLocalStorage.setItem('fontSize', fontSize);
       gtag('event', 'font_size_change', { event_category: 'settings', event_label: fontSize });
       logAction(`Размер шрифта изменён: ${fontSize}%`);
     }, 300));
@@ -944,22 +936,12 @@ const setupHighContrast = () => {
   const toggle = document.getElementById('highContrastToggle');
   const notification = document.getElementById('appearanceNotification');
   if (toggle && notification) {
-    let savedHighContrast;
-    try {
-      savedHighContrast = localStorage.getItem('highContrast') === 'true';
-    } catch (e) {
-      savedHighContrast = false;
-      logAction('Ошибка чтения localStorage для highContrast: ' + e.message);
-    }
+    let savedHighContrast = safeLocalStorage.getItem('highContrast', 'false') === 'true';
     toggle.checked = savedHighContrast;
     root.classList.toggle('high-contrast', savedHighContrast);
     toggle.addEventListener('change', debounce(() => {
       const highContrast = toggle.checked;
-      try {
-        localStorage.setItem('highContrast', highContrast);
-      } catch (e) {
-        logAction('Ошибка записи localStorage для highContrast: ' + e.message);
-      }
+      safeLocalStorage.setItem('highContrast', highContrast);
       root.classList.toggle('high-contrast', highContrast);
       showNotification(highContrast ? 'Высокая контрастность включена' : 'Высокая контрастность выключена', notification);
       gtag('event', 'high_contrast_toggle', { event_category: 'settings', event_label: highContrast ? 'on' : 'off' });
@@ -973,16 +955,16 @@ const setupResetSettings = () => {
   const notification = document.getElementById('appearanceNotification');
   if (resetButton && notification) {
     resetButton.addEventListener('click', () => {
-      localStorage.removeItem('theme');
-      localStorage.removeItem('lowPerformance');
-      localStorage.removeItem('disableAnimations');
-      localStorage.removeItem('disableParticles');
-      localStorage.removeItem('fontSize');
-      localStorage.removeItem('highContrast');
-      localStorage.removeItem('userAvatar');
-      localStorage.removeItem('userBadges');
-      localStorage.removeItem('username');
-      localStorage.removeItem('watchedVideos');
+      safeLocalStorage.removeItem('theme');
+      safeLocalStorage.removeItem('lowPerformance');
+      safeLocalStorage.removeItem('disableAnimations');
+      safeLocalStorage.removeItem('disableParticles');
+      safeLocalStorage.removeItem('fontSize');
+      safeLocalStorage.removeItem('highContrast');
+      safeLocalStorage.removeItem('userAvatar');
+      safeLocalStorage.removeItem('userBadges');
+      safeLocalStorage.removeItem('username');
+      safeLocalStorage.removeItem('watchedVideos');
       root.classList.remove('dark', 'low-performance', 'no-animations', 'no-particles', 'high-contrast');
       root.style.setProperty('--font-scale', '1');
       const themeSelect = document.getElementById('themeSelect');
@@ -1023,55 +1005,63 @@ const setupProfile = () => {
   const notification = document.getElementById('appearanceNotification');
 
   if (avatarUpload && userAvatar && notification) {
-    const savedAvatar = localStorage.getItem('userAvatar');
+    const savedAvatar = safeLocalStorage.getItem('userAvatar');
     if (savedAvatar) userAvatar.src = savedAvatar;
     avatarUpload.addEventListener('change', () => {
       const file = avatarUpload.files[0];
-      if (file && file.size <= 1024 * 1024 && /^image\/(jpeg|png|gif|webp)$/.test(file.type)) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const img = new Image();
-          img.src = reader.result;
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const maxSize = 100; // Ограничим размер для компрессии
-            let width = img.width;
-            let height = img.height;
-            if (width > height && width > maxSize) {
-              height *= maxSize / width;
-              width = maxSize;
-            } else if (height > maxSize) {
-              width *= maxSize / height;
-              height = maxSize;
-            }
-            canvas.width = width;
-            canvas.height = height;
-            ctx.drawImage(img, 0, 0, width, height);
-            const compressed = canvas.toDataURL('image/jpeg', 0.8);
-            userAvatar.src = compressed;
-            localStorage.setItem('userAvatar', compressed);
-            showNotification('Аватар обновлён', notification);
-            gtag('event', 'avatar_upload', { event_category: 'profile', event_label: 'avatar_updated' });
-            logAction('Аватар обновлён');
-            checkBadgeConditions();
-          };
-        };
-        reader.readAsDataURL(file);
-      } else {
-        showNotification('Выберите изображение (JPEG, PNG, GIF, WebP, до 1МБ)', notification);
-        logAction('Ошибка загрузки аватара: неверный формат или размер');
+      if (!file) return;
+      if (file.size > 1024 * 1024) {
+        showNotification('Файл слишком большой (макс. 1МБ)', notification);
+        return;
       }
+      if (!/^image\/(jpeg|png|gif|webp)$/.test(file.type)) {
+        showNotification('Неподдерживаемый формат (только JPEG, PNG, GIF, WebP)', notification);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.src = reader.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          const maxSize = 100;
+          let width = img.width;
+          let height = img.height;
+          if (width > height && width > maxSize) {
+            height *= maxSize / width;
+            width = maxSize;
+          } else if (height > maxSize) {
+            width *= maxSize / height;
+            height = maxSize;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressed = canvas.toDataURL('image/jpeg', 0.8);
+          userAvatar.src = compressed;
+          safeLocalStorage.setItem('userAvatar', compressed);
+          showNotification('Аватар обновлён', notification);
+          gtag('event', 'avatar_upload', { event_category: 'profile', event_label: 'avatar_updated' });
+          logAction('Аватар обновлён');
+          checkBadgeConditions();
+        };
+        img.onerror = () => {
+          showNotification('Ошибка загрузки изображения', notification);
+          logAction('Ошибка загрузки аватара: onerror');
+        };
+      };
+      reader.readAsDataURL(file);
     });
   }
 
   if (usernameInput && notification) {
-    const savedUsername = localStorage.getItem('username');
+    const savedUsername = safeLocalStorage.getItem('username');
     if (savedUsername) usernameInput.value = savedUsername;
     usernameInput.addEventListener('input', debounce(() => {
       const username = usernameInput.value.trim();
       if (username.length <= 20) {
-        localStorage.setItem('username', username);
+        safeLocalStorage.setItem('username', username);
         showNotification('Имя пользователя обновлено', notification);
         gtag('event', 'username_update', { event_category: 'profile', event_label: 'username_updated' });
         logAction(`Имя пользователя обновлено: ${username}`);
@@ -1089,10 +1079,40 @@ const setupProfile = () => {
 
   // Для теста: сброс бейджей через консоль
   window.resetBadges = () => {
-    localStorage.removeItem('userBadges');
+    safeLocalStorage.removeItem('userBadges');
     setupBadges();
     logAction('Бейджи сброшены через консоль');
   };
+};
+
+const setupBadgeModal = () => {
+  const modal = document.getElementById('badgeModal');
+  if (!modal) return;
+  const closeModal = document.getElementById('closeModal');
+  const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+  const firstFocusable = focusableElements[0];
+  const lastFocusable = focusableElements[focusableElements.length - 1];
+
+  const trapFocus = (e) => {
+    if (e.key === 'Tab') {
+      if (e.shiftKey && document.activeElement === firstFocusable) {
+        e.preventDefault();
+        lastFocusable.focus();
+      } else if (!e.shiftKey && document.activeElement === lastFocusable) {
+        e.preventDefault();
+        firstFocusable.focus();
+      }
+    } else if (e.key === 'Escape') {
+      modal.style.animation = 'modalFadeOut 0.3s ease forwards';
+      setTimeout(() => { modal.style.display = 'none'; document.getElementById('badgeList').focus(); }, 300);
+    }
+  };
+
+  modal.addEventListener('keydown', trapFocus);
+  closeModal.addEventListener('click', () => {
+    modal.style.animation = 'modalFadeOut 0.3s ease forwards';
+    setTimeout(() => { modal.style.display = 'none'; }, 300);
+  }, { once: true });
 };
 
 const setupBadges = () => {
@@ -1108,19 +1128,19 @@ const setupBadges = () => {
       icon: 'fa-solid fa-laugh', 
       description: 'Посмотрите 4 видео в категории «Угар»', 
       earned: () => {
-        const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
+        const watchedVideos = JSON.parse(safeLocalStorage.getItem('watchedVideos', '{}'));
         return Object.values(watchedVideos).filter(v => v.category === 'fun').length >= 4;
       },
       progress: () => {
-        const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
+        const watchedVideos = JSON.parse(safeLocalStorage.getItem('watchedVideos', '{}'));
         return Math.min(Object.values(watchedVideos).filter(v => v.category === 'fun').length, 4);
       }
     },
     { name: 'Стример', icon: 'fa-solid fa-video', description: 'Загрузите аватар и установите имя пользователя', earned: () => {
-      return !!localStorage.getItem('userAvatar') && !!localStorage.getItem('username');
+      return !!safeLocalStorage.getItem('userAvatar') && !!safeLocalStorage.getItem('username');
     }},
     { name: 'Легенда', icon: 'fa-solid fa-crown', description: 'Получите все остальные бейджи', earned: () => {
-      const savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
+      const savedBadges = JSON.parse(safeLocalStorage.getItem('userBadges', '[]'));
       return savedBadges.includes('Фанат') && savedBadges.includes('Мемолог') && savedBadges.includes('Стример') && savedBadges.includes('Эпик Мемолог');
     }},
     { 
@@ -1128,32 +1148,31 @@ const setupBadges = () => {
       icon: 'fa-solid fa-trophy', 
       description: 'Просмотрите 50 видео в категории «Угар» (почти невозможно!)', 
       earned: () => {
-        const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
+        const watchedVideos = JSON.parse(safeLocalStorage.getItem('watchedVideos', '{}'));
         return Object.values(watchedVideos).filter(v => v.category === 'fun').length >= 50;
       },
       progress: () => {
-        const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
+        const watchedVideos = JSON.parse(safeLocalStorage.getItem('watchedVideos', '{}'));
         return Math.min(Object.values(watchedVideos).filter(v => v.category === 'fun').length, 50);
       }
     },
   ];
 
-  const savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
+  let savedBadges = JSON.parse(safeLocalStorage.getItem('userBadges', '[]'));
   
+  // Строгая проверка условий для всех бейджей при загрузке (античит)
+  const earnedBadges = badgeDefinitions.filter(badge => badge.earned()).map(badge => badge.name);
+  savedBadges = earnedBadges;  // Синхронизируем с реальными условиями
+  safeLocalStorage.setItem('userBadges', JSON.stringify(savedBadges));
+
   // Очищаем и отображаем полученные бейджи
   badges.innerHTML = '';
   badgeDefinitions.forEach(badge => {
-    if (savedBadges.includes(badge.name) || badge.earned()) {
-      if (!savedBadges.includes(badge.name)) {
-        savedBadges.push(badge.name);
-        localStorage.setItem('userBadges', JSON.stringify(savedBadges));
-        showNotification(`Новый бейдж: ${badge.name}!`, notification);
-        gtag('event', 'badge_earned', { event_category: 'profile', event_label: badge.name });
-        logAction(`Получен новый бейдж: ${badge.name}`);
-      }
+    if (savedBadges.includes(badge.name)) {
       const badgeEl = document.createElement('span');
       badgeEl.className = 'badge inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-600 text-white text-xs animate-[badgePop_0.5s_ease_forwards]';
       badgeEl.innerHTML = `<i class="${badge.icon}"></i>${badge.name}`;
+      badgeEl.setAttribute('aria-label', `Бейдж: ${badge.name}`);
       badges.appendChild(badgeEl);
     }
   });
@@ -1163,16 +1182,18 @@ const setupBadges = () => {
   badgeDefinitions.forEach((badge, index) => {
     const badgeItem = document.createElement('div');
     badgeItem.className = 'flex items-center gap-2 text-sm cursor-pointer';
-    const status = savedBadges.includes(badge.name) || badge.earned() ? '✅' : '🔒';
+    const status = savedBadges.includes(badge.name) ? '✅' : '🔒';
     const progress = badge.progress ? `(${badge.progress()}/${badge.name === 'Мемолог' ? '4' : '50'})` : '';
     badgeItem.innerHTML = `
-      <i class="${badge.icon} ${savedBadges.includes(badge.name) || badge.earned() ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600'}"></i>
-      <span class="${savedBadges.includes(badge.name) || badge.earned() ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600'}">${badge.name}: ${badge.description} ${progress}</span>
-      <span>${status}</span>
+      <i class="${badge.icon} ${savedBadges.includes(badge.name) ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600'}"></i>
+      <span class="${savedBadges.includes(badge.name) ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600'}">${badge.name}: ${badge.description} ${progress}</span>
+      <span aria-live="polite">${status}</span>
     `;
+    badgeItem.setAttribute('tabindex', '0'); // Для фокуса клавиатурой
+    badgeItem.setAttribute('role', 'button'); // Для доступности
+    badgeItem.setAttribute('aria-label', `Подробности бейджа ${badge.name}`);
     badgeList.appendChild(badgeItem);
 
-    // Добавляем клик для модального окна с анимацией
     badgeItem.addEventListener('click', () => {
       const modal = document.getElementById('badgeModal');
       const modalTitle = document.getElementById('modalTitle');
@@ -1195,6 +1216,33 @@ const setupBadges = () => {
 
 const checkBadgeConditions = () => {
   setupBadges(); // Проверяем и обновляем бейджи после каждого действия
+};
+
+const setupNews = () => {
+  const newsGrid = document.querySelector('#news .mt-8.grid');
+  const loadMoreNews = document.getElementById('loadMoreNews');
+  if (!newsGrid || !loadMoreNews) return;
+
+  const newsArticles = Array.from(newsGrid.children);
+  let currentNewsPage = 1;
+  const newsPerPage = 3;
+
+  const renderNews = (append = false) => {
+    if (!append) newsGrid.innerHTML = '';
+    const start = (currentNewsPage - 1) * newsPerPage;
+    const end = start + newsPerPage;
+    const articlesToShow = newsArticles.slice(start, end);
+    articlesToShow.forEach(article => newsGrid.appendChild(article.cloneNode(true)));
+    loadMoreNews.disabled = end >= newsArticles.length;
+  };
+
+  renderNews();
+  loadMoreNews.addEventListener('click', () => {
+    currentNewsPage++;
+    renderNews(true);
+    gtag('event', 'load_more_news', { event_category: 'news', event_label: `page_${currentNewsPage}` });
+    logAction(`Загружено ещё новости: страница ${currentNewsPage}`);
+  });
 };
 
 const setupVideos = () => {
@@ -1419,7 +1467,6 @@ const setupLoader = () => {
   }
 };
 
-// Добавленный код для режима разработчика
 const setupDevMode = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const isDev = urlParams.get('dev') === 'true';
@@ -1456,7 +1503,7 @@ window.addEventListener('storage', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  setupDevMode(); // Вызываем новую функцию сразу после загрузки DOM
+  setupDevMode();
   setupThemeToggle();
   setupThemeSelect();
   setupPerformance();
@@ -1467,11 +1514,13 @@ document.addEventListener('DOMContentLoaded', () => {
   setupResetSettings();
   setupProfile();
   setupVideos();
+  setupNews();  // Новая функция для пагинации новостей
   setupNavigation();
   setupParticles();
   setupFadeIn();
   setupLoader();
   setupVideoErrorHandling();
+  setupBadgeModal();  // Новая функция для доступности модалки
 });
 </script>
 </body>
