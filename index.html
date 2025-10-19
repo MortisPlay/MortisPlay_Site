@@ -1503,7 +1503,7 @@ window.addEventListener('storage', (e) => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  setupDevMode();
+  setupDevMode(); // Вызываем новую функцию сразу после загрузки DOM
   setupThemeToggle();
   setupThemeSelect();
   setupPerformance();
@@ -1520,8 +1520,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupFadeIn();
   setupLoader();
   setupVideoErrorHandling();
-  setupBadgeModal();  // Новая функция для доступности модалки
+  setupBadgeModal(); // Новая функция для доступности модалки
 });
 </script>
 </body>
-</html>
+</html> 
