@@ -125,7 +125,7 @@
     </header>
 
     <main>
-     <!-- WELCOME -->
+      <!-- WELCOME -->
       <section id="welcome" class="relative overflow-hidden py-16 sm:py-24">
         <div class="mx-auto max-w-7xl px-4">
           <div class="grid lg:grid-cols-2 gap-10 items-center">
@@ -187,7 +187,7 @@
         </div>
       </section>
 
-     <!-- VIDEOS -->
+      <!-- VIDEOS -->
       <section id="videos" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="text-center text-2xl md:text-3xl font-bold">Мои видео</h2>
@@ -319,7 +319,7 @@
     </template>
 
     <!-- JS -->
-    <script>
+    <script nonce="">
       const nonce = crypto.getRandomValues(new Uint8Array(16)).reduce((s,b)=>s+b.toString(16).padStart(2,'0'),'');
       document.head.appendChild(Object.assign(document.createElement('script'),{nonce,id:'gtagScript',innerHTML:`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-W7QBLDDSSK',{send_page_view:true});`}));
     </script>
@@ -361,7 +361,8 @@
         // Particles
         const c=$('#backgroundParticles');if(c&&c.getContext){const ctx=c.getContext('2d');let p=[];const init=()=>{c.width=innerWidth;c.height=innerHeight;const n=Math.floor(innerWidth/20);p=Array.from({length:n},()=>({x:Math.random()*c.width,y:Math.random()*c.height,size:Math.random()*3+1,speedX:Math.random()*0.5-0.25,speedY:Math.random()*0.5-0.25}))};const draw=()=>{if(root.classList.contains('no-particles')||root.classList.contains('low-performance'))return;ctx.clearRect(0,0,c.width,c.height);p.forEach(o=>{o.x+=o.speedX;o.y+=o.speedY;if(o.x<0||o.x>c.width)o.speedX*=-1;if(o.y<0||o.y>c.height)o.speedY*=-1;ctx.beginPath();ctx.arc(o.x,o.y,o.size,0,Math.PI*2);ctx.fillStyle=root.classList.contains('dark')?'#e5e7eb':'#1f2937';ctx.fill()});requestAnimationFrame(draw)};init();addEventListener('resize',()=>{clearTimeout(window.r);window.r=setTimeout(init,200)});draw()}
 
-        // Fade-in — ИСПРАВЛЕНО
+        // Loader & Fade-in
+        const l=$('#loader'),sc=$('#siteContent');const hide=()=>{l.style.display='none';sc.classList.remove('hidden')};if(document.readyState==='complete')hide();else addEventListener('load',()=>setTimeout(hide,500));setTimeout(hide,3000);
         const observer = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');observer.unobserve(e.target)}}),{threshold:0.1});
         $$('.fade-in').forEach(el => observer.observe(el));
       };
