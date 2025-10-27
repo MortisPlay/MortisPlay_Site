@@ -269,6 +269,15 @@
       opacity: 1;
       transform: translateY(0);
     }
+    #badgeList [role="button"] {
+  cursor: pointer;
+}
+#badgeList [role="button"]:hover {
+  color: #4f46e5;
+}
+.dark #badgeList [role="button"]:hover {
+  color: #a5b4fc;
+}
     .bg-gradient-to-br {
       background-image: linear-gradient(to bottom right, #fef3c7, #f5f3ff, #dbeafe);
     }
@@ -627,6 +636,11 @@
               <p class="mt-2 text-sm">Добавили 7 новых мемов! Проверь на сайте и удиви друзей! 😋</p>
               <p class="mt-3 text-xs">С любовью Mortis32 &lt;3 · 16 июля 2025</p>
             </article>
+            <div class="mt-6 text-center">
+  <button id="loadMoreNews" class="glass-button pagination-button" aria-label="Загрузить ещё новости">
+    <i class="fa-solid fa-plus"></i> Загрузить ещё
+  </button>
+</div>
           </div>
         </div>
       </section>
@@ -974,14 +988,22 @@ const setup = () => {
       v.forEach(d => {
         const n = tpl.content.cloneNode(true), i = n.querySelector('iframe'), t = n.querySelector('p'), c = n.querySelector('.video-card'), fi = n.querySelector('img');
         if (i && t && c && fi) {
-          i.src = d.src; i.title = `Видео: ${d.title}`;
-          i.onload = () => {
-            const w = JSON.parse(storage.get('watchedVideos', '{}'));
+          i.src = d.src; 
+          i.title = `Видео: ${d.title}`;
+          
+          // ИСПРАВЛЕНИЕ: load вместо onload
+          i.addEventListener('load', () => {
+            const w = JSON.parse(storage.get('watchedVideos', '{}')); // ИСПРАВЛЕНИЕ: default '{}'
             w[d.title] = { category: d.cat, watched: true };
             storage.set('watchedVideos', JSON.stringify(w));
             checkBadges();
-          };
-          i.onerror = () => { i.classList.add('hidden'); fi.classList.remove('hidden'); };
+          });
+
+          i.addEventListener('error', () => { 
+            i.classList.add('hidden'); 
+            fi.classList.remove('hidden'); 
+          });
+
           t.textContent = d.title;
           c.dataset.category = d.cat;
           g.appendChild(n);
@@ -995,6 +1017,7 @@ const setup = () => {
       rv(videoData.slice((p - 1) * pp, p * pp), true);
       gtag('event', 'load_videos', { event_category: 'videos', event_label: `page_${p}` });
     });
+
     const cd = { all: 'Все видео!', streams: 'Эпичные стримы!', fun: 'Угарные мемы!', blitz: 'БЛИЦ ролики!' };
     $$('.video-filter').forEach(b => {
       b.addEventListener('click', () => {
@@ -1009,14 +1032,18 @@ const setup = () => {
     });
   }
 
-  // News
+  // News — ИСПРАВЛЕНИЕ: добавь кнопку #loadMoreNews выше
   const ng = $('#news .mt-8.grid'), lmn = $('#loadMoreNews');
   if (ng && lmn) {
     const na = Array.from(ng.children);
     let np = 1, npp = 3;
     const rn = (a = false) => {
-      if (!a) ng.innerHTML = '';
-      na.slice((np - 1) * npp, np * npp).forEach(a => ng.appendChild(a.cloneNode(true)));
+      if (!a) {
+        // Сохраняем только article, очищаем grid
+        ng.innerHTML = '';
+      }
+      const items = na.slice((np - 1) * npp, np * npp);
+      items.forEach(article => ng.appendChild(article.cloneNode(true)));
       lmn.disabled = np * npp >= na.length;
     };
     rn();
@@ -1057,15 +1084,27 @@ const setup = () => {
   const c = $('#backgroundParticles');
   if (c) {
     const ctx = c.getContext('2d');
-    c.width = innerWidth; c.height = innerHeight;
-    const p = Array.from({ length: Math.floor(innerWidth / 20) }, () => ({
-      x: Math.random() * c.width, y: Math.random() * c.height, size: Math.random() * 3 + 1, speedX: Math.random() * 0.5 - 0.25, speedY: Math.random() * 0.5 - 0.25
-    }));
+    let particles = [];
+
+    const initParticles = () => {
+      c.width = innerWidth; 
+      c.height = innerHeight;
+      const count = Math.floor(innerWidth / 20);
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * c.width, 
+        y: Math.random() * c.height, 
+        size: Math.random() * 3 + 1, 
+        speedX: Math.random() * 0.5 - 0.25, 
+        speedY: Math.random() * 0.5 - 0.25
+      }));
+    };
+
     const ap = () => {
       if (root.classList.contains('no-particles') || root.classList.contains('low-performance')) return;
       ctx.clearRect(0, 0, c.width, c.height);
-      p.forEach(p => {
-        p.x += p.speedX; p.y += p.speedY;
+      particles.forEach(p => {
+        p.x += p.speedX; 
+        p.y += p.speedY;
         if (p.x < 0 || p.x > c.width) p.speedX *= -1;
         if (p.y < 0 || p.y > c.height) p.speedY *= -1;
         ctx.beginPath();
@@ -1075,7 +1114,11 @@ const setup = () => {
       });
       requestAnimationFrame(ap);
     };
-    addEventListener('resize', () => { c.width = innerWidth; c.height = innerHeight; });
+
+    initParticles();
+    addEventListener('resize', debounce(() => {
+      initParticles();
+    }, 200));
     ap();
   }
 
@@ -1106,9 +1149,11 @@ const setup = () => {
   }
 
   // Dev Mode
-  if (new URLSearchParams(location.search).get('dev') !== 'true') {
-    $('#profile').style.display = 'none';
-    $$('a[href="#profile"]').forEach(l => l.style.display = 'none');
+  const urlParams = new URLSearchParams(location.search);
+  const isDev = urlParams.get('dev') === 'true';
+  if (!isDev) {
+    $('#profile')?.style = 'display:none !important';
+    $$('a[href="#profile"]').forEach(l => l.style = 'display:none !important');
   }
 
   // Storage Sync
