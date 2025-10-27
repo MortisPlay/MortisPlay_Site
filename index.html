@@ -1327,37 +1327,42 @@
       ];
 
       const setupNews = () => {
-        const grid = document.getElementById('newsGrid');
-        const loadMore = document.getElementById('loadMoreNews');
-        let page = 1;
-        const perPage = 3;
+  const grid = document.getElementById('newsGrid');
+  const loadMore = document.getElementById('loadMoreNews');
+  let page = 1;
+  const perPage = 3;
 
-        const renderNews = (append = false) => {
-          if (!append) {
-            grid.innerHTML = '';
-            page = 1;
-          }
-          const start = (page - 1) * perPage;
-          const end = start + perPage;
-          const items = newsData.slice(start, end);
+  const renderNews = (append = false) => {
+    if (!append) {
+      grid.innerHTML = '';
+      page = 1;
+    }
+    const start = (page - 1) * perPage;
+    const end = start + perPage;
+    const items = newsData.slice(start, end);
 
-          items.forEach(item => {
-            const article = document.createElement('article');
-            article.className = 'card-hover rounded-2xl p-6 fade-in';
-            article.innerHTML = `<h3 class="text-lg font-semibold">${item.title}</h3><p class="mt-2 text-sm">${item.content}</p><p class="mt-3 text-xs">С любовью Mortis32 &lt;3 · ${item.date}</p>`;
-            grid.appendChild(article);
-          });
+    items.forEach(item => {
+      const article = document.createElement('article');
+      article.className = 'card-hover rounded-2xl p-6 fade-in bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
+      article.innerHTML = `
+        <h3 class="text-lg font-semibold text-indigo-600 dark:text-indigo-400">${item.title}</h3>
+        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">${item.content}</p>
+        <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">С любовью Mortis32 &lt;3 · ${item.date}</p>
+      `;
+      grid.appendChild(article);
+    });
 
-          loadMore.style.display = end >= newsData.length ? 'none' : 'inline-flex';
-        };
+    loadMore.style.display = end >= newsData.length ? 'none' : 'inline-flex';
+    setupFadeIn(); // ← Фикс: анимация для новых карточек
+  };
 
-        loadMore.addEventListener('click', () => {
-          page++;
-          renderNews(true);
-        });
+  loadMore.addEventListener('click', () => {
+    page++;
+    renderNews(true);
+  });
 
-        renderNews();
-      };
+  renderNews();
+}
 
       const setupNavigation = () => {
         const menuToggle = document.getElementById('menuToggle');
