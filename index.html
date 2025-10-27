@@ -3,371 +3,315 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Mortis Play — официальный сайт</title>
-  <meta name="description" content="Эпичные видео, новости и обновления от Mortis Play. Присоединяйся к вайбу!" />
-  <meta name="robots" content="index,follow" />
-  <meta name="keywords" content="Mortis Play, гейминг, стримы, YouTube, Telegram" />
+  <title>Mortis Play — Технический перерыв</title>
+  <meta name="description" content="Сайт Mortis Play на техперерыве. Скоро вернёмся с новым контентом!" />
+  <meta name="robots" content="noindex" />
+  <meta name="keywords" content="Mortis Play, технический перерыв, гейминг" />
   <link rel="icon" href="/images/favicon.ico" />
 
-  <!-- Open Graph / Twitter -->
-  <meta property="og:title" content="Mortis Play — официальный сайт" />
-  <meta property="og:description" content="Эксклюзивы, новости и клипы." />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Mortis Play — Технический перерыв" />
+  <meta property="og:description" content="Сайт на техобслуживании. Скоро вернёмся!" />
   <meta property="og:image" content="https://mortisplay.ru/assets/og-image.jpg" />
   <meta property="og:url" content="https://mortisplay.ru" />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="ru_RU" />
+
+  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Mortis Play — официальный сайт" />
-  <meta name="twitter:description" content="Эксклюзивы, новости и клипы." />
+  <meta name="twitter:title" content="Mortis Play — Технический перерыв" />
+  <meta name="twitter:description" content="Сайт на техобслуживании. Скоро вернёмся!" />
   <meta name="twitter:image" content="https://mortisplay.ru/assets/twitter-image.jpg" />
 
   <!-- Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
+  <script>
+    const nonce = crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '');
+    const script = document.createElement('script');
+    script.nonce = nonce;
+    script.id = 'gtagScript';
+    script.innerHTML = `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });`;
+    document.head.appendChild(script);
+  </script>
 
-  <!-- Tailwind CDN (для разработки) — в продакшене замени на локальный CSS -->
   <script src="https://cdn.tailwindcss.com" defer></script>
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
 
   <style>
-    @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-    @keyframes badgePop{0%{transform:scale(0);opacity:0}80%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    @keyframes fadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
-    .card-hover{transition:transform .25s ease,box-shadow .25s ease}
-    .card-hover:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(0,0,0,.15),0 0 12px rgba(147,51,234,.5)}
-    .dark .card-hover:hover{box-shadow:0 12px 24px rgba(0,0,0,.3),0 0 12px rgba(99,102,241,.6)}
-    .fade-in{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s}
-    .fade-in.is-visible{opacity:1;transform:none}
-    .glass{backdrop-filter:saturate(160%) blur(8px);background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.55))}
-    .dark .glass{background:linear-gradient(180deg,rgba(17,24,39,.7),rgba(17,24,39,.55))}
-    #loader{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#6366f1,#ec4899);transition:opacity .3s}
-    .loader-spin{width:64px;height:64px;border:6px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite}
-    #sidebarMenu{box-shadow:2px 0 5px rgba(0,0,0,.1);transform:translateX(-100%);transition:transform .3s}
-    #sidebarMenu.open{transform:translateX(0)}
-    #themeToggle{position:relative;overflow:hidden;background:linear-gradient(45deg,#facc15,#fef08a);border-radius:.75rem;padding:.5rem;color:#1f2937}
-    .dark #themeToggle{background:linear-gradient(45deg,#1e3a8a,#3b82f6);color:#e5e7eb}
-    #themeToggle::before{content:'';position:absolute;top:50%;left:50%;width:0;height:0;background:rgba(255,255,255,.4);border-radius:50%;transform:translate(-50%,-50%);transition:width .5s,height .5s}
-    #themeToggle:hover::before{width:200%;height:200%}
-    #themeToggle i{transition:transform .5s,opacity .5s;z-index:1}
-    #themeToggle:hover i{transform:rotate(180deg);opacity:.8}
-    .particle{position:absolute;width:4px;height:4px;background:#1f2937;border-radius:50%;pointer-events:none;z-index:2}
-    .dark .particle{background:#e5e7eb}
-    .video-filter{transition:all .3s}
-    .video-filter.active{background:rgba(99,102,241,.3);transform:scale(1.05)}
-    .dark .video-filter.active{background:rgba(99,102,241,.5)}
-    .video-card{transition:opacity .3s,transform .3s}
-    .video-card.hidden{opacity:0;transform:scale(.95);display:none}
-    .video-card:not(.hidden){animation:fadeIn .3s forwards}
-    .pagination-button{transition:all .3s}
-    .pagination-button:hover{transform:scale(1.05)}
-    .pagination-button:disabled{opacity:.5;cursor:not-allowed}
-    .notification{display:none;background:rgba(255,255,255,.9);color:#1f2937;border:1px solid rgba(0,0,0,.2);border-radius:.5rem;padding:.75rem 1rem;margin-top:1rem;box-shadow:0 4px 6px rgba(0,0,0,.1);transition:opacity .3s,transform .3s}
-    .notification.show{display:flex;gap:1rem;opacity:1;transform:translateY(0)}
-    .dark .notification{background:rgba(17,24,39,.9);color:#e5e7eb;border-color:rgba(255,255,255,.2)}
-    #settings .notification{position:fixed;bottom:1rem;right:1rem;max-width:320px;z-index:1000}
-    .glass-button{background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.3);border-radius:.75rem;color:#fff;font-weight:600;padding:.5rem 1rem;box-shadow:0 4px 6px rgba(0,0,0,.1),0 1px 3px rgba(0,0,0,.08);transition:all .3s;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer}
-    .glass-button:hover{background:rgba(255,255,255,.25);transform:scale(1.05);box-shadow:0 6px 12px rgba(0,0,0,.15)}
-    .dark .glass-button{background:rgba(50,50,50,.15);border-color:rgba(200,200,200,.2);color:#e5e7eb}
-    .dark .glass-button:hover{background:rgba(50,50,50,.25)}
-    .bg-particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
-    .no-particles .bg-particles{display:none}
-    body{color:#1f2937;background:linear-gradient(to bottom right,#fef3c7,#f5f3ff,#dbeafe);overscroll-behavior:none}
-    .dark body{color:#e5e7eb;background:linear-gradient(to bottom right,#1e1b4b,#312e81,#4c1d95)}
-    .low-performance .card-hover,.low-performance .fade-in,.low-performance .animate-[floaty_5s_ease-in-out_infinite]{transition:none;transform:none;opacity:1;animation:none}
-    .low-performance #videos,.low-performance .banner-video,.low-performance .banner-quote{display:none}
-    .low-performance .banner-fallback{display:block}
-    .banner-fallback{display:none}
-    :root{--font-scale:1}
-    body{font-size:calc(1rem*var(--font-scale))}
-    .high-contrast{--text-color:#000;--bg-color:#fff;--link-color:#00f}
-    .high-contrast.dark{--text-color:#fff;--bg-color:#000;--link-color:#0f0}
-    .high-contrast body,.high-contrast .glass,.high-contrast .glass-button{background:var(--bg-color);color:var(--text-color);backdrop-filter:none;border:2px solid var(--text-color)}
-    .high-contrast a{color:var(--link-color);text-decoration:underline}
-    @media (max-width:640px){.glass{backdrop-filter:none;background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.8))}.dark .glass{background:linear-gradient(180deg,rgba(17,24,39,.9),rgba(17,24,39,.8))}}
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    .gradient-text {
+      background: linear-gradient(90deg, #6366f1, #ec4899, #facc15, #6366f1);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: gradientShift 5s ease-in-out infinite;
+    }
+    .glass { backdrop-filter: saturate(160%) blur(8px); background: linear-gradient(180deg, rgb(255 255 255 / .7), rgb(255 255 255 / .55)); }
+    .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .7), rgb(17 24 39 / .55)); }
+    #loader { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #6366f1, #ec4899); }
+    .loader-spin { width: 64px; height: 64px; border: 6px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .particle { position: absolute; width: 4px; height: 4px; background: #ffffff; border-radius: 50%; pointer-events: none; z-index: 2; }
+    .dark .particle { background: #6366f1; }
+    .pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.1;
+      animation: floaty 5s ease-in-out infinite;
+    }
+    .low-performance .pattern, .low-performance .gradient-text {
+      animation: none;
+    }
+    .no-animations .pattern, .no-animations .gradient-text {
+      animation: none;
+    }
+    .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #fff5f5, #ffffff, #e0f2fe); }
+    .dark .bg-gradient-to-br { background-image: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #4b5bd1); }
+    .high-contrast {
+      --text-color: #000000;
+      --bg-color: #ffffff;
+      --link-color: #0000ff;
+    }
+    .high-contrast.dark {
+      --text-color: #ffffff;
+      --bg-color: #000000;
+      --link-color: #00ff00;
+    }
+    .high-contrast body { background: var(--bg-color); color: var(--text-color); }
+    .high-contrast a { color: var(--link-color); }
+    .high-contrast .bg-gradient-to-br, .high-contrast .glass {
+      background: var(--bg-color);
+      backdrop-filter: none;
+      border-color: var(--text-color);
+    }
+    .glass-button {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 0.75rem;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      padding: 0.75rem 1.5rem;
+    }
+    .glass-button:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .dark .glass-button {
+      background: rgba(50, 50, 50, 0.15);
+      border-color: rgba(200, 200, 200, 0.2);
+    }
+    .dark .glass-button:hover {
+      background: rgba(50, 50, 50, 0.25);
+    }
+    @supports not (backdrop-filter: blur(10px)) {
+      .glass-button { background: rgba(255, 255, 255, 0.5); box-shadow: none; }
+      .dark .glass-button { background: rgba(50, 50, 50, 0.5); }
+    }
+    @media (max-width: 640px) {
+      .glass { backdrop-filter: none; background: linear-gradient(180deg, rgb(255 255 255 / .9), rgb(255 255 255 / .8)); }
+      .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .9), rgb(17 24 39 / .8)); }
+      .glass-button { padding: 0.5rem 1rem; }
+      .text-3xl { font-size: 1.5rem; }
+      .pattern { opacity: 0.05; }
+    }
   </style>
 </head>
-<body class="min-h-screen text-slate-800 dark:text-slate-100 selection:bg-indigo-200 selection:text-slate-900">
-  <canvas id="backgroundParticles" class="bg-particles"></canvas>
-  <div id="loader"><div class="loader-spin" aria-label="Загрузка"></div></div>
+
+<body class="min-h-screen bg-gradient-to-br from-orange-50 via-white to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100 selection:bg-indigo-200 selection:text-slate-900">
+  <div id="loader"><div class="loader-spin" aria-label="Загрузка страницы"></div></div>
   <div id="siteContent" class="hidden">
-
-    <!-- HEADER -->
-    <header class="sticky top-0 z-50 border-b border-slate-200/60 dark:border-slate-700/60 bg-white/80 dark:bg-slate-900/80 glass">
-      <nav class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <button id="menuToggle" class="sm:hidden rounded-xl px-3 py-2 ring-1 ring-slate-300/70 dark:ring-slate-600"><span>Меню</span> <i class="fa-solid fa-bars"></i></button>
-          <a href="#welcome" class="flex items-center gap-2 font-semibold"><img src="/assets/photo.jpg" alt="Logo" class="h-8 w-8 rounded-lg" onerror="this.src='/assets/photo.jpg'"> <span class="hidden sm:inline">Mortis Play</span></a>
+    <main class="min-h-screen flex items-center justify-center relative">
+      <svg class="pattern" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="patternGradient" gradientTransform="rotate(45)">
+            <stop offset="0%" stop-color="#6366f1" />
+            <stop offset="50%" stop-color="#ec4899" />
+            <stop offset="100%" stop-color="#facc15" />
+          </linearGradient>
+        </defs>
+        <path d="M0,100 Q250,50 500,100 T1000,100 T1500,50 V1000 H0 Z" fill="url(#patternGradient)" opacity="0.3">
+          <animate attributeName="d" dur="10s" repeatCount="indefinite" values="
+            M0,100 Q250,50 500,100 T1000,100 T1500,50 V1000 H0 Z;
+            M0,150 Q250,80 500,150 T1000,120 T1500,80 V1000 H0 Z;
+            M0,100 Q250,120 500,80 T1000,150 T1500,100 V1000 H0 Z;
+            M0,100 Q250,50 500,100 T1000,100 T1500,50 V1000 H0 Z
+          " />
+        </path>
+      </svg>
+      <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight gradient-text">
+          Технический перерыв
+        </h1>
+        <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-prose mx-auto">
+          Йоу, геймеры! 🎮 Сайт Mortis Play на техобслуживании. Скоро вернёмся с новым контентом! 😎
+        </p>
+        <div class="mt-6 flex flex-wrap justify-center gap-3">
+          <a href="https://t.me/MortisPlayTG" class="glass-button" rel="noopener" aria-label="Telegram Channel Mortis Play">
+            <i class="fa-brands fa-telegram"></i> Следи за новостями
+          </a>
+          <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button" rel="noopener" aria-label="YouTube Mortis Play">
+            <i class="fa-brands fa-youtube"></i> Смотри видео
+          </a>
+          <a href="https://t.me/MortisplayQABot" class="glass-button" rel="noopener" aria-label="Telegram Bot Mortis Play">
+            <i class="fa-brands fa-telegram"></i> Задать вопрос
+          </a>
         </div>
-        <div class="hidden sm:flex items-center gap-2">
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#videos">Видео</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#projects">Проекты</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#profile">Профиль</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#settings">Настройки</a>
+        <div class="mt-6 flex items-center justify-center gap-6 text-sm text-slate-600 dark:text-slate-300">
+          <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">421</span></div>
+          <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
         </div>
-        <button id="themeToggle" class="glass-button relative" aria-label="Тема"><i class="fa-solid fa-sun"></i> <span class="text-xs hidden sm:inline">Светлая</span></button>
-      </nav>
-      <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform z-50 sm:hidden glass p-4">
-        <button id="closeMenu" class="absolute top-4 right-4"><i class="fa-solid fa-xmark"></i></button>
-        <div class="flex items-center gap-2 mb-6"><img src="/assets/photo.jpg" alt="Logo" class="h-8 w-8 rounded-lg" onerror="this.src='/assets/photo.jpg'"> <span class="font-semibold">Mortis Play</span></div>
-        <nav class="space-y-2">
-          <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
-          <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#videos">Видео</a>
-          <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#projects">Проекты</a>
-          <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
-          <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
-          <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#profile">Профиль</a>
-          <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#settings">Настройки</a>
-        </nav>
       </div>
-    </header>
-
-    <main>
-      <!-- WELCOME -->
-      <section id="welcome" class="relative overflow-hidden py-16 sm:py-24">
-        <div class="mx-auto max-w-7xl px-4">
-          <div class="grid lg:grid-cols-2 gap-10 items-center">
-            <div class="fade-in">
-              <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white">Йоу, это <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-fuchsia-600">Mortis Play</span>!</h1>
-              <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-300">Эксклюзивные видео, новости и апдейты. Врывайся — дальше только громче 😎</p>
-              <div class="mt-6 flex flex-wrap gap-3">
-                <a href="#contact" class="glass-button"><i class="fa-solid fa-envelope"></i> Контакты</a>
-                <a href="biography.html" class="glass-button"><i class="fa-solid fa-user"></i> Биография</a>
-                <a href="qa.html" class="glass-button"><i class="fa-solid fa-question-circle"></i> Задать вопрос</a>
-                <a href="faq.html" class="glass-button"><i class="fa-solid fa-circle-question"></i> FAQ</a>
-              </div>
-              <div class="mt-6 flex items-center gap-6 text-sm text-slate-600 dark:text-slate-300">
-                <div><i class="fa-solid fa-users"></i> Подписчиков: <span id="subscriberCount" class="font-semibold">421</span></div>
-                <div><i class="fa-solid fa-eye"></i> Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
-              </div>
-            </div>
-            <div class="relative mt-8 lg:mt-0 fade-in">
-              <video class="banner-video w-full max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" loading="lazy" autoplay muted loop playsinline preload="metadata">
-                <source src="/assets/photo.mp4" type="video/mp4" />
-                <img src="/assets/photo.jpg" alt="Видео недоступно" />
-              </video>
-              <img class="banner-fallback w-full max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" src="/assets/photo.jpg" alt="Аватар" />
-              <div class="banner-quote mt-4 lg:absolute lg:-bottom-4 lg:-right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover">
-                <p class="text-xs text-center lg:text-left">Гений, миллиардер, плейбой, филантроп 😎</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- PROFILE -->
-      <section id="profile" class="py-16 fade-in">
-        <div class="mx-auto max-w-7xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Твой профиль</h2>
-          <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Кастомизируй свой вайб и зарабатывай бейджи! 😎</p>
-          <div class="mt-8 max-w-md mx-auto">
-            <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
-              <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Аватар</h3>
-              <img id="userAvatar" src="/assets/photo.jpg" alt="Аватар" class="w-24 h-24 rounded-full mx-auto">
-              <input type="file" id="avatarUpload" accept="image/*" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2">
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Загрузи аватар (до 1МБ).</p>
-              <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Имя пользователя</h3>
-              <input type="text" id="usernameInput" maxlength="20" placeholder="Введи имя" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2 text-sm">
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Максимум 20 символов.</p>
-              <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Бейджи</h3>
-              <div id="badges" class="flex flex-wrap gap-2"></div>
-              <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Доступные бейджи</h3>
-              <div id="badgeList" class="mt-2 space-y-2"></div>
-            </div>
-          </div>
-          <div id="badgeModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-sm w-full">
-              <h3 id="modalTitle" class="font-semibold text-indigo-600 dark:text-indigo-400"></h3>
-              <p id="modalDesc" class="mt-2 text-sm text-slate-600 dark:text-slate-300"></p>
-              <button id="closeModal" class="mt-4 glass-button">Закрыть</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- VIDEOS -->
-      <section id="videos" class="py-16 fade-in">
-        <div class="mx-auto max-w-7xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Мои видео</h2>
-          <div class="mt-6 flex justify-center gap-3 flex-wrap">
-            <button class="video-filter glass-button active" data-filter="all">Все</button>
-            <button class="video-filter glass-button" data-filter="streams">Стримы</button>
-            <button class="video-filter glass-button" data-filter="fun">Угар</button>
-            <button class="video-filter glass-button" data-filter="blitz">БЛИЦ Play</button>
-          </div>
-          <p id="category-desc" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300">Все видео от Mortis Play!</p>
-          <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="videoGrid"></div>
-          <div class="mt-6 text-center">
-            <button id="loadMoreVideos" class="glass-button pagination-button"><i class="fa-solid fa-plus"></i> Загрузить ещё</button>
-            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button" rel="noopener"><i class="fa-brands fa-youtube"></i> Все видео</a>
-          </div>
-        </div>
-      </section>
-
-      <!-- PROJECTS -->
-      <section id="projects" class="py-16 fade-in">
-        <div class="mx-auto max-w-7xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Мои проекты</h2>
-          <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
-              <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">1 сезон «Типичный случай»</h3>
-                <span class="text-xs px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700">50%</span>
-              </div>
-              <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Серия стримов с мемами и челленджами.</p>
-              <div class="mt-3 h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700">
-                <div class="h-full w-1/2 rounded-full bg-indigo-600" data-progress="50"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- NEWS -->
-      <section id="news" class="py-16 fade-in">
-        <div class="mx-auto max-w-7xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Новости</h2>
-          <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="newsGrid">
-            <article class="card-hover rounded-2xl p-6"><h3 class="text-lg font-semibold">Обновили сайт</h3><p class="mt-2 text-sm">Вернули узоры, обновили дизайн и бота. Сайт не будет обновляться месяц — мы делаем контент. Проблемы? Пишите в Telegram: <a href="https://t.me/dimap7221" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">MortisPlay</a>.</p><p class="mt-3 text-xs">Mortis32 · 25 сентября 2025</p></article>
-            <article class="card-hover rounded-2xl p-6"><h3 class="text-lg font-semibold">Технический перерыв завершён!</h3><p class="mt-2 text-sm">Сайт вернулся! Новые фичи, Q&A. Бот: <a href="https://t.me/MortisplayQABot" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">MortisplayQABot</a>. Новости: <a href="https://t.me/MortisPlayTG" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">@MortisPlayTG</a>.</p><p class="mt-3 text-xs">Mortis32 · 22 сентября 2025</p></article>
-            <article class="card-hover rounded-2xl p-6"><h3 class="text-lg font-semibold">Новый раздел «Настройки» и бот готов!</h3><p class="mt-2 text-sm">Настраивай тему, шрифты, производительность. Бот: <a href="https://t.me/MortisplayQABot" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">MortisplayQABot</a>.</p><p class="mt-3 text-xs">Mortis32 · 18 сентября 2025</p></article>
-            <article class="card-hover rounded-2xl p-6"><h3 class="text-lg font-semibold">Q&A открыт!</h3><p class="mt-2 text-sm">Пиши вопросы: <a href="https://t.me/MortisplayQABot" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">MortisplayQABot</a>. Видео с категориями, FAQ на отдельной странице.</p><p class="mt-3 text-xs">Mortis32 · 15 сентября 2025</p></article>
-            <article class="card-hover rounded-2xl p-6"><h3 class="text-lg font-semibold">Улучшена Биография!</h3><p class="mt-2 text-sm">Больше деталей о пути и планах. Смотри по кнопке!</p><p class="mt-3 text-xs">Mortis32 · 10 сентября 2025</p></article>
-            <article class="card-hover rounded-2xl p-6"><h3 class="text-lg font-semibold">Редизайн сайта!</h3><p class="mt-2 text-sm">Новый стиль — оцени!</p><p class="mt-3 text-xs">Mortis32 · 19 августа 2025</p></article>
-            <article class="card-hover rounded-2xl p-6"><h3 class="text-lg font-semibold">Форум временно убран</h3><p class="mt-2 text-sm">Спам-боты. Вернём в августе. Вопросы: <a href="https://t.me/MortisplayQABot" class="underline text-indigo-600 dark:text-indigo-400" rel="noopener">MortisplayQABot</a>.</p><p class="mt-3 text-xs">Mortis32 · 27 июля 2025</p></article>
-            <article class="card-hover rounded-2xl p-6"><h3 class="text-lg font-semibold">Новые мемы!</h3><p class="mt-2 text-sm">7 новых мемов — смотри!</p><p class="mt-3 text-xs">Mortis32 · 16 июля 2025</p></article>
-          </div>
-          <div class="mt-6 text-center">
-            <button id="loadMoreNews" class="glass-button pagination-button"><i class="fa-solid fa-plus"></i> Загрузить ещё</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- SETTINGS -->
-      <section id="settings" class="py-16 fade-in">
-        <div class="mx-auto max-w-7xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Настройки</h2>
-          <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Настрой сайт под себя!</p>
-          <div class="mt-8 max-w-md mx-auto">
-            <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
-              <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Производительность</h3>
-              <label class="mt-3 flex items-center gap-2"><input type="checkbox" id="lowPerformanceToggle" class="rounded text-indigo-600"><span class="text-sm">Лёгкий режим</span></label>
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает анимации и видео.</p>
-              <label class="mt-3 flex items-center gap-2"><input type="checkbox" id="disableAnimationsToggle" class="rounded text-indigo-600"><span class="text-sm">Отключить анимации</span></label>
-              <label class="mt-3 flex items-center gap-2"><input type="checkbox" id="disableParticlesToggle" class="rounded text-indigo-600"><span class="text-sm">Отключить частицы</span></label>
-              <div id="performanceNotification" class="notification"><span></span><button aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button></div>
-            </div>
-            <div class="mt-6 card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
-              <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Внешний вид</h3>
-              <label class="mt-3 flex items-center gap-2"><span class="text-sm">Тема:</span><select id="themeSelect" class="rounded border border-slate-200 dark:border-slate-700 px-2 py-1"><option value="auto">Авто</option><option value="light">Светлая</option><option value="dark">Тёмная</option></select></label>
-              <label class="mt-3 flex items-center gap-2"><input type="checkbox" id="highContrastToggle" class="rounded text-indigo-600"><span class="text-sm">Высокая контрастность</span></label>
-              <label class="mt-3 flex flex-col gap-2"><span class="text-sm">Шрифт:</span><input type="range" id="fontSizeSlider" min="50" max="200" value="100" class="w-full"></label>
-              <div id="appearanceNotification" class="notification"><span></span><button aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button></div>
-            </div>
-            <div class="mt-6 text-center">
-              <button id="resetSettings" class="glass-button"><i class="fa-solid fa-rotate-left"></i> Сбросить</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- CONTACT -->
-      <section id="contact" class="py-16 fade-in">
-        <div class="mx-auto max-w-5xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Связь со мной</h2>
-          <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Коллаб или болтовня? Пиши!</p>
-          <div class="mt-6 grid gap-6">
-            <div class="rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-6">
-              <ul class="space-y-2 text-slate-700 dark:text-slate-300">
-                <li>Telegram: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/dimap7221" rel="noopener">MortisPlay</a></li>
-                <li>Канал: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/MortisPlayTG" rel="noopener">@MortisPlayTG</a></li>
-                <li>Бот: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/MortisplayQABot" rel="noopener">@MortisplayQABot</a></li>
-                <li>Частный: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/+GqoVoVYJR185ZmYy" rel="noopener">Частный канал</a></li>
-                <li>Email: <a class="text-indigo-600 dark:text-indigo-400 underline" href="mailto:mortisplay@mail.ru" rel="noopener">mortisplay@mail.ru</a></li>
-              </ul>
-              <div class="mt-4 flex flex-wrap gap-3">
-                <a href="https://t.me/dimap7221" class="glass-button" rel="noopener"><i class="fa-brands fa-telegram"></i>Telegram</a>
-                <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button" rel="noopener"><i class="fa-brands fa-youtube"></i>YouTube</a>
-                <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="glass-button" rel="noopener"><i class="fa-brands fa-twitch"></i>Twitch</a>
-                <a href="https://www.tiktok.com/@mortisplay32" target="_blank" class="glass-button" rel="noopener"><i class="fa-brands fa-tiktok"></i>TikTok</a>
-                <a href="https://discord.gg/c7EmwzR4cX" target="_blank" class="glass-button" rel="noopener"><i class="fa-brands fa-discord"></i>Discord</a>
-              </div>
-              <div class="mt-4">
-                <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="glass-button" rel="noopener"><i class="fa-solid fa-hand-holding-dollar"></i> Поддержать</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <footer class="border-t border-slate-200/60 dark:border-slate-700/60 py-8">
-        <div class="mx-auto max-w-7xl px-4 text-center text-sm text-slate-600 dark:text-slate-300">© 2025 Mortis Play. Все права защищены.</div>
-      </footer>
+      <canvas id="particleCanvas" class="absolute inset-0 pointer-events-none z-0"></canvas>
     </main>
-
-    <!-- TEMPLATE -->
-    <template id="ytCardTpl">
-      <div class="video-card card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-4">
-        <div class="relative aspect-video rounded-xl overflow-hidden">
-          <iframe class="w-full h-full" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          <img class="w-full h-full absolute top-0 left-0 object-cover hidden" src="/assets/photo.jpg" alt="Видео недоступно" />
-        </div>
-        <p class="mt-3 text-sm text-slate-600 dark:text-slate-300"></p>
-      </div>
-    </template>
-
-    <!-- JS -->
-    <script nonce="">
-      const nonce = crypto.getRandomValues(new Uint8Array(16)).reduce((s,b)=>s+b.toString(16).padStart(2,'0'),'');
-      document.head.appendChild(Object.assign(document.createElement('script'),{nonce,id:'gtagScript',innerHTML:`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-W7QBLDDSSK',{send_page_view:true});`}));
-    </script>
-    <script nonce="">
-      const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],root=document.documentElement;
-      const storage={get:(k,d)=>localStorage.getItem(k)||sessionStorage.getItem(k)||d,set:(k,v)=>{localStorage.setItem(k,v);sessionStorage.setItem(k,v)},rm:k=>{localStorage.removeItem(k);sessionStorage.removeItem(k)}};
-      let lastNotify=0;
-      const notify=(m,e)=>{if(Date.now()-lastNotify<1e4||!e)return;lastNotify=Date.now();const s=e.querySelector('span');$$('.notification.show').forEach(n=>n.classList.remove('show'));s.textContent=m;e.classList.add('show');e.focus();const t=setTimeout(()=>e.classList.remove('show'),5e3);e.querySelector('button')?.addEventListener('click',()=>{e.classList.remove('show');clearTimeout(t)},{once:true})};
-      const setTheme=(t,p=false)=>{if(!p)storage.set('theme',t);root.classList.toggle('dark',t==='dark');const b=$('#themeToggle'),i=b?.querySelector('i'),s=b?.querySelector('span');if(i&&s){i.className=t==='dark'?'fa-solid fa-moon':'fa-solid fa-sun';s.textContent=t==='dark'?'Тёмная':'Светлая'}if(!p)gtag('event','theme',{event_category:'engagement',event_label:t})};
-      const toggle=(id,key,cls,on,off,n)=>{const c=$('#'+id);if(!c||!n)return;const v=storage.get(key,'false')==='true';c.checked=v;root.classList.toggle(cls,v);c.addEventListener('change',()=>{const nv=c.checked;storage.set(key,nv);root.classList.toggle(cls,nv);notify(nv?on:off,n);gtag('event',key,{event_category:'settings',event_label:nv?'on':'off'})})};
-      const setup=()=>{
-        const ts=$('#themeSelect');if(ts){let t=storage.get('theme','auto');ts.value=t;setTheme(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':t);ts.addEventListener('change',()=>{const v=ts.value,et=v==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':v;setTheme(et,true);notify(`Предпросмотр: ${v}`,$('#appearanceNotification'));setTimeout(()=>{setTheme(et);notify(`Тема: ${v==='auto'?'Авто':v==='light'?'Светлая':'Тёмная'}`,$('#appearanceNotification'))},2e3)})}
-        $('#themeToggle')?.addEventListener('click',()=>setTheme(root.classList.contains('dark')?'light':'dark'));
-        toggle('lowPerformanceToggle','lowPerformance','low-performance','Лёгкий режим включён','Лёгкий режим выключен',$('#performanceNotification'));
-        toggle('disableAnimationsToggle','disableAnimations','no-animations','Анимации отключены','Анимации включены',$('#performanceNotification'));
-        toggle('disableParticlesToggle','disableParticles','no-particles','Частицы отключены','Частицы включены',$('#performanceNotification'));
-        toggle('highContrastToggle','highContrast','high-contrast','Контраст включён','Контраст выключен',$('#appearanceNotification'));
-        const fs=$('#fontSizeSlider');if(fs){let f=storage.get('fontSize','100');fs.value=f;root.style.setProperty('--font-scale',f/100);fs.addEventListener('input',()=>{const v=fs.value;root.style.setProperty('--font-scale',v/100);storage.set('fontSize',v);notify(`Шрифт: ${v}%`,$('#appearanceNotification'))})}
-        $('#resetSettings')?.addEventListener('click',()=>{['theme','lowPerformance','disableAnimations','disableParticles','fontSize','highContrast','userAvatar','userBadges','username','watchedVideos'].forEach(storage.rm);location.reload()});
-
-        // Profile & Badges
-        const au=$('#avatarUpload'),ua=$('#userAvatar'),un=$('#usernameInput');
-        if(au&&ua){let a=storage.get('userAvatar');if(a)ua.src=a;au.addEventListener('change',()=>{const f=au.files[0];if(!f||f.size>1024*1024||!/^image\/(jpeg|png|gif|webp)$/.test(f.type)){notify(f?'Неподходящий файл':'Файл слишком большой',$('#appearanceNotification'));return};const r=new FileReader();r.onload=()=>{const i=new Image();i.src=r.result;i.onload=()=>{const c=document.createElement('canvas'),ctx=c.getContext('2d');let w=i.width,h=i.height,ms=100;if(w>h&&w>ms){h*=ms/w;w=ms}else if(h>ms){w*=ms/h;h=ms}c.width=w;c.height=h;ctx.drawImage(i,0,0,w,h);const cmp=c.toDataURL('image/jpeg',0.8);ua.src=cmp;storage.set('userAvatar',cmp);notify('Аватар обновлён',$('#appearanceNotification'));checkBadges()}};r.readAsDataURL(f)})}
-        if(un){un.value=storage.get('username','');un.addEventListener('input',()=>{const v=un.value.trim();if(v.length<=20){storage.set('username',v);notify('Имя обновлено',$('#appearanceNotification'));checkBadges()}})}
-        const badges=[{name:'Фанат',icon:'fa-solid fa-star',desc:'За посещение сайта!',earned:()=>true},{name:'Мемолог',icon:'fa-solid fa-laugh',desc:'4 видео «Угар»',earned:()=>Object.values(JSON.parse(storage.get('watchedVideos','{}'))).filter(v=>v.category==='fun').length>=4,progress:()=>Math.min(Object.values(JSON.parse(storage.get('watchedVideos','{}'))).filter(v=>v.category==='fun').length,4)},{name:'Стример',icon:'fa-solid fa-video',desc:'Аватар + имя',earned:()=>!!storage.get('userAvatar')&&!!storage.get('username')},{name:'Легенда',icon:'fa-solid fa-crown',desc:'Все бейджи',earned:()=>JSON.parse(storage.get('userBadges','[]')).length>=4},{name:'Эпик Мемолог',icon:'fa-solid fa-trophy',desc:'50 видео «Угар»',earned:()=>Object.values(JSON.parse(storage.get('watchedVideos','{}'))).filter(v=>v.category==='fun').length>=50,progress:()=>Math.min(Object.values(JSON.parse(storage.get('watchedVideos','{}'))).filter(v=>v.category==='fun').length,50)}];
-        const setupBadges=()=>{const b=$('#badges'),bl=$('#badgeList');if(!b||!bl)return;let sb=JSON.parse(storage.get('userBadges','[]'));sb=badges.filter(d=>d.earned()).map(d=>d.name);storage.set('userBadges',JSON.stringify(sb));b.innerHTML=sb.map(n=>`<span class="badge inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-600 text-white text-xs"><i class="${badges.find(d=>d.name===n).icon}"></i>${n}</span>`).join('');bl.innerHTML=badges.map((d,i)=>{const s=sb.includes(d.name)?'✅':'🔒',p=d.progress?` (${d.progress()}/${d.name==='Мемолог'?4:50})`:'';return`<div class="flex items-center gap-2 text-sm cursor-pointer" role="button" tabindex="0"><i class="${d.icon} ${sb.includes(d.name)?'text-indigo-600 dark:text-indigo-400':'text-slate-400 dark:text-slate-600'}"></i><span class="${sb.includes(d.name)?'text-slate-700 dark:text-slate-300':'text-slate-400 dark:text-slate-600'}">${d.name}: ${d.desc}${p}</span><span>${s}</span></div>`}).join('');bl.querySelectorAll('div').forEach((el,i)=>{el.addEventListener('click',()=>{const m=$('#badgeModal'),mt=$('#modalTitle'),md=$('#modalDesc');if(m&&mt&&md){mt.textContent=badges[i].name;md.textContent=badges[i].desc;m.style.display='flex';$('#closeModal').onclick=()=>{m.style.display='none'}})})})};const checkBadges=()=>setupBadges();setupBadges();
-
-        // Videos
-        const videoData=[{src:'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/',title:'Угар в Content Warning',cat:'fun'},{src:'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/',title:'УГАР В REPO',cat:'fun'},{src:'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/',title:'CS2 (feat. Johnny Drill)',cat:'streams'},{src:'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/',title:'УГАР И ПРЕДАТЕЛЬСТВА PEAK!',cat:'fun'},{src:'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/',title:'Mortisplay32 PEAK',cat:'streams'},{src:'https://rutube.ru/play/embed/3de912692f3520aad3ccf648b30f0247',title:'БЕЗУМИЯ В РАБОТЕ!!!',cat:'fun'},{src:'https://rutube.ru/play/embed/1cb1388800c0a573bb4c6942bc12c752',title:'УМНЫЙ НО КОСОЙ',cat:'fun'},{src:'https://rutube.ru/play/embed/8e2f7da5ca6582d3b66ea73d39b53130',title:'СМЕРТЕЛЬНЫЙ КОНТЕНТ!',cat:'fun'},{src:'https://rutube.ru/play/embed/f50e8d94d8228d9a8ffce5e37773a8e2',title:'РЕЛАКС',cat:'fun'},{src:'https://rutube.ru/play/embed/522c3d4a29970e19b74f8cdfa9e2eb3e',title:'ЧАС РАБОТЫ В ЛЕТАЛ КОМПАНИ!',cat:'fun'},{src:'https://rutube.ru/play/embed/2c266a516ea35150036cd6298ef6db68',title:'ОБНОВА ТОП НО НЕ СОВСЕМ...',cat:'fun'},{src:'https://rutube.ru/play/embed/36faf3fd0b2c5dac09f907297925db41',title:'НОВАЯ ВЕБКА!',cat:'fun'},{src:'https://rutube.ru/play/embed/5b51c9a3e15b4d75bfb08783c90bcc85',title:'БЛИЦ: КОНЕЦ ГОДА?',cat:'blitz'},{src:'https://rutube.ru/play/embed/171e2dae98076c82e5c49f3dfda7bb33',title:'БЛИЦ: ПОСЛЕЖНИЙ РУБЕЖ!',cat:'blitz'},{src:'https://rutube.ru/play/embed/0f958e52a3a7023734b4bfa562186a9bce',title:'БЛИЦ: ВСЕ.',cat:'blitz'}];
-        const tpl=$('#ytCardTpl'),g=$('#videoGrid'),lmv=$('#loadMoreVideos');
-        if(tpl&&g&&lmv){let p=1,pp=4;const rv=(v,a=false)=>{if(!a)g.innerHTML='';v.forEach(d=>{const n=tpl.content.cloneNode(true),i=n.querySelector('iframe'),t=n.querySelector('p'),c=n.querySelector('.video-card'),fi=n.querySelector('img');if(i&&t&&c&&fi){i.src=d.src;i.title=`Видео: ${d.title}`;i.addEventListener('load',()=>{const w=JSON.parse(storage.get('watchedVideos','{}'));w[d.title]={category:d.cat,watched:true};storage.set('watchedVideos',JSON.stringify(w));checkBadges()});i.addEventListener('error',()=>{i.classList.add('hidden');fi.classList.remove('hidden')});t.textContent=d.title;c.dataset.category=d.cat;g.appendChild(n)}});lmv.disabled=p*pp>=videoData.length};rv(videoData.slice(0,pp));lmv.addEventListener('click',()=>{p++;rv(videoData.slice((p-1)*pp,p*pp),true)});$$('.video-filter').forEach(b=>{b.addEventListener('click',()=>{const f=b.dataset.filter;$$('.video-filter').forEach(btn=>btn.classList.toggle('active',btn===b));const fv=f==='all'?videoData:videoData.filter(v=>v.cat===f);p=1;rv(fv.slice(0,pp));$('#category-desc').textContent={all:'Все видео!',streams:'Эпичные стримы!',fun:'Угарные мемы!',blitz:'БЛИЦ ролики!'}[f]})})}
-
-        // News pagination
-        const ng=$('#newsGrid'),lmn=$('#loadMoreNews');if(ng&&lmn){let page=1,per=3;const items=Array.from(ng.children);ng.innerHTML='';const load=(append=false)=>{if(!append)ng.innerHTML='';const start=(page-1)*per;items.slice(start,start+per).forEach(it=>ng.appendChild(it.cloneNode(true)));lmn.disabled=page*per>=items.length};load();lmn.addEventListener('click',()=>{page++;load(true)})}
-
-        // Navigation
-        const mt=$('#menuToggle'),sm=$('#sidebarMenu'),cm=$('#closeMenu');if(mt&&sm&&cm){mt.addEventListener('click',()=>{sm.classList.toggle('open');mt.setAttribute('aria-expanded',sm.classList.contains('open'))});cm.addEventListener('click',()=>{sm.classList.remove('open')});$$('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=$(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});if(sm.classList.contains('open')){sm.classList.remove('open');mt.setAttribute('aria-expanded','false')}})})}
-
-        // Particles
-        const c=$('#backgroundParticles');if(c&&c.getContext){const ctx=c.getContext('2d');let p=[];const init=()=>{c.width=innerWidth;c.height=innerHeight;const n=Math.floor(innerWidth/20);p=Array.from({length:n},()=>({x:Math.random()*c.width,y:Math.random()*c.height,size:Math.random()*3+1,speedX:Math.random()*0.5-0.25,speedY:Math.random()*0.5-0.25}))};const draw=()=>{if(root.classList.contains('no-particles')||root.classList.contains('low-performance'))return;ctx.clearRect(0,0,c.width,c.height);p.forEach(o=>{o.x+=o.speedX;o.y+=o.speedY;if(o.x<0||o.x>c.width)o.speedX*=-1;if(o.y<0||o.y>c.height)o.speedY*=-1;ctx.beginPath();ctx.arc(o.x,o.y,o.size,0,Math.PI*2);ctx.fillStyle=root.classList.contains('dark')?'#e5e7eb':'#1f2937';ctx.fill()});requestAnimationFrame(draw)};init();addEventListener('resize',()=>{clearTimeout(window.r);window.r=setTimeout(init,200)});draw()}
-
-        // Loader & Fade-in
-        const l=$('#loader'),sc=$('#siteContent');const hide=()=>{l.style.display='none';sc.classList.remove('hidden')};if(document.readyState==='complete')hide();else addEventListener('load',()=>setTimeout(hide,500));setTimeout(hide,3000);
-        const observer = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');observer.unobserve(e.target)}}),{threshold:0.1});
-        $$('.fade-in').forEach(el => observer.observe(el));
-      };
-      document.addEventListener('DOMContentLoaded',setup);
-    </script>
   </div>
+
+  <script nonce="${nonce}">
+    // Функция логирования
+    const logAction = (message) => {
+      console.log(message);
+    };
+
+    // Управление темой
+    const root = document.documentElement;
+    const setTheme = (theme) => {
+      logAction(`Тема установлена: ${theme}`);
+      localStorage.setItem('theme', theme);
+      root.classList.toggle('dark', theme === 'dark');
+      gtag('event', 'theme_toggle', { event_category: 'engagement', event_label: theme });
+    };
+
+    // Инициализация темы
+    const initializeTheme = () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme && savedTheme !== 'auto') {
+        setTheme(savedTheme);
+      } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        setTheme('dark');
+      } else {
+        setTheme('light');
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (localStorage.getItem('theme') === 'auto') {
+          setTheme(e.matches ? 'dark' : 'light');
+        }
+      });
+    };
+
+    // Анимация частиц
+    const setupParticles = () => {
+      const canvas = document.getElementById('particleCanvas');
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const createParticle = () => {
+        return {
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          size: Math.random() * 3 + 1,
+          life: Math.random() * 50 + 50
+        };
+      };
+
+      const animateParticles = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (!root.classList.contains('low-performance') && !root.classList.contains('no-animations')) {
+          particles.forEach((p, i) => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life--;
+            if (p.life <= 0 || p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height) {
+              particles.splice(i, 1);
+              particles.push(createParticle());
+            }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = root.classList.contains('dark') ? '#6366f1' : '#ffffff';
+            ctx.fill();
+          });
+        }
+        requestAnimationFrame(animateParticles);
+      };
+
+      for (let i = 0; i < 50; i++) {
+        particles.push(createParticle());
+      }
+      animateParticles();
+
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+    };
+
+    // Управление лоадером
+    const setupLoader = () => {
+      window.addEventListener('load', () => {
+        logAction('Загрузка завершена');
+        const loader = document.getElementById('loader');
+        const site = document.getElementById('siteContent');
+        if (loader && site) {
+          loader.classList.add('opacity-0', 'transition', 'duration-700');
+          loader.addEventListener('transitionend', () => {
+            loader.style.display = 'none';
+            site.classList.remove('hidden');
+            logAction('Лоадер скрыт');
+          }, { once: true });
+        }
+      });
+
+      setTimeout(() => {
+        logAction('Таймаут 5с сработал');
+        const loader = document.getElementById('loader');
+        const site = document.getElementById('siteContent');
+        if (loader && site) {
+          loader.style.display = 'none';
+          site.classList.remove('hidden');
+        }
+      }, 5000);
+    };
+
+    // Отслеживание кликов по кнопкам
+    const setupButtonTracking = () => {
+      const buttons = document.querySelectorAll('.glass-button');
+      buttons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          const label = e.target.textContent.trim();
+          gtag('event', 'button_click', { event_category: 'engagement', event_label: label });
+          logAction(`Клик по кнопке: ${label}`);
+        });
+      });
+    };
+
+    // Инициализация
+    const initializeApp = () => {
+      initializeTheme();
+      setupParticles();
+      setupLoader();
+      setupButtonTracking();
+    };
+
+    document.addEventListener('DOMContentLoaded', initializeApp);
+  </script>
 </body>
 </html>
