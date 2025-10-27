@@ -24,6 +24,7 @@
   <!-- Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
 
+  <!-- Tailwind CDN (для разработки) — в продакшене замени на локальный CSS -->
   <script src="https://cdn.tailwindcss.com" defer></script>
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
 
@@ -95,7 +96,7 @@
       <nav class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between">
         <div class="flex items-center gap-2">
           <button id="menuToggle" class="sm:hidden rounded-xl px-3 py-2 ring-1 ring-slate-300/70 dark:ring-slate-600"><span>Меню</span> <i class="fa-solid fa-bars"></i></button>
-          <a href="#welcome" class="flex items-center gap-2 font-semibold"><img src="/assets/photo.jpg" alt="Logo" class="h-8 w-8 rounded-lg" onerror="this.src='/assets/fallback.jpg'"> <span class="hidden sm:inline">Mortis Play</span></a>
+          <a href="#welcome" class="flex items-center gap-2 font-semibold"><img src="/assets/photo.jpg" alt="Logo" class="h-8 w-8 rounded-lg" onerror="this.src='/assets/photo.jpg'"> <span class="hidden sm:inline">Mortis Play</span></a>
         </div>
         <div class="hidden sm:flex items-center gap-2">
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
@@ -110,7 +111,7 @@
       </nav>
       <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform z-50 sm:hidden glass p-4">
         <button id="closeMenu" class="absolute top-4 right-4"><i class="fa-solid fa-xmark"></i></button>
-        <div class="flex items-center gap-2 mb-6"><img src="/assets/photo.jpg" alt="Logo" class="h-8 w-8 rounded-lg" onerror="this.src='/assets/fallback.jpg'"> <span class="font-semibold">Mortis Play</span></div>
+        <div class="flex items-center gap-2 mb-6"><img src="/assets/photo.jpg" alt="Logo" class="h-8 w-8 rounded-lg" onerror="this.src='/assets/photo.jpg'"> <span class="font-semibold">Mortis Play</span></div>
         <nav class="space-y-2">
           <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
           <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#videos">Видео</a>
@@ -124,7 +125,7 @@
     </header>
 
     <main>
-      <!-- WELCOME -->
+     <!-- WELCOME -->
       <section id="welcome" class="relative overflow-hidden py-16 sm:py-24">
         <div class="mx-auto max-w-7xl px-4">
           <div class="grid lg:grid-cols-2 gap-10 items-center">
@@ -145,7 +146,7 @@
             <div class="relative mt-8 lg:mt-0 fade-in">
               <video class="banner-video w-full max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" loading="lazy" autoplay muted loop playsinline preload="metadata">
                 <source src="/assets/photo.mp4" type="video/mp4" />
-                <img src="/assets/fallback.jpg" alt="Видео недоступно" />
+                <img src="/assets/photo.jpg" alt="Видео недоступно" />
               </video>
               <img class="banner-fallback w-full max-w-md mx-auto rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" src="/assets/photo.jpg" alt="Аватар" />
               <div class="banner-quote mt-4 lg:absolute lg:-bottom-4 lg:-right-4 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-4 py-3 shadow card-hover">
@@ -164,7 +165,7 @@
           <div class="mt-8 max-w-md mx-auto">
             <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
               <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Аватар</h3>
-              <img id="userAvatar" src="/assets/fallback.jpg" alt="Аватар" class="w-24 h-24 rounded-full mx-auto">
+              <img id="userAvatar" src="/assets/photo.jpg" alt="Аватар" class="w-24 h-24 rounded-full mx-auto">
               <input type="file" id="avatarUpload" accept="image/*" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2">
               <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Загрузи аватар (до 1МБ).</p>
               <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Имя пользователя</h3>
@@ -186,7 +187,7 @@
         </div>
       </section>
 
-      <!-- VIDEOS -->
+     <!-- VIDEOS -->
       <section id="videos" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="text-center text-2xl md:text-3xl font-bold">Мои видео</h2>
@@ -311,7 +312,7 @@
       <div class="video-card card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-4">
         <div class="relative aspect-video rounded-xl overflow-hidden">
           <iframe class="w-full h-full" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          <img class="w-full h-full absolute top-0 left-0 object-cover hidden" src="/assets/fallback.jpg" alt="Видео недоступно" />
+          <img class="w-full h-full absolute top-0 left-0 object-cover hidden" src="/assets/photo.jpg" alt="Видео недоступно" />
         </div>
         <p class="mt-3 text-sm text-slate-600 dark:text-slate-300"></p>
       </div>
@@ -360,11 +361,12 @@
         // Particles
         const c=$('#backgroundParticles');if(c&&c.getContext){const ctx=c.getContext('2d');let p=[];const init=()=>{c.width=innerWidth;c.height=innerHeight;const n=Math.floor(innerWidth/20);p=Array.from({length:n},()=>({x:Math.random()*c.width,y:Math.random()*c.height,size:Math.random()*3+1,speedX:Math.random()*0.5-0.25,speedY:Math.random()*0.5-0.25}))};const draw=()=>{if(root.classList.contains('no-particles')||root.classList.contains('low-performance'))return;ctx.clearRect(0,0,c.width,c.height);p.forEach(o=>{o.x+=o.speedX;o.y+=o.speedY;if(o.x<0||o.x>c.width)o.speedX*=-1;if(o.y<0||o.y>c.height)o.speedY*=-1;ctx.beginPath();ctx.arc(o.x,o.y,o.size,0,Math.PI*2);ctx.fillStyle=root.classList.contains('dark')?'#e5e7eb':'#1f2937';ctx.fill()});requestAnimationFrame(draw)};init();addEventListener('resize',()=>{clearTimeout(window.r);window.r=setTimeout(init,200)});draw()}
 
-        // Loader & Fade-in
-        const l=$('#loader'),sc=$('#siteContent');const hide=()=>{l.style.display='none';sc.classList.remove('hidden')};if(document.readyState==='complete')hide();else addEventListener('load',()=>setTimeout(hide,500));setTimeout(hide,3000);
-        new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');observer.unobserve(e.target)}}),{threshold:0.1}).observe($$('.fade-in'));
+        // Fade-in — ИСПРАВЛЕНО
+        const observer = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');observer.unobserve(e.target)}}),{threshold:0.1});
+        $$('.fade-in').forEach(el => observer.observe(el));
       };
       document.addEventListener('DOMContentLoaded',setup);
-</script>
+    </script>
+  </div>
 </body>
 </html>
