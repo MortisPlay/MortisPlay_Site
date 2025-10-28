@@ -25,205 +25,203 @@
     gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });
   </script>
   <style>
-    @keyframes floaty { 0%,100%{transform:translateY(0) translateX(0)} 50%{transform:translateY(-20px) translateX(10px)} }
-    @keyframes breathing { 0%,100%{opacity:0.3; transform:scale(1)} 50%{opacity:0.6; transform:scale(1.05)} }
-    .animate-floaty { animation: floaty 8s ease-in-out infinite; will-change: transform; }
-    .animate-floaty-slow { animation: floaty 10s ease-in-out infinite; will-change: transform; }
-    .animate-breathing { animation: breathing 10s ease-in-out infinite; will-change: opacity, transform; }
-
-    /* Темная тема */
-    html.dark body {
-      background: linear-gradient(to bottom right, #0d0d0d, #1a1a1a, #2d2d2d);
-      color: #e5e7eb;
-    }
-    html.dark .card {
-      background: rgba(50, 50, 50, 0.7);
-      border-color: rgba(120, 120, 120, 0.5);
-    }
-    html.dark h1, 
-    html.dark h2, 
-    html.dark h3 {
-      color: #e5e7eb;
-    }
-    html.dark p, 
-    html.dark li, 
-    html.dark span {
-      color: #d1d5db;
-    }
-
-    .neon-title { 
-      transition: all 0.5s ease; 
-      color: #e5e7eb; 
-      background: linear-gradient(to right, #a5b4fc, #f9a8d4, #a5b4fc);
-    }
-    .neon-title:hover { filter: brightness(1.3); }
-
-    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .fade-in.is-visible { opacity: 1; transform: translateY(0); }
-    .timeline-item { position: relative; }
-    .timeline-item:last-child .timeline-line { display: none; }
-
-    /* Оптимизация прокрутки */
-    body { 
-      overflow-y: auto; 
-      overscroll-behavior: auto; 
-      touch-action: pan-y; /* Плавная прокрутка для сенсорных устройств */
-    }
-    main { 
-      min-height: 100vh; 
-    }
-
-    /* Стили для неактивной кнопки */
-    .disabled-button {
-      cursor: not-allowed;
-      opacity: 0.6;
-      background: linear-gradient(to right, #6b7280, #4b5563);
-      pointer-events: none;
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 9999px;
-      color: #e5e7eb;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    .disabled-button:hover {
-      background: linear-gradient(to right, #6b7280, #4b5563); /* Без эффекта при наведении */
-    }
-    .disabled-button::after {
-      content: 'Скоро';
-      position: absolute;
-      top: -1.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.7);
-      color: #ffffff;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
-      font-size: 0.75rem;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    .disabled-button:hover::after {
-      opacity: 1;
-    }
-
-    /* Оптимизация анимаций для производительности */
-    @media (prefers-reduced-motion: reduce) {
-      .animate-floaty, .animate-floaty-slow, .animate-breathing { animation: none; }
-    }
-
-    @media (max-width: 640px) {
-      .md\:grid-cols-4 { grid-template-columns: 1fr; }
-      .animate-floaty, .animate-floaty-slow, .animate-breathing { animation: none; }
-      .text-4xl { font-size: 2rem; }
-      .text-2xl { font-size: 1.5rem; }
-      .px-4 { padding-left: 1rem; padding-right: 1rem; }
-      .py-24 { padding-top: 2rem; padding-bottom: 2rem; }
-      .w-80 { width: 60vw; }
-      .w-72 { width: 56vw; }
-      .w-[40rem] { width: 90vw; }
-      .rounded-3xl { border-radius: 1rem; }
-      .backdrop-blur-lg { backdrop-filter: none; background: rgba(50, 50, 50, 0.7); }
-      .text-lg { font-size: 1rem; line-height: 1.5; }
-      .text-sm { font-size: 0.875rem; line-height: 1.5; }
-      a[class*="bg-gradient-to-r"], .disabled-button { padding: 0.375rem 0.75rem; box-shadow: none; }
-      .max-w-5xl { max-width: 100%; }
-      .timeline-line { height: 100%; }
-      .top-0 { top: 0; }
-      .left-0 { left: 0; }
-      .right-0 { right: 0; }
-      .blur-[100px] { filter: blur(50px); }
-    }
-
-    @media (min-width: 641px) {
-      .w-80 { width: 20rem; }
-      .w-72 { width: 18rem; }
-      .w-[40rem] { width: 40rem; }
-      .blur-2xl { filter: blur(2rem); }
-      .blur-[100px] { filter: blur(100px); }
-    }
-  </style>
+  /* === GLASS MORPHISM + ДОРАБОТКИ === */
+  body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-y: auto;
+    overscroll-behavior: auto;
+    touch-action: pan-y;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>') repeat;
+    pointer-events: none;
+    z-index: -1;
+  }
+  main { min-height: 100vh; }
+  .card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border-radius: 1.5rem;
+    transition: all 0.4s ease;
+  }
+  .card:hover {
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  }
+  .neon-title {
+    background: linear-gradient(to right, #fff, #a78bfa, #fff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+    letter-spacing: -1px;
+    transition: all 0.5s ease;
+  }
+  .neon-title:hover { filter: brightness(1.2); }
+  h1, h2, h3 { color: #ddd6fe; }
+  h2 i {
+    text-shadow: 0 0 10px currentColor;
+    transition: all 0.3s ease;
+  }
+  h2:hover i { transform: scale(1.2); }
+  p, li, span { color: #e0e7ff; line-height: 1.7; }
+  a[class*="bg-gradient-to-r"] {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    transition: all 0.4s ease;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  a[class*="bg-gradient-to-r"]:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+  a[href="/"]:hover {
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    50% { box-shadow: 0 4px 25px rgba(167, 139, 250, 0.4); }
+  }
+  .disabled-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: not-allowed;
+    opacity: 0.7;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  .disabled-button:hover::after {
+    opacity: 1;
+  }
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .fade-in.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  .timeline-line {
+    position: absolute;
+    left: 1.5rem;
+    top: 1rem;
+    height: calc(100% - 1rem);
+    width: 1px;
+    background: rgba(255, 255, 255, 0.2);
+  }
+  @media (max-width: 640px) {
+    .w-80, .w-72, .w-[40rem] { display: none; }
+    .card { border-radius: 1rem; }
+    .text-4xl { font-size: 2rem; }
+    .py-24 { padding-top: 3rem; padding-bottom: 3rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
 </head>
-<body class="bg-gradient-to-br from-black via-gray-900 to-indigo-900 text-white dark">
+<body class="bg-gradient-to-br from-purple-600 to-blue-600 text-white">
   <main class="relative">
-    <div class="absolute top-0 left-0 w-80 h-80 bg-purple-500/20 rounded-full blur-2xl animate-floaty z-[-1]"></div>
-    <div class="absolute top-60 right-0 w-72 h-72 bg-pink-500/20 rounded-full blur-2xl animate-floaty-slow z-[-1]"></div>
-    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[40rem] h-[40rem] bg-indigo-500/10 rounded-full blur-[100px] animate-breathing z-[-1]"></div>
+    <!-- Фоновые стеклянные круги (слегка тонированы) -->
+    <div class="absolute top-0 left-0 w-80 h-80 bg-white/5 rounded-full blur-3xl animate-floaty z-[-1]"></div>
+    <div class="absolute top-60 right-0 w-72 h-72 bg-white/5 rounded-full blur-3xl animate-floaty-slow z-[-1]"></div>
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[40rem] h-[40rem] bg-white/5 rounded-full blur-3xl animate-breathing z-[-1]"></div>
+
     <div class="mx-auto max-w-5xl px-4 py-24 relative z-10">
-      <h1 class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] text-center">
+      <h1 class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight text-center drop-shadow-lg">
         Биография
       </h1>
       <div class="mt-16 grid gap-10">
-        <div class="backdrop-blur-lg bg-white/10 border border-purple-400/50 rounded-3xl p-8 card fade-in">
-          <h2 class="text-2xl font-semibold text-purple-300 flex items-center gap-2">
+        <div class="card p-8 fade-in">
+          <h2 class="text-2xl font-semibold text-purple-200 flex items-center gap-2">
             <i class="fa-solid fa-user"></i> Обо мне
           </h2>
-          <p class="mt-4 text-lg text-slate-200 leading-relaxed">
-            Привет! Я — Mortis Play. Мой путь начался ещё в 2020 году с простых видео без монтажа, но с огромным энтузиазмом. 
+          <p class="mt-4 text-lg leading-relaxed">
+            Привет! Я — Mortis Play. Мой путь начался ещё в 2020 году с простых видео без монтажа, но с огромным энтузиазмом.
             Тогда я и не представлял, что мои видосы будут разлетаться по сети и собирать много просмотров.<br><br>
-            Я обожаю всё, что связано с играми, креативом и монтажом. В моих видео всегда есть юмор, немного странностей и особая атмосфера. 
-            Со временем я улучшил звук, добавил спецэффекты, сделал официальный сайт и начал экспериментировать с форматами — от мемов до стримов. 
+            Я обожаю всё, что связано с играми, креативом и монтажом. В моих видео всегда есть юмор, немного странностей и особая атмосфера.
+            Со временем я улучшил звук, добавил спецэффекты, сделал официальный сайт и начал экспериментировать с форматами — от мемов до стримов.
             Для меня главное — это эмоции зрителей, а не только цифры в статистике.
           </p>
           <div class="mt-6 flex flex-wrap justify-center gap-4">
-            <a href="https://t.me/dimap7221" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg flex items-center gap-2 md:px-4 md:py-2">
+            <a href="https://t.me/dimap7221" target="_blank" class="bg-white/20 hover:bg-white/30 transition-all duration-400 flex items-center gap-2">
               <i class="fa-brands fa-telegram"></i> Telegram
             </a>
-            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-pink-500 hover:to-red-500 transition-all duration-500 shadow-lg flex items-center gap-2 md:px-4 md:py-2">
+            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="bg-white/20 hover:bg-white/30 transition-all duration-400 flex items-center gap-2">
               <i class="fa-brands fa-youtube"></i> YouTube
             </a>
-            <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-teal-500 hover:to-green-500 transition-all duration-500 shadow-lg flex items-center gap-2 md:px-4 md:py-2">
+            <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="bg-white/20 hover:bg-white/30 transition-all duration-400 flex items-center gap-2">
               <i class="fa-solid fa-hand-holding-dollar"></i> Поддержать
             </a>
           </div>
         </div>
-        <div class="backdrop-blur-lg bg-white/10 border border-indigo-400/50 rounded-3xl p-8 card fade-in">
-          <h2 class="text-2xl font-semibold text-indigo-300 flex items-center gap-2">
+        <div class="card p-8 fade-in">
+          <h2 class="text-2xl font-semibold text-indigo-200 flex items-center gap-2">
             <i class="fa-solid fa-timeline"></i> Мой путь
           </h2>
           <div class="mt-4 space-y-6">
             <div class="timeline-item relative pl-8">
-              <div class="absolute left-0 top-0 w-3 h-3 bg-purple-400 rounded-full"></div>
-              <div class="timeline-line absolute left-1.5 top-3 h-full w-0.5 bg-indigo-400/50"></div>
-              <h3 class="text-lg font-semibold text-purple-300">2020: Первый запуск на Youtube</h3>
-              <p class="mt-1 text-sm text-slate-200">Всё началось с одного видеообзора на консоль и всякая всячина... 😎</p>
+              <div class="absolute left-0 top-0 w-3 h-3 bg-white/50 rounded-full"></div>
+              <div class="timeline-line"></div>
+              <h3 class="text-lg font-semibold text-purple-200">2020: Первый запуск на Youtube</h3>
+              <p class="mt-1 text-sm">Всё началось с одного видеообзора на консоль и всякая всячина... 😎</p>
             </div>
             <div class="timeline-item relative pl-8">
-              <div class="absolute left-0 top-0 w-3 h-3 bg-purple-400 rounded-full"></div>
-              <div class="timeline-line absolute left-1.5 top-3 h-full w-0.5 bg-indigo-400/50"></div>
-              <h3 class="text-lg font-semibold text-purple-300">2021: Запуск нового уровня</h3>
-              <p class="mt-1 text-sm text-slate-200">Первый ролик на YouTube в новом уровне — и понеслась!</p>
+              <div class="absolute left-0 top-0 w-3 h-3 bg-white/50 rounded-full"></div>
+              <div class="timeline-line"></div>
+              <h3 class="text-lg font-semibold text-purple-200">2021: Запуск нового уровня</h3>
+              <p class="mt-1 text-sm">Первый ролик на YouTube в новом уровне — и понеслась!</p>
             </div>
             <div class="timeline-item relative pl-8">
-              <div class="absolute left-0 top-0 w-3 h-3 bg-purple-400 rounded-full"></div>
-              <h3 class="text-lg font-semibold text-purple-300">2025: Запуск сайта</h3>
-              <p class="mt-1 text-sm text-slate-200">Создал mortisplay.ru — мой вайб в одном месте!</p>
+              <div class="absolute left-0 top-0 w-3 h-3 bg-white/50 rounded-full"></div>
+              <h3 class="text-lg font-semibold text-purple-200">2025: Запуск сайта</h3>
+              <p class="mt-1 text-sm">Создал mortisplay.ru — мой вайб в одном месте!</p>
             </div>
           </div>
         </div>
-        <div class="backdrop-blur-lg bg-white/10 border border-pink-400/50 rounded-3xl p-8 card fade-in">
-          <h2 class="text-2xl font-semibold text-pink-300 flex items-center gap-2">
+        <div class="card p-8 fade-in">
+          <h2 class="text-2xl font-semibold text-pink-200 flex items-center gap-2">
             <i class="fa-solid fa-circle-info"></i> Факты
           </h2>
-          <ul class="mt-4 space-y-3 text-lg text-slate-200">
-            <li><i class="fa-solid fa-id-card text-purple-300"></i> <span class="font-medium">Имя:</span> ? (в народе — Мортис 😎)</li>
-            <li><i class="fa-solid fa-cake-candles text-pink-300"></i> <span class="font-medium">Дата рождения:</span> 5 августа 2009 🎂</li>
-            <li><i class="fa-solid fa-hourglass-half text-yellow-300"></i> <span class="font-medium">Возраст:</span> 16 лет</li>
-            <li><i class="fa-solid fa-gamepad text-green-300"></i> <span class="font-medium">Любимое занятие:</span> Занятие карьером и своими личными делами:)</li>
-            <li><i class="fa-solid fa-camera-movie text-red-300"></i> <span class="font-medium">Любимый формат:</span> Динамичные мемы с неожиданными переходами</li>
+          <ul class="mt-4 space-y-3 text-lg">
+            <li><i class="fa-solid fa-id-card text-purple-200"></i> <span class="font-medium">Имя:</span> ? (в народе — Мортис 😎)</li>
+            <li><i class="fa-solid fa-cake-candles text-pink-200"></i> <span class="font-medium">Дата рождения:</span> 5 августа 2009 🎂</li>
+            <li><i class="fa-solid fa-hourglass-half text-yellow-200"></i> <span class="font-medium">Возраст:</span> 16 лет</li>
+            <li><i class="fa-solid fa-gamepad text-green-200"></i> <span class="font-medium">Любимое занятие:</span> Занятие карьером и своими личными делами:)</li>
+            <li><i class="fa-solid fa-camera-movie text-red-200"></i> <span class="font-medium">Любимый формат:</span> Динамичные мемы с неожиданными переходами</li>
           </ul>
         </div>
-        <div class="backdrop-blur-lg bg-white/10 border border-green-400/50 rounded-3xl p-8 card fade-in">
-          <h2 class="text-2xl font-semibold text-green-300 flex items-center gap-2">
+        <div class="card p-8 fade-in">
+          <h2 class="text-2xl font-semibold text-green-200 flex items-center gap-2">
             <i class="fa-solid fa-music"></i> Плейлист
           </h2>
-          <p class="mt-4 text-lg text-slate-200 leading-relaxed">
+          <p class="mt-4 text-lg leading-relaxed">
             Мой вайб — это музыка для поднятия настроения! Слушай мой плейлист на Spotify или следи за обновлениями. 🎶
           </p>
           <div class="mt-4 flex flex-wrap justify-center gap-4">
-            <a href="https://open.spotify.com/playlist/3UEMLQdDi830YOoOvEF1RB?si=-yT6Kq4fQ_6STsIgQiGHrw" target="_blank" class="px-4 py-2 rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-teal-500 hover:to-green-500 transition-all duration-500 shadow-lg flex items-center gap-2">
+            <a href="https://open.spotify.com/playlist/3UEMLQdDi830YOoOvEF1RB?si=-yT6Kq4fQ_6STsIgQiGHrw" target="_blank" class="bg-white/20 hover:bg-white/30 transition-all duration-400 flex items-center gap-2">
               <i class="fa-brands fa-spotify"></i> Слушать на Spotify
             </a>
             <button class="disabled-button" disabled>
@@ -233,7 +231,7 @@
         </div>
       </div>
       <div class="mt-12 text-center">
-        <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg inline-flex items-center gap-2 md:px-6 md:py-3" onclick="gtag('event', 'button_click', { 'event_category': 'navigation', 'event_label': 'Back to Home' });">
+        <a href="/" class="px-6 py-3 bg-white/20 hover:bg-white/30 transition-all duration-400 inline-flex items-center gap-2" onclick="gtag('event', 'button_click', { 'event_category': 'navigation', 'event_label': 'Back to Home' });">
           <i class="fa-solid fa-arrow-left"></i> На главную
         </a>
       </div>
@@ -255,7 +253,6 @@
       );
       document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
     };
-
     // Отслеживание кликов
     const setupButtonTracking = () => {
       const buttons = document.querySelectorAll('a[class*="bg-gradient-to-r"]');
@@ -266,7 +263,6 @@
         });
       });
     };
-
     // Предотвращение двойной прокрутки
     const preventDoubleScroll = () => {
       let lastScroll = 0;
@@ -278,7 +274,6 @@
         lastScroll = now;
       }, { passive: false });
     };
-
     // Инициализация
     document.addEventListener('DOMContentLoaded', () => {
       setupFadeIn();
