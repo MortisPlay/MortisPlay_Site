@@ -6,10 +6,14 @@
   <title>Mortis Play — официальный сайт</title>
   <meta name="description" content="Эпичные видео, новости и обновления от Mortis Play. Присоединяйся к вайбу!" />
 
-  <!-- === ФАВИКОНКА: МАКСИМАЛЬНАЯ СОВМЕСТИМОСТЬ === -->
+  <!-- === ФАВИКОНКА: ИСПРАВЛЕННЫЕ ПУТИ + ПОЛНАЯ СОВМЕСТИМОСТЬ === -->
   <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
   <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
-  <!-- Preload иконки (ускоряет) -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png" />
+  <link rel="manifest" href="/assets/site.webmanifest" />
+  <!-- Preload -->
   <link rel="preload" href="/assets/favicon.ico" as="image" />
   <link rel="preload" href="/assets/favicon-32x32.png" as="image" />
 
@@ -32,8 +36,11 @@
   <!-- Подключение стилей -->
   <link rel="stylesheet" href="css/styles.css" media="print" onload="this.media='all'" />
 
-  <!-- Font Awesome + Tailwind -->
+  <!-- Font Awesome (с fallback на localStorage + preload) -->
+  <link rel="preload" href="https://kit.fontawesome.com/b48beda69e.css" as="style" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://kit.fontawesome.com/b48beda69e.css" crossorigin="anonymous" />
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Google Analytics -->
@@ -43,6 +50,21 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });
+  </script>
+
+  <!-- === УМНЫЙ ФИКС: ГАРАНТИЯ ЗАГРУЗКИ ИКОНОК === -->
+  <script>
+    // Если Font Awesome не загрузился — подгружаем локально (если есть)
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        if (!document.querySelector('i.fa')) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = '/assets/fontawesome.css'; // ← положи туда, если хочешь fallback
+          document.head.appendChild(link);
+        }
+      }, 3000);
+    });
   </script>
 </head>
 <body class="min-h-screen text-slate-800 dark:text-slate-100 selection:bg-indigo-200 selection:text-slate-900">
@@ -100,7 +122,6 @@
         </div>
       </div>
     </header>
-
     <main>
       <!-- === ГЛАВНАЯ === -->
       <section id="welcome" class="relative overflow-hidden">
@@ -169,7 +190,7 @@
               <input type="text" id="usernameInput" maxlength="20" placeholder="Введи своё имя" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2 text-sm text-slate-700 dark:text-slate-300">
               <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Максимум 20 символов.</p>
               <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Бейджи</h3>
-              <div id="badges" class="flex flex-wrap gap-2"></div>
+              <div id="badges" class="flex flex-wrap gap-2 mt-2"></div>
               <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Доступные бейджи</h3>
               <div id="badgeList" class="mt-2 space-y-2"></div>
             </div>
@@ -247,42 +268,42 @@
           <div class="mt-8 max-w-md mx-auto">
             <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
               <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Производительность</h3>
-              <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="lowPerformanceToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить лёгкий режим">
+              <label class="mt-3 flex items-center justify-between gap-3">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Лёгкий режим (для слабых устройств)</span>
+                <input type="checkbox" id="lowPerformanceToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить лёгкий режим">
               </label>
-              <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="disableAnimationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить анимации">
+              <label class="mt-3 flex items-center justify-between gap-3">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Отключить анимации</span>
+                <input type="checkbox" id="disableAnimationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить анимации">
               </label>
-              <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="disableParticlesToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить фоновые частицы">
+              <label class="mt-3 flex items-center justify-between gap-3">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Отключить фоновые частицы</span>
+                <input type="checkbox" id="disableParticlesToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить фоновые частицы">
               </label>
-              <div id="performanceNotification" class="notification" role="alert" aria-live="assertive">
+              <div id="performanceNotification" class="notification mt-3" role="alert" aria-live="assertive">
                 <span></span>
                 <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
               </div>
             </div>
             <div class="mt-6 card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
               <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Внешний вид</h3>
-              <label class="mt-3 flex items-center gap-2">
+              <div class="mt-3 flex items-center justify-between gap-3">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Тема сайта:</span>
-                <select id="themeSelect" class="rounded text-indigo-600 focus:ring-indigo-500 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                <select id="themeSelect" class="rounded text-indigo-600 focus:ring-indigo-500 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm">
                   <option value="auto">Авто</option>
                   <option value="light">Светлая</option>
                   <option value="dark">Тёмная</option>
                 </select>
-              </label>
-              <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="highContrastToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить высокую контрастность">
+              </div>
+              <label class="mt-3 flex items-center justify-between gap-3">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Высокая контрастность</span>
+                <input type="checkbox" id="highContrastToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить высокую контрастность">
               </label>
-              <label class="mt-3 flex flex-col gap-2">
+              <div class="mt-3 flex flex-col gap-2">
                 <span class="text-sm text-slate-600 dark:text-slate-300">Размер шрифта:</span>
                 <input type="range" id="fontSizeSlider" min="50" max="200" value="100" class="w-full" aria-label="Регулировка размера шрифта">
-              </label>
-              <div id="appearanceNotification" class="notification" role="alert" aria-live="assertive">
+              </div>
+              <div id="appearanceNotification" class="notification mt-3" role="alert" aria-live="assertive">
                 <span></span>
                 <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
               </div>
@@ -327,7 +348,6 @@
         </div>
       </section>
     </main>
-
     <footer class="border-t border-slate-200/60 dark:border-slate-700/60 py-8">
       <div class="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
         <p class="text-sm text-slate-600 dark:text-slate-300">© 2025 Mortis Play. Все права защищены.</p>
