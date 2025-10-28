@@ -5,9 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Mortis Play — официальный сайт</title>
   <meta name="description" content="Эпичные видео, новости и обновления от Mortis Play. Присоединяйся к вайбу!" />
-  <meta name="robots" content="index,follow" />
-  <meta name="keywords" content="Mortis Play, гейминг, стримы, YouTube, Telegram" />
-  <link rel="icon" href="/assets/favicon.ico" />
+
+  <!-- === ФАВИКОНКА: МАКСИМАЛЬНАЯ СОВМЕСТИМОСТЬ === -->
+  <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png" />
+  <link rel="manifest" href="/assets/site.webmanifest" />
+  <!-- Preload иконки (ускоряет) -->
+  <link rel="preload" href="/assets/favicon.ico" as="image" />
+  <link rel="preload" href="/assets/favicon-32x32.png" as="image" />
 
   <!-- Open Graph / Twitter -->
   <meta property="og:title" content="Mortis Play — официальный сайт" />
@@ -25,14 +33,14 @@
   <link rel="preload" href="css/styles.css" as="style" />
   <link rel="preload" href="js/script.js" as="script" />
 
-  <!-- Подключение стилей (асинхронно) -->
+  <!-- Подключение стилей -->
   <link rel="stylesheet" href="css/styles.css" media="print" onload="this.media='all'" />
 
-  <!-- Font Awesome + Tailwind (без defer!) -->
+  <!-- Font Awesome + Tailwind -->
   <link rel="stylesheet" href="https://kit.fontawesome.com/b48beda69e.css" crossorigin="anonymous" />
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Analytics (асинхронно) -->
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
