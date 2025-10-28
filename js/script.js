@@ -1,5 +1,3 @@
-// js/script.js — ПОЛНЫЙ СКРИПТ С ФИКСАМИ (favicon + smooth scroll + header hide)
-
 (() => {
   'use strict';
 
