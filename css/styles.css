@@ -342,6 +342,34 @@ body {
 .badge:hover {
   transform: scale(1.1);
 }
+/* === ГЛАДКАЯ ПРОКРУТКА + ФИКСЫ ДЛЯ ПК === */
+html {
+  scroll-behavior: smooth; /* Нативная плавность */
+  overflow-x: hidden;
+}
+
+/* Фикс для Safari (не поддерживает scroll-behavior) */
+@supports not (scroll-behavior: smooth) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Убираем "прыжки" при скролле на ПК */
+body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch; /* Плавность на iOS */
+}
+
+/* Плавная прокрутка через JS (для старых браузеров) */
+.js-smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+/* Фикс: убираем дерганье при открытии меню */
+#sidebarMenu {
+  overscroll-behavior: contain;
+}
 .text-slate-600 { color: #4b5563; }
 .dark .text-slate-600 { color: #9ca3af; }
 .text-slate-700 { color: #374151; }
