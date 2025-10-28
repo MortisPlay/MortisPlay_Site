@@ -265,6 +265,14 @@
       opacity: 1;
       transform: translateY(0);
     }
+    .top-notification {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      max-width: 320px;
+    }
     .bg-gradient-to-br {
       background-image: linear-gradient(to bottom right, #fef3c7, #f5f3ff, #dbeafe);
     }
@@ -660,6 +668,10 @@
         </div>
       </footer>
     </main>
+    <div id="fontNotification" class="notification top-notification" role="alert" aria-live="assertive">
+      <span></span>
+      <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
+    </div>
     <script nonce="${nonce}">
       const logAction = (message) => console.log(message);
       const debounce = (func, wait) => {
@@ -836,8 +848,7 @@
       };
       const setupFontSize = () => {
         const slider = document.getElementById('fontSizeSlider');
-        const notification = document.getElementById('appearanceNotification');
-        if (slider && notification) {
+        if (slider) {
           let savedFontSize;
           try {
             savedFontSize = localStorage.getItem('fontSize') || '100';
@@ -847,18 +858,37 @@
           }
           slider.value = savedFontSize;
           root.style.setProperty('--font-scale', savedFontSize / 100);
-          slider.addEventListener('input', debounce(() => {
+          let fontNotificationTimer;
+          slider.addEventListener('input', () => {
             const fontSize = slider.value;
             root.style.setProperty('--font-scale', fontSize / 100);
-            showNotification(`Размер шрифта: ${fontSize}%`, notification);
-            try {
-              localStorage.setItem('fontSize', fontSize);
-            } catch (e) {
-              logAction('Ошибка записи localStorage для fontSize: ' + e.message);
+            const notif = document.getElementById('fontNotification');
+            if (notif) {
+              const span = notif.querySelector('span');
+              span.textContent = `Размер шрифта: ${fontSize}%`;
+              if (!notif.classList.contains('show')) {
+                notif.classList.add('show');
+              }
+              clearTimeout(fontNotificationTimer);
+              fontNotificationTimer = setTimeout(() => {
+                notif.classList.remove('show');
+                try {
+                  localStorage.setItem('fontSize', fontSize);
+                } catch (e) {
+                  logAction('Ошибка записи localStorage для fontSize: ' + e.message);
+                }
+                gtag('event', 'font_size_change', { event_category: 'settings', event_label: fontSize });
+                logAction(`Размер шрифта изменён: ${fontSize}%`);
+              }, 1000); // Скрыть после 1 секунды паузы
             }
-            gtag('event', 'font_size_change', { event_category: 'settings', event_label: fontSize });
-            logAction(`Размер шрифта изменён: ${fontSize}%`);
-          }, 300));
+          });
+          const fontNotifClose = document.getElementById('fontNotification').querySelector('button');
+          if (fontNotifClose) {
+            fontNotifClose.addEventListener('click', () => {
+              document.getElementById('fontNotification').classList.remove('show');
+              clearTimeout(fontNotificationTimer);
+            });
+          }
         }
       };
       const setupHighContrast = () => {
