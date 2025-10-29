@@ -1,3 +1,4 @@
+Странно, теперь видео не грузят:/ Исправь эту ошибку
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -1093,7 +1094,7 @@
         const notification = document.getElementById('appearanceNotification');
         if (!badges || !badgeList || !notification) return;
         let savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
-      
+     
         // Авто-выдача "Фанат" при первом входе
         if (!savedBadges.includes('Фанат')) {
           savedBadges.push('Фанат');
@@ -1150,162 +1151,89 @@
       const checkBadgeConditions = () => {
         setupBadges();
       };
-      const rutubeData = [
-  { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning', category: 'fun' },
-  { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO', category: 'fun' },
-  { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)', category: 'streams' },
-  { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!', category: 'fun' },
-  { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK', category: 'streams' },
-  { src: 'https://rutube.ru/play/embed/3de912692f3520aad3ccf648b30f0247', title: 'ВРЕМЯ БЕЗУМИЙ В РАБОТЕ!!!', category: 'fun' },
-  { src: 'https://rutube.ru/play/embed/1cb1388800c0a573bb4c6942bc12c752', title: 'УМНЫЙ НО КОСОЙ', category: 'fun' },
-  { src: 'https://rutube.ru/play/embed/8e2f7da5ca6582d3b66ea73d39b53130', title: 'СПЕЦ ВЫПУСК!!! СМЕРТЕЛЬНЫЙ КОНТЕНТ!', category: 'fun' },
-  { src: 'https://rutube.ru/play/embed/f50e8d94d8228d9a8ffce5e37773a8e2', title: 'НОВЫЕ ВРЕМЕНА НАЧИНАЮТСЯ С РЕЛАКСА', category: 'fun' },
-  { src: 'https://rutube.ru/play/embed/522c3d4a29970e19b74f8cdfa9e2eb3e', title: 'СПЕЦ ВЫПУСК! ЧАС РАБОТЫ В ЛЕТАЛ КОМПАНИ!', category: 'fun' },
-  { src: 'https://rutube.ru/play/embed/2c266a516ea35150036cd6298ef6db68', title: 'ВРОДЕ ОБНОВА ТОП НО НЕ СОВСЕМ...', category: 'fun' },
-  { src: 'https://rutube.ru/play/embed/36faf3fd0b2c5dac09f907297925db41', title: 'НОВАЯ ВЕБКА, НОВЫЕ ГОРИЗОНТЫ!', category: 'fun' },
-  { src: 'https://rutube.ru/play/embed/5b51c9a3e15b4d75bfb08783c90bcc85', title: 'БЛИЦ Play: КОНЕЦ ГОДА, ЧТО ДАЛЬШЕ?', category: 'blitz' },
-  { src: 'https://rutube.ru/play/embed/171e2dae98076c82e5c49f3dfda7bb33', title: 'БЛИЦ Play: ПОСЛЕЖНИЙ РУБЕЖ!', category: 'blitz' },
-  { src: 'https://rutube.ru/play/embed/0f958e52a3a7023734bfa562186a9bce', title: 'БЛИЦ Play: ВСЕ? ВСЕ.', category: 'blitz' }
-];
-
-      const youtubeData = [
-  { src: 'https://www.youtube.com/embed/pc3aJ7r5rKY', title: 'НОВАЯ ВЕБКА, НОВЫЕ ГОРИЗОНТЫ!', category: 'fun' },
-  { src: 'https://www.youtube.com/embed/93PUof6DaNU', title: 'БЛИЦ Play: КОНЕЦ ГОДА, ЧТО ДАЛЬШЕ?', category: 'blitz' },
-  { src: 'https://www.youtube.com/embed/TsF1zKaCaB4', title: 'БЛИЦ Play: ПОСЛЕЖНИЙ РУБЕЖ!', category: 'blitz' },
-  { src: 'https://www.youtube.com/embed/kgJPVly82oY', title: 'БЛИЦ Play: ВСЕ? ВСЕ.', category: 'blitz' }
-];
+      const videoData = [
+        { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning', category: 'fun' },
+        { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO', category: 'fun' },
+        { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)', category: 'streams' },
+        { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!', category: 'fun' },
+        { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK', category: 'streams' },
+        { src: 'https://rutube.ru/play/embed/3de912692f3520aad3ccf648b30f0247', title: 'ВРЕМЯ БЕЗУМИЙ В РАБОТЕ!!!', category: 'fun' },
+        { src: 'https://rutube.ru/play/embed/1cb1388800c0a573bb4c6942bc12c752', title: 'УМНЫЙ НО КОСОЙ', category: 'fun' },
+        { src: 'https://rutube.ru/play/embed/8e2f7da5ca6582d3b66ea73d39b53130', title: 'СПЕЦ ВЫПУСК!!! СМЕРТЕЛЬНЫЙ КОНТЕНТ!', category: 'fun' },
+        { src: 'https://rutube.ru/play/embed/f50e8d94d8228d9a8ffce5e37773a8e2', title: 'НОВЫЕ ВРЕМЕНА НАЧИНАЮТСЯ С РЕЛАКСА', category: 'fun' },
+        { src: 'https://rutube.ru/play/embed/522c3d4a29970e19b74f8cdfa9e2eb3e', title: 'СПЕЦ ВЫПУСК! ЧАС РАБОТЫ В ЛЕТАЛ КОМПАНИ!', category: 'fun' },
+        { src: 'https://rutube.ru/play/embed/2c266a516ea35150036cd6298ef6db68', title: 'ВРОДЕ ОБНОВА ТОП НО НЕ СОВСЕМ...', category: 'fun' },
+        { src: 'https://rutube.ru/play/embed/36faf3fd0b2c5dac09f907297925db41', title: 'НОВАЯ ВЕБКА, НОВЫЕ ГОРИЗОНТЫ!', category: 'fun' },
+        { src: 'https://rutube.ru/play/embed/5b51c9a3e15b4d75bfb08783c90bcc85', title: 'БЛИЦ Play: КОНЕЦ ГОДА, ЧТО ДАЛЬШЕ?', category: 'blitz' },
+        { src: 'https://rutube.ru/play/embed/171e2dae98076c82e5c49f3dfda7bb33', title: 'БЛИЦ Play: ПОСЛЕЖНИЙ РУБЕЖ!', category: 'blitz' },
+        { src: 'https://rutube.ru/play/embed/0f958e52a3a7023734bfa562186a9bce', title: 'БЛИЦ Play: ВСЕ? ВСЕ.', category: 'blitz' }
+      ];
       const setupVideos = () => {
-  const grid = document.getElementById('videosGrid');
-  const loadMoreButton = document.getElementById('loadMoreVideos');
-  const notification = document.getElementById('appearanceNotification');
-  if (!grid || !loadMoreButton || !notification) return;
-
-  // === Переключатель платформы ===
-  const platformKey = 'videoPlatform';
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  let currentPlatform = localStorage.getItem(platformKey) || (isMobile ? 'rutube' : 'youtube');
-  let videoData = currentPlatform === 'youtube' ? youtubeData : rutubeData;
-
-  // Создаём кнопку переключения
-  const platformToggleHTML = `
-    <button id="platformToggle" class="video-filter glass-button" aria-label="Переключить платформу видео" aria-pressed="false">
-      <i class="fa-brands fa-youtube"></i> <span class="platform-text">YouTube</span>
-    </button>
-  `;
-  const filtersContainer = document.querySelector('#videos .flex.justify-center.gap-3');
-  filtersContainer.insertAdjacentHTML('beforeend', platformToggleHTML);
-
-  const platformToggle = document.getElementById('platformToggle');
-  const platformText = platformToggle.querySelector('.platform-text');
-
-  const updatePlatform = (platform) => {
-    currentPlatform = platform;
-    videoData = platform === 'youtube' ? youtubeData : rutubeData;
-    localStorage.setItem(platformKey, platform);
-
-    // Обновляем иконку и текст
-    platformToggle.innerHTML = `
-      <i class="fa-brands ${platform === 'youtube' ? 'fa-youtube' : 'fa-play'}"></i> 
-      <span class="platform-text">${platform === 'youtube' ? 'YouTube' : 'Rutube'}</span>
-    `;
-    platformToggle.setAttribute('aria-pressed', 'true');
-
-    // Перерендерим видео
-    currentPage = 1;
-    renderVideos();
-    showNotification(`Платформа: ${platform === 'youtube' ? 'YouTube' : 'Rutube'}`, notification);
-    gtag('event', 'platform_switch', { event_category: 'videos', event_label: platform });
-  };
-
-  platformToggle.addEventListener('click', () => {
-    updatePlatform(currentPlatform === 'youtube' ? 'rutube' : 'youtube');
-  });
-
-  // Инициализация
-  updatePlatform(currentPlatform);
-
-  // === Остальная логика ===
-  let currentPage = 1;
-  const videosPerPage = 6;
-  let currentFilter = 'all';
-  let filteredVideos = videoData;
-
-  const renderVideos = (append = false) => {
-    if (!append) {
-      grid.innerHTML = '';
-      currentPage = 1;
-    }
-    const start = (currentPage - 1) * videosPerPage;
-    const end = start + videosPerPage;
-    const videosToShow = (currentFilter === 'all' ? videoData : filteredVideos).slice(start, end);
-
-    videosToShow.forEach(v => {
-      const card = document.createElement('div');
-      card.className = 'video-card card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-4';
-      card.dataset.category = v.category;
-
-      const iframeAttrs = currentPlatform === 'youtube'
-        ? `src="${v.src}?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"`
-        : `src="${v.src}" allow="autoplay; encrypted-media"`;
-
-      card.innerHTML = `
-        <div class="relative aspect-video rounded-xl overflow-hidden bg-black">
-          <iframe 
-            class="w-full h-full" 
-            ${iframeAttrs}
-            title="${v.title}" 
-            frameborder="0" 
-            allowfullscreen
-            loading="lazy">
-          </iframe>
-        </div>
-        <p class="mt-3 text-sm font-medium text-slate-700 dark:text-slate-300 truncate">${v.title}</p>
-      `;
-
-      // Fallback на случай ошибки
-      const iframe = card.querySelector('iframe');
-      iframe.onerror = () => {
-        card.querySelector('div').innerHTML = `<img src="/assets/fallback.jpg" class="w-full h-full object-cover" alt="Видео недоступно" />`;
+        const grid = document.getElementById('videosGrid');
+        const loadMoreButton = document.getElementById('loadMoreVideos');
+        const notification = document.getElementById('appearanceNotification');
+        if (!grid || !loadMoreButton || !notification) return;
+        let currentPage = 1;
+        const videosPerPage = 6;
+        let currentFilter = 'all';
+        let filteredVideos = videoData;
+        const renderVideos = (append = false) => {
+          if (!append) {
+            grid.innerHTML = '';
+            currentPage = 1;
+          }
+          const start = (currentPage - 1) * videosPerPage;
+          const end = start + videosPerPage;
+          const videosToShow = (currentFilter === 'all' ? videoData : filteredVideos).slice(start, end);
+          videosToShow.forEach(v => {
+            const card = document.createElement('div');
+            card.className = 'video-card card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-4';
+            card.dataset.category = v.category;
+            card.innerHTML = `
+              <div class="relative aspect-video rounded-xl overflow-hidden">
+                <iframe class="w-full h-full" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen title="${v.title}"></iframe>
+                <img class="w-full h-full absolute top-0 left-0 object-cover hidden" src="/assets/fallback.jpg" alt="Видео недоступно" />
+              </div>
+              <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">${v.title}</p>
+            `;
+            const iframe = card.querySelector('iframe');
+            iframe.src = v.src;
+            grid.appendChild(card);
+          });
+          loadMoreButton.style.display = end >= (currentFilter === 'all' ? videoData.length : filteredVideos.length) ? 'none' : 'inline-flex';
+          setupVideoTracking();
+        };
+        loadMoreButton.addEventListener('click', () => {
+          currentPage++;
+          renderVideos(true);
+          gtag('event', 'load_more_videos', { event_category: 'videos', event_label: `page_${currentPage}` });
+        });
+        const filterButtons = document.querySelectorAll('.video-filter');
+        const categoryDesc = document.getElementById('category-desc');
+        const categoryDescriptions = {
+          all: 'Все видео от Mortis Play: стримы, мемы и подкасты!',
+          streams: 'Стримы с эпичными моментами и геймплеем!',
+          fun: 'Угарные видео и мемы для настроения!',
+          blitz: 'Короткие и динамичные БЛИЦ Play ролики!'
+        };
+        filterButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const filter = button.dataset.filter;
+            filterButtons.forEach(btn => {
+              btn.classList.toggle('active', btn.dataset.filter === filter);
+              btn.setAttribute('aria-pressed', btn.dataset.filter === filter);
+            });
+            currentFilter = filter;
+            filteredVideos = filter === 'all' ? videoData : videoData.filter(v => v.category === filter);
+            renderVideos();
+            categoryDesc.textContent = categoryDescriptions[filter];
+            loadMoreButton.style.display = filteredVideos.length <= videosPerPage ? 'none' : 'inline-flex';
+            gtag('event', 'video_filter', { event_category: 'videos', event_label: filter });
+            logAction(`Фильтр видео: ${filter}`);
+          });
+        });
+        renderVideos();
       };
-
-      grid.appendChild(card);
-    });
-
-    loadMoreButton.style.display = end >= (currentFilter === 'all' ? videoData.length : filteredVideos.length) ? 'none' : 'inline-flex';
-    setupVideoTracking();
-  };
-
-  loadMoreButton.addEventListener('click', () => {
-    currentPage++;
-    renderVideos(true);
-  });
-
-  const filterButtons = document.querySelectorAll('.video-filter:not(#platformToggle)');
-  const categoryDesc = document.getElementById('category-desc');
-  const categoryDescriptions = {
-    all: 'Все видео от Mortis Play: стримы, мемы и подкасты!',
-    streams: 'Стримы с эпичными моментами и геймплеем!',
-    fun: 'Угарные видео и мемы для настроения!',
-    blitz: 'Короткие и динамичные БЛИЦ Play ролики!'
-  };
-
-  filterButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const filter = button.dataset.filter;
-      filterButtons.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.filter === filter);
-        btn.setAttribute('aria-pressed', btn.dataset.filter === filter);
-      });
-      currentFilter = filter;
-      filteredVideos = filter === 'all' ? videoData : videoData.filter(v => v.category === filter);
-      renderVideos();
-      categoryDesc.textContent = categoryDescriptions[filter];
-      loadMoreButton.style.display = filteredVideos.length <= videosPerPage ? 'none' : 'inline-flex';
-    });
-  });
-
-  renderVideos();
-};
       const setupVideoTracking = () => {
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
