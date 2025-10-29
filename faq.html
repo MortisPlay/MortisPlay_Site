@@ -43,7 +43,7 @@
     .animate-breathing { animation: breathing 10s ease-in-out infinite; }
     .neon-title { transition: all 0.5s ease; color: #e5e7eb; background: linear-gradient(to right, #a5b4fc, #f9a8d4, #a5b4fc); }
     .neon-title:hover { filter: brightness(1.3); }
-    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform: 0.6s ease; }
     .fade-in.is-visible { opacity: 1; transform: translateY(0); }
     body {
       background: linear-gradient(to bottom right, #0d0d0d, #1a1a1a, #2d2d2d);
@@ -98,8 +98,7 @@
       <p class="mt-4 text-lg text-slate-200 text-center">
         Ответы на часто задаваемые вопросы о Mortis Play, бейджах и стримах! 😎
       </p>
-
-      <!-- === ОБЩИЕ ВОПРОСЫ === -->
+      <!-- === ОБЩИЕ В doubtfulОПРОСЫ === -->
       <div class="mt-16 grid gap-10">
         <div class="backdrop-blur-lg card border rounded-3xl p-8 shadow-lg fade-in">
           <h2 class="text-2xl font-semibold text-indigo-300 flex items-center gap-2">
@@ -189,7 +188,6 @@
             </details>
           </div>
         </div>
-
         <!-- === БЕЙДЖИКИ === -->
         <div class="backdrop-blur-lg card border rounded-3xl p-8 shadow-lg fade-in">
           <h2 class="text-2xl font-semibold text-yellow-300 flex items-center gap-2">
@@ -205,6 +203,21 @@
                 Бейджи — это награды за достижения на сайте. Они показываются в твоём профиле.
               </div>
             </details>
+
+            <!-- НОВЫЙ ВОПРОС: Почему некоторые бейджи сразу? -->
+            <details class="group p-5">
+              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-yellow-300">
+                Почему я получил некоторые бейджи СРАЗУ при первом входе?
+                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
+              </summary>
+              <div class="mt-2 text-sm text-slate-300">
+                Это **стартовый набор** — приветственный бонус для новых пользователей. Например:<br>
+                • <strong>«Фанат»</strong> — выдаётся автоматически при первом посещении (ты уже здесь!).<br>
+                • <strong>«Секретный Агент»</strong> — может появиться, если ты нашёл пасхалку (например, кликнул 5 раз по логотипу).<br>
+                Такие бейджи мотивируют сразу погрузиться в сайт, а не ждать прогресса. Остальные — только за реальные действия (просмотры, настройки профиля и т.д.). Если бейдж пропал — проверь `localStorage` или сбрось настройки.
+              </div>
+            </details>
+
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-yellow-300">
                 Как получить бейдж "Фанат"?
@@ -251,6 +264,21 @@
                 Собери <strong>ВСЕ</strong> остальные бейджи: Фанат, Мемолог, Стример, Исследователь, Эпик Мемолог.
               </div>
             </details>
+
+            <!-- НОВЫЙ ВОПРОС: Секретные бейджи -->
+            <details class="group p-5">
+              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-purple-300">
+                Есть ли секретные бейджи? Как их найти?
+                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
+              </summary>
+              <div class="mt-2 text-sm text-slate-300">
+                Да, **секретные бейджи** — это пасхалки для самых любопытных. Они не отображаются в обычном списке и активируются особыми действиями. Пример:<br>
+                • <strong>«Секретный Агент»</strong> — кликни <strong>5 раз подряд</strong> по логотипу Mortis Play в шапке сайта. Бейджик появится с анимацией и частицами.<br><br>
+                Другие секреты могут скрываться в консоли, комбинациях клавиш или редких взаимодействиях. Подсказка: исследуй код, экспериментируй, ищи необычное поведение. Секретные бейджи **не влияют** на «Легенду», но дают уникальный вайб и статус в сообществе. 😉<br><br>
+                <em>Совет:</em> Если уведомления включены — сайт сам подмигнёт, когда ты близко.
+              </div>
+            </details>
+
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-yellow-300">
                 Бейджи пропали после сброса настроек?
@@ -263,7 +291,6 @@
           </div>
         </div>
       </div>
-
       <!-- Кнопки -->
       <div class="mt-12 text-center">
         <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg inline-flex items-center gap-2" aria-label="Вернуться на главную">
@@ -275,10 +302,8 @@
       </div>
     </div>
   </main>
-
   <script nonce="${crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '')}">
     const logAction = (message) => console.log(`[FAQ] ${message}`);
-
     const setupFadeIn = () => {
       const io = new IntersectionObserver(
         (entries) => {
@@ -293,7 +318,6 @@
       );
       document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
     };
-
     const setupButtonTracking = () => {
       const buttons = document.querySelectorAll('a[class*="bg-gradient-to-r"]');
       buttons.forEach(button => {
@@ -304,27 +328,22 @@
         });
       });
     };
-
     const setupFontSize = () => {
       const saved = localStorage.getItem('fontSize') || '100';
       document.documentElement.style.setProperty('--font-scale', saved / 100);
     };
-
     const setupHighContrast = () => {
       const saved = localStorage.getItem('highContrast') === 'true';
       document.documentElement.classList.toggle('high-contrast', saved);
     };
-
     const setupPerformance = () => {
       const saved = localStorage.getItem('lowPerformance') === 'true';
       document.documentElement.classList.toggle('low-performance', saved);
     };
-
     const setupAnimations = () => {
       const saved = localStorage.getItem('disableAnimations') === 'true';
       document.documentElement.classList.toggle('no-animations', saved);
     };
-
     document.addEventListener('DOMContentLoaded', () => {
       setupFadeIn();
       setupButtonTracking();
