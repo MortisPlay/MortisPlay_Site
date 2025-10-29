@@ -336,6 +336,10 @@
     @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
     .badge.secret { background: linear-gradient(to right, #a855f7, #d946ef); box-shadow: 0 0 16px rgba(168, 85, 247, 0.8); }
     .badge.secret canvas { position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height: calc(100% + 20px); pointer-events: none; }
+    .badge.code-breaker { background: linear-gradient(to right, #22c55e, #15803d); box-shadow: 0 0 12px rgba(34, 197, 94, 0.7); font-family: monospace; text-shadow: 0 0 5px #22c55e; }
+    .badge.ghost { background: linear-gradient(to right, #6b7280, #4b5563); opacity: 0.7; box-shadow: 0 0 12px rgba(107, 114, 128, 0.5); }
+    .encrypted-text { filter: blur(3px); transition: filter 0.3s ease; }
+    .encrypted-text:hover { filter: blur(0); }
     @media (max-width: 640px) {
       .glass-button {
         padding: 0.4rem 0.8rem;
@@ -980,6 +984,8 @@
             localStorage.removeItem('profileBetaNoticeHidden');
             localStorage.removeItem('badgeNotifications');
             localStorage.removeItem('secretClicks');
+            localStorage.removeItem('mortis_hacker');
+            localStorage.removeItem('ghostScrolls');
             root.classList.remove('dark', 'low-performance', 'no-animations', 'no-particles', 'high-contrast');
             root.style.setProperty('--font-scale', '1');
             const themeSelect = document.getElementById('themeSelect');
@@ -1149,6 +1155,12 @@
         },
         { name: 'Секретный Агент', icon: 'fa-solid fa-user-secret', description: 'Секретный бейдж! Как вы его нашли?', earned: () => {
           return parseInt(localStorage.getItem('secretClicks') || '0') >= 5;
+        }, rarity: 'secret' },
+        { name: 'Кодовый Взломщик', icon: 'fa-solid fa-terminal', description: 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈', earned: () => {
+          return localStorage.getItem('mortis_hacker') === 'true';
+        }, rarity: 'secret' },
+        { name: 'Призрачный Зритель', icon: 'fa-solid fa-ghost', description: 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈', earned: () => {
+          return parseInt(localStorage.getItem('ghostScrolls') || '0') >= 3;
         }, rarity: 'secret' }
       ];
       const setupSecretBadgeTrigger = () => {
@@ -1219,7 +1231,7 @@
               logAction(`Получен новый бейдж: ${badge.name}`);
             }
             const badgeEl = document.createElement('span');
-            badgeEl.className = `badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${badge.rarity}`;
+            badgeEl.className = `badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${badge.rarity} ${badge.name.toLowerCase().replace(' ', '-')}`;
             badgeEl.innerHTML = `<i class="${badge.icon}"></i>${badge.name}`;
             if (badge.rarity === 'secret') {
               createBadgeParticles(badgeEl);
@@ -1231,12 +1243,27 @@
         badgeDefinitions.forEach((badge, index) => {
           const badgeItem = document.createElement('div');
           badgeItem.className = 'flex items-center gap-2 text-sm cursor-pointer';
-          const status = savedBadges.includes(badge.name) || badge.earned() ? '✅' : '🔒';
+          const earned = savedBadges.includes(badge.name) || badge.earned();
+          let iconClass = badge.icon;
+          let nameText = badge.name;
+          let descText = badge.description;
+          let rarityText = { common: 'Обычный', rare: 'Редкий', legendary: 'Легендарный', secret: 'Секретный' }[badge.rarity];
+          let textClass = earned ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600';
+          let iconColor = earned ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600';
+          const status = earned ? '✅' : '🔒';
           const progress = badge.progress ? `(${badge.progress()}/${badge.name === 'Мемолог' ? '4' : '50'})` : '';
-          const rarityText = { common: 'Обычный', rare: 'Редкий', legendary: 'Легендарный', secret: 'Секретный' }[badge.rarity];
+          if (badge.rarity === 'secret' && !earned) {
+            iconClass = 'fa-solid fa-question-circle';
+            nameText = '???';
+            descText = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈';
+            rarityText = 'Секретный';
+          }
+          if (badge.name === 'Кодовый Взломщик') {
+            descText = `<span class="encrypted-text">${descText}</span>`;
+          }
           badgeItem.innerHTML = `
-            <i class="${badge.icon} ${savedBadges.includes(badge.name) || badge.earned() ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600'}"></i>
-            <span class="${savedBadges.includes(badge.name) || badge.earned() ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600'}">${badge.name} (${rarityText}): ${badge.description} ${progress}</span>
+            <i class="${iconClass} ${iconColor}"></i>
+            <span class="${textClass}">${nameText} (${rarityText}): ${descText} ${progress}</span>
             <span>${status}</span>
           `;
           badgeList.appendChild(badgeItem);
@@ -1248,11 +1275,28 @@
             const modalProgress = document.getElementById('modalProgress');
             const modalRarity = document.getElementById('modalRarity');
             if (modal && modalTitle && modalDesc && modalIcon && modalProgress && modalRarity) {
-              modalTitle.textContent = badge.name;
-              modalDesc.textContent = badge.description;
-              modalIcon.innerHTML = `<i class="${badge.icon} text-4xl text-indigo-600 dark:text-indigo-400"></i>`;
-              modalProgress.textContent = badge.progress ? `Прогресс: ${badge.progress()}/${badge.name === 'Мемолог' ? '4' : '50'}` : '';
-              modalRarity.textContent = `Редкость: ${rarityText}`;
+              let mTitle = badge.name;
+              let mDesc = badge.description;
+              let mIcon = badge.icon;
+              let mProgress = badge.progress ? `Прогресс: ${badge.progress()}/${badge.name === 'Мемолог' ? '4' : '50'}` : '';
+              let mRarity = `Редкость: ${rarityText}`;
+              if (badge.rarity === 'secret' && !earned) {
+                mTitle = '???';
+                mDesc = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈';
+                mIcon = 'fa-solid fa-question-circle';
+                mProgress = '';
+                mRarity = 'Редкость: Секретный';
+              }
+              if (badge.name === 'Кодовый Взломщик' && earned) {
+                modalDesc.classList.add('encrypted-text');
+              } else {
+                modalDesc.classList.remove('encrypted-text');
+              }
+              modalTitle.textContent = mTitle;
+              modalDesc.innerHTML = mDesc;
+              modalIcon.innerHTML = `<i class="${mIcon} text-4xl text-indigo-600 dark:text-indigo-400"></i>`;
+              modalProgress.textContent = mProgress;
+              modalRarity.textContent = mRarity;
               modal.style.display = 'flex';
               modal.style.animation = 'modalFadeIn 0.3s ease forwards';
               const close = () => {
@@ -1296,6 +1340,22 @@
         const videosPerPage = 6;
         let currentFilter = 'all';
         let filteredVideos = videoData;
+        let ghostScrollCount = parseInt(localStorage.getItem('ghostScrolls') || '0');
+        grid.addEventListener('scroll', debounce(() => {
+          if (grid.scrollTop + grid.clientHeight >= grid.scrollHeight - 20 && !localStorage.getItem('ghostScrollsEarned')) {
+            ghostScrollCount++;
+            localStorage.setItem('ghostScrolls', ghostScrollCount);
+            if (ghostScrollCount >= 3) {
+              showNotification('Призрачный режим активирован! Кликни ниже видео для секрета...', notification);
+              grid.addEventListener('click', (e) => {
+                if (!e.target.closest('.video-card')) {
+                  localStorage.setItem('ghostScrollsEarned', 'true');
+                  checkBadgeConditions();
+                }
+              }, { once: true });
+            }
+          }
+        }, 300));
         const renderVideos = (append = false) => {
           if (!append) {
             grid.innerHTML = '';
