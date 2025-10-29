@@ -71,8 +71,9 @@
     .pagination-button { transition: all 0.3s ease; }
     .pagination-button:hover { transform: scale(1.05); }
     .pagination-button:disabled { opacity: 0.5; cursor: not-allowed; }
-    .notification { transition: opacity 0.3s ease, transform 0.3s ease; animation: fadeOut 5s ease forwards; }
-    .notification.show { opacity: 1; transform: translateY(0); font-weight: bold; }
+    .notification { transition: opacity 0.5s ease, transform 0.5s ease; animation: slideIn 0.5s ease forwards, fadeOut 5s ease 3s forwards; position: fixed; bottom: 1rem; right: 1rem; z-index: 1000; max-width: 320px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+    .notification.show { opacity: 1; transform: translateY(0); font-weight: bold; display: flex; align-items: center; gap: 1rem; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeOut { 0% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
     body { overscroll-behavior: none; }
     main { overflow: auto; min-height: 100vh; }
@@ -328,7 +329,13 @@
       background: var(--bg-color);
       color: var(--text-color);
     }
-    .badge { animation: badgePop 0.5s ease forwards; background: linear-gradient(to right, #4f46e5, #9333ea); border: 1px solid rgba(255, 255, 255, 0.3); font-size: 0.875rem; padding: 0.4rem 0.8rem; }
+    .badge { animation: badgePop 0.5s ease forwards; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 0.875rem; padding: 0.4rem 0.8rem; position: relative; }
+    .badge.common { background: linear-gradient(to right, #4f46e5, #9333ea); }
+    .badge.rare { background: linear-gradient(to right, #0ea5e9, #3b82f6); box-shadow: 0 0 8px rgba(59, 130, 246, 0.5); }
+    .badge.legendary { background: linear-gradient(to right, #f59e0b, #eab308); box-shadow: 0 0 12px rgba(234, 179, 8, 0.7); animation: badgePop 0.5s ease forwards, pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    .badge.secret { background: linear-gradient(to right, #a855f7, #d946ef); box-shadow: 0 0 16px rgba(168, 85, 247, 0.8); }
+    .badge.secret canvas { position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height: calc(100% + 20px); pointer-events: none; }
     @media (max-width: 640px) {
       .glass-button {
         padding: 0.4rem 0.8rem;
@@ -527,12 +534,18 @@
               <div id="badgeList" class="mt-2 space-y-2"></div>
             </div>
           </div>
-          <!-- Модальное окно для бейджей -->
-          <div id="badgeModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-sm w-full">
-              <h3 id="modalTitle" class="font-semibold text-indigo-600 dark:text-indigo-400"></h3>
+          <!-- Модальное окно для бейджиков -->
+          <div id="badgeModal" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-50" aria-modal="true" role="dialog">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl ring-1 ring-indigo-500/50 dark:ring-indigo-400/50 transform transition-all duration-300">
+              <div class="flex justify-between items-center mb-4">
+                <h3 id="modalTitle" class="font-semibold text-indigo-600 dark:text-indigo-400 text-xl"></h3>
+                <button id="closeModal" class="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+              <div id="modalIcon" class="text-center mb-4"></div>
               <p id="modalDesc" class="mt-2 text-sm text-slate-600 dark:text-slate-300"></p>
-              <button id="closeModal" class="mt-4 glass-button">Закрыть</button>
+              <p id="modalProgress" class="mt-2 text-xs text-slate-500 dark:text-slate-400"></p>
+              <p id="modalRarity" class="mt-2 text-xs font-bold text-indigo-600 dark:text-indigo-400"></p>
+              <button id="closeModalBtn" class="mt-4 glass-button w-full">Закрыть</button>
             </div>
           </div>
         </div>
@@ -625,6 +638,14 @@
                 <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
               </div>
             </div>
+            <div class="mt-6 card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
+              <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Бейджи и уведомления</h3>
+              <label class="mt-3 flex items-center gap-2">
+                <input type="checkbox" id="badgeNotificationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить уведомления о бейджах" aria-describedby="badgeNotificationsDesc">
+                <span class="text-sm text-slate-600 dark:text-slate-300">Уведомления о новых бейджах</span>
+              </label>
+              <p id="badgeNotificationsDesc" class="mt-2 text-xs text-slate-500 dark:text-slate-400">Получай уведомления при получении новых бейджей.</p>
+            </div>
             <div class="mt-6 text-center">
               <button id="resetSettings" class="glass-button" aria-label="Сбросить настройки">
                 <i class="fa-solid fa-rotate-left"></i> Сбросить настройки
@@ -686,7 +707,7 @@
         const now = Date.now();
         if (now - lastNotificationTime < 3000) return;
         lastNotificationTime = now;
-        if (notificationElement) {
+        if (notificationElement && localStorage.getItem('badgeNotifications') !== 'false') {
           const span = notificationElement.querySelector('span');
           if (span) {
             document.querySelectorAll('.notification.show').forEach(el => el.classList.remove('show'));
@@ -846,6 +867,17 @@
           }, 300));
         }
       };
+      const setupBadgeNotificationsToggle = () => {
+        const toggle = document.getElementById('badgeNotificationsToggle');
+        if (toggle) {
+          const saved = localStorage.getItem('badgeNotifications') !== 'false';
+          toggle.checked = saved;
+          toggle.addEventListener('change', () => {
+            localStorage.setItem('badgeNotifications', toggle.checked);
+            showNotification(toggle.checked ? 'Уведомления о бейджах включены' : 'Уведомления о бейджах отключены', document.getElementById('appearanceNotification'));
+          });
+        }
+      };
       const setupFontSize = () => {
         const slider = document.getElementById('fontSizeSlider');
         if (slider) {
@@ -946,6 +978,8 @@
             localStorage.removeItem('username');
             localStorage.removeItem('watchedVideos');
             localStorage.removeItem('profileBetaNoticeHidden');
+            localStorage.removeItem('badgeNotifications');
+            localStorage.removeItem('secretClicks');
             root.classList.remove('dark', 'low-performance', 'no-animations', 'no-particles', 'high-contrast');
             root.style.setProperty('--font-scale', '1');
             const themeSelect = document.getElementById('themeSelect');
@@ -958,12 +992,14 @@
             const usernameInput = document.getElementById('usernameInput');
             const badges = document.getElementById('badges');
             const badgeList = document.getElementById('badgeList');
+            const badgeNotificationsToggle = document.getElementById('badgeNotificationsToggle');
             if (themeSelect) themeSelect.value = 'auto';
             if (lowPerformanceToggle) lowPerformanceToggle.checked = false;
             if (animationsToggle) animationsToggle.checked = false;
             if (particleToggle) particleToggle.checked = false;
             if (fontSizeSlider) fontSizeSlider.value = '100';
             if (highContrastToggle) highContrastToggle.checked = false;
+            if (badgeNotificationsToggle) badgeNotificationsToggle.checked = true;
             if (userAvatar) userAvatar.src = '/assets/fallback.jpg';
             if (usernameInput) usernameInput.value = '';
             if (badges) badges.innerHTML = '';
@@ -1064,7 +1100,7 @@
         };
       };
       const badgeDefinitions = [
-        { name: 'Фанат', icon: 'fa-solid fa-star', description: 'Выдаётся за посещение сайта!', earned: () => true },
+        { name: 'Фанат', icon: 'fa-solid fa-star', description: 'Выдаётся за посещение сайта!', earned: () => true, rarity: 'common' },
         {
           name: 'Мемолог',
           icon: 'fa-solid fa-laugh',
@@ -1076,11 +1112,12 @@
           progress: () => {
             const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
             return Math.min(Object.values(watchedVideos).filter(v => v.category === 'fun').length, 4);
-          }
+          },
+          rarity: 'rare'
         },
         { name: 'Стример', icon: 'fa-solid fa-video', description: 'Загрузите аватар и установите имя пользователя', earned: () => {
           return !!localStorage.getItem('userAvatar') && !!localStorage.getItem('username');
-        }},
+        }, rarity: 'common' },
         {
           name: 'Исследователь',
           icon: 'fa-solid fa-compass',
@@ -1089,12 +1126,13 @@
             const watched = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
             const categories = ['streams', 'fun', 'blitz'];
             return categories.every(cat => Object.values(watched).some(v => v.category === cat));
-          }
+          },
+          rarity: 'rare'
         },
         { name: 'Легенда', icon: 'fa-solid fa-crown', description: 'Получите все остальные бейджи', earned: () => {
           const savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
-          return savedBadges.includes('Фанат') && savedBadges.includes('Мемолог') && savedBadges.includes('Стример') && savedBadges.includes('Эпик Мемолог');
-        }},
+          return savedBadges.includes('Фанат') && savedBadges.includes('Мемолог') && savedBadges.includes('Стример') && savedBadges.includes('Эпик Мемолог') && savedBadges.includes('Исследователь');
+        }, rarity: 'legendary' },
         {
           name: 'Эпик Мемолог',
           icon: 'fa-solid fa-trophy',
@@ -1106,21 +1144,69 @@
           progress: () => {
             const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
             return Math.min(Object.values(watchedVideos).filter(v => v.category === 'fun').length, 50);
-          }
+          },
+          rarity: 'legendary'
         },
+        { name: 'Секретный Агент', icon: 'fa-solid fa-user-secret', description: 'Секретный бейдж! Как вы его нашли?', earned: () => {
+          return parseInt(localStorage.getItem('secretClicks') || '0') >= 5;
+        }, rarity: 'secret' }
       ];
+      const setupSecretBadgeTrigger = () => {
+        const logo = document.querySelector('a[href="#welcome"] img');
+        if (logo) {
+          let clicks = parseInt(localStorage.getItem('secretClicks') || '0');
+          logo.addEventListener('click', () => {
+            clicks++;
+            localStorage.setItem('secretClicks', clicks);
+            if (clicks >= 5) {
+              checkBadgeConditions();
+            }
+          });
+        }
+      };
+      const createBadgeParticles = (badgeEl) => {
+        const canvas = document.createElement('canvas');
+        badgeEl.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        const particles = [];
+        for (let i = 0; i < 10; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 2 + 1,
+            speedX: Math.random() * 1 - 0.5,
+            speedY: Math.random() * 1 - 0.5
+          });
+        }
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach(p => {
+            p.x += p.speedX;
+            p.y += p.speedY;
+            if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+            if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+          });
+          requestAnimationFrame(animate);
+        };
+        animate();
+        return canvas;
+      };
       const setupBadges = () => {
         const badges = document.getElementById('badges');
         const badgeList = document.getElementById('badgeList');
         const notification = document.getElementById('appearanceNotification');
         if (!badges || !badgeList || !notification) return;
         let savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
-     
+    
         // Авто-выдача "Фанат" при первом входе
         if (!savedBadges.includes('Фанат')) {
           savedBadges.push('Фанат');
           localStorage.setItem('userBadges', JSON.stringify(savedBadges));
-          showNotification('Получен бейдж: Фанат!', notification);
+          showNotification('Получен бейдж: Фанат! 🎉', notification);
         }
         badges.innerHTML = '';
         badgeDefinitions.forEach(badge => {
@@ -1128,13 +1214,16 @@
             if (!savedBadges.includes(badge.name)) {
               savedBadges.push(badge.name);
               localStorage.setItem('userBadges', JSON.stringify(savedBadges));
-              showNotification(`Новый бейдж: ${badge.name}!`, notification);
+              showNotification(`Новый бейдж: ${badge.name}! 🎉`, notification);
               gtag('event', 'badge_earned', { event_category: 'profile', event_label: badge.name });
               logAction(`Получен новый бейдж: ${badge.name}`);
             }
             const badgeEl = document.createElement('span');
-            badgeEl.className = 'badge inline-flex items-center gap-1 px-2 py-1 rounded-full bg-indigo-600 text-white text-xs';
+            badgeEl.className = `badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${badge.rarity}`;
             badgeEl.innerHTML = `<i class="${badge.icon}"></i>${badge.name}`;
+            if (badge.rarity === 'secret') {
+              createBadgeParticles(badgeEl);
+            }
             badges.appendChild(badgeEl);
           }
         });
@@ -1144,9 +1233,10 @@
           badgeItem.className = 'flex items-center gap-2 text-sm cursor-pointer';
           const status = savedBadges.includes(badge.name) || badge.earned() ? '✅' : '🔒';
           const progress = badge.progress ? `(${badge.progress()}/${badge.name === 'Мемолог' ? '4' : '50'})` : '';
+          const rarityText = { common: 'Обычный', rare: 'Редкий', legendary: 'Легендарный', secret: 'Секретный' }[badge.rarity];
           badgeItem.innerHTML = `
             <i class="${badge.icon} ${savedBadges.includes(badge.name) || badge.earned() ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600'}"></i>
-            <span class="${savedBadges.includes(badge.name) || badge.earned() ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600'}">${badge.name}: ${badge.description} ${progress}</span>
+            <span class="${savedBadges.includes(badge.name) || badge.earned() ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600'}">${badge.name} (${rarityText}): ${badge.description} ${progress}</span>
             <span>${status}</span>
           `;
           badgeList.appendChild(badgeItem);
@@ -1154,17 +1244,25 @@
             const modal = document.getElementById('badgeModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalDesc = document.getElementById('modalDesc');
-            if (modal && modalTitle && modalDesc) {
+            const modalIcon = document.getElementById('modalIcon');
+            const modalProgress = document.getElementById('modalProgress');
+            const modalRarity = document.getElementById('modalRarity');
+            if (modal && modalTitle && modalDesc && modalIcon && modalProgress && modalRarity) {
               modalTitle.textContent = badge.name;
               modalDesc.textContent = badge.description;
+              modalIcon.innerHTML = `<i class="${badge.icon} text-4xl text-indigo-600 dark:text-indigo-400"></i>`;
+              modalProgress.textContent = badge.progress ? `Прогресс: ${badge.progress()}/${badge.name === 'Мемолог' ? '4' : '50'}` : '';
+              modalRarity.textContent = `Редкость: ${rarityText}`;
               modal.style.display = 'flex';
               modal.style.animation = 'modalFadeIn 0.3s ease forwards';
-              document.getElementById('closeModal').addEventListener('click', () => {
+              const close = () => {
                 modal.style.animation = 'modalFadeOut 0.3s ease forwards';
                 setTimeout(() => {
                   modal.style.display = 'none';
                 }, 300);
-              }, { once: true });
+              };
+              document.getElementById('closeModal').addEventListener('click', close, { once: true });
+              document.getElementById('closeModalBtn').addEventListener('click', close, { once: true });
             }
           });
         });
@@ -1462,6 +1560,7 @@
         setupParticleToggle();
         setupFontSize();
         setupHighContrast();
+        setupBadgeNotificationsToggle();
         setupResetSettings();
         setupProfile();
         setupVideos();
@@ -1473,6 +1572,7 @@
         setupVideoErrorHandling();
         setupBadges();
         setupVideoTracking();
+        setupSecretBadgeTrigger();
       });
     </script>
   </div>
