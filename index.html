@@ -336,70 +336,13 @@
     @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
     .badge.secret { background: linear-gradient(to right, #a855f7, #d946ef); box-shadow: 0 0 16px rgba(168, 85, 247, 0.8); }
     .badge.secret canvas { position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height: calc(100% + 20px); pointer-events: none; }
-    .badge.code-breaker { background: linear-gradient(to right, #22c55e, #15803d); box-shadow: 0 0 12px rgba(34, 197, 94, 0.7); font-family: monospace; text-shadow: 0 0 5px #22c55e; }
+    .badge.code-breaker { background: linear-gradient(to right, #22c55e, #15803d); box-shadow: 0 0 12px rgba(34, 197, 94, 0.7); font-family: monospace; text-shadow: 0 0 5px #22c55e; position: relative; overflow: hidden; }
+    .badge.code-breaker::before { content: '010101'; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px); animation: glitch 2s linear infinite; color: rgba(255,255,255,0.1); font-family: monospace; font-size: 0.5rem; }
+    @keyframes glitch { 0% { left: -100%; } 100% { left: 100%; } }
     .badge.ghost { background: linear-gradient(to right, #6b7280, #4b5563); opacity: 0.7; box-shadow: 0 0 12px rgba(107, 114, 128, 0.5); }
+    .badge.ghost canvas { position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height: calc(100% + 20px); pointer-events: none; }
     .encrypted-text { filter: blur(3px); transition: filter 0.3s ease; }
     .encrypted-text:hover { filter: blur(0); }
-    /* === КАСТОМНЫЙ ДИЗАЙН: Кодовый Взломщик === */
-.badge.code-breaker-custom {
-  background: linear-gradient(135deg, #0f0, #004d00, #000); /* Зелёный матричный градиент */
-  color: #0f0 !important;
-  font-family: 'Courier New', monospace !important;
-  text-shadow: 
-    0 0 5px #0f0,
-    0 0 10px #0f0,
-    0 0 20px #0f0,
-    0 0 40px #0f0;
-  border: 1px solid #0f0;
-  box-shadow: 
-    0 0 10px #0f0,
-    0 0 20px #0f0,
-    inset 0 0 10px rgba(0, 255, 0, 0.3);
-  position: relative;
-  overflow: hidden;
-  animation: glitch 2s infinite alternate-reverse;
-  z-index: 1;
-}
-
-/* Glitch-эффект (фризы) */
-@keyframes glitch {
-  0%, 100% { transform: translate(0); }
-  10% { transform: translate(-1px, -1px); }
-  20% { transform: translate(1px, 1px); }
-  30% { transform: translate(-2px, 0); }
-  40% { transform: translate(2px, 2px); }
-  50% { transform: translate(-1px, -2px); }
-  60% { transform: translate(1px, 0); }
-  70% { transform: translate(-2px, 1px); }
-  80% { transform: translate(2px, -1px); }
-  90% { transform: translate(-1px, 2px); }
-}
-
-/* Цифровой дождь (частицы) */
-.badge.code-breaker-custom canvas.matrix-rain {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.6;
-}
-    /* Призрачные частицы для Призрачный Зритель */
-    .badge.ghost canvas.ghost-particles {
-      position: absolute;
-      top: -10px; left: -10px;
-      width: calc(100% + 20px); height: calc(100% + 20px);
-      pointer-events: none;
-    }
-
-    /* Эффект при получении бейджа */
-    .badge.new-badge {
-      animation: badgePop 0.5s ease forwards, glowPulse 1s ease-in-out 0.5s;
-    }
-    @keyframes glowPulse {
-      0%, 100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
-      50% { box-shadow: 0 0 20px rgba(255, 255, 255, 1); }
-    }
     @media (max-width: 640px) {
       .glass-button {
         padding: 0.4rem 0.8rem;
@@ -469,10 +412,6 @@
     .dark .ring-slate-200 { border-color: #4b5563; }
     .ring-slate-700 { border-color: #374151; }
     .dark .ring-slate-700 { border-color: #9ca3af; }
-    /* Убираем блюр при наведении на текст в модалке */
-#badgeModal .encrypted-text:hover {
-  filter: blur(0) !important;
-}
   </style>
 </head>
 <body class="min-h-screen text-slate-800 dark:text-slate-100 selection:bg-indigo-200 selection:text-slate-900">
@@ -718,8 +657,8 @@
               <button id="resetSettings" class="glass-button" aria-label="Сбросить настройки">
                 <i class="fa-solid fa-rotate-left"></i> Сбросить настройки
               </button>
-              <button id="resetProfile" class="glass-button mt-4" aria-label="Сбросить профиль">
-                <i class="fa-solid fa-user-slash"></i> Сбросить Профиль
+              <button id="resetProfile" class="glass-button mt-2 bg-red-500 hover:bg-red-600" aria-label="Сбросить профиль">
+                <i class="fa-solid fa-user-slash"></i> Сбросить профиль
               </button>
             </div>
           </div>
@@ -1086,16 +1025,16 @@
         }
       };
       const setupResetProfile = () => {
-        const resetButton = document.getElementById('resetProfile');
+        const resetProfileButton = document.getElementById('resetProfile');
         const notification = document.getElementById('appearanceNotification');
-        if (resetButton && notification) {
-          resetButton.addEventListener('click', () => {
+        if (resetProfileButton && notification) {
+          resetProfileButton.addEventListener('click', () => {
             const confirmReset = confirm(
-              '⚠️ Точно сбросить ПРОФИЛЬ?\n\n' +
-              '• Аватар и имя\n' +
-              '• Все бейджи (включая секретные)\n' +
-              '• История просмотров\n\n' +
-              'Настройки сайта (тема, шрифт и т.d.) останутся. Это действие НЕЛЬЗЯ отменить!'
+              '⚠️ Точно сбросить профиль?\n\n' +
+              '• Аватар и имя пользователя\n' +
+              '• Все бейджи\n' +
+              '• История просмотров (для бейджей)\n\n' +
+              'Это действие НЕЛЬЗЯ отменить! Настройки сайта останутся нетронутыми.'
             );
             if (!confirmReset) {
               showNotification('Сброс профиля отменён', notification);
@@ -1117,9 +1056,9 @@
             if (badges) badges.innerHTML = '';
             if (badgeList) badgeList.innerHTML = '';
             setupBadges();
-            showNotification('Профиль сброшены', notification);
-            gtag('event', 'reset_profile', { event_category: 'settings', event_label: 'confirmed_reset_profile' });
-            logAction('Профиль сброшены (подтверждено)');
+            showNotification('Профиль сброшен — начинай заново! 😎', notification);
+            gtag('event', 'reset_profile', { event_category: 'profile', event_label: 'confirmed_reset' });
+            logAction('Профиль сброшен (подтверждено)');
           });
         }
       };
@@ -1263,10 +1202,10 @@
         }, rarity: 'secret' },
         { name: 'Кодовый Взломщик', icon: 'fa-solid fa-terminal', description: 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈', earned: () => {
           return localStorage.getItem('mortis_hacker') === 'true';
-        }, rarity: 'secret' },
+        }, rarity: 'code-breaker' },
         { name: 'Призрачный Зритель', icon: 'fa-solid fa-ghost', description: 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈', earned: () => {
           return parseInt(localStorage.getItem('ghostScrolls') || '0') >= 3;
-        }, rarity: 'secret' }
+        }, rarity: 'ghost' }
       ];
       const setupSecretBadgeTrigger = () => {
         const logo = document.querySelector('a[href="#welcome"] img');
@@ -1281,18 +1220,26 @@
           });
         }
       };
-      const createBadgeParticles = (badgeEl) => {
+      const createBadgeParticles = (badgeEl, type = 'default') => {
         const canvas = document.createElement('canvas');
         badgeEl.appendChild(canvas);
         const ctx = canvas.getContext('2d');
+        canvas.width = badgeEl.offsetWidth + 20;
+        canvas.height = badgeEl.offsetHeight + 20;
+        canvas.style.position = 'absolute';
+        canvas.style.top = '-10px';
+        canvas.style.left = '-10px';
         const particles = [];
-        for (let i = 0; i < 10; i++) {
+        const count = type === 'ghost' ? 8 : 10;
+        for (let i = 0; i < count; i++) {
           particles.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             size: Math.random() * 2 + 1,
             speedX: Math.random() * 1 - 0.5,
-            speedY: Math.random() * 1 - 0.5
+            speedY: Math.random() * 1 - 0.5,
+            color: type === 'ghost' ? '#ffffff' : '#ffffff',
+            shape: type === 'ghost' ? 'ghost' : 'circle'
           });
         }
         const animate = () => {
@@ -1303,8 +1250,17 @@
             if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
             if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffffff';
+            if (p.shape === 'ghost') {
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p.x + p.size * 2, p.y);
+              ctx.lineTo(p.x + p.size, p.y - p.size);
+              ctx.lineTo(p.x + p.size * 1.5, p.y);
+              ctx.closePath();
+              ctx.fillStyle = p.color + '40'; // Полупрозрачный белый для призраков
+            } else {
+              ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+              ctx.fillStyle = type === 'code-breaker' ? '#22c55e' : p.color;
+            }
             ctx.fill();
           });
           requestAnimationFrame(animate);
@@ -1312,13 +1268,26 @@
         animate();
         return canvas;
       };
+      const triggerBadgeEffect = (badgeName) => {
+        if (badgeName === 'Кодовый Взломщик') {
+          document.body.style.filter = 'hue-rotate(90deg) saturate(2)';
+          setTimeout(() => {
+            document.body.style.filter = '';
+          }, 1000);
+          // Дополнительный эффект: glitch на экране
+          const glitch = document.createElement('div');
+          glitch.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(34,197,94,0.1) 2px,rgba(34,197,94,0.1) 4px);pointer-events:none;z-index:9999;animation:glitch 0.5s linear infinite;';
+          document.body.appendChild(glitch);
+          setTimeout(() => glitch.remove(), 500);
+        }
+      };
       const setupBadges = () => {
         const badges = document.getElementById('badges');
         const badgeList = document.getElementById('badgeList');
         const notification = document.getElementById('appearanceNotification');
         if (!badges || !badgeList || !notification) return;
         let savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
-  
+ 
         // Авто-выдача "Фанат" при первом входе
         if (!savedBadges.includes('Фанат')) {
           savedBadges.push('Фанат');
@@ -1334,12 +1303,13 @@
               showNotification(`Новый бейдж: ${badge.name}! 🎉`, notification);
               gtag('event', 'badge_earned', { event_category: 'profile', event_label: badge.name });
               logAction(`Получен новый бейдж: ${badge.name}`);
+              triggerBadgeEffect(badge.name);
             }
             const badgeEl = document.createElement('span');
-            badgeEl.className = `badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${badge.rarity} ${badge.name.toLowerCase().replace(' ', '-')}`;
+            badgeEl.className = `badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${badge.rarity} ${badge.name.toLowerCase().replace(' ', '-').replace('ё', 'e')}`;
             badgeEl.innerHTML = `<i class="${badge.icon}"></i>${badge.name}`;
-            if (badge.rarity === 'secret') {
-              createBadgeParticles(badgeEl);
+            if (badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost') {
+              createBadgeParticles(badgeEl, badge.rarity === 'code-breaker' ? 'code-breaker' : badge.rarity === 'ghost' ? 'ghost' : 'default');
             }
             badges.appendChild(badgeEl);
           }
@@ -1352,19 +1322,16 @@
           let iconClass = badge.icon;
           let nameText = badge.name;
           let descText = badge.description;
-          let rarityText = { common: 'Обычный', rare: 'Редкий', legendary: 'Легендарный', secret: 'Секретный' }[badge.rarity];
+          let rarityText = { common: 'Обычный', rare: 'Редкий', legendary: 'Легендарный', secret: 'Секретный', 'code-breaker': 'Секретный', ghost: 'Секретный' }[badge.rarity];
           let textClass = earned ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600';
           let iconColor = earned ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600';
           const status = earned ? '✅' : '🔒';
           const progress = badge.progress ? `(${badge.progress()}/${badge.name === 'Мемолог' ? '4' : '50'})` : '';
-          if (badge.rarity === 'secret' && !earned) {
+          if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost') && !earned) {
             iconClass = 'fa-solid fa-question-circle';
-            nameText = '???';
+            nameText = badge.name === 'Кодовый Взломщик' ? '?' : '???';
             descText = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈';
             rarityText = 'Секретный';
-          }
-          if (badge.name === 'Кодовый Взломщик') {
-            descText = `<span class="encrypted-text">${descText}</span>`;
           }
           badgeItem.innerHTML = `
             <i class="${iconClass} ${iconColor}"></i>
@@ -1385,17 +1352,12 @@
               let mIcon = badge.icon;
               let mProgress = badge.progress ? `Прогресс: ${badge.progress()}/${badge.name === 'Мемолог' ? '4' : '50'}` : '';
               let mRarity = `Редкость: ${rarityText}`;
-              if (badge.rarity === 'secret' && !earned) {
-                mTitle = '???';
+              if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost') && !earned) {
+                mTitle = badge.name === 'Кодовый Взломщик' ? '?' : '???';
                 mDesc = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈';
                 mIcon = 'fa-solid fa-question-circle';
                 mProgress = '';
                 mRarity = 'Редкость: Секретный';
-              }
-              if (badge.name === 'Кодовый Взломщик' && earned) {
-                modalDesc.classList.add('encrypted-text');
-              } else {
-                modalDesc.classList.remove('encrypted-text');
               }
               modalTitle.textContent = mTitle;
               modalDesc.innerHTML = mDesc;
@@ -1716,62 +1678,6 @@
           root.classList.toggle('high-contrast', e.newValue === 'true');
         }
       });
-      // === МАТРИЧНЫЙ ДОЖДЬ ДЛЯ БЕЙДЖА "КОДОВЫЙ ВЗЛОМЩИК" ===
-const initMatrixRain = (canvas) => {
-  const ctx = canvas.getContext('2d');
-  let width, height;
- 
-  const resize = () => {
-    width = canvas.parentElement.offsetWidth;
-    height = canvas.parentElement.offsetHeight;
-    canvas.width = width;
-    canvas.height = height;
-  };
-  resize();
- 
-  const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-  const fontSize = 10;
-  const columns = Math.floor(width / fontSize);
-  const drops = Array(columns).fill(1);
- 
-  const draw = () => {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-    ctx.fillRect(0, 0, width, height);
-   
-    ctx.fillStyle = '#0f0';
-    ctx.font = `${fontSize}px monospace`;
-   
-    for (let i = 0; i < drops.length; i++) {
-      const text = chars[Math.floor(Math.random() * chars.length)];
-      const x = i * fontSize;
-      const y = drops[i] * fontSize;
-     
-      ctx.fillText(text, x, y);
-     
-      if (y > height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
-      drops[i]++;
-    }
-  };
- 
-  let animationId;
-  const animate = () => {
-    draw();
-    animationId = requestAnimationFrame(animate);
-  };
-  animate();
- 
-  // Адаптация под ресайз
-  const observer = new ResizeObserver(resize);
-  observer.observe(canvas.parentElement);
- 
-  // Очистка при скрытии
-  canvas.cleanup = () => {
-    cancelAnimationFrame(animationId);
-    observer.disconnect();
-  };
-};
       document.addEventListener('DOMContentLoaded', () => {
         setupProfileBetaNotice();
         setupThemeToggle();
@@ -1783,7 +1689,7 @@ const initMatrixRain = (canvas) => {
         setupHighContrast();
         setupBadgeNotificationsToggle();
         setupResetSettings();
-        setupResetProfile(); // Новый вызов для кнопки сброса профиля
+        setupResetProfile();
         setupProfile();
         setupVideos();
         setupNews();
