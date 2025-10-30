@@ -337,7 +337,6 @@
     .badge.secret { background: linear-gradient(to right, #a855f7, #d946ef); box-shadow: 0 0 16px rgba(168, 85, 247, 0.8); }
     .badge.secret canvas { position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height: calc(100% + 20px); pointer-events: none; }
     .badge.code-breaker { background: linear-gradient(to right, #22c55e, #15803d); box-shadow: 0 0 12px rgba(34, 197, 94, 0.7); font-family: monospace; text-shadow: 0 0 5px #22c55e; position: relative; overflow: hidden; }
-    .badge.code-breaker::before { content: '010101'; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px); animation: glitch 2s linear infinite; color: rgba(255,255,255,0.1); font-family: monospace; font-size: 0.5rem; }
     @keyframes glitch { 0% { left: -100%; } 100% { left: 100%; } }
     .badge.ghost { background: linear-gradient(to right, #6b7280, #4b5563); opacity: 0.7; box-shadow: 0 0 12px rgba(107, 114, 128, 0.5); }
     .badge.ghost canvas { position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height: calc(100% + 20px); pointer-events: none; }
@@ -1220,54 +1219,123 @@
           });
         }
       };
-      const createBadgeParticles = (badgeEl, type = 'default') => {
-        const canvas = document.createElement('canvas');
-        badgeEl.appendChild(canvas);
-        const ctx = canvas.getContext('2d');
-        canvas.width = badgeEl.offsetWidth + 20;
-        canvas.height = badgeEl.offsetHeight + 20;
-        canvas.style.position = 'absolute';
-        canvas.style.top = '-10px';
-        canvas.style.left = '-10px';
-        const particles = [];
-        const count = type === 'ghost' ? 8 : 10;
-        for (let i = 0; i < count; i++) {
-          particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            size: Math.random() * 2 + 1,
-            speedX: Math.random() * 1 - 0.5,
-            speedY: Math.random() * 1 - 0.5,
-            color: type === 'ghost' ? '#ffffff' : '#ffffff',
-            shape: type === 'ghost' ? 'ghost' : 'circle'
-          });
+      const createBadgeParticles = (badgeEl, badgeName) => {
+  const canvas = document.createElement('canvas');
+  badgeEl.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  canvas.width = badgeEl.offsetWidth + 20;
+  canvas.height = badgeEl.offsetHeight + 20;
+  canvas.style.position = 'absolute';
+  canvas.style.top = '-10px';
+  canvas.style.left = '-10px';
+  canvas.style.pointerEvents = 'none';
+
+  const particles = [];
+  let animationId;
+
+  const animate = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (badgeName === 'Секретный Агент') {
+      // Белые/фиолетовые искры
+      particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.life--;
+        if (p.life <= 0 || p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height) {
+          p.life = 30 + Math.random() * 20;
+          p.x = canvas.width / 2;
+          p.y = canvas.height / 2;
         }
-        const animate = () => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          particles.forEach(p => {
-            p.x += p.speedX;
-            p.y += p.speedY;
-            if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-            if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-            ctx.beginPath();
-            if (p.shape === 'ghost') {
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(p.x + p.size * 2, p.y);
-              ctx.lineTo(p.x + p.size, p.y - p.size);
-              ctx.lineTo(p.x + p.size * 1.5, p.y);
-              ctx.closePath();
-              ctx.fillStyle = p.color + '40'; // Полупрозрачный белый для призраков
-            } else {
-              ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-              ctx.fillStyle = type === 'code-breaker' ? '#22c55e' : p.color;
-            }
-            ctx.fill();
-          });
-          requestAnimationFrame(animate);
-        };
-        animate();
-        return canvas;
-      };
+        ctx.globalAlpha = p.life / 50;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    } else if (badgeName === 'Кодовый Взломщик') {
+      // Зелёные матричные линии + 0/1
+      particles.forEach(p => {
+        p.y += p.speedY;
+        if (p.y > canvas.height) {
+          p.y = -10;
+          p.x = Math.random() * canvas.width;
+        }
+        ctx.strokeStyle = p.color;
+        ctx.lineWidth = 1;
+        ctx.globalAlpha = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x, p.y + 8);
+        ctx.stroke();
+
+        if (Math.random() < 0.1) {
+          ctx.fillStyle = '#22c55e';
+          ctx.font = '10px monospace';
+          ctx.fillText(Math.random() < 0.5 ? '0' : '1', p.x - 3, p.y);
+        }
+      });
+    } else if (badgeName === 'Призрачный Зритель') {
+      // Полупрозрачные призраки
+      particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+
+        ctx.globalAlpha = 0.4;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x + p.size * 2, p.y);
+        ctx.lineTo(p.x + p.size, p.y - p.size);
+        ctx.lineTo(p.x + p.size * 1.5, p.y);
+        ctx.closePath();
+        ctx.fill();
+      });
+    }
+
+    animationId = requestAnimationFrame(animate);
+  };
+
+  // Инициализация частиц
+  if (badgeName === 'Секретный Агент') {
+    for (let i = 0; i < 12; i++) {
+      particles.push({
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        size: Math.random() * 2 + 1,
+        speedX: (Math.random() - 0.5) * 3,
+        speedY: (Math.random() - 0.5) * 3,
+        life: 30 + Math.random() * 20,
+        color: Math.random() > 0.5 ? '#a855f7' : '#ffffff'
+      });
+    }
+  } else if (badgeName === 'Кодовый Взломщик') {
+    for (let i = 0; i < 15; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        speedY: Math.random() * 2 + 1,
+        color: '#22c55e'
+      });
+    }
+  } else if (badgeName === 'Призрачный Зритель') {
+    for (let i = 0; i < 6; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 3 + 2,
+        speedX: Math.random() * 0.8 - 0.4,
+        speedY: Math.random() * 0.8 - 0.4
+      });
+    }
+  }
+
+  animate();
+
+  return () => cancelAnimationFrame(animationId);
+};
       const triggerBadgeEffect = (badgeName) => {
         // Убрали эффект для 'Кодовый Взломщик'
       };
@@ -1298,8 +1366,8 @@
             badgeEl.className = `badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${badge.rarity} ${badge.name.toLowerCase().replace(' ', '-').replace('ё', 'e')}`;
             badgeEl.innerHTML = `<i class="${badge.icon}"></i>${badge.name}`;
             if (badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost') {
-              createBadgeParticles(badgeEl, badge.rarity === 'code-breaker' ? 'code-breaker' : badge.rarity === 'ghost' ? 'ghost' : 'default');
-            }
+  createBadgeParticles(badgeEl, badge.name); // Передаём имя бейджика
+}
             badges.appendChild(badgeEl);
           }
         });
