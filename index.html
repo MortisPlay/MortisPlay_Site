@@ -1269,17 +1269,7 @@
         return canvas;
       };
       const triggerBadgeEffect = (badgeName) => {
-        if (badgeName === 'Кодовый Взломщик') {
-          document.body.style.filter = 'hue-rotate(90deg) saturate(2)';
-          setTimeout(() => {
-            document.body.style.filter = '';
-          }, 1000);
-          // Дополнительный эффект: glitch на экране
-          const glitch = document.createElement('div');
-          glitch.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(34,197,94,0.1) 2px,rgba(34,197,94,0.1) 4px);pointer-events:none;z-index:9999;animation:glitch 0.5s linear infinite;';
-          document.body.appendChild(glitch);
-          setTimeout(() => glitch.remove(), 500);
-        }
+        // Убрали эффект для 'Кодовый Взломщик'
       };
       const setupBadges = () => {
         const badges = document.getElementById('badges');
@@ -1287,7 +1277,6 @@
         const notification = document.getElementById('appearanceNotification');
         if (!badges || !badgeList || !notification) return;
         let savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
- 
         // Авто-выдача "Фанат" при первом входе
         if (!savedBadges.includes('Фанат')) {
           savedBadges.push('Фанат');
@@ -1705,4 +1694,4 @@
     </script>
   </div>
 </body>
-</html>
+</html> 
