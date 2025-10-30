@@ -1702,21 +1702,54 @@ if (badge.name === 'Кодовый Взломщик' && earned) {
         }
       };
       const setupLoader = () => {
-        const loader = document.getElementById('loader');
-        const siteContent = document.getElementById('siteContent');
-        if (loader && siteContent) {
-          const hideLoader = () => {
-            loader.style.display = 'none';
-            siteContent.classList.remove('hidden');
-            gtag('event', 'page_load', { event_category: 'performance', event_label: 'site_loaded' });
-            logAction('Сайт загружен');
-          };
-          window.addEventListener('load', () => {
-            setTimeout(hideLoader, 500);
-          });
-          setTimeout(hideLoader, 10000);
-        }
-      };
+  const loader = document.getElementById('loader');
+  const siteContent = document.getElementById('siteContent');
+  if (!loader || !siteContent) return;
+
+  let loadFired = false;
+  const hideLoader = () => {
+    if (loadFired) return;  // Избегаем дубликата
+    loadFired = true;
+    loader.style.opacity = '0';  // Плавно
+    loader.style.transition = 'opacity 0.5s ease';
+    setTimeout(() => {
+      loader.style.display = 'none';
+      siteContent.classList.remove('hidden');
+      document.body.style.overflow = '';  // Разблокируй скролл
+      gtag('event', 'page_load', { event_category: 'performance', event_label: 'site_loaded' });
+      logAction('Loader скрыт');
+    }, 500);
+  };
+
+  // Основной: window.load
+  window.addEventListener('load', () => {
+    logAction('window.load сработал');
+    hideLoader();
+  });
+
+  // Запасные: DOM готов + таймауты
+  document.addEventListener('DOMContentLoaded', () => {
+    logAction('DOMContentLoaded — частичная загрузка');
+    setTimeout(hideLoader, 1000);  // Если JS готов, но ресурсы висят
+  });
+
+  // Хард-таймауты на случай полного фейла
+  setTimeout(() => {
+    if (!loadFired) {
+      logAction('Принудительный таймаут 5 сек');
+      hideLoader();
+    }
+  }, 5000);
+  setTimeout(() => {
+    if (!loadFired) {
+      logAction('Максимальный таймаут 15 сек');
+      hideLoader();
+    }
+  }, 15000);
+
+  // Если пользователь кликнет — скрыть (для отладки)
+  loader.addEventListener('click', hideLoader);
+};
       window.addEventListener('storage', (e) => {
         if (e.key === 'theme') {
           setTheme(e.newValue);
@@ -1788,6 +1821,7 @@ const initMatrixRain = (canvas) => {
     observer.disconnect();
   };
 };
+      
       document.addEventListener('DOMContentLoaded', () => {
         setupProfileBetaNotice();
         setupThemeToggle();
