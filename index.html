@@ -340,6 +340,66 @@
     .badge.ghost { background: linear-gradient(to right, #6b7280, #4b5563); opacity: 0.7; box-shadow: 0 0 12px rgba(107, 114, 128, 0.5); }
     .encrypted-text { filter: blur(3px); transition: filter 0.3s ease; }
     .encrypted-text:hover { filter: blur(0); }
+    /* === КАСТОМНЫЙ ДИЗАЙН: Кодовый Взломщик === */
+.badge.code-breaker-custom {
+  background: linear-gradient(135deg, #0f0, #004d00, #000); /* Зелёный матричный градиент */
+  color: #0f0 !important;
+  font-family: 'Courier New', monospace !important;
+  text-shadow: 
+    0 0 5px #0f0,
+    0 0 10px #0f0,
+    0 0 20px #0f0,
+    0 0 40px #0f0;
+  border: 1px solid #0f0;
+  box-shadow: 
+    0 0 10px #0f0,
+    0 0 20px #0f0,
+    inset 0 0 10px rgba(0, 255, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  animation: glitch 2s infinite alternate-reverse;
+  z-index: 1;
+}
+
+/* Glitch-эффект (фризы) */
+@keyframes glitch {
+  0%, 100% { transform: translate(0); }
+  10% { transform: translate(-1px, -1px); }
+  20% { transform: translate(1px, 1px); }
+  30% { transform: translate(-2px, 0); }
+  40% { transform: translate(2px, 2px); }
+  50% { transform: translate(-1px, -2px); }
+  60% { transform: translate(1px, 0); }
+  70% { transform: translate(-2px, 1px); }
+  80% { transform: translate(2px, -1px); }
+  90% { transform: translate(-1px, 2px); }
+}
+
+/* Цифровой дождь (частицы) */
+.badge.code-breaker-custom canvas.matrix-rain {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.6;
+}
+    /* Призрачные частицы для Призрачный Зритель */
+    .badge.ghost canvas.ghost-particles {
+      position: absolute;
+      top: -10px; left: -10px;
+      width: calc(100% + 20px); height: calc(100% + 20px);
+      pointer-events: none;
+    }
+
+    /* Эффект при получении бейджа */
+    .badge.new-badge {
+      animation: badgePop 0.5s ease forwards, glowPulse 1s ease-in-out 0.5s;
+    }
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+      50% { box-shadow: 0 0 20px rgba(255, 255, 255, 1); }
+    }
     @media (max-width: 640px) {
       .glass-button {
         padding: 0.4rem 0.8rem;
@@ -653,6 +713,9 @@
             <div class="mt-6 text-center">
               <button id="resetSettings" class="glass-button" aria-label="Сбросить настройки">
                 <i class="fa-solid fa-rotate-left"></i> Сбросить настройки
+              </button>
+              <button id="resetProfile" class="glass-button mt-4" aria-label="Сбросить профиль">
+                <i class="fa-solid fa-user-slash"></i> Сбросить Профиль
               </button>
             </div>
           </div>
@@ -1018,6 +1081,44 @@
           });
         }
       };
+      const setupResetProfile = () => {
+        const resetButton = document.getElementById('resetProfile');
+        const notification = document.getElementById('appearanceNotification');
+        if (resetButton && notification) {
+          resetButton.addEventListener('click', () => {
+            const confirmReset = confirm(
+              '⚠️ Точно сбросить ПРОФИЛЬ?\n\n' +
+              '• Аватар и имя\n' +
+              '• Все бейджи (включая секретные)\n' +
+              '• История просмотров\n\n' +
+              'Настройки сайта (тема, шрифт и т.д.) останутся. Это действие НЕЛЬЗЯ отменить!'
+            );
+            if (!confirmReset) {
+              showNotification('Сброс профиля отменён', notification);
+              return;
+            }
+            localStorage.removeItem('userAvatar');
+            localStorage.removeItem('userBadges');
+            localStorage.removeItem('username');
+            localStorage.removeItem('watchedVideos');
+            localStorage.removeItem('secretClicks');
+            localStorage.removeItem('mortis_hacker');
+            localStorage.removeItem('ghostScrolls');
+            const userAvatar = document.getElementById('userAvatar');
+            const usernameInput = document.getElementById('usernameInput');
+            const badges = document.getElementById('badges');
+            const badgeList = document.getElementById('badgeList');
+            if (userAvatar) userAvatar.src = '/assets/fallback.jpg';
+            if (usernameInput) usernameInput.value = '';
+            if (badges) badges.innerHTML = '';
+            if (badgeList) badgeList.innerHTML = '';
+            setupBadges();
+            showNotification('Профиль сброшены', notification);
+            gtag('event', 'reset_profile', { event_category: 'settings', event_label: 'confirmed_reset_profile' });
+            logAction('Профиль сброшены (подтверждено)');
+          });
+        }
+      };
       const setupProfileBetaNotice = () => {
         const notice = document.getElementById('profileBetaNotice');
         if (!notice) return;
@@ -1213,7 +1314,7 @@
         const notification = document.getElementById('appearanceNotification');
         if (!badges || !badgeList || !notification) return;
         let savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
-    
+   
         // Авто-выдача "Фанат" при первом входе
         if (!savedBadges.includes('Фанат')) {
           savedBadges.push('Фанат');
@@ -1622,6 +1723,7 @@
         setupHighContrast();
         setupBadgeNotificationsToggle();
         setupResetSettings();
+        setupResetProfile();  // Новый вызов для кнопки сброса профиля
         setupProfile();
         setupVideos();
         setupNews();
