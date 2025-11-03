@@ -468,63 +468,58 @@
     </header>
     <main>
       <section id="welcome" class="relative min-h-screen flex items-center justify-center overflow-hidden">
-  <!-- Фоновые круги -->
-  <div class="absolute top-0 left-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2"></div>
-  <div class="absolute bottom-0 right-0 w-64 h-64 bg-fuchsia-500/20 rounded-full blur-2xl translate-x-1/2 translate-y-1/2"></div>
-
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
-    <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-      <!-- Левая колонка: текст -->
-      <div class="text-center lg:text-left fade-in">
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">
-          Йоу, это <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-fuchsia-600">Mortis Play</span>!
-        </h1>
-        <p class="mt-4 text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-prose mx-auto lg:mx-0">
-          Эксклюзивные видео, новости и апдейты. Врывайся — дальше только громче 😎
-        </p>
-
-        <!-- Кнопки — ровная сетка -->
-        <div class="mt-8 flex flex-wrap justify-center lg:justify-start gap-3">
-          <a href="#contact" class="glass-button" aria-label="Перейти к контактам">
-            <i class="fa-solid fa-envelope"></i> Контакты
-          </a>
-          <a href="biography.html" class="glass-button" id="bioButton" aria-label="Перейти к биографии">
-            <i class="fa-solid fa-user"></i> Биография
-          </a>
-          <a id="qaButton" href="qa.html" class="glass-button" aria-label="Задать вопрос для Q&A">
-            <i class="fa-solid fa-question-circle"></i> Задать вопрос
-          </a>
-          <a href="faq.html" class="glass-button" aria-label="Перейти к FAQ">
-            <i class="fa-solid fa-circle-question"></i> FAQ
-          </a>
-          <button class="glass-button opacity-60 cursor-not-allowed" disabled title="Скоро будет доступно!">
-            <i class="fa-solid fa-gamepad"></i> Игры
-          </button>
+        <!-- Фоновые круги -->
+        <div class="absolute top-0 left-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2"></div>
+        <div class="absolute bottom-0 right-0 w-64 h-64 bg-fuchsia-500/20 rounded-full blur-2xl translate-x-1/2 translate-y-1/2"></div>
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+          <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <!-- Левая колонка: текст -->
+            <div class="text-center lg:text-left fade-in">
+              <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">
+                Йоу, это <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-fuchsia-600">Mortis Play</span>!
+              </h1>
+              <p class="mt-4 text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-prose mx-auto lg:mx-0">
+                Эксклюзивные видео, новости и апдейты. Врывайся — дальше только громче 😎
+              </p>
+              <!-- Кнопки — ровная сетка -->
+              <div class="mt-8 flex flex-wrap justify-center lg:justify-start gap-3">
+                <a href="#contact" class="glass-button" aria-label="Перейти к контактам">
+                  <i class="fa-solid fa-envelope"></i> Контакты
+                </a>
+                <a href="biography.html" class="glass-button" id="bioButton" aria-label="Перейти к биографии">
+                  <i class="fa-solid fa-user"></i> Биография
+                </a>
+                <a id="qaButton" href="qa.html" class="glass-button" aria-label="Задать вопрос для Q&A">
+                  <i class="fa-solid fa-question-circle"></i> Задать вопрос
+                </a>
+                <a href="faq.html" class="glass-button" aria-label="Перейти к FAQ">
+                  <i class="fa-solid fa-circle-question"></i> FAQ
+                </a>
+                <button class="glass-button opacity-60 cursor-not-allowed" disabled title="Скоро будет доступно!">
+                  <i class="fa-solid fa-gamepad"></i> Игры
+                </button>
+              </div>
+              <!-- Статистика -->
+              <div class="mt-8 flex justify-center lg:justify-start gap-6 text-sm text-slate-600 dark:text-slate-300">
+                <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">421</span></div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
+              </div>
+            </div>
+            <!-- Правая колонка: видео + цитата -->
+            <div class="relative fade-in flex justify-center">
+              <video class="banner-video w-full max-w-md rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" loading="lazy" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала Mortis Play">
+                <source src="/assets/photo.mp4" type="video/mp4" />
+                <img src="/assets/fallback.jpg" alt="Видео недоступно" />
+              </video>
+              <img class="banner-fallback w-full max-w-md rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" src="/assets/photo.jpg" alt="Аватар канала Mortis Play" />
+              <!-- Цитата -->
+              <div class="mt-6 lg:mt-8 lg:absolute lg:-bottom-6 lg:-right-6 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-5 py-3 shadow card-hover w-full max-w-xs mx-auto lg:mx-0">
+                <p class="text-sm text-slate-600 dark:text-slate-300 text-center lg:text-left">Гений, миллиардер, плейбой, филантроп 😎</p>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <!-- Статистика -->
-        <div class="mt-8 flex justify-center lg:justify-start gap-6 text-sm text-slate-600 dark:text-slate-300">
-          <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">421</span></div>
-          <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
-        </div>
-      </div>
-
-      <!-- Правая колонка: видео + цитата -->
-      <div class="relative fade-in flex justify-center">
-        <video class="banner-video w-full max-w-md rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" loading="lazy" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала Mortis Play">
-          <source src="/assets/photo.mp4" type="video/mp4" />
-          <img src="/assets/fallback.jpg" alt="Видео недоступно" />
-        </video>
-        <img class="banner-fallback w-full max-w-md rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" src="/assets/photo.jpg" alt="Аватар канала Mortis Play" />
-
-        <!-- Цитата -->
-        <div class="mt-6 lg:mt-8 lg:absolute lg:-bottom-6 lg:-right-6 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-5 py-3 shadow card-hover w-full max-w-xs mx-auto lg:mx-0">
-          <p class="text-sm text-slate-600 dark:text-slate-300 text-center lg:text-left">Гений, миллиардер, плейбой, филантроп 😎</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
       <section id="profile" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="text-center text-2xl md:text-3xl font-bold">Твой профиль</h2>
@@ -1209,10 +1204,10 @@
         { name: 'Секретный Агент', icon: 'fa-solid fa-user-secret', description: 'Секретный бейдж! Как вы его нашли?', earned: () => {
           return parseInt(localStorage.getItem('secretClicks') || '0') >= 5;
         }, rarity: 'secret' },
-        { name: 'Кодовый Взломщик', icon: 'fa-solid fa-terminal', description: 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈', earned: () => {
+        { name: 'Кодовый Взломщик', icon: 'fa-solid fa-terminal', description: 'В консоли сайта: localStorage.setItem(\'mortis_hacker\', \'true\'); checkBadgeConditions();<br>На мобильном: держи логотип 3 секунды для хака.', earned: () => {
           return localStorage.getItem('mortis_hacker') === 'true';
         }, rarity: 'code-breaker' },
-        { name: 'Призрачный Зритель', icon: 'fa-solid fa-ghost', description: 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈', earned: () => {
+        { name: 'Призрачный Зритель', icon: 'fa-solid fa-ghost', description: 'Скроль 3 раза в разделе видео.<br>На мобильном: свайпай вниз 3 раза.', earned: () => {
           return parseInt(localStorage.getItem('ghostScrolls') || '0') >= 3;
         }, rarity: 'ghost' }
       ];
@@ -1239,17 +1234,13 @@
   canvas.style.top = '-10px';
   canvas.style.left = '-10px';
   canvas.style.pointerEvents = 'none';
-
   const particles = [];
   let animationId;
-
   const centerX = canvas.width / 2;
   const centerY = canvas.height / 2;
   const radius = Math.min(canvas.width, canvas.height) * 0.4;
-
   const animate = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     if (badgeName === 'Секретный Агент') {
       // Спокойная магическая аура
       particles.forEach(p => {
@@ -1257,11 +1248,9 @@
         p.angle += p.speed;
         p.x = centerX + Math.cos(p.angle) * radius;
         p.y = centerY + Math.sin(p.angle) * radius;
-
         // Мягкое мерцание
         const opacity = 0.6 + 0.4 * Math.sin(p.angle * 3);
         ctx.globalAlpha = opacity;
-
         ctx.fillStyle = p.color;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -1282,7 +1271,6 @@
         ctx.moveTo(p.x, p.y);
         ctx.lineTo(p.x, p.y + 8);
         ctx.stroke();
-
         if (Math.random() < 0.1) {
           ctx.fillStyle = '#22c55e';
           ctx.font = '10px monospace';
@@ -1296,7 +1284,6 @@
         p.y += p.speedY;
         if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
         if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-
         ctx.globalAlpha = 0.4;
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
@@ -1308,10 +1295,8 @@
         ctx.fill();
       });
     }
-
     animationId = requestAnimationFrame(animate);
   };
-
   // Инициализация частиц
   if (badgeName === 'Секретный Агент') {
     for (let i = 0; i < 8; i++) {
@@ -1343,9 +1328,7 @@
       });
     }
   }
-
   animate();
-
   return () => cancelAnimationFrame(animationId);
 };
       const triggerBadgeEffect = (badgeName) => {
@@ -1399,7 +1382,7 @@
           if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost') && !earned) {
             iconClass = 'fa-solid fa-question-circle';
             nameText = badge.name === 'Кодовый Взломщик' ? '?' : '???';
-            descText = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈';
+            descText = badge.description; // Оставляем с подсказкой
             rarityText = 'Секретный';
           }
           badgeItem.innerHTML = `
@@ -1423,7 +1406,7 @@
               let mRarity = `Редкость: ${rarityText}`;
               if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost') && !earned) {
                 mTitle = badge.name === 'Кодовый Взломщик' ? '?' : '???';
-                mDesc = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈';
+                mDesc = badge.description;
                 mIcon = 'fa-solid fa-question-circle';
                 mProgress = '';
                 mRarity = 'Редкость: Секретный';
@@ -1747,6 +1730,42 @@
           root.classList.toggle('high-contrast', e.newValue === 'true');
         }
       });
+      // Новая логика для мобильных бейджиков
+      const setupMobileBadgeTriggers = () => {
+        const logo = document.querySelector('a[href="#welcome"] img');
+        if (logo) {
+          let longPressTimer;
+          logo.addEventListener('touchstart', () => {
+            longPressTimer = setTimeout(() => {
+              localStorage.setItem('mortis_hacker', 'true');
+              checkBadgeConditions();
+              showNotification('Хак активирован! Получен бейдж: Кодовый Взломщик 🎉', document.getElementById('appearanceNotification'));
+            }, 3000); // 3 секунды для long press
+          });
+          logo.addEventListener('touchend', () => {
+            clearTimeout(longPressTimer);
+          });
+        }
+        const videosGrid = document.getElementById('videosGrid');
+        if (videosGrid) {
+          let ghostSwipeCount = parseInt(localStorage.getItem('ghostScrolls') || '0');
+          videosGrid.addEventListener('touchmove', debounce(() => {
+            if (videosGrid.scrollTop + videosGrid.clientHeight >= videosGrid.scrollHeight - 20 && !localStorage.getItem('ghostScrollsEarned')) {
+              ghostSwipeCount++;
+              localStorage.setItem('ghostScrolls', ghostSwipeCount);
+              if (ghostSwipeCount >= 3) {
+                showNotification('Призрачный режим активирован! Свайпай для секрета...', document.getElementById('appearanceNotification'));
+                videosGrid.addEventListener('touchstart', (e) => {
+                  if (!e.target.closest('.video-card')) {
+                    localStorage.setItem('ghostScrollsEarned', 'true');
+                    checkBadgeConditions();
+                  }
+                }, { once: true });
+              }
+            }
+          }, 300));
+        }
+      };
       document.addEventListener('DOMContentLoaded', () => {
         setupProfileBetaNotice();
         setupThemeToggle();
@@ -1770,8 +1789,9 @@
         setupBadges();
         setupVideoTracking();
         setupSecretBadgeTrigger();
+        setupMobileBadgeTriggers(); // Новая функция для мобильных
       });
     </script>
   </div>
 </body>
-</html> 
+</html>
