@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2048 — Mortis Play</title>
+  <meta name="description" content="Собери 2048 и разблокируй бейдж! Мини-игра от Mortis Play." />
+  <meta property="og:title" content="2048 — Mortis Play" />
+  <meta property="og:description" content="Я набрал [СЧЁТ]! Побей мой рекорд: mortis-play.ru/games/2048.html" />
+  <meta property="og:image" content="https://mortis-play.ru/images/2048-og.jpg" />
+  <link rel="icon" href="/images/favicon.ico" />
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
+  <style>
+    body { background: linear-gradient(to bottom right, #fef3c7, #f5f3ff, #dbeafe); color: #1f2937; }
+    .dark body { background: linear-gradient(to bottom right, #1e1b4b, #312e81, #4c1d95); color: #e5e7eb; }
+    .glass { backdrop-filter: saturate(160%) blur(8px); background: linear-gradient(180deg, rgb(255 255 255 / .7), rgb(255 255 255 / .55)); }
+    .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .7), rgb(17 24 39 / .55)); }
+    .game-container { max-width: 500px; margin: 2rem auto; padding: 1.5rem; }
+    .tile {
+      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 2rem; border-radius: 0.5rem; transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .tile-2 { background: #eee4da; color: #776e65; }
+    .tile-4 { background: #ede0c8; color: #776e65; }
+    .tile-8 { background: #f2b179; color: #f9f6f2; }
+    .tile-16 { background: #f59563; color: #f9f6f2; }
+    .tile-32 { background: #f67c5f; color: #f9f6f2; }
+    .tile-64 { background: #f65e3b; color: #f9f6f2; }
+    .tile-128 { background: #edcf72; color: #f9f6f2; font-size: 1.8rem; }
+    .tile-256 { background: #edcc61; color: #f9f6f2; font-size: 1.8rem; }
+    .tile-512 { background: #edc850; color: #f9f6f2; font-size: 1.8rem; }
+    .tile-1024 { background: #edc53f; color: #f9f6f2; font-size: 1.5rem; }
+    .tile-2048 { background: #edc22e; color: #f9f6f2; font-size: 1.5rem; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; background: #bbada0; padding: 0.75rem; border-radius: 0.75rem; }
+    .cell { width: 100%; padding-bottom: 100%; background: rgba(238, 228, 218, 0.35); border-radius: 0.5rem; position: relative; }
+    .dark .cell { background: rgba(30, 30, 40, 0.5); }
+    .game-over { position: absolute; inset: 0; background: rgba(238, 228, 218, 0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 0.75rem; }
+    .dark .game-over { background: rgba(17, 24, 39, 0.9); }
+    @keyframes pop { 0% { transform: scale(0); } 80% { transform: scale(1.1); } 100% { transform: scale(1); } }
+    @keyframes merge { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    .animate-pop { animation: pop 0.2s ease-out; }
+    .animate-merge { animation: merge 0.15s ease-out; }
+    .dark .tile { filter: brightness(0.9); }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 dark:text-slate-100">
+  <div class="glass mx-auto max-w-7xl px-4 py-8">
+    <div class="flex items-center justify-between mb-6">
+      <a href="/games/" class="flex items-center gap-2 font-bold text-xl hover:text-indigo-600 transition">
+        <i class="fa-solid fa-arrow-left"></i> Назад
+      </a>
+      <h1 class="text-3xl font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">2048</h1>
+      <button id="themeToggle" class="glass-button p-2 rounded-full">
+        <i class="fa-solid fa-sun"></i>
+      </button>
+    </div>
+
+    <div class="game-container">
+      <div class="text-center mb-6">
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Свайпай или стрелки ↑ ↓ ← →</p>
+        <div class="mt-3 flex justify-center gap-6 text-lg font-semibold">
+          <span>Счёт: <span id="score">0</span></span>
+          <span>Рекорд: <span id="best">0</span></span>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div id="grid" class="grid"></div>
+        <div id="gameOver" class="game-over hidden">
+          <h3 class="text-3xl font-bold mb-2">Игра окончена!</h3>
+          <p class="mb-2">Ты набрал: <span id="finalScore">0</span></p>
+          <p class="mb-4 text-sm">Рекорд: <span id="finalBest">0</span></p>
+          <div class="flex gap-2">
+            <button id="restartBtn" class="glass-button flex-1">Заново</button>
+            <button id="shareBtn" class="glass-button flex-1 bg-gradient-to-r from-indigo-500 to-fuchsia-500">
+              <i class="fa-solid fa-share-nodes mr-1"></i> Поделиться
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Кнопки для мобильных -->
+      <div class="mt-6 grid grid-cols-3 gap-2 max-w-xs mx-auto">
+        <div></div>
+        <button class="glass-button p-3" data-dir="up"><i class="fa-solid fa-arrow-up"></i></button>
+        <div></div>
+        <button class="glass-button p-3" data-dir="left"><i class="fa-solid fa-arrow-left"></i></button>
+        <button class="glass-button p-3" data-dir="down"><i class="fa-solid fa-arrow-down"></i></button>
+        <button class="glass-button p-3" data-dir="right"><i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const grid = document.getElementById('grid');
+    const scoreEl = document.getElementById('score');
+    const bestEl = document.getElementById('best');
+    const gameOver = document.getElementById('gameOver');
+    const finalScore = document.getElementById('finalScore');
+    const finalBest = document.getElementById('finalBest');
+    const restartBtn = document.getElementById('restartBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    let tiles = Array(16).fill(0);
+    let score = 0;
+    let best = parseInt(localStorage.getItem('2048-best') || '0');
+    bestEl.textContent = best;
+
+    const createGrid = () => {
+      grid.innerHTML = '';
+      for (let i = 0; i < 16; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        grid.appendChild(cell);
+      }
+    };
+
+    const addTile = () => {
+      const empty = tiles.map((v, i) => v ? null : i).filter(v => v !== null);
+      if (!empty.length) return false;
+      const pos = empty[Math.floor(Math.random() * empty.length)];
+      const value = Math.random() < 0.9 ? 2 : 4;
+      tiles[pos] = value;
+      const tile = document.createElement('div');
+      tile.className = `tile absolute inset-2 tile-${value} animate-pop`;
+      tile.textContent = value;
+      grid.children[pos].appendChild(tile);
+      return true;
+    };
+
+    const move = (dir) => {
+      let moved = false;
+      const newTiles = [...tiles];
+      const rotate = (arr) => arr.reduce((a, _, i) => (a.push(...arr.slice(i*4, i*4+4)), a), []);
+      const rotateBack = (arr) => arr.reduce((a, v, i) => (a[i%4*4 + Math.floor(i/4)] = v, a), Array(16).fill(0));
+
+      let board = dir === 'left' ? newTiles : rotateBack(rotate(newTiles));
+      if (dir === 'up') board = rotateBack(rotate(rotate(newTiles)));
+      if (dir === 'right') board = rotateBack(rotate(rotate(rotate(newTiles))));
+
+      for (let i = 0; i < 4; i++) {
+        let row = board.slice(i*4, i*4+4).filter(v => v);
+        for (let j = 0; j < row.length - 1; j++) {
+          if (row[j] === row[j+1]) {
+            row[j] *= 2;
+            score += row[j];
+            row.splice(j+1, 1);
+            moved = true;
+            j--;
+          }
+        }
+        while (row.length < 4) row.push(0);
+        for (let j = 0; j < 4; j++) {
+          if (board[i*4 + j] !== row[j]) moved = true;
+          board[i*4 + j] = row[j];
+        }
+      }
+
+      if (moved) {
+        tiles = dir === 'left' ? board : rotate(rotateBack(board));
+        if (dir === 'up') tiles = rotate(rotate(tiles));
+        if (dir === 'right') tiles = rotate(tiles);
+        addTile();
+        updateScore();
+        updateTiles();
+        check2048Badge();
+        checkGameOver();
+      }
+    };
+
+    const updateTiles = () => {
+      tiles.forEach((value, i) => {
+        const cell = grid.children[i];
+        const existing = cell.querySelector('.tile');
+        if (value && !existing) {
+          const tile = document.createElement('div');
+          tile.className = `tile absolute inset-2 tile-${value} animate-pop`;
+          tile.textContent = value;
+          cell.appendChild(tile);
+        } else if (!value && existing) {
+          existing.remove();
+        } else if (existing && parseInt(existing.textContent) !== value) {
+          existing.className = `tile absolute inset-2 tile-${value} animate-merge`;
+          existing.textContent = value;
+        }
+      });
+    };
+
+    const updateScore = () => {
+      scoreEl.textContent = score;
+      if (score > best) {
+        best = score;
+        bestEl.textContent = best;
+        localStorage.setItem('2048-best', best);
+      }
+    };
+
+    const check2048Badge = () => {
+      if (tiles.includes(2048) && !localStorage.getItem('badge_2048_master')) {
+        localStorage.setItem('badge_2048_master', 'true');
+        showNotification('Бейдж "2048 Мастер" разблокирован! 🏆', document.body);
+        if (!localStorage.getItem('2048_confetti_shown')) {
+          localStorage.setItem('2048_confetti_shown', 'true');
+          confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+        }
+      }
+    };
+
+    const checkGameOver = () => {
+      if (!tiles.includes(0)) {
+        let canMove = false;
+        for (let i = 0; i < 16; i++) {
+          if (i % 4 !== 3 && tiles[i] === tiles[i+1]) canMove = true;
+          if (i < 12 && tiles[i] === tiles[i+4]) canMove = true;
+        }
+        if (!canMove) {
+          finalScore.textContent = score;
+          finalBest.textContent = best;
+          gameOver.classList.remove('hidden');
+        }
+      }
+    };
+
+    const restart = () => {
+      tiles = Array(16).fill(0);
+      score = 0;
+      updateScore();
+      gameOver.classList.add('hidden');
+      createGrid();
+      addTile();
+      addTile();
+    };
+
+    const showNotification = (text, parent) => {
+      const notif = document.createElement('div');
+      notif.textContent = text;
+      notif.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white px-6 py-3 rounded-full shadow-lg z-50 animate-pulse';
+      parent.appendChild(notif);
+      setTimeout(() => notif.remove(), 3000);
+    };
+
+    // Инициализация
+    createGrid();
+    const saved = localStorage.getItem('2048-tiles');
+    if (saved) {
+      tiles = JSON.parse(saved);
+      score = parseInt(localStorage.getItem('2048-score') || '0');
+    } else {
+      addTile();
+      addTile();
+    }
+    updateScore();
+    updateTiles();
+
+    // События
+    document.addEventListener('keydown', e => {
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+        move(e.key.replace('Arrow', '').toLowerCase());
+      }
+    });
+
+    // Пасхалка gg
+    let konami = '';
+    document.addEventListener('keydown', e => {
+      konami += e.key.toLowerCase();
+      if (konami.length > 10) konami = konami.slice(-10);
+      if (konami === 'gg') {
+        score += 100;
+        updateScore();
+        showNotification('+100 за читы! 😈', document.body);
+        konami = '';
+      }
+    });
+
+    // Тач
+    let touchStart = null;
+    grid.addEventListener('touchstart', e => { touchStart = e.touches[0]; }, { passive: true });
+    grid.addEventListener('touchend', e => {
+      if (!touchStart) return;
+      const touchEnd = e.changedTouches[0];
+      const dx = touchEnd.clientX - touchStart.clientX;
+      const dy = touchEnd.clientY - touchStart.clientY;
+      if (Math.abs(dx) > 30 || Math.abs(dy) > 30) {
+        if (Math.abs(dx) > Math.abs(dy)) {
+          move(dx > 0 ? 'right' : 'left');
+        } else {
+          move(dy > 0 ? 'down' : 'up');
+        }
+      }
+      touchStart = null;
+    });
+
+    // Кнопки
+    document.querySelectorAll('[data-dir]').forEach(btn => {
+      btn.addEventListener('click', () => move(btn.dataset.dir));
+    });
+
+    restartBtn.addEventListener('click', restart);
+    shareBtn.addEventListener('click', () => {
+      const text = `Я набрал ${score} в 2048 на Mortis Play! 🎮\nПобей мой рекорд: https://mortis-play.ru/games/2048.html`;
+      if (navigator.share) {
+        navigator.share({ title: '2048 — Mortis Play', text });
+      } else {
+        navigator.clipboard.writeText(text);
+        showNotification('Ссылка скопирована!', document.body);
+      }
+    });
+
+    // Сохранение
+    setInterval(() => {
+      localStorage.setItem('2048-tiles', JSON.stringify(tiles));
+      localStorage.setItem('2048-score', score);
+    }, 1000);
+
+    // Тема
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      themeToggle.querySelector('i').className = 
+        document.documentElement.classList.contains('dark') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+    });
+  </script>
+</body>
+</html>
