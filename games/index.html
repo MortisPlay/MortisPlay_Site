@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Игры — Mortis Play</title>
+  <meta name="description" content="Мини-игры от Mortis Play: 2048, Змейка, Тетрис и другие!" />
+  <meta property="og:title" content="Игры — Mortis Play" />
+  <meta property="og:description" content="Сыграй в 2048, разблокируй бейджи, побей рекорды!" />
+  <meta property="og:image" content="https://mortis-play.ru/images/og-games.jpg" />
+  <link rel="icon" href="/images/favicon.ico" />
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
+  <style>
+    body { background: linear-gradient(to bottom right, #fef3c7, #f5f3ff, #dbeafe); color: #1f2937; }
+    .dark body { background: linear-gradient(to bottom right, #1e1b4b, #312e81, #4c1d95); color: #e5e7eb; }
+    .glass { backdrop-filter: saturate(160%) blur(12px); background: linear-gradient(180deg, rgb(255 255 255 / .75), rgb(255 255 255 / .6)); border: 1px solid rgba(255,255,255,0.3); }
+    .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .8), rgb(17 24 39 / .65)); border: 1px solid rgba(255,255,255,0.1); }
+    .game-card {
+      @apply glass p-6 rounded-2xl text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer;
+      background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(240,240,255,0.6));
+    }
+    .dark .game-card { background: linear-gradient(135deg, rgba(30,30,50,0.9), rgba(50,50,80,0.7)); }
+    .game-icon {
+      @apply w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center text-3xl shadow-lg;
+    }
+    .coming-soon {
+      @apply opacity-50 pointer-events-none;
+    }
+    .badge-hint {
+      @apply text-xs mt-2 text-indigo-600 dark:text-fuchsia-400 font-medium;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <div class="glass mx-auto max-w-7xl px-4 py-8">
+    <!-- Шапка -->
+    <div class="flex items-center justify-between mb-10">
+      <a href="/" class="flex items-center gap-2 font-bold text-xl hover:text-indigo-600 transition">
+        <i class="fa-solid fa-arrow-left"></i> Mortis Play
+      </a>
+      <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
+        Игры
+      </h1>
+      <button id="themeToggle" class="glass-button p-3 rounded-full">
+        <i class="fa-solid fa-sun"></i>
+      </button>
+    </div>
+
+    <!-- Сетка игр -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- 2048 -->
+      <a href="/games/2048.html" class="game-card">
+        <div class="game-icon bg-gradient-to-br from-orange-400 to-red-500 text-white">
+          <i class="fa-solid fa-cubes"></i>
+        </div>
+        <h3 class="text-xl font-bold">2048</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Собери 2048!</p>
+        <p class="badge-hint">Бейдж: "2048 Мастер"</p>
+      </a>
+
+      <!-- Змейка -->
+      <div class="game-card coming-soon">
+        <div class="game-icon bg-gradient-to-br from-green-400 to-emerald-600 text-white">
+          <i class="fa-solid fa-worm"></i>
+        </div>
+        <h3 class="text-xl font-bold">Змейка</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Классика на новый лад</p>
+        <p class="badge-hint">Скоро...</p>
+      </div>
+
+      <!-- Крестики-нолики -->
+      <div class="game-card coming-soon">
+        <div class="game-icon bg-gradient-to-br from-blue-400 to-cyan-500 text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+        <h3 class="text-xl font-bold">Крестики-нолики</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">С друзьями или ИИ</p>
+        <p class="badge-hint">Скоро...</p>
+      </div>
+
+      <!-- Тетрис -->
+      <div class="game-card coming-soon">
+        <div class="game-icon bg-gradient-to-br from-purple-400 to-pink-500 text-white">
+          <i class="fa-solid fa-cubes-stacked"></i>
+        </div>
+        <h3 class="text-xl font-bold">Тетрис</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Собери линии</p>
+        <p class="badge-hint">Скоро...</p>
+      </div>
+
+      <!-- Предложить игру -->
+      <a href="https://t.me/mortis_play" target="_blank" class="game-card border-2 border-dashed border-indigo-300 dark:border-fuchsia-700">
+        <div class="game-icon bg-gradient-to-br from-indigo-500 to-fuchsia-500 text-white">
+          <i class="fa-solid fa-plus"></i>
+        </div>
+        <h3 class="text-xl font-bold">Предложи игру!</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Напиши в ТГ</p>
+      </a>
+    </div>
+
+    <!-- Статистика -->
+    <div class="mt-12 text-center">
+      <p class="text-sm text-slate-600 dark:text-slate-300">
+        Разблокировано бейджей: <span id="badgeCount" class="font-bold text-indigo-600 dark:text-fuchsia-400">0</span>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Тема
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      themeToggle.querySelector('i').className = 
+        document.documentElement.classList.contains('dark') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+    });
+
+    // Подсчёт бейджей
+    const badgeCount = document.getElementById('badgeCount');
+    const badges = ['badge_2048_master', 'mortis_hacker']; // добавляй сюда
+    let count = badges.filter(b => localStorage.getItem(b)).length;
+    badgeCount.textContent = count;
+
+    // Анимация при загрузке
+    document.querySelectorAll('.game-card').forEach((card, i) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      setTimeout(() => {
+        card.style.transition = 'all 0.4s ease-out';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, i * 100);
+    });
+  </script>
+</body>
+</html>
