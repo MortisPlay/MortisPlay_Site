@@ -394,6 +394,17 @@
     .no-particles .bg-particles {
       display: none;
     }
+    .badge {
+  overflow: hidden !important; /* Гарантированная обрезка */
+  position: relative;
+  will-change: transform; /* GPU */
+  border-radius: 9999px;
+}
+
+.badge canvas {
+  border-radius: 9999px;
+  will-change: contents;
+}
     body {
       color: #1f2937;
       background: linear-gradient(to bottom right, #fef3c7, #f5f3ff, #dbeafe);
@@ -1329,111 +1340,147 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         }
       };
       const createBadgeParticles = (badgeEl, badgeName) => {
+  // Создаём canvas строго внутри бейджика
   const canvas = document.createElement('canvas');
+  badgeEl.style.position = 'relative';
+  badgeEl.style.overflow = 'hidden'; // КЛЮЧ: обрезаем всё, что выходит
   badgeEl.appendChild(canvas);
+
   const ctx = canvas.getContext('2d');
-  canvas.width = badgeEl.offsetWidth + 20;
-  canvas.height = badgeEl.offsetHeight + 20;
-  canvas.style.position = 'absolute';
-  canvas.style.top = '-10px';
-  canvas.style.left = '-10px';
-  canvas.style.pointerEvents = 'none';
-  const particles = [];
   let animationId;
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
-  const radius = Math.min(canvas.width, canvas.height) * 0.4;
+
+  // Адаптивный ресайз
+  const resizeCanvas = () => {
+    const rect = badgeEl.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    canvas.style.position = 'absolute';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.borderRadius = '9999px'; // как у badge
+  };
+
+  resizeCanvas();
+  const resizeObserver = new ResizeObserver(resizeCanvas);
+  resizeObserver.observe(badgeEl);
+
+  const particles = [];
+  const centerX = () => canvas.width / 2;
+  const centerY = () => canvas.height / 2;
+  const radius = () => Math.min(canvas.width, canvas.height) * 0.35; // чуть меньше
+
+  // Проверка на производительность
+  const isLowPerf = () => document.documentElement.classList.contains('low-performance');
+
   const animate = () => {
+    if (isLowPerf()) return;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     if (badgeName === 'Секретный Агент') {
-      // Спокойная магическая аура
+      // Мягкая магическая аура — плавное вращение
       particles.forEach(p => {
-        // Плавное круговое движение
         p.angle += p.speed;
-        p.x = centerX + Math.cos(p.angle) * radius;
-        p.y = centerY + Math.sin(p.angle) * radius;
-        // Мягкое мерцание
-        const opacity = 0.6 + 0.4 * Math.sin(p.angle * 3);
+        const x = centerX() + Math.cos(p.angle) * radius();
+        const y = centerY() + Math.sin(p.angle) * radius();
+
+        const opacity = 0.5 + 0.5 * Math.sin(p.angle * 2);
         ctx.globalAlpha = opacity;
         ctx.fillStyle = p.color;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.arc(x, y, p.size, 0, Math.PI * 2);
         ctx.fill();
       });
+
     } else if (badgeName === 'Кодовый Взломщик') {
-      // Зелёные матричные линии + 0/1
+      // Упрощённая "матрица" — только линии, без текста
       particles.forEach(p => {
-        p.y += p.speedY;
+        p.y += p.speed;
         if (p.y > canvas.height) {
-          p.y = -10;
+          p.y = -15;
           p.x = Math.random() * canvas.width;
         }
+
         ctx.strokeStyle = p.color;
-        ctx.lineWidth = 1;
-        ctx.globalAlpha = 0.8;
+        ctx.globalAlpha = 0.7;
+        ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.x, p.y + 8);
+        ctx.lineTo(p.x, p.y + 12);
         ctx.stroke();
-        if (Math.random() < 0.1) {
+
+        // Редко — 0 или 1 (1 раз в 30 кадров)
+        if (Math.random() < 0.03) {
           ctx.fillStyle = '#22c55e';
           ctx.font = '10px monospace';
-          ctx.fillText(Math.random() < 0.5 ? '0' : '1', p.x - 3, p.y);
+          ctx.globalAlpha = 0.9;
+          ctx.fillText(Math.random() < 0.5 ? '0' : '1', p.x - 4, p.y + 8);
         }
       });
+
     } else if (badgeName === 'Призрачный Зритель') {
       // Полупрозрачные призраки
       particles.forEach(p => {
         p.x += p.speedX;
         p.y += p.speedY;
+
         if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
         if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-        ctx.globalAlpha = 0.4;
-        ctx.fillStyle = '#ffffff';
+
+        ctx.globalAlpha = 0.35;
+        ctx.fillStyle = '#e5e7eb';
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.x + p.size * 2, p.y);
-        ctx.lineTo(p.x + p.size, p.y - p.size);
-        ctx.lineTo(p.x + p.size * 1.5, p.y);
+        ctx.lineTo(p.x + p.size * 2.2, p.y);
+        ctx.lineTo(p.x + p.size * 1.1, p.y - p.size * 1.1);
         ctx.closePath();
         ctx.fill();
       });
     }
+
     animationId = requestAnimationFrame(animate);
   };
+
   // Инициализация частиц
   if (badgeName === 'Секретный Агент') {
-    for (let i = 0; i < 8; i++) {
-      const angle = (i / 8) * Math.PI * 2;
+    for (let i = 0; i < 7; i++) {
+      const angle = (i / 7) * Math.PI * 2;
       particles.push({
-        angle: angle,
-        speed: 0.015 + Math.random() * 0.01, // Медленное вращение
-        size: 1.5 + Math.random() * 1,
+        angle,
+        speed: 0.018 + Math.random() * 0.008,
+        size: 1.8 + Math.random() * 1.2,
         color: Math.random() > 0.5 ? '#a855f7' : '#d946ef'
       });
     }
   } else if (badgeName === 'Кодовый Взломщик') {
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 10; i++) { // Уменьшили с 15 → 10
       particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height - canvas.height,
-        speedY: Math.random() * 2 + 1,
+        x: Math.random() * (canvas.width || 100),
+        y: Math.random() * (canvas.height || 40) - (canvas.height || 40),
+        speed: 1.5 + Math.random() * 1.2,
         color: '#22c55e'
       });
     }
   } else if (badgeName === 'Призрачный Зритель') {
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 5; i++) {
       particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 3 + 2,
-        speedX: Math.random() * 0.8 - 0.4,
-        speedY: Math.random() * 0.8 - 0.4
+        x: Math.random() * (canvas.width || 100),
+        y: Math.random() * (canvas.height || 40),
+        size: 3 + Math.random() * 2,
+        speedX: (Math.random() - 0.5) * 0.7,
+        speedY: (Math.random() - 0.5) * 0.7
       });
     }
   }
+
   animate();
-  return () => cancelAnimationFrame(animationId);
+
+  // Очистка
+  return () => {
+    cancelAnimationFrame(animationId);
+    resizeObserver.disconnect();
+  };
 };
       const triggerBadgeEffect = (badgeName) => {
         // Убрали эффект для 'Кодовый Взломщик'
