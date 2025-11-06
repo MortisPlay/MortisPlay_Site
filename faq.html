@@ -306,10 +306,21 @@
                 <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
               </summary>
               <div class="mt-2 text-sm text-slate-300">
-                Открой консоль (F12) (На мобильном: Раздел "Профиль" и само поле для ввода кода) и введи:<br>
-                <kbd class="px-2 py-1 text-xs bg-slate-700 rounded">localStorage.setItem('mortis_hacker', 'true'); checkBadgeConditions();</kbd><br><br>
-                Или кликни **10 раз** по любому бейджу в профиле.<br>
-                Эффект: зелёная "Матрица" с падающими 0 и 1.
+                <div class="space-y-2">
+                  <p>Открой консоль (F12) и введи:</p>
+                  <kbd class="block px-2 py-1 text-xs bg-slate-700 rounded w-full text-left">localStorage.setItem('mortis_hacker', 'true'); checkBadgeConditions();</kbd>
+                  <p class="mt-3">Или кликни <strong>10 раз</strong> по любому бейджу в профиле.</p>
+                  
+                  <!-- КНОПКА ТОЛЬКО ДЛЯ МОБИЛКИ -->
+                  <div class="block md:hidden mt-4">
+                    <button onclick="localStorage.setItem('mortis_hacker','true');window.checkBadgeConditions?.();setTimeout(()=>location.reload(),800)" 
+                            class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm rounded-lg shadow-lg transition-all duration-300 w-full font-mono">
+                      Получить "Кодовый Взломщик" (мобила)
+                    </button>
+                    <p class="text-xs text-slate-400 mt-1">Кликни — и бейдж твой. Без консоли.</p>
+                  </div>
+                </div>
+                <p class="mt-3">Эффект: зелёная "Матрица" с падающими 0 и 1.</p>
               </div>
             </details>
 
@@ -319,7 +330,7 @@
                 <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
               </summary>
               <div class="mt-2 text-sm text-slate-300">
-                <strong>Жест "M"</strong>: зажми ЛКМ/палец и нарисуй букву **M** на экране.<br>
+                <strong>Жест "M"</strong>: зажми ЛКМ/палец и нарисуй букву <strong>M</strong> на экране.<br>
                 Форма: <code>/\/\\</code><br>
                 Появятся летающие призраки и полупрозрачные частицы.
               </div>
@@ -331,12 +342,12 @@
                 <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
               </summary>
               <div class="mt-2 text-sm text-slate-300">
-                Да! Вот **все известные**:<br>
+                Да! Вот <strong>все известные</strong>:<br>
                 • <strong>«Секретный Агент»</strong> — 5 кликов по логотипу<br>
                 • <strong>«Кодовый Взломщик»</strong> — код в консоли или 10 кликов по бейджу<br>
                 • <strong>«Призрачный Зритель»</strong> — нарисуй "M" на экране<br><br>
-                <em>Подсказка:</em> экспериментируй с консолью, масштабом, клавишами. Есть ещё **ультра-секреты**, которые никто не нашёл...<br>
-                Секретные бейджи **не обязательны** для "Легенда", но дают +100 к вайбу.
+                <em>Подсказка:</em> экспериментируй с консолью, масштабом, клавишами. Есть ещё <strong>ультра-секреты</strong>, которые никто не нашёл...<br>
+                Секретные бейджи <strong>не обязательны</strong> для "Легенда", но дают +100 к вайбу.
               </div>
             </details>
 
@@ -415,7 +426,7 @@
       setupHighContrast();
       setupPerformance();
       setupAnimations();
-      logAction('FAQ загружен — всё верно!');
+      logAction('FAQ загружен — кнопка для мобилок готова!');
     });
   </script>
 </body>
