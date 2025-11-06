@@ -68,7 +68,7 @@
     .low-performance .fade-in { transition: none; opacity: 1; transform: none; }
     .no-animations .fade-in, .no-animations .animate-floaty, .no-animations .animate-floaty-slow, .no-animations .animate-breathing {
       transition: none;
-      transform: none;
+      transform Nok: none;
       opacity: 1;
       animation: none;
     }
@@ -96,9 +96,10 @@
         FAQ
       </h1>
       <p class="mt-4 text-lg text-slate-200 text-center">
-        Ответы на часто задаваемые вопросы о Mortis Play, бейджах и стримах! 😎
+        Ответы на часто задаваемые вопросы о Mortis Play, бейджах и стримах! 
       </p>
-      <!-- === ОБЩИЕ В doubtfulОПРОСЫ === -->
+
+      <!-- === ОБЩИЕ ВОПРОСЫ === -->
       <div class="mt-16 grid gap-10">
         <div class="backdrop-blur-lg card border rounded-3xl p-8 shadow-lg fade-in">
           <h2 class="text-2xl font-semibold text-indigo-300 flex items-center gap-2">
@@ -188,23 +189,24 @@
             </details>
           </div>
         </div>
+
         <!-- === БЕЙДЖИКИ === -->
         <div class="backdrop-blur-lg card border rounded-3xl p-8 shadow-lg fade-in">
           <h2 class="text-2xl font-semibold text-yellow-300 flex items-center gap-2">
             <i class="fa-solid fa-trophy"></i> Бейджи
           </h2>
           <div class="mt-8 divide-y divide-slate-700 rounded-2xl ring-1 ring-slate-700 overflow-hidden">
+
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-yellow-300">
                 Что такое бейджи?
                 <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
               </summary>
               <div class="mt-2 text-sm text-slate-300">
-                Бейджи — это награды за достижения на сайте. Они показываются в твоём профиле.
+                Бейджи — это награды за достижения на сайте. Они показываются в твоём профиле с анимацией и частицами.
               </div>
             </details>
 
-            <!-- НОВЫЙ ВОПРОС: Почему некоторые бейджи сразу? -->
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-yellow-300">
                 Почему я получил некоторые бейджи СРАЗУ при первом входе?
@@ -212,12 +214,13 @@
               </summary>
               <div class="mt-2 text-sm text-slate-300">
                 Это **стартовый набор** — приветственный бонус для новых пользователей. Например:<br>
-                • <strong>«Фанат»</strong> — выдаётся автоматически при первом посещении (ты уже здесь!).<br>
+                • <strong>«Фанат»</strong> — выдаётся автоматически при первом посещении.<br>
                 • <strong>«Секретный Агент»</strong> — может появиться, если ты нашёл пасхалку (например, кликнул 5 раз по логотипу).<br>
-                Такие бейджи мотивируют сразу погрузиться в сайт, а не ждать прогресса. Остальные — только за реальные действия (просмотры, настройки профиля и т.д.). Если бейдж пропал — проверь `localStorage` или сбрось настройки.
+                Такие бейджи мотивируют сразу погрузиться в сайт. Остальные — только за реальные действия.
               </div>
             </details>
 
+            <!-- === СТАРЫЕ БЕЙДЖИ === -->
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-yellow-300">
                 Как получить бейдж "Фанат"?
@@ -227,6 +230,7 @@
                 Автоматически при первом посещении сайта. Добро пожаловать!
               </div>
             </details>
+
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-yellow-300">
                 Как получить "Мемолог" и "Эпик Мемолог"?
@@ -234,9 +238,10 @@
               </summary>
               <div class="mt-2 text-sm text-slate-300">
                 <strong>Мемолог</strong> — посмотри 4 видео в категории «Угар».<br>
-                <strong>Эпик Мемолог</strong> — 50 видео (почти невозможно!)
+                <strong>Эпик Мемолог</strong> — 20 видео (Сложно!)
               </div>
             </details>
+
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-yellow-300">
                 Как получить "Стример"?
@@ -246,6 +251,7 @@
                 Загрузи аватар и введи имя пользователя в профиле.
               </div>
             </details>
+
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-purple-300">
                 Как получить "Исследователь"?
@@ -255,6 +261,7 @@
                 Посмотри хотя бы <strong>по одному видео</strong> из каждой категории: <em>Стримы</em>, <em>Угар</em>, <em>БЛИЦ Play</em>.
               </div>
             </details>
+
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-yellow-300">
                 Как получить "Легенда"?
@@ -265,17 +272,54 @@
               </div>
             </details>
 
-            <!-- НОВЫЙ ВОПРОС: Секретные бейджи -->
+            <!-- === НОВЫЕ СЕКРЕТНЫЕ БЕЙДЖИ === -->
+            <details class="group p-5">
+              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-purple-300">
+                Как получить "Секретный Агент"?
+                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
+              </summary>
+              <div class="mt-2 text-sm text-slate-300">
+                <strong>Пасхалка!</strong> Кликни <strong>5 раз подряд</strong> по логотипу Mortis Play в шапке сайта.<br>
+                Бейдж появится с фиолетовой анимацией и вращающимися частицами.
+              </div>
+            </details>
+
+            <details class="group p-5">
+              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-green-400">
+                Как получить "Кодовый Взломщик"?
+                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
+              </summary>
+              <div class="mt-2 text-sm text-slate-300">
+                <strong>Ты уже близко!</strong> Открой **консоль разработчика** (F12) (на мобильном: Раздел "профиль") и введи:<br>
+                <kbd class="px-2 py-1 text-xs bg-slate-700 rounded">unlockCodeBreaker()</kbd><br><br>
+                Или просто кликни **10 раз** по любому бейджу в профиле.<br>
+                Эффект: зелёная "Матрица" с падающими 0 и 1.
+              </div>
+            </details>
+
+            <details class="group p-5">
+              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-gray-400">
+                Как получить "Призрачный Зритель"?
+                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
+              </summary>
+              <div class="mt-2 text-sm text-slate-300">
+                Посети сайт **после 3:00 ночи** по местному времени.<br>
+                Бейдж появится сам — с летающими призраками и полупрозрачным свечением.<br>
+                <em>Подсказка:</em> можно подменить время в настройках системы.
+              </div>
+            </details>
+
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-purple-300">
                 Есть ли секретные бейджи? Как их найти?
                 <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
               </summary>
               <div class="mt-2 text-sm text-slate-300">
-                Да, **секретные бейджи** — это пасхалки для самых любопытных. Они не отображаются в обычном списке и активируются особыми действиями. Пример:<br>
-                • <strong>«Секретный Агент»</strong> — кликни <strong>5 раз подряд</strong> по логотипу Mortis Play в шапке сайта. Бейджик появится с анимацией и частицами.<br><br>
-                Другие секреты могут скрываться в консоли, комбинациях клавиш или редких взаимодействиях. Подсказка: исследуй код, экспериментируй, ищи необычное поведение. Секретные бейджи **не влияют** на «Легенду», но дают уникальный вайб и статус в сообществе. 😉<br><br>
-                <em>Совет:</em> Если уведомления включены — сайт сам подмигнёт, когда ты близко.
+                Да! Вот известные:<br>
+                • <strong>«Секретный Агент»</strong> — 5 кликов по логотипу<br>
+                • <strong>«Кодовый Взломщик»</strong> — `unlockCodeBreaker()` или 10 кликов по бейджу<br>
+                • <strong>«Призрачный Зритель»</strong> — сайт после 3:00 ночи<br><br>
+                <em>Ещё есть ультра-редкие...</em> Экспериментируй с консолью, клавишами, масштабом страницы.
               </div>
             </details>
 
@@ -288,9 +332,11 @@
                 Да, сброс настроек удаляет ВСЁ: бейджи, аватар, имя. Но «Фанат» вернётся при следующем входе.
               </div>
             </details>
+
           </div>
         </div>
       </div>
+
       <!-- Кнопки -->
       <div class="mt-12 text-center">
         <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg inline-flex items-center gap-2" aria-label="Вернуться на главную">
@@ -302,6 +348,7 @@
       </div>
     </div>
   </main>
+
   <script nonce="${crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '')}">
     const logAction = (message) => console.log(`[FAQ] ${message}`);
     const setupFadeIn = () => {
@@ -351,7 +398,7 @@
       setupHighContrast();
       setupPerformance();
       setupAnimations();
-      logAction('FAQ загружен с бейджами');
+      logAction('FAQ загружен с новыми бейджами и подсказками');
     });
   </script>
 </body>
