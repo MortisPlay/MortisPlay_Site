@@ -1055,6 +1055,63 @@
           });
         }
       };
+      
+const setupGhostGesture = () => {
+  let path = [];
+  const tolerance = 50;
+  const minPoints = 10;
+
+  const recognizeM = (points) => {
+    if (points.length < minPoints) return false;
+    const w = Math.max(...points.map(p => p.x)) - Math.min(...points.map(p => p.x));
+    const h = Math.max(...points.map(p => p.y)) - Math.min(...points.map(p => p.y));
+    if (w < 60 || h < 60) return false;
+
+    const thirds = w / 3;
+    const half = h / 2;
+
+    const leftPeak = points.find(p => p.x < thirds && p.y > half);
+    const middleLow = points.find(p => p.x > thirds && p.x < 2*thirds && p.y < half);
+    const rightPeak = points.find(p => p.x > 2*thirds && p.y > half);
+
+    return leftPeak && middleLow && rightPeak;
+  };
+
+  const handleStart = (e) => {
+    path = [];
+    const addPoint = (clientX, clientY) => {
+      path.push({ x: clientX, y: clientY });
+    };
+
+    const handleMove = (e) => {
+      const touch = e.touches ? e.touches[0] : e;
+      addPoint(touch.clientX, touch.clientY);
+    };
+
+    const handleEnd = () => {
+      if (recognizeM(path)) {
+        localStorage.setItem('ghostScrolls', '3');
+        localStorage.setItem('ghostScrollsEarned', 'true');
+        checkBadgeConditions();
+        showNotification('Призрачный режим активирован! Бейдж получен! 👻', document.getElementById('appearanceNotification'));
+      }
+      document.removeEventListener('mousemove', handleMove);
+      document.removeEventListener('touchmove', handleMove);
+      document.removeEventListener('mouseup', handleEnd);
+      document.removeEventListener('touchend', handleEnd);
+    };
+
+    document.addEventListener('mousemove', handleMove);
+    document.addEventListener('touchmove', handleMove, { passive: true });
+    document.addEventListener('mouseup', handleEnd);
+    document.addEventListener('touchend', handleEnd);
+  };
+
+  document.addEventListener('mousedown', handleStart);
+  document.addEventListener('touchstart', handleStart, { passive: true });
+};
+
+document.addEventListener('DOMContentLoaded', setupGhostGesture);
       const setupResetProfile = () => {
         const resetProfileButton = document.getElementById('resetProfile');
         const notification = document.getElementById('appearanceNotification');
@@ -1181,63 +1238,76 @@
         };
       };
       const badgeDefinitions = [
-        { name: 'Фанат', icon: 'fa-solid fa-star', description: 'Выдаётся за посещение сайта!', earned: () => true, rarity: 'common' },
-        {
-          name: 'Мемолог',
-          icon: 'fa-solid fa-laugh',
-          description: 'Посмотрите 4 видео в категории «Угар»',
-          earned: () => {
-            const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-            return Object.values(watchedVideos).filter(v => v.category === 'fun').length >= 4;
-          },
-          progress: () => {
-            const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-            return Math.min(Object.values(watchedVideos).filter(v => v.category === 'fun').length, 4);
-          },
-          rarity: 'rare'
-        },
-        { name: 'Стример', icon: 'fa-solid fa-video', description: 'Загрузите аватар и установите имя пользователя', earned: () => {
-          return !!localStorage.getItem('userAvatar') && !!localStorage.getItem('username');
-        }, rarity: 'common' },
-        {
-          name: 'Исследователь',
-          icon: 'fa-solid fa-compass',
-          description: 'Посмотри хотя бы одно видео из каждой категории',
-          earned: () => {
-            const watched = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-            const categories = ['streams', 'fun', 'blitz'];
-            return categories.every(cat => Object.values(watched).some(v => v.category === cat));
-          },
-          rarity: 'rare'
-        },
-        { name: 'Легенда', icon: 'fa-solid fa-crown', description: 'Получите все остальные бейджи', earned: () => {
-          const savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
-          return savedBadges.includes('Фанат') && savedBadges.includes('Мемолог') && savedBadges.includes('Стример') && savedBadges.includes('Эпик Мемолог') && savedBadges.includes('Исследователь');
-        }, rarity: 'legendary' },
-        {
-          name: 'Эпик Мемолог',
-          icon: 'fa-solid fa-trophy',
-          description: 'Просмотрите 50 видео в категории «Угар» (почти невозможно!)',
-          earned: () => {
-            const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-            return Object.values(watchedVideos).filter(v => v.category === 'fun').length >= 50;
-          },
-          progress: () => {
-            const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-            return Math.min(Object.values(watchedVideos).filter(v => v.category === 'fun').length, 50);
-          },
-          rarity: 'legendary'
-        },
-        { name: 'Секретный Агент', icon: 'fa-solid fa-user-secret', description: 'Секретный бейдж! Как вы его нашли?', earned: () => {
-          return parseInt(localStorage.getItem('secretClicks') || '0') >= 5;
-        }, rarity: 'secret' },
-        { name: 'Кодовый Взломщик', icon: 'fa-solid fa-terminal', description: 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈', earned: () => {
-          return localStorage.getItem('mortis_hacker') === 'true';
-        }, rarity: 'code-breaker' },
-        { name: 'Призрачный Зритель', icon: 'fa-solid fa-ghost', description: 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈', earned: () => {
-          return parseInt(localStorage.getItem('ghostScrolls') || '0') >= 3;
-        }, rarity: 'ghost' }
-      ];
+  { name: 'Фанат', icon: 'fa-solid fa-star', description: 'Выдаётся за посещение сайта!', earned: () => true, rarity: 'common' },
+  {
+    name: 'Мемолог',
+    icon: 'fa-solid fa-laugh',
+    description: 'Посмотрите 4 видео в категории «Угар»',
+    earned: () => {
+      const watched = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
+      return Object.values(watched).filter(v => v.category === 'fun').length >= 4;
+    },
+    progress: () => Math.min(Object.values(JSON.parse(localStorage.getItem('watchedVideos') || '{}')).filter(v => v.category === 'fun').length, 4),
+    rarity: 'rare'
+  },
+  { name: 'Стример', icon: 'fa-solid fa-video', description: 'Загрузите аватар и установите имя пользователя', earned: () => {
+    return !!localStorage.getItem('userAvatar') && !!localStorage.getItem('username');
+  }, rarity: 'common' },
+  {
+    name: 'Исследователь',
+    icon: 'fa-solid fa-compass',
+    description: 'Посмотри хотя бы одно видео из каждой категории',
+    earned: () => {
+      const watched = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
+      return ['streams', 'fun', 'blitz'].every(cat => Object.values(watched).some(v => v.category === cat));
+    },
+    rarity: 'rare'
+  },
+  {
+    name: '2048 Мастер',
+    icon: 'fa-solid fa-trophy',
+    description: 'Собери плитку 2048 в игре!',
+    earned: () => localStorage.getItem('badge_2048_master') === 'true',
+    rarity: 'legendary'
+  },
+  {
+    name: 'Эпик Мемолог',
+    icon: 'fa-solid fa-medal',
+    description: 'Просмотрите 20 видео в категории «Угар»',
+    earned: () => {
+      const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
+      return Object.values(watchedVideos).filter(v => v.category === 'fun').length >= 20;
+    },
+    progress: () => {
+      const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
+      return Math.min(Object.values(watchedVideos).filter(v => v.category === 'fun').length, 20);
+    },
+    rarity: 'legendary'
+  },
+  {
+    name: 'Легенда',
+    icon: 'fa-solid fa-crown',
+    description: 'Получи все остальные бейджи',
+    earned: () => {
+      const saved = JSON.parse(localStorage.getItem('userBadges') || '[]');
+      return ['Фанат', 'Мемолог', 'Стример', 'Исследователь', '2048 Мастер', 'Эпик Мемолог'].every(b => saved.includes(b));
+    },
+    rarity: 'legendary'
+  },
+  { name: 'Секретный Агент', icon: 'fa-solid fa-user-secret', description: 'Секретный бейдж! Как вы его нашли?', earned: () => {
+    return parseInt(localStorage.getItem('secretClicks') || '0') >= 5;
+  }, rarity: 'secret' },
+  { name: 'Кодовый Взломщик', icon: 'fa-solid fa-terminal', description: 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈', earned: () => {
+    return localStorage.getItem('mortis_hacker') === 'true';
+  }, rarity: 'code-breaker' },
+  {
+    name: 'Призрачный Зритель',
+    icon: 'fa-solid fa-ghost',
+    description: 'Нарисуй букву "M" на экране пальцем или мышью',
+    earned: () => localStorage.getItem('ghostScrollsEarned') === 'true',
+    rarity: 'secret'
+  }
+];
       const setupSecretBadgeTrigger = () => {
         const logo = document.querySelector('a[href="#welcome"] img');
         if (logo) {
@@ -1527,21 +1597,7 @@
         let currentFilter = 'all';
         let filteredVideos = videoData;
         let ghostScrollCount = parseInt(localStorage.getItem('ghostScrolls') || '0');
-        grid.addEventListener('scroll', debounce(() => {
-          if (grid.scrollTop + grid.clientHeight >= grid.scrollHeight - 20 && !localStorage.getItem('ghostScrollsEarned')) {
-            ghostScrollCount++;
-            localStorage.setItem('ghostScrolls', ghostScrollCount);
-            if (ghostScrollCount >= 3) {
-              showNotification('Призрачный режим активирован! Кликни ниже видео для секрета...', notification);
-              grid.addEventListener('click', (e) => {
-                if (!e.target.closest('.video-card')) {
-                  localStorage.setItem('ghostScrollsEarned', 'true');
-                  checkBadgeConditions();
-                }
-              }, { once: true });
-            }
-          }
-        }, 300));
+        
         const renderVideos = (append = false) => {
           if (!append) {
             grid.innerHTML = '';
