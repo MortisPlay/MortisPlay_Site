@@ -353,6 +353,49 @@
     max-width: none !important;
   }
 }
+    /* Свечение при наведении на бейджик */
+.badge {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden !important;
+  will-change: transform, box-shadow;
+  border-radius: 9999px;
+}
+
+.badge::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 9999px;
+  padding: 2px;
+  background: conic-gradient(from 0deg, #a855f7, #ec4899, #3b82f6, #22d3ee, #a855f7);
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.badge:hover::before {
+  opacity: 1;
+}
+
+.badge:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(147, 51, 234, 0.4), 0 0 20px rgba(147, 51, 234, 0.3);
+  z-index: 10;
+}
+
+/* Пульсация при получении нового бейджа */
+@keyframes badgePulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7); }
+  50% { box-shadow: 0 0 0 12px rgba(147, 51, 234, 0); }
+}
+
+.badge.new-badge {
+  animation: badgePulseGlow 1.5s ease-out 3;
+}
     @media (max-width: 640px) {
       .glass-button {
         padding: 0.4rem 0.8rem;
@@ -1289,19 +1332,19 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     rarity: 'legendary'
   },
   {
-    name: 'Эпик Мемолог',
-    icon: 'fa-solid fa-medal',
-    description: 'Просмотрите 20 видео в категории «Угар»',
-    earned: () => {
-      const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-      return Object.values(watchedVideos).filter(v => v.category === 'fun').length >= 20;
-    },
-    progress: () => {
-      const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-      return Math.min(Object.values(watchedVideos).filter(v => v.category === 'fun').length, 20);
-    },
-    rarity: 'legendary'
+  name: 'Эпик Мемолог',
+  icon: 'fa-solid fa-medal',
+  description: 'Просмотрите 20 видео в категории «Угар»',
+  earned: () => {
+    const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
+    return Object.values(watchedVideos).filter(v => v.category === 'fun').length >= 20;
   },
+  progress: () => {
+    const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
+    return Math.min(Object.values(watchedVideos).filter(v => v.category === 'fun').length, 20);
+  },
+  rarity: 'legendary'
+},
   {
     name: 'Легенда',
     icon: 'fa-solid fa-crown',
@@ -1342,6 +1385,8 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
       const createBadgeParticles = (badgeEl, badgeName) => {
   // Создаём canvas строго внутри бейджика
   const canvas = document.createElement('canvas');
+        canvas.style.borderRadius = '9999px';
+canvas.style.willChange = 'contents';
   badgeEl.style.position = 'relative';
   badgeEl.style.overflow = 'hidden'; // КЛЮЧ: обрезаем всё, что выходит
   badgeEl.appendChild(canvas);
@@ -1501,12 +1546,14 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         badgeDefinitions.forEach(badge => {
           if (savedBadges.includes(badge.name) || badge.earned()) {
             if (!savedBadges.includes(badge.name)) {
-              savedBadges.push(badge.name);
-              localStorage.setItem('userBadges', JSON.stringify(savedBadges));
-              showNotification(`Новый бейдж: ${badge.name}! 🎉`, notification);
-              gtag('event', 'badge_earned', { event_category: 'profile', event_label: badge.name });
-              logAction(`Получен новый бейдж: ${badge.name}`);
-              triggerBadgeEffect(badge.name);
+  savedBadges.push(badge.name);
+  localStorage.setItem('userBadges', JSON.stringify(savedBadges));
+  showNotification(`Новый бейдж: ${badge.name}! 🎉`, notification);
+  gtag('event', 'badge_earned', { event_category: 'profile', event_label: badge.name });
+  logAction(`Получен новый бейдж: ${badge.name}`);
+  triggerBadgeEffect(badge.name);
+              badgeEl.classList.add('new-badge');
+  setTimeout(() => badgeEl.classList.remove('new-badge'), 5000);
             }
             const badgeEl = document.createElement('span');
             badgeEl.className = `badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${badge.rarity} ${badge.name.toLowerCase().replace(' ', '-').replace('ё', 'e')}`;
@@ -1529,7 +1576,7 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
           let textClass = earned ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600';
           let iconColor = earned ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600';
           const status = earned ? '✅' : '🔒';
-          const progress = badge.progress ? `(${badge.progress()}/${badge.name === 'Мемолог' ? '4' : '50'})` : '';
+          const progress = badge.progress ? `(${badge.progress()}/${badge.name === 'Мемолог' ? '4' : badge.name === 'Эпик Мемолог' ? '20' : '50'})` : '';
           if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost') && !earned) {
             iconClass = 'fa-solid fa-question-circle';
             nameText = badge.name === 'Кодовый Взломщик' ? '?' : '???';
