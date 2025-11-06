@@ -57,7 +57,6 @@
         <i class="fa-solid fa-sun"></i>
       </button>
     </div>
-
     <div class="game-container">
       <div class="text-center mb-6">
         <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Свайпай или стрелки ↑ ↓ ← →</p>
@@ -66,7 +65,6 @@
           <span>Рекорд: <span id="best">0</span></span>
         </div>
       </div>
-
       <div class="relative">
         <div id="grid" class="grid"></div>
         <div id="gameOver" class="game-over hidden">
@@ -81,7 +79,6 @@
           </div>
         </div>
       </div>
-
       <!-- Кнопки для мобильных -->
       <div class="mt-6 grid grid-cols-3 gap-2 max-w-xs mx-auto">
         <div></div>
@@ -95,6 +92,7 @@
   </div>
 
   <script>
+    // === ЭЛЕМЕНТЫ ===
     const grid = document.getElementById('grid');
     const scoreEl = document.getElementById('score');
     const bestEl = document.getElementById('best');
@@ -103,11 +101,14 @@
     const finalBest = document.getElementById('finalBest');
     const restartBtn = document.getElementById('restartBtn');
     const shareBtn = document.getElementById('shareBtn');
+
+    // === ПЕРЕМЕННЫЕ ИГРЫ ===
     let tiles = Array(16).fill(0);
     let score = 0;
     let best = parseInt(localStorage.getItem('2048-best') || '0');
     bestEl.textContent = best;
 
+    // === СОЗДАНИЕ ПОЛЯ ===
     const createGrid = () => {
       grid.innerHTML = '';
       for (let i = 0; i < 16; i++) {
@@ -117,6 +118,7 @@
       }
     };
 
+    // === ДОБАВЛЕНИЕ ТАЙЛА ===
     const addTile = () => {
       const empty = tiles.map((v, i) => v ? null : i).filter(v => v !== null);
       if (!empty.length) return false;
@@ -130,46 +132,62 @@
       return true;
     };
 
-    const move = (dir) => {
+    // === ПОВОРОТ ДОСКИ ===
+    const rotateBoard = (board, times) => {
+      let result = [...board];
+      for (let t = 0; t < times; t++) {
+        const rotated = Array(16).fill(0);
+        for (let i = 0; i < 4; i++) {
+          for (let j = 0; j < 4; j++) {
+            rotated[i * 4 + j] = result[(3 - j) * 4 + i];
+          }
+        }
+        result = rotated;
+      }
+      return result;
+    };
+
+    // === ДВИЖЕНИЕ ВЛЕВО (основа) ===
+    const moveLeft = (board) => {
       let moved = false;
-      const newTiles = [...tiles];
-      const rotate = (arr) => arr.reduce((a, _, i) => (a.push(...arr.slice(i*4, i*4+4)), a), []);
-      const rotateBack = (arr) => arr.reduce((a, v, i) => (a[i%4*4 + Math.floor(i/4)] = v, a), Array(16).fill(0));
-
-      let board = dir === 'left' ? newTiles : rotateBack(rotate(newTiles));
-      if (dir === 'up') board = rotateBack(rotate(rotate(newTiles)));
-      if (dir === 'right') board = rotateBack(rotate(rotate(rotate(newTiles))));
-
+      const newBoard = [...board];
       for (let i = 0; i < 4; i++) {
-        let row = board.slice(i*4, i*4+4).filter(v => v);
+        let row = newBoard.slice(i * 4, i * 4 + 4).filter(v => v);
         for (let j = 0; j < row.length - 1; j++) {
-          if (row[j] === row[j+1]) {
+          if (row[j] === row[j + 1]) {
             row[j] *= 2;
             score += row[j];
-            row.splice(j+1, 1);
+            row.splice(j + 1, 1);
             moved = true;
             j--;
           }
         }
-        while (row.length < 4) row.push(0);
+        row.push(...Array(4 - row.length).fill(0));
         for (let j = 0; j < 4; j++) {
-          if (board[i*4 + j] !== row[j]) moved = true;
-          board[i*4 + j] = row[j];
+          if (newBoard[i * 4 + j] !== row[j]) moved = true;
+          newBoard[i * 4 + j] = row[j];
         }
       }
+      return { board: newBoard, moved };
+    };
 
+    // === ОСНОВНОЕ ДВИЖЕНИЕ ===
+    const move = (dir) => {
+      const rotations = { left: 0, up: 1, right: 2, down: 3 }[dir];
+      const board = rotateBoard(tiles, rotations);
+      const { board: newBoard, moved } = moveLeft(board);
       if (moved) {
-        tiles = dir === 'left' ? board : rotate(rotateBack(board));
-        if (dir === 'up') tiles = rotate(rotate(tiles));
-        if (dir === 'right') tiles = rotate(tiles);
+        tiles = rotateBoard(newBoard, (4 - rotations) % 4);
         addTile();
         updateScore();
         updateTiles();
         check2048Badge();
         checkGameOver();
+        scheduleSave();
       }
     };
 
+    // === ОБНОВЛЕНИЕ ТАЙЛОВ ===
     const updateTiles = () => {
       tiles.forEach((value, i) => {
         const cell = grid.children[i];
@@ -188,6 +206,7 @@
       });
     };
 
+    // === ОБНОВЛЕНИЕ СЧЁТА ===
     const updateScore = () => {
       scoreEl.textContent = score;
       if (score > best) {
@@ -197,6 +216,7 @@
       }
     };
 
+    // === БЕЙДЖ 2048 ===
     const check2048Badge = () => {
       if (tiles.includes(2048) && !localStorage.getItem('badge_2048_master')) {
         localStorage.setItem('badge_2048_master', 'true');
@@ -208,12 +228,13 @@
       }
     };
 
+    // === КОНЕЦ ИГРЫ ===
     const checkGameOver = () => {
       if (!tiles.includes(0)) {
         let canMove = false;
         for (let i = 0; i < 16; i++) {
-          if (i % 4 !== 3 && tiles[i] === tiles[i+1]) canMove = true;
-          if (i < 12 && tiles[i] === tiles[i+4]) canMove = true;
+          if (i % 4 !== 3 && tiles[i] === tiles[i + 1]) canMove = true;
+          if (i < 12 && tiles[i] === tiles[i + 4]) canMove = true;
         }
         if (!canMove) {
           finalScore.textContent = score;
@@ -223,6 +244,7 @@
       }
     };
 
+    // === ПЕРЕЗАПУСК ===
     const restart = () => {
       tiles = Array(16).fill(0);
       score = 0;
@@ -231,8 +253,10 @@
       createGrid();
       addTile();
       addTile();
+      scheduleSave();
     };
 
+    // === УВЕДОМЛЕНИЕ ===
     const showNotification = (text, parent) => {
       const notif = document.createElement('div');
       notif.textContent = text;
@@ -241,28 +265,46 @@
       setTimeout(() => notif.remove(), 3000);
     };
 
-    // Инициализация
+    // === СОХРАНЕНИЕ (оптимизированное) ===
+    let saveTimeout;
+    const saveGame = () => {
+      localStorage.setItem('2048-tiles', JSON.stringify(tiles));
+      localStorage.setItem('2048-score', score);
+      localStorage.setItem('2048-best', best);
+    };
+    const scheduleSave = () => {
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(saveGame, 500);
+    };
+
+    // === ИНИЦИАЛИЗАЦИЯ ===
     createGrid();
+    grid.tabIndex = 0;
+    grid.focus();
+
     const saved = localStorage.getItem('2048-tiles');
     if (saved) {
       tiles = JSON.parse(saved);
       score = parseInt(localStorage.getItem('2048-score') || '0');
+      best = parseInt(localStorage.getItem('2048-best') || '0');
     } else {
       addTile();
       addTile();
     }
     updateScore();
     updateTiles();
+    bestEl.textContent = best;
 
-    // События
+    // === КЛАВИАТУРА ===
     document.addEventListener('keydown', e => {
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
         e.preventDefault();
+        if (document.activeElement !== grid) grid.focus();
         move(e.key.replace('Arrow', '').toLowerCase());
       }
     });
 
-    // Пасхалка gg
+    // === ПАСХАЛКА gg ===
     let konami = '';
     document.addEventListener('keydown', e => {
       konami += e.key.toLowerCase();
@@ -275,29 +317,34 @@
       }
     });
 
-    // Тач
+    // === СВАЙПЫ ===
     let touchStart = null;
-    grid.addEventListener('touchstart', e => { touchStart = e.touches[0]; }, { passive: true });
+    grid.addEventListener('touchstart', e => {
+      touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      e.preventDefault();
+    }, { passive: false });
+
+    grid.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
     grid.addEventListener('touchend', e => {
       if (!touchStart) return;
       const touchEnd = e.changedTouches[0];
-      const dx = touchEnd.clientX - touchStart.clientX;
-      const dy = touchEnd.clientY - touchStart.clientY;
-      if (Math.abs(dx) > 30 || Math.abs(dy) > 30) {
-        if (Math.abs(dx) > Math.abs(dy)) {
-          move(dx > 0 ? 'right' : 'left');
-        } else {
-          move(dy > 0 ? 'down' : 'up');
-        }
+      const dx = touchEnd.clientX - touchStart.x;
+      const dy = touchEnd.clientY - touchStart.y;
+      const absX = Math.abs(dx), absY = Math.abs(dy);
+      if (Math.max(absX, absY) > 30) {
+        if (absX > absY) move(dx > 0 ? 'right' : 'left');
+        else move(dy > 0 ? 'down' : 'up');
       }
       touchStart = null;
     });
 
-    // Кнопки
+    // === КНОПКИ ===
     document.querySelectorAll('[data-dir]').forEach(btn => {
       btn.addEventListener('click', () => move(btn.dataset.dir));
     });
 
+    // === ПЕРЕЗАПУСК И ШАРИНГ ===
     restartBtn.addEventListener('click', restart);
     shareBtn.addEventListener('click', () => {
       const text = `Я набрал ${score} в 2048 на Mortis Play! 🎮\nПобей мой рекорд: https://mortis-play.ru/games/2048.html`;
@@ -309,17 +356,11 @@
       }
     });
 
-    // Сохранение
-    setInterval(() => {
-      localStorage.setItem('2048-tiles', JSON.stringify(tiles));
-      localStorage.setItem('2048-score', score);
-    }, 1000);
-
-    // Тема
+    // === ТЕМА ===
     const themeToggle = document.getElementById('themeToggle');
     themeToggle.addEventListener('click', () => {
       document.documentElement.classList.toggle('dark');
-      themeToggle.querySelector('i').className = 
+      themeToggle.querySelector('i').className =
         document.documentElement.classList.contains('dark') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
     });
   </script>
