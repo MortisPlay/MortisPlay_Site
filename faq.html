@@ -16,9 +16,6 @@
   <meta name="twitter:title" content="Mortis Play — FAQ">
   <meta name="twitter:description" content="Часто задаваемые вопросы о Mortis Play и его бейджах!">
   <meta name="twitter:image" content="https://mortisplay.ru/assets/twitter-image-faq.jpg">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
@@ -43,7 +40,7 @@
     .animate-breathing { animation: breathing 10s ease-in-out infinite; }
     .neon-title { transition: all 0.5s ease; color: #e5e7eb; background: linear-gradient(to right, #a5b4fc, #f9a8d4, #a5b4fc); }
     .neon-title:hover { filter: brightness(1.3); }
-    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform: 0.6s ease; }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .fade-in.is-visible { opacity: 1; transform: translateY(0); }
     body {
       background: linear-gradient(to bottom right, #0d0d0d, #1a1a1a, #2d2d2d);
@@ -68,7 +65,7 @@
     .low-performance .fade-in { transition: none; opacity: 1; transform: none; }
     .no-animations .fade-in, .no-animations .animate-floaty, .no-animations .animate-floaty-slow, .no-animations .animate-breathing {
       transition: none;
-      transform Nok: none;
+      transform: none;
       opacity: 1;
       animation: none;
     }
@@ -238,7 +235,7 @@
               </summary>
               <div class="mt-2 text-sm text-slate-300">
                 <strong>Мемолог</strong> — посмотри 4 видео в категории «Угар».<br>
-                <strong>Эпик Мемолог</strong> — 20 видео (Сложно!)
+                <strong>Эпик Мемолог</strong> — посмотри 20 видео в категории «Угар».
               </div>
             </details>
 
@@ -264,23 +261,42 @@
 
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-yellow-300">
+                Как получить "2048 Мастер"?
+                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
+              </summary>
+              <div class="mt-2 text-sm text-slate-300">
+                Собери плитку <strong>2048</strong> в игре <a href="/games/2048.html" class="underline text-indigo-400 hover:text-indigo-200">2048</a>.<br>
+                Бейдж появится с конфетти и частицами!
+              </div>
+            </details>
+
+            <details class="group p-5">
+              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-yellow-300">
                 Как получить "Легенда"?
                 <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
               </summary>
               <div class="mt-2 text-sm text-slate-300">
-                Собери <strong>ВСЕ</strong> остальные бейджи: Фанат, Мемолог, Стример, Исследователь, Эпик Мемолог.
+                Собери <strong>ВСЕ</strong> бейджи:<br>
+                • Фанат<br>
+                • Мемолог<br>
+                • Стример<br>
+                • Исследователь<br>
+                • 2048 Мастер<br>
+                • Эпик Мемолог<br>
+                • + все секретные<br>
+                После этого — ты Легенда Mortis Play.
               </div>
             </details>
 
-            <!-- === НОВЫЕ СЕКРЕТНЫЕ БЕЙДЖИ === -->
+            <!-- === СЕКРЕТНЫЕ БЕЙДЖИ === -->
             <details class="group p-5">
               <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-purple-300">
                 Как получить "Секретный Агент"?
                 <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
               </summary>
               <div class="mt-2 text-sm text-slate-300">
-                <strong>Пасхалка!</strong> Кликни <strong>5 раз подряд</strong> по логотипу Mortis Play в шапке сайта.<br>
-                Бейдж появится с фиолетовой анимацией и вращающимися частицами.
+                Кликни <strong>5 раз подряд</strong> по логотипу Mortis Play в шапке сайта.<br>
+                Появится фиолетовая аура и вращающиеся частицы.
               </div>
             </details>
 
@@ -290,9 +306,9 @@
                 <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
               </summary>
               <div class="mt-2 text-sm text-slate-300">
-                <strong>Ты уже близко!</strong> Открой **консоль разработчика** (F12) (на мобильном: Раздел "профиль") и введи:<br>
-                <kbd class="px-2 py-1 text-xs bg-slate-700 rounded">unlockCodeBreaker()</kbd><br><br>
-                Или просто кликни **10 раз** по любому бейджу в профиле.<br>
+                Открой консоль (F12) (На мобильном: Раздел "Профиль" и само поле для ввода кода) и введи:<br>
+                <kbd class="px-2 py-1 text-xs bg-slate-700 rounded">localStorage.setItem('mortis_hacker', 'true'); checkBadgeConditions();</kbd><br><br>
+                Или кликни **10 раз** по любому бейджу в профиле.<br>
                 Эффект: зелёная "Матрица" с падающими 0 и 1.
               </div>
             </details>
@@ -303,9 +319,9 @@
                 <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
               </summary>
               <div class="mt-2 text-sm text-slate-300">
-                Посети сайт **после 3:00 ночи** по местному времени.<br>
-                Бейдж появится сам — с летающими призраками и полупрозрачным свечением.<br>
-                <em>Подсказка:</em> можно подменить время в настройках системы.
+                <strong>Жест "M"</strong>: зажми ЛКМ/палец и нарисуй букву **M** на экране.<br>
+                Форма: <code>/\/\\</code><br>
+                Появятся летающие призраки и полупрозрачные частицы.
               </div>
             </details>
 
@@ -315,11 +331,12 @@
                 <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
               </summary>
               <div class="mt-2 text-sm text-slate-300">
-                Да! Вот известные:<br>
+                Да! Вот **все известные**:<br>
                 • <strong>«Секретный Агент»</strong> — 5 кликов по логотипу<br>
-                • <strong>«Кодовый Взломщик»</strong> — `unlockCodeBreaker()` или 10 кликов по бейджу<br>
-                • <strong>«Призрачный Зритель»</strong> — сайт после 3:00 ночи<br><br>
-                <em>Ещё есть ультра-редкие...</em> Экспериментируй с консолью, клавишами, масштабом страницы.
+                • <strong>«Кодовый Взломщик»</strong> — код в консоли или 10 кликов по бейджу<br>
+                • <strong>«Призрачный Зритель»</strong> — нарисуй "M" на экране<br><br>
+                <em>Подсказка:</em> экспериментируй с консолью, масштабом, клавишами. Есть ещё **ультра-секреты**, которые никто не нашёл...<br>
+                Секретные бейджи **не обязательны** для "Легенда", но дают +100 к вайбу.
               </div>
             </details>
 
@@ -398,7 +415,7 @@
       setupHighContrast();
       setupPerformance();
       setupAnimations();
-      logAction('FAQ загружен с новыми бейджами и подсказками');
+      logAction('FAQ загружен — всё верно!');
     });
   </script>
 </body>
