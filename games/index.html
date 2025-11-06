@@ -118,7 +118,7 @@
 
     // Подсчёт бейджей
     const badgeCount = document.getElementById('badgeCount');
-    const badges = ['badge_2048_master', 'mortis_hacker']; // добавляй сюда
+    const badges = ['badge_2048_master']; // Только реальный бейдж от 2048
     let count = badges.filter(b => localStorage.getItem(b)).length;
     badgeCount.textContent = count;
 
