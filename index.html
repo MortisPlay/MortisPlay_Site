@@ -387,6 +387,9 @@
   z-index: 10;
 }
 
+    .badge:hover canvas {
+  filter: drop-shadow(0 0 8px currentColor);
+}
 /* Пульсация при получении нового бейджа */
 @keyframes badgePulseGlow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7); }
@@ -1397,34 +1400,43 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
 
   const resizeCanvas = () => {
     const rect = badgeEl.getBoundingClientRect();
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = rect.height * window.devicePixelRatio;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
     canvas.style.width = rect.width + 'px';
     canvas.style.height = rect.height + 'px';
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    ctx.scale(dpr, dpr);
   };
 
+  // Принудительно вызываем ресайз сразу
   resizeCanvas();
-  const ro = new ResizeObserver(resizeCanvas);
+
+  const ro = new ResizeObserver(() => {
+    resizeCanvas();
+  });
   ro.observe(badgeEl);
 
   const particles = [];
-  const centerX = () => canvas.width / 2 / window.devicePixelRatio;
-  const centerY = () => canvas.height / 2 / window.devicePixelRatio;
+  const centerX = () => canvas.width / 2 / (window.devicePixelRatio || 1);
+  const centerY = () => canvas.height / 2 / (window.devicePixelRatio || 1);
   const radius = () => Math.min(centerX(), centerY()) * 0.8;
 
   // Инициализация частиц
   if (badgeName.includes('Секретный Агент')) {
     for (let i = 0; i < 8; i++) {
-      const angle = (i / 8) * Math.PI * 2;
-      particles.push({ angle, speed: 0.015 + Math.random() * 0.01, size: 2, color: Math.random() > 0.5 ? '#a855f7' : '#d946ef' });
+      particles.push({
+        angle: (i / 8) * Math.PI * 2,
+        speed: 0.015 + Math.random() * 0.01,
+        size: 1.8 + Math.random() * 1.2,
+        color: Math.random() > 0.5 ? '#a855f7' : '#d946ef'
+      });
     }
   } else if (badgeName.includes('Кодовый Взломщик')) {
     for (let i = 0; i < 12; i++) {
       particles.push({
         x: Math.random() * 100,
         y: Math.random() * 100 - 100,
-        speed: 2,
+        speed: 1.8 + Math.random() * 1,
         color: '#22c55e'
       });
     }
@@ -1433,7 +1445,7 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
       particles.push({
         x: Math.random() * 100,
         y: Math.random() * 100,
-        size: 4 + Math.random() * 3,
+        size: 3 + Math.random() * 3,
         speedX: (Math.random() - 0.5) * 1.2,
         speedY: (Math.random() - 0.5) * 1.2
       });
@@ -1441,8 +1453,11 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
   }
 
   const animate = () => {
+    if (document.documentElement.classList.contains('low-performance')) return;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Секретный Агент
     if (badgeName.includes('Секретный Агент')) {
       particles.forEach(p => {
         p.angle += p.speed;
@@ -1456,21 +1471,21 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
       });
     }
 
+    // Кодовый Взломщик
     if (badgeName.includes('Кодовый Взломщик')) {
       particles.forEach(p => {
         p.y += p.speed;
         if (p.y > 100) {
-          p.y = -10;
+          p.y = -15;
           p.x = Math.random() * 100;
         }
         ctx.strokeStyle = p.color;
-        ctx.globalAlpha = 0.8;
+        ctx.globalAlpha = 0.7;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
         ctx.lineTo(p.x, p.y + 15);
         ctx.stroke();
-
         if (Math.random() < 0.05) {
           ctx.fillStyle = '#22c55e';
           ctx.globalAlpha = 1;
@@ -1480,13 +1495,13 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
       });
     }
 
+    // Призрачный Зритель
     if (badgeName.includes('Призрачный Зритель')) {
       particles.forEach(p => {
         p.x += p.speedX;
         p.y += p.speedY;
         if (p.x < 0 || p.x > 100) p.speedX *= -1;
         if (p.y < 0 || p.y > 100) p.speedY *= -1;
-
         ctx.globalAlpha = 0.4;
         ctx.fillStyle = '#e5e7eb';
         ctx.beginPath();
@@ -1501,6 +1516,7 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     animationId = requestAnimationFrame(animate);
   };
 
+  // Запускаем анимацию ПРИНУДИТЕЛЬНО
   animate();
 
   return () => {
