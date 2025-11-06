@@ -522,13 +522,13 @@
         </div>
       </div>
       <!-- Правая колонка: видео + цитата -->
-      <div class="relative fade-in flex justify-center banner-video-container">
+      <div class="relative fade-in flex flex-col items-center lg:items-end banner-video-container">
         <video class="banner-video w-full max-w-md rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" loading="lazy" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала Mortis Play">
           <source src="/assets/photo.mp4" type="video/mp4" />
           <img src="/assets/fallback.jpg" alt="Видео недоступно" />
         </video>
         <img class="banner-fallback w-full max-w-md rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" src="/assets/photo.jpg" alt="Аватар канала Mortis Play" />
-        <!-- Цитата -->
+        <!-- Цитата — под видео на мобильных, в углу на десктопе -->
         <div class="banner-quote mt-6 lg:mt-8 lg:absolute lg:-bottom-6 lg:-right-6 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-5 py-3 shadow card-hover w-full max-w-xs mx-auto lg:mx-0">
           <p class="text-sm text-slate-600 dark:text-slate-300 text-center lg:text-left">Гений, миллиардер, плейбой, филантроп 😎</p>
         </div>
@@ -1408,25 +1408,30 @@
           `;
           // Для неполученного "Кодовый Взломщик" — добавляем инпут для мобильных
           if (badge.name === 'Кодовый Взломщик' && !earned) {
-            const codeInputContainer = document.createElement('div');
-            codeInputContainer.className = 'mt-2 w-full';
-            codeInputContainer.innerHTML = `
-              <input type="text" id="secretCodeInput_${index}" placeholder="Введи секретный код" class="w-full rounded border border-slate-200 dark:border-slate-700 p-2 text-sm text-slate-700 dark:text-slate-300">
-              <button class="glass-button mt-2 w-full" id="checkCodeBtn_${index}">Проверить код</button>
-            `;
-            badgeItem.appendChild(codeInputContainer);
-            const checkBtn = codeInputContainer.querySelector(`#checkCodeBtn_${index}`);
-            const codeInput = codeInputContainer.querySelector(`#secretCodeInput_${index}`);
-            checkBtn.addEventListener('click', () => {
-              if (codeInput.value.trim() === 'mortis_hacker') {
-                localStorage.setItem('mortis_hacker', 'true');
-                checkBadgeConditions();
-                showNotification('Бейдж "Кодовый Взломщик" разблокирован! 🎉', notification);
-              } else {
-                showNotification('Неверный код. Попробуй еще!', notification);
-              }
-            });
-          }
+  const codeInputContainer = document.createElement('div');
+  codeInputContainer.className = 'mt-3 w-full flex flex-col gap-2';
+  codeInputContainer.innerHTML = `
+    <input type="text" id="secretCodeInput_${index}" placeholder="Введи секретный код" class="w-full rounded border border-slate-200 dark:border-slate-700 p-2 text-sm text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+    <button class="glass-button w-full text-sm" id="checkCodeBtn_${index}">Проверить код</button>
+  `;
+  badgeItem.appendChild(codeInputContainer);
+  const checkBtn = codeInputContainer.querySelector(`#checkCodeBtn_${index}`);
+  const codeInput = codeInputContainer.querySelector(`#secretCodeInput_${index}`);
+  checkBtn.addEventListener('click', () => {
+    if (codeInput.value.trim().toLowerCase() === 'mortis_hacker') {
+      localStorage.setItem('mortis_hacker', 'true');
+      checkBadgeConditions();
+      showNotification('Бейдж "Кодовый Взломщик" разблокирован! 🎉', notification);
+      codeInput.value = '';
+    } else {
+      showNotification('Неверный код. Попробуй еще!', notification);
+    }
+  });
+  // Поддержка Enter
+  codeInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') checkBtn.click();
+  });
+}
           badgeList.appendChild(badgeItem);
           badgeItem.addEventListener('click', () => {
             const modal = document.getElementById('badgeModal');
