@@ -1585,46 +1585,7 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
             <span class="${textClass}">${nameText} (${rarityText}): ${descText} ${progress}</span>
             <span>${status}</span>
           `;
-          // Для неполученного "Кодовый Взломщик" — добавляем инпут для мобильных
-          if (badge.name === 'Кодовый Взломщик' && !earned) {
-  const codeInputContainer = document.createElement('div');
-  codeInputContainer.className = 'mt-3 w-full flex flex-col gap-2';
-
-  codeInputContainer.innerHTML = `
-    <input type="text" id="secretCodeInput_${index}" placeholder="Введи секретный код" 
-           class="w-full rounded border border-slate-200 dark:border-slate-700 p-2 text-sm text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-    <button class="glass-button w-full text-sm" id="checkCodeBtn_${index}">Проверить код</button>
-  `;
-
-  badgeItem.appendChild(codeInputContainer);
-
-  const checkBtn = codeInputContainer.querySelector(`#checkCodeBtn_${index}`);
-  const codeInput = codeInputContainer.querySelector(`#secretCodeInput_${index}`);
-
-  // ОСТАНАВЛИВАЕМ ВСПЛЫТИЕ СОБЫТИЯ — КЛЮЧЕВАЯ СТРОКА!
-  codeInput.addEventListener('click', (e) => e.stopPropagation());
-  codeInput.addEventListener('focus', (e) => e.stopPropagation());
-  checkBtn.addEventListener('click', (e) => {
-    e.stopPropagation(); // чтобы не открывалась модалка
-    if (codeInput.value.trim().toLowerCase() === 'mortis_hacker') {
-      localStorage.setItem('mortis_hacker', 'true');
-      checkBadgeConditions();
-      showNotification('Бейдж "Кодовый Взломщик" разблокирован! 🎉', notification);
-      codeInput.value = '';
-      codeInput.blur(); // убрать фокус
-    } else {
-      showNotification('Неверный код. Попробуй еще!', notification);
-    }
-  });
-
-  // Поддержка Enter
-  codeInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      checkBtn.click();
-    }
-  });
-}
+          
           badgeList.appendChild(badgeItem);
           badgeItem.addEventListener('click', () => {
             const modal = document.getElementById('badgeModal');
@@ -1641,7 +1602,7 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
               let mRarity = `Редкость: ${rarityText}`;
               if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost') && !earned) {
                 mTitle = badge.name === 'Кодовый Взломщик' ? '?' : '???';
-                mDesc = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈 (на мобильных — введи код ниже)';
+                mDesc = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈';
                 mIcon = 'fa-solid fa-question-circle';
                 mProgress = '';
                 mRarity = 'Редкость: Секретный';
