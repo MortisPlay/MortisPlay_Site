@@ -1573,11 +1573,11 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
           let textClass = earned ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600';
           let iconColor = earned ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600';
           const status = earned ? '✅' : '🔒';
-          const progress = badge.progress ? `(${badge.progress()}/${badge.name === 'Мемолог' ? '4' : badge.name === 'Эпик Мемолог' ? '20' : '50'})` : '';
+          const progress = badge.progress ? `(${badge.progress()}/${badge.name === 'Мемолог' ? '4' : badge.name === 'Эпик Мемолог' ? '20' : '20'})` : '';
           if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost') && !earned) {
             iconClass = 'fa-solid fa-question-circle';
             nameText = badge.name === 'Кодовый Взломщик' ? '?' : '???';
-            descText = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈 (на мобильных — введи код ниже)';
+            descText = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈';
             rarityText = 'Секретный';
           }
           badgeItem.innerHTML = `
