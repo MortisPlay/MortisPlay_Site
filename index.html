@@ -31,8 +31,153 @@
     document.head.appendChild(script);
   </script>
   <script src="https://cdn.tailwindcss.com" defer></script>
-  <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
   <style>
+    /* === ОСНОВНОЙ ДИЗАЙН === */
+    body {
+      background: linear-gradient(135deg, #1a0033 0%, #2a0066 50%, #4a00b3 100%);
+      color: #e0d6ff;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      overflow-y: auto;
+      position: relative;
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100" height="100" filter="url(%23n)" opacity="0.08"/></svg>') repeat;
+      pointer-events: none;
+      z-index: -1;
+    }
+    /* === ГЛАСС КАРТОЧКИ === */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .glass-card:hover::before { opacity: 1; }
+    .glass-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(167, 139, 250, 0.4);
+    }
+    /* === НЕОНОВЫЙ ЗАГОЛОВОК === */
+    .neon-title {
+      font-weight: 900;
+      background: linear-gradient(90deg, #c084fc, #a78bfa, #ddd6fe, #a78bfa, #c084fc);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: neonFlow 4s ease-in-out infinite;
+      letter-spacing: -1px;
+    }
+    @keyframes neonFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    /* === TIMELINE === */
+    .timeline-container {
+      position: relative;
+      padding-left: 2rem;
+    }
+    .timeline-container::before {
+      content: '';
+      position: absolute;
+      left: 0.75rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, #a78bfa, #c084fc);
+      border-radius: 1px;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+      padding-left: 1.5rem;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -0.75rem;
+      top: 0.5rem;
+      width: 16px;
+      height: 16px;
+      background: #a78bfa;
+      border: 3px solid #1a0033;
+      border-radius: 50%;
+      box-shadow: 0 0 15px rgba(167, 139, 250, 0.6);
+      transition: all 0.3s ease;
+    }
+    .timeline-item:hover::before {
+      transform: scale(1.3);
+      box-shadow: 0 0 25px rgba(167, 139, 250, 0.8);
+    }
+    /* === КНОПКИ === */
+    .neon-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(167, 139, 250, 0.4);
+      color: #e0d6ff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+    .neon-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.3), transparent);
+      transition: 0.6s;
+    }
+    .neon-btn:hover::before { left: 100%; }
+    .neon-btn:hover {
+      background: rgba(167, 139, 250, 0.2);
+      border-color: #c084fc;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(167, 139, 250, 0.3);
+    }
+    /* === АДАПТАЦИЯ === */
+    @media (max-width: 640px) {
+      .glass-card { padding: 1.5rem; border-radius: 1rem; }
+      .neon-title { font-size: 2.5rem !important; }
+      .timeline-container { padding-left: 1.5rem; }
+      .timeline-item::before { left: -0.6rem; }
+    }
+    @media (max-width: 480px) {
+      .neon-btn { padding: 0.6rem 1.2rem; font-size: 0.875rem; }
+    }
+    /* === АНИМАЦИЯ ПОЯВЛЕНИЯ === */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* Адаптация существующих стилей главной под новый дизайн */
     @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
     @keyframes badgePop { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
     @keyframes modalFadeIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
@@ -361,7 +506,6 @@
   will-change: transform, box-shadow;
   border-radius: 9999px;
 }
-
 .badge::before {
   content: '';
   position: absolute;
@@ -376,17 +520,14 @@
   z-index: -1;
   pointer-events: none;
 }
-
 .badge:hover::before {
   opacity: 1;
 }
-
 .badge:hover {
   transform: translateY(-2px) scale(1.05);
   box-shadow: 0 8px 20px rgba(147, 51, 234, 0.4), 0 0 20px rgba(147, 51, 234, 0.3);
   z-index: 10;
 }
-
     .badge:hover canvas {
   filter: drop-shadow(0 0 8px currentColor);
 }
@@ -395,7 +536,6 @@
   0%, 100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7); }
   50% { box-shadow: 0 0 0 12px rgba(147, 51, 234, 0); }
 }
-
 .badge.new-badge {
   animation: badgePulseGlow 1.5s ease-out 3;
 }
@@ -446,7 +586,6 @@
   will-change: transform; /* GPU */
   border-radius: 9999px;
 }
-
 .badge canvas {
   border-radius: 9999px;
   will-change: contents;
@@ -552,117 +691,122 @@
     </header>
     <main>
       <section id="welcome" class="relative min-h-screen flex items-center justify-center overflow-hidden">
-  <!-- Фоновые круги -->
-  <div class="absolute top-0 left-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2"></div>
-  <div class="absolute bottom-0 right-0 w-64 h-64 bg-fuchsia-500/20 rounded-full blur-2xl translate-x-1/2 translate-y-1/2"></div>
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
-    <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-      <!-- Левая колонка: текст -->
-      <div class="text-center lg:text-left fade-in">
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white">
-          Йоу, это <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-fuchsia-600">Mortis Play</span>!
-        </h1>
-        <p class="mt-4 text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-prose mx-auto lg:mx-0">
-          Эксклюзивные видео, новости и апдейты. Врывайся — дальше только громче 😎
-        </p>
-        <!-- Кнопки — ровная сетка -->
-        <div class="mt-8 flex flex-wrap justify-center lg:justify-start gap-3">
-  <a href="#contact" class="glass-button" aria-label="Перейти к контактам">
-    <i class="fa-solid fa-envelope"></i> Контакты
-  </a>
-  <a href="biography.html" class="glass-button" id="bioButton" aria-label="Перейти к биографии">
-    <i class="fa-solid fa-user"></i> Биография
-  </a>
-  <a id="qaButton" href="qa.html" class="glass-button" aria-label="Задать вопрос для Q&A">
-    <i class="fa-solid fa-question-circle"></i> Задать вопрос
-  </a>
-  <a href="faq.html" class="glass-button" aria-label="Перейти к FAQ">
-    <i class="fa-solid fa-circle-question"></i> FAQ
-  </a>
-  <a href="/games/" class="glass-button" aria-label="Перейти к играм">
-    <i class="fa-solid fa-gamepad"></i> Игры
-  </a>
-</div>
-        <!-- Статистика -->
-        <div class="mt-8 flex justify-center lg:justify-start gap-6 text-sm text-slate-600 dark:text-slate-300">
-          <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">421</span></div>
-          <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
-        </div>
+  <!-- Фоновые эффекты -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-10 left-10 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-20 right-10 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-radial from-purple-900/30 to-transparent blur-3xl"></div>
+  </div>
+  <div class="mx-auto max-w-4xl px-4 py-20 relative z-10">
+    <div class="glass-card p-8 fade-in">
+      <h1 class="neon-title text-5xl md:text-7xl font-extrabold text-center mb-16 drop-shadow-2xl">
+        Йоу, это Mortis Play!
+      </h1>
+      <p class="text-lg leading-relaxed text-gray-200 mb-6">
+        Эпичные видео, новости и обновления от Mortis Play. Присоединяйся к вайбу! 😎
+      </p>
+      <!-- Кнопки -->
+      <div class="flex flex-wrap justify-center gap-3 mb-6">
+        <a href="#contact" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-envelope"></i> Контакты
+        </a>
+        <a href="biography.html" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-user"></i> Биография
+        </a>
+        <a href="qa.html" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-question-circle"></i> Задать вопрос
+        </a>
+        <a href="faq.html" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-circle-question"></i> FAQ
+        </a>
+        <a href="/games/" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-gamepad"></i> Игры
+        </a>
       </div>
-      <!-- Правая колонка: видео + цитата -->
-      <div class="relative fade-in flex flex-col items-center lg:items-end banner-video-container">
-        <video class="banner-video w-full max-w-md rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" loading="lazy" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала Mortis Play">
-          <source src="/assets/photo.mp4" type="video/mp4" />
-          <img src="/assets/fallback.jpg" alt="Видео недоступно" />
-        </video>
-        <img class="banner-fallback w-full max-w-md rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" src="/assets/photo.jpg" alt="Аватар канала Mortis Play" />
-        <!-- Цитата — под видео на мобильных, в углу на десктопе -->
-        <div class="banner-quote mt-6 lg:mt-8 lg:absolute lg:-bottom-6 lg:-right-6 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-5 py-3 shadow card-hover w-full max-w-xs mx-auto lg:mx-0">
-          <p class="text-sm text-slate-600 dark:text-slate-300 text-center lg:text-left">Гений, миллиардер, плейбой, филантроп 😎</p>
-        </div>
+      <!-- Статистика -->
+      <div class="flex justify-center gap-6 text-sm text-gray-300">
+        <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">421</span></div>
+        <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
+      </div>
+    </div>
+    <!-- Видео + цитата -->
+    <div class="relative mt-8 fade-in flex flex-col items-center">
+      <video class="banner-video w-full max-w-md rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" loading="lazy" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала Mortis Play">
+        <source src="/assets/photo.mp4" type="video/mp4" />
+        <img src="/assets/fallback.jpg" alt="Видео недоступно" />
+      </video>
+      <img class="banner-fallback w-full max-w-md rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" src="/assets/photo.jpg" alt="Аватар канала Mortis Play" />
+      <div class="banner-quote mt-6 lg:mt-8 lg:absolute lg:-bottom-6 lg:-right-6 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-5 py-3 shadow card-hover w-full max-w-xs mx-auto lg:mx-0">
+        <p class="text-sm text-slate-600 dark:text-slate-300 text-center lg:text-left">Гений, миллиардер, плейбой, филантроп 😎</p>
       </div>
     </div>
   </div>
 </section>
       <section id="profile" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Твой профиль</h2>
-          <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Кастомизируй свой вайб и зарабатывай бейджи! 😎</p>
+          <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Твой профиль</h2>
+          <p class="mt-2 text-center text-gray-300 text-lg">Кастомизируй свой вайб и зарабатывай бейджи! 😎</p>
           <div class="mt-4 max-w-md mx-auto">
             <div class="notification" id="profileBetaNotice">
               <span>⚠️ Это бета-версия профиля! Иногда может багаться — пиши в Telegram, если что!</span>
               <button aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
             </div>
           </div>
-          <div class="mt-8 max-w-md mx-auto">
-            <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
-              <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Аватар</h3>
-              <img id="userAvatar" src="/assets/fallback.jpg" alt="Аватар пользователя" class="w-24 h-24 rounded-full mx-auto">
-              <input type="file" id="avatarUpload" accept="image/*" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2">
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Загрузи свой аватар (до 1МБ).</p>
-              <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Имя пользователя</h3>
-              <input type="text" id="usernameInput" maxlength="20" placeholder="Введи своё имя" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2 text-sm text-slate-700 dark:text-slate-300">
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Максимум 20 символов.</p>
-              <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Бейджи</h3>
-              <div id="badges" class="flex flex-wrap gap-2"></div>
-              <h3 class="mt-4 font-semibold text-indigo-600 dark:text-indigo-400">Доступные бейджи</h3>
-              <div id="badgeList" class="mt-2 space-y-2"></div>
-            </div>
+          <div class="mt-8 max-w-md mx-auto glass-card p-8">
+            <h3 class="text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
+              <i class="fa-solid fa-user text-purple-400"></i> Аватар
+            </h3>
+            <img id="userAvatar" src="/assets/fallback.jpg" alt="Аватар пользователя" class="w-24 h-24 rounded-full mx-auto">
+            <input type="file" id="avatarUpload" accept="image/*" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2">
+            <p class="mt-2 text-xs text-gray-300">Загрузи свой аватар (до 1МБ).</p>
+            <h3 class="mt-4 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
+              <i class="fa-solid fa-id-card text-purple-400"></i> Имя пользователя
+            </h3>
+            <input type="text" id="usernameInput" maxlength="20" placeholder="Введи своё имя" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2 text-sm text-gray-200">
+            <p class="mt-2 text-xs text-gray-300">Максимум 20 символов.</p>
+            <h3 class="mt-4 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
+              <i class="fa-solid fa-award text-purple-400"></i> Бейджи
+            </h3>
+            <div id="badges" class="flex flex-wrap gap-2"></div>
+            <h3 class="mt-4 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
+              <i class="fa-solid fa-list text-purple-400"></i> Доступные бейджи
+            </h3>
+            <div id="badgeList" class="mt-2 space-y-2"></div>
           </div>
           <!-- Модальное окно для бейджиков -->
           <div id="badgeModal" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-50" aria-modal="true" role="dialog">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl ring-1 ring-indigo-500/50 dark:ring-indigo-400/50 transform transition-all duration-300">
+            <div class="glass-card p-6 max-w-sm w-full shadow-2xl ring-1 ring-indigo-500/50 dark:ring-indigo-400/50 transform transition-all duration-300">
               <div class="flex justify-between items-center mb-4">
                 <h3 id="modalTitle" class="font-semibold text-indigo-600 dark:text-indigo-400 text-xl"></h3>
                 <button id="closeModal" class="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400"><i class="fa-solid fa-xmark"></i></button>
               </div>
               <div id="modalIcon" class="text-center mb-4"></div>
-              <p id="modalDesc" class="mt-2 text-sm text-slate-600 dark:text-slate-300"></p>
-              <p id="modalProgress" class="mt-2 text-xs text-slate-500 dark:text-slate-400"></p>
+              <p id="modalDesc" class="mt-2 text-sm text-gray-300"></p>
+              <p id="modalProgress" class="mt-2 text-xs text-gray-400"></p>
               <p id="modalRarity" class="mt-2 text-xs font-bold text-indigo-600 dark:text-indigo-400"></p>
-              <button id="closeModalBtn" class="mt-4 glass-button w-full">Закрыть</button>
+              <button id="closeModalBtn" class="mt-4 neon-btn w-full">Закрыть</button>
             </div>
           </div>
         </div>
       </section>
       <section id="videos" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Мои видео</h2>
+          <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Мои видео</h2>
           <div class="mt-6 flex justify-center gap-3 flex-wrap">
-            <button class="video-filter glass-button active" data-filter="all" aria-label="Показать все видео" aria-pressed="true">Все</button>
-            <button class="video-filter glass-button" data-filter="streams" aria-label="Показать стримы" aria-pressed="false">Стримы</button>
-            <button class="video-filter glass-button" data-filter="fun" aria-label="Показать угарные видео" aria-pressed="false">Угар</button>
-            <button class="video-filter glass-button" data-filter="blitz" aria-label="Показать БЛИЦ Play" aria-pressed="false">БЛИЦ Play</button>
+            <button class="neon-btn active" data-filter="all" aria-label="Показать все видео" aria-pressed="true">Все</button>
+            <button class="neon-btn" data-filter="streams" aria-label="Показать стримы" aria-pressed="false">Стримы</button>
+            <button class="neon-btn" data-filter="fun" aria-label="Показать угарные видео" aria-pressed="false">Угар</button>
+            <button class="neon-btn" data-filter="blitz" aria-label="Показать БЛИЦ Play" aria-pressed="false">БЛИЦ Play</button>
           </div>
-          <p id="category-desc" class="mt-2 text-center text-sm text-slate-600 dark:text-slate-300">Все видео от Mortis Play: стримы, мемы и подкасты!</p>
+          <p id="category-desc" class="mt-2 text-center text-sm text-gray-300">Все видео от Mortis Play: стримы, мемы и подкасты!</p>
           <div id="videosGrid" class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Видео вставляются JS -->
           </div>
           <div class="mt-6 text-center">
-            <button id="loadMoreVideos" class="glass-button pagination-button" aria-label="Загрузить ещё видео">
+            <button id="loadMoreVideos" class="neon-btn" aria-label="Загрузить ещё видео">
               <i class="fa-solid fa-plus"></i> Загрузить ещё
             </button>
-            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button" rel="noopener" aria-label="Смотреть все видео на YouTube">
+            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="neon-btn" rel="noopener" aria-label="Смотреть все видео на YouTube">
               <i class="fa-brands fa-youtube"></i> Смотреть все видео
             </a>
           </div>
@@ -670,12 +814,12 @@
       </section>
       <section id="news" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Новости</h2>
+          <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Новости</h2>
           <div id="newsGrid" class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Новости вставляются JS -->
           </div>
           <div class="mt-6 text-center">
-            <button id="loadMoreNews" class="glass-button pagination-button">
+            <button id="loadMoreNews" class="neon-btn">
               <i class="fa-solid fa-plus"></i> Загрузить ещё
             </button>
           </div>
@@ -683,69 +827,69 @@
       </section>
       <section id="settings" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Настройки</h2>
-          <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Настрой сайт под себя для максимального комфорта! 😎</p>
-          <div class="mt-8 max-w-md mx-auto">
-            <div class="card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
-              <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Производительность</h3>
-              <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="lowPerformanceToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить лёгкий режим" aria-describedby="lowPerformanceDesc">
-                <span class="text-sm text-slate-600 dark:text-slate-300">Лёгкий режим (для слабых устройств)</span>
-              </label>
-              <p id="lowPerformanceDesc" class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает анимации, эффекты и видео для плавной работы на слабых телефонах.</p>
-              <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="disableAnimationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить анимации" aria-describedby="disableAnimationsDesc">
-                <span class="text-sm text-slate-600 dark:text-slate-300">Отключить анимации</span>
-              </label>
-              <p id="disableAnimationsDesc" class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает только анимации для улучшения производительности.</p>
-              <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="disableParticlesToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить фоновые частицы" aria-describedby="disableParticlesDesc">
-                <span class="text-sm text-slate-600 dark:text-slate-300">Отключить фоновые частицы</span>
-              </label>
-              <p id="disableParticlesDesc" class="mt-2 text-xs text-slate-500 dark:text-slate-400">Отключает фоновые частицы для повышения производительности.</p>
-              <div id="performanceNotification" class="notification" role="alert" aria-live="assertive">
-                <span></span>
-                <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
-              </div>
+          <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Настройки</h2>
+          <p class="mt-2 text-center text-gray-300 text-lg">Настрой сайт под себя для максимального комфорта! 😎</p>
+          <div class="mt-8 max-w-md mx-auto glass-card p-8">
+            <h3 class="text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
+              <i class="fa-solid fa-cogs text-purple-400"></i> Производительность
+            </h3>
+            <label class="mt-3 flex items-center gap-2">
+              <input type="checkbox" id="lowPerformanceToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить лёгкий режим" aria-describedby="lowPerformanceDesc">
+              <span class="text-sm text-gray-300">Лёгкий режим (для слабых устройств)</span>
+            </label>
+            <p id="lowPerformanceDesc" class="mt-2 text-xs text-gray-300">Отключает анимации, эффекты и видео для плавной работы на слабых телефонах.</p>
+            <label class="mt-3 flex items-center gap-2">
+              <input type="checkbox" id="disableAnimationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить анимации" aria-describedby="disableAnimationsDesc">
+              <span class="text-sm text-gray-300">Отключить анимации</span>
+            </label>
+            <p id="disableAnimationsDesc" class="mt-2 text-xs text-gray-300">Отключает только анимации для улучшения производительности.</p>
+            <label class="mt-3 flex items-center gap-2">
+              <input type="checkbox" id="disableParticlesToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить фоновые частицы" aria-describedby="disableParticlesDesc">
+              <span class="text-sm text-gray-300">Отключить фоновые частицы</span>
+            </label>
+            <p id="disableParticlesDesc" class="mt-2 text-xs text-gray-300">Отключает фоновые частицы для повышения производительности.</p>
+            <div id="performanceNotification" class="notification" role="alert" aria-live="assertive">
+              <span></span>
+              <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="mt-6 card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
-              <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Внешний вид</h3>
-              <label class="mt-3 flex items-center gap-2">
-                <span class="text-sm text-slate-600 dark:text-slate-300">Тема сайта:</span>
-                <select id="themeSelect" class="rounded text-indigo-600 focus:ring-indigo-500 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                  <option value="auto">Авто</option>
-                  <option value="light">Светлая</option>
-                  <option value="dark">Тёмная</option>
-                </select>
-              </label>
-              <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="highContrastToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить высокую контрастность" aria-describedby="highContrastDesc">
-                <span class="text-sm text-slate-600 dark:text-slate-300">Высокая контрастность</span>
-              </label>
-              <p id="highContrastDesc" class="mt-2 text-xs text-slate-500 dark:text-slate-400">Увеличивает контрастность для лучшей читаемости.</p>
-              <label class="mt-3 flex flex-col gap-2">
-                <span class="text-sm text-slate-600 dark:text-slate-300">Размер шрифта:</span>
-                <input type="range" id="fontSizeSlider" min="50" max="200" value="100" class="w-full" aria-label="Регулировка размера шрифта" aria-valuemin="50" aria-valuemax="200" aria-valuenow="100">
-              </label>
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Регулируй размер шрифта для удобства чтения (50%–200%).</p>
-              <div id="appearanceNotification" class="notification" role="alert" aria-live="assertive">
-                <span></span>
-                <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
-              </div>
+            <h3 class="mt-6 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
+              <i class="fa-solid fa-palette text-purple-400"></i> Внешний вид
+            </h3>
+            <label class="mt-3 flex items-center gap-2">
+              <span class="text-sm text-gray-300">Тема сайта:</span>
+              <select id="themeSelect" class="rounded text-indigo-600 focus:ring-indigo-500 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                <option value="auto">Авто</option>
+                <option value="light">Светлая</option>
+                <option value="dark">Тёмная</option>
+              </select>
+            </label>
+            <label class="mt-3 flex items-center gap-2">
+              <input type="checkbox" id="highContrastToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить высокую контрастность" aria-describedby="highContrastDesc">
+              <span class="text-sm text-gray-300">Высокая контрастность</span>
+            </label>
+            <p id="highContrastDesc" class="mt-2 text-xs text-gray-300">Увеличивает контрастность для лучшей читаемости.</p>
+            <label class="mt-3 flex flex-col gap-2">
+              <span class="text-sm text-gray-300">Размер шрифта:</span>
+              <input type="range" id="fontSizeSlider" min="50" max="200" value="100" class="w-full" aria-label="Регулировка размера шрифта" aria-valuemin="50" aria-valuemax="200" aria-valuenow="100">
+            </label>
+            <p class="mt-2 text-xs text-gray-300">Регулируй размер шрифта для удобства чтения (50%–200%).</p>
+            <div id="appearanceNotification" class="notification" role="alert" aria-live="assertive">
+              <span></span>
+              <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="mt-6 card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-5">
-              <h3 class="font-semibold text-indigo-600 dark:text-indigo-400">Бейджи и уведомления</h3>
-              <label class="mt-3 flex items-center gap-2">
-                <input type="checkbox" id="badgeNotificationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить уведомления о бейджах" aria-describedby="badgeNotificationsDesc">
-                <span class="text-sm text-slate-600 dark:text-slate-300">Уведомления о новых бейджах</span>
-              </label>
-              <p id="badgeNotificationsDesc" class="mt-2 text-xs text-slate-500 dark:text-slate-400">Получай уведомления при получении новых бейджей.</p>
-            </div>
+            <h3 class="mt-6 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
+              <i class="fa-solid fa-bell text-purple-400"></i> Бейджи и уведомления
+            </h3>
+            <label class="mt-3 flex items-center gap-2">
+              <input type="checkbox" id="badgeNotificationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить уведомления о бейджах" aria-describedby="badgeNotificationsDesc">
+              <span class="text-sm text-gray-300">Уведомления о новых бейджах</span>
+            </label>
+            <p id="badgeNotificationsDesc" class="mt-2 text-xs text-gray-300">Получай уведомления при получении новых бейджей.</p>
             <div class="mt-6 text-center">
-              <button id="resetSettings" class="glass-button" aria-label="Сбросить настройки">
+              <button id="resetSettings" class="neon-btn" aria-label="Сбросить настройки">
                 <i class="fa-solid fa-rotate-left"></i> Сбросить настройки
               </button>
-              <button id="resetProfile" class="glass-button mt-2 bg-red-500 hover:bg-red-600" aria-label="Сбросить профиль">
+              <button id="resetProfile" class="neon-btn mt-2 bg-red-500 hover:bg-red-600" aria-label="Сбросить профиль">
                 <i class="fa-solid fa-user-slash"></i> Сбросить профиль
               </button>
             </div>
@@ -754,28 +898,28 @@
       </section>
       <section id="contact" class="py-16 fade-in">
         <div class="mx-auto max-w-5xl px-4">
-          <h2 class="text-center text-2xl md:text-3xl font-bold">Связь со мной</h2>
-          <p class="mt-2 text-center text-slate-600 dark:text-slate-300">Хочешь коллаб или просто поболтать? Пиши!</p>
+          <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Связь со мной</h2>
+          <p class="mt-2 text-center text-gray-300 text-lg">Хочешь коллаб или просто поболтать? Пиши!</p>
           <div class="mt-6 grid gap-6">
-            <div class="rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-6">
-              <ul class="space-y-2 text-slate-700 dark:text-slate-300">
-                <li>Telegram: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/dimap7221" rel="noopener">MortisPlay</a></li>
-                <li>Канал: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/MortisPlayTG" rel="noopener">@MortisPlayTG</a></li>
-                <li>Бот: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/MortisplayQABot" rel="noopener">@MortisplayQABot</a></li>
-                <li>Частный канал: <a class="text-indigo-600 dark:text-indigo-400 underline" href="https://t.me/+GqoVoVYJR185ZmYy" rel="noopener">Частный канал</a></li>
-                <li>Email: <a class="text-indigo-600 dark:text-indigo-400 underline" href="mailto:mortisplay@mail.ru" rel="noopener">mortisplay@mail.ru</a></li>
+            <div class="glass-card p-6">
+              <ul class="space-y-2 text-gray-300">
+                <li>Telegram: <a class="text-purple-300 underline" href="https://t.me/dimap7221" rel="noopener">MortisPlay</a></li>
+                <li>Канал: <a class="text-purple-300 underline" href="https://t.me/MortisPlayTG" rel="noopener">@MortisPlayTG</a></li>
+                <li>Бот: <a class="text-purple-300 underline" href="https://t.me/MortisplayQABot" rel="noopener">@MortisplayQABot</a></li>
+                <li>Частный канал: <a class="text-purple-300 underline" href="https://t.me/+GqoVoVYJR185ZmYy" rel="noopener">Частный канал</a></li>
+                <li>Email: <a class="text-purple-300 underline" href="mailto:mortisplay@mail.ru" rel="noopener">mortisplay@mail.ru</a></li>
               </ul>
               <div class="mt-4 flex flex-wrap gap-3">
-                <a href="https://t.me/dimap7221" class="glass-button" rel="noopener" aria-label="Telegram Mortis Play"><i class="fa-brands fa-telegram"></i>Telegram</a>
-                <a href="https://t.me/MortisPlayTG" class="glass-button" rel="noopener" aria-label="Telegram Channel Mortis Play"><i class="fa-brands fa-telegram"></i>Канал</a>
-                <a href="https://t.me/MortisplayQABot" class="glass-button" rel="noopener" aria-label="Telegram Bot Mortis Play"><i class="fa-brands fa-telegram"></i>Бот</a>
-                <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="glass-button" rel="noopener" aria-label="YouTube Mortis Play"><i class="fa-brands fa-youtube"></i>YouTube</a>
-                <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="glass-button" rel="noopener" aria-label="Twitch Mortis Play"><i class="fa-brands fa-twitch"></i>Twitch</a>
-                <a href="https://www.tiktok.com/@mortisplay32" target="_blank" class="glass-button" rel="noopener" aria-label="TikTok Mortis Play"><i class="fa-brands fa-tiktok"></i>TikTok</a>
-                <a href="https://discord.gg/c7EmwzR4cX" target="_blank" class="glass-button" rel="noopener" aria-label="Discord Mortis Play"><i class="fa-brands fa-discord"></i>Discord</a>
+                <a href="https://t.me/dimap7221" class="neon-btn" rel="noopener" aria-label="Telegram Mortis Play"><i class="fa-brands fa-telegram"></i>Telegram</a>
+                <a href="https://t.me/MortisPlayTG" class="neon-btn" rel="noopener" aria-label="Telegram Channel Mortis Play"><i class="fa-brands fa-telegram"></i>Канал</a>
+                <a href="https://t.me/MortisplayQABot" class="neon-btn" rel="noopener" aria-label="Telegram Bot Mortis Play"><i class="fa-brands fa-telegram"></i>Бот</a>
+                <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="neon-btn" rel="noopener" aria-label="YouTube Mortis Play"><i class="fa-brands fa-youtube"></i>YouTube</a>
+                <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="neon-btn" rel="noopener" aria-label="Twitch Mortis Play"><i class="fa-brands fa-twitch"></i>Twitch</a>
+                <a href="https://www.tiktok.com/@mortisplay32" target="_blank" class="neon-btn" rel="noopener" aria-label="TikTok Mortis Play"><i class="fa-brands fa-tiktok"></i>TikTok</a>
+                <a href="https://discord.gg/c7EmwzR4cX" target="_blank" class="neon-btn" rel="noopener" aria-label="Discord Mortis Play"><i class="fa-brands fa-discord"></i>Discord</a>
               </div>
               <div class="mt-4">
-                <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="glass-button" rel="noopener" aria-label="Поддержать проект Mortis Play"><i class="fa-solid fa-hand-holding-dollar"></i> Поддержать проект</a>
+                <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="neon-btn" rel="noopener" aria-label="Поддержать проект Mortis Play"><i class="fa-solid fa-hand-holding-dollar"></i> Поддержать проект</a>
               </div>
             </div>
           </div>
@@ -783,7 +927,7 @@
       </section>
       <footer class="border-t border-slate-200/60 dark:border-slate-700/60 py-8">
         <div class="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p class="text-sm text-slate-600 dark:text-slate-300">© 2025 Mortis Play. Все права защищены.</p>
+          <p class="text-sm text-gray-300">© 2025 Mortis Play. Все права защищены.</p>
         </div>
       </footer>
     </main>
@@ -1112,15 +1256,14 @@
           });
         }
       };
-      
+     
 const setupGhostGesture = () => {
   let path = [];
   const tolerance = 50;
   const minPoints = 10;
-
   const recognizeM = (points) => {
   if (points.length < minPoints) return false;
-  
+ 
   const xs = points.map(p => p.x);
   const ys = points.map(p => p.y);
   const minX = Math.min(...xs), maxX = Math.max(...xs);
@@ -1128,30 +1271,24 @@ const setupGhostGesture = () => {
   const w = maxX - minX;
   const h = maxY - minY;
   if (w < 50 || h < 50) return false;
-
   const thirdsX = [minX + w/3, minX + 2*w/3];
   const halfY = minY + h/2;
-
   const leftUp = points.some(p => p.x < thirdsX[0] && p.y < halfY);
   const leftDown = points.some(p => p.x < thirdsX[0] && p.y > halfY);
   const midDown = points.some(p => p.x > thirdsX[0] && p.x < thirdsX[1] && p.y > halfY);
   const rightUp = points.some(p => p.x > thirdsX[1] && p.y < halfY);
   const rightDown = points.some(p => p.x > thirdsX[1] && p.y > halfY);
-
   return leftUp && leftDown && midDown && rightUp && rightDown;
 };
-
   const handleStart = (e) => {
     path = [];
     const addPoint = (clientX, clientY) => {
       path.push({ x: clientX, y: clientY });
     };
-
     const handleMove = (e) => {
       const touch = e.touches ? e.touches[0] : e;
       addPoint(touch.clientX, touch.clientY);
     };
-
     const handleEnd = () => {
       if (recognizeM(path)) {
         localStorage.setItem('ghostScrolls', '3');
@@ -1164,17 +1301,14 @@ const setupGhostGesture = () => {
       document.removeEventListener('mouseup', handleEnd);
       document.removeEventListener('touchend', handleEnd);
     };
-
     document.addEventListener('mousemove', handleMove);
     document.addEventListener('touchmove', handleMove, { passive: true });
     document.addEventListener('mouseup', handleEnd);
     document.addEventListener('touchend', handleEnd);
   };
-
   document.addEventListener('mousedown', handleStart);
   document.addEventListener('touchstart', handleStart, { passive: true });
 };
-
 document.addEventListener('DOMContentLoaded', setupGhostGesture);
       const setupResetProfile = () => {
         const resetProfileButton = document.getElementById('resetProfile');
@@ -1394,10 +1528,8 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
   badgeEl.style.position = 'relative';
   badgeEl.style.overflow = 'hidden';
   badgeEl.appendChild(canvas);
-
   const ctx = canvas.getContext('2d');
   let animationId;
-
   const resizeCanvas = () => {
     const rect = badgeEl.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
@@ -1407,20 +1539,16 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     canvas.style.height = rect.height + 'px';
     ctx.scale(dpr, dpr);
   };
-
   // Принудительно вызываем ресайз сразу
   resizeCanvas();
-
   const ro = new ResizeObserver(() => {
     resizeCanvas();
   });
   ro.observe(badgeEl);
-
   const particles = [];
   const centerX = () => canvas.width / 2 / (window.devicePixelRatio || 1);
   const centerY = () => canvas.height / 2 / (window.devicePixelRatio || 1);
   const radius = () => Math.min(centerX(), centerY()) * 0.8;
-
   // Инициализация частиц
   if (badgeName.includes('Секретный Агент')) {
     for (let i = 0; i < 8; i++) {
@@ -1451,12 +1579,9 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
       });
     }
   }
-
   const animate = () => {
     if (document.documentElement.classList.contains('low-performance')) return;
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     // Секретный Агент
     if (badgeName.includes('Секретный Агент')) {
       particles.forEach(p => {
@@ -1470,7 +1595,6 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         ctx.fill();
       });
     }
-
     // Кодовый Взломщик
     if (badgeName.includes('Кодовый Взломщик')) {
       particles.forEach(p => {
@@ -1494,7 +1618,6 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         }
       });
     }
-
     // Призрачный Зритель
     if (badgeName.includes('Призрачный Зритель')) {
       particles.forEach(p => {
@@ -1512,13 +1635,10 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         ctx.fill();
       });
     }
-
     animationId = requestAnimationFrame(animate);
   };
-
   // Запускаем анимацию ПРИНУДИТЕЛЬНО
   animate();
-
   return () => {
     cancelAnimationFrame(animationId);
     ro.disconnect();
@@ -1585,7 +1705,7 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
             <span class="${textClass}">${nameText} (${rarityText}): ${descText} ${progress}</span>
             <span>${status}</span>
           `;
-          
+         
           badgeList.appendChild(badgeItem);
           badgeItem.addEventListener('click', () => {
             const modal = document.getElementById('badgeModal');
@@ -1656,7 +1776,7 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         let currentFilter = 'all';
         let filteredVideos = videoData;
         let ghostScrollCount = parseInt(localStorage.getItem('ghostScrolls') || '0');
-        
+       
         const renderVideos = (append = false) => {
           if (!append) {
             grid.innerHTML = '';
@@ -1667,14 +1787,14 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
           const videosToShow = (currentFilter === 'all' ? videoData : filteredVideos).slice(start, end);
           videosToShow.forEach(v => {
             const card = document.createElement('div');
-            card.className = 'video-card card-hover rounded-2xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700 p-4';
+            card.className = 'video-card glass-card p-4';
             card.dataset.category = v.category;
             card.innerHTML = `
               <div class="relative aspect-video rounded-xl overflow-hidden">
                 <iframe class="w-full h-full" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen title="${v.title}"></iframe>
                 <img class="w-full h-full absolute top-0 left-0 object-cover hidden" src="/assets/fallback.jpg" alt="Видео недоступно" />
               </div>
-              <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">${v.title}</p>
+              <p class="mt-3 text-sm text-gray-300">${v.title}</p>
             `;
             const iframe = card.querySelector('iframe');
             iframe.src = v.src;
@@ -1768,11 +1888,11 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     const items = newsData.slice(start, end);
     items.forEach(item => {
       const article = document.createElement('article');
-      article.className = 'card-hover rounded-2xl p-6 fade-in bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700';
+      article.className = 'glass-card p-6 fade-in';
       article.innerHTML = `
-        <h3 class="text-lg font-semibold text-indigo-600 dark:text-indigo-400">${item.title}</h3>
-        <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">${item.content}</p>
-        <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">С любовью Mortis32 &lt;3 · ${item.date}</p>
+        <h3 class="text-lg font-semibold text-purple-300">${item.title}</h3>
+        <p class="mt-2 text-sm text-gray-300">${item.content}</p>
+        <p class="mt-3 text-xs text-gray-400">С любовью Mortis32 &lt;3 · ${item.date}</p>
       `;
       grid.appendChild(article);
     });
@@ -1862,7 +1982,7 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
+              entry.target.classList.add('visible');
               observer.unobserve(entry.target);
             }
           });
