@@ -1,137 +1,263 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Игры — Mortis Play</title>
   <meta name="description" content="Мини-игры от Mortis Play: 2048, Змейка, Тетрис и другие!" />
   <meta property="og:title" content="Игры — Mortis Play" />
   <meta property="og:description" content="Сыграй в 2048, разблокируй бейджи, побей рекорды!" />
   <meta property="og:image" content="https://mortis-play.ru/images/og-games.jpg" />
   <link rel="icon" href="/images/favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com" defer></script>
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
   <style>
-    body { background: linear-gradient(to bottom right, #fef3c7, #f5f3ff, #dbeafe); color: #1f2937; }
-    .dark body { background: linear-gradient(to bottom right, #1e1b4b, #312e81, #4c1d95); color: #e5e7eb; }
-    .glass { backdrop-filter: saturate(160%) blur(12px); background: linear-gradient(180deg, rgb(255 255 255 / .75), rgb(255 255 255 / .6)); border: 1px solid rgba(255,255,255,0.3); }
-    .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .8), rgb(17 24 39 / .65)); border: 1px solid rgba(255,255,255,0.1); }
+    :root {
+      --neon-purple: #a78bfa;
+      --neon-pink: #f0abfc;
+      --neon-blue: #60a5fa;
+      --bg-dark: #0f0020;
+      --glass-dark: rgba(15, 0, 32, 0.7);
+    }
+    body {
+      background: linear-gradient(135deg, #1a0033 0%, #2a0066 50%, #4a00b3 100%);
+      color: #e0d6ff;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100" height="100" filter="url(%23n)" opacity="0.08"/></svg>') repeat;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* === ГЛАСС КАРТОЧКИ === */
     .game-card {
-      @apply glass p-6 rounded-2xl text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer;
-      background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(240,240,255,0.6));
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(167, 139, 250, 0.3);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
     }
-    .dark .game-card { background: linear-gradient(135deg, rgba(30,30,50,0.9), rgba(50,50,80,0.7)); }
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.2), transparent);
+      transition: 0.7s;
+    }
+    .game-card:hover::before { left: 100%; }
+    .game-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 20px 40px rgba(167, 139, 250, 0.3);
+      border-color: #c084fc;
+    }
+
+    /* === ИКОНКИ === */
     .game-icon {
-      @apply w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center text-3xl shadow-lg;
+      width: 4.5rem; height: 4.5rem;
+      margin: 0 auto 1rem;
+      border-radius: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
     }
+    .game-card:hover .game-icon {
+      transform: scale(1.15);
+      box-shadow: 0 0 25px currentColor;
+    }
+
+    /* === СКОРО === */
     .coming-soon {
-      @apply opacity-50 pointer-events-none;
+      opacity: 0.5;
+      pointer-events: none;
+      position: relative;
     }
-    .badge-hint {
-      @apply text-xs mt-2 text-indigo-600 dark:text-fuchsia-400 font-medium;
+    .coming-soon::after {
+      content: '🔧 Скоро';
+      position: absolute;
+      top: 0.5rem; right: 0.5rem;
+      font-size: 0.75rem;
+      background: rgba(0,0,0,0.5);
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      animation: pulse 2s infinite;
+    }
+
+    /* === КНОПКИ === */
+    .neon-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(167, 139, 250, 0.4);
+      color: #e0d6ff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .neon-btn:hover {
+      background: rgba(167, 139, 250, 0.2);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(167, 139, 250, 0.3);
+    }
+
+    /* === ЗАГОЛОВОК === */
+    .neon-title {
+      font-weight: 900;
+      background: linear-gradient(90deg, #c084fc, #a78bfa, #ddd6fe, #a78bfa, #c084fc);
+      background-size: 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: neonFlow 3s ease-in-out infinite;
+    }
+    @keyframes neonFlow {
+      0%, 100% { background-position: 0%; }
+      50% { background-position: 100%; }
+    }
+
+    /* === АНИМАЦИИ === */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease-out;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    /* === МОБИЛЬНАЯ АДАПТАЦИЯ === */
+    @media (max-width: 640px) {
+      .game-card { padding: 1.25rem; }
+      .game-icon { width: 3.5rem; height: 3.5rem; font-size: 1.5rem; }
+      .neon-title { font-size: 2.5rem !important; }
     }
   </style>
 </head>
-<body class="min-h-screen">
-  <div class="glass mx-auto max-w-7xl px-4 py-8">
-    <!-- Шапка -->
-    <div class="flex items-center justify-between mb-10">
-      <a href="/" class="flex items-center gap-2 font-bold text-xl hover:text-indigo-600 transition">
-        <i class="fa-solid fa-arrow-left"></i> Mortis Play
+<body class="text-white">
+  <div class="mx-auto max-w-7xl px-4 py-8">
+    <!-- ШАПКА -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-12">
+      <a href="/" class="neon-btn flex items-center gap-2 text-sm sm:text-base">
+        <i class="fa-solid fa-arrow-left"></i> На главную
       </a>
-      <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
-        Игры
-      </h1>
-      <button id="themeToggle" class="glass-button p-3 rounded-full">
+      <h1 class="neon-title text-4xl sm:text-5xl font-extrabold text-center">Игры</h1>
+      <button id="themeToggle" class="neon-btn p-3 rounded-full">
         <i class="fa-solid fa-sun"></i>
       </button>
     </div>
 
-    <!-- Сетка игр -->
+    <!-- СЕТКА ИГР -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <!-- 2048 -->
-      <a href="/games/2048.html" class="game-card">
-        <div class="game-icon bg-gradient-to-br from-orange-400 to-red-500 text-white">
+      <a href="/games/2048.html" class="game-card fade-in">
+        <div class="game-icon bg-gradient-to-br from-orange-500 to-red-600">
           <i class="fa-solid fa-cubes"></i>
         </div>
-        <h3 class="text-xl font-bold">2048</h3>
-        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Собери 2048!</p>
-        <p class="badge-hint">Бейдж: "2048 Мастер"</p>
+        <h3 class="text-xl font-bold text-purple-300">2048</h3>
+        <p class="text-sm text-gray-300 mt-1">Собери 2048!</p>
+        <p class="text-xs text-fuchsia-400 font-medium mt-2">Бейдж: "2048 Мастер"</p>
       </a>
 
       <!-- Змейка -->
-      <div class="game-card coming-soon">
-        <div class="game-icon bg-gradient-to-br from-green-400 to-emerald-600 text-white">
+      <div class="game-card coming-soon fade-in">
+        <div class="game-icon bg-gradient-to-br from-green-500 to-emerald-600">
           <i class="fa-solid fa-worm"></i>
         </div>
-        <h3 class="text-xl font-bold">Змейка</h3>
-        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Классика на новый лад</p>
-        <p class="badge-hint">Скоро...</p>
+        <h3 class="text-xl font-bold text-green-300">Змейка</h3>
+        <p class="text-sm text-gray-300 mt-1">Классика на новый лад</p>
       </div>
 
       <!-- Крестики-нолики -->
-      <div class="game-card coming-soon">
-        <div class="game-icon bg-gradient-to-br from-blue-400 to-cyan-500 text-white">
+      <div class="game-card coming-soon fade-in">
+        <div class="game-icon bg-gradient-to-br from-blue-500 to-cyan-600">
           <i class="fa-solid fa-xmark"></i>
         </div>
-        <h3 class="text-xl font-bold">Крестики-нолики</h3>
-        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">С друзьями или ИИ</p>
-        <p class="badge-hint">Скоро...</p>
+        <h3 class="text-xl font-bold text-blue-300">Крестики-нолики</h3>
+        <p class="text-sm text-gray-300 mt-1">С друзьями или ИИ</p>
       </div>
 
       <!-- Тетрис -->
-      <div class="game-card coming-soon">
-        <div class="game-icon bg-gradient-to-br from-purple-400 to-pink-500 text-white">
+      <div class="game-card coming-soon fade-in">
+        <div class="game-icon bg-gradient-to-br from-purple-500 to-pink-600">
           <i class="fa-solid fa-cubes-stacked"></i>
         </div>
-        <h3 class="text-xl font-bold">Тетрис</h3>
-        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Собери линии</p>
-        <p class="badge-hint">Скоро...</p>
+        <h3 class="text-xl font-bold text-pink-300">Тетрис</h3>
+        <p class="text-sm text-gray-300 mt-1">Собери линии</p>
       </div>
 
       <!-- Предложить игру -->
-      <a href="https://t.me/dimap7221" target="_blank" class="game-card border-2 border-dashed border-indigo-300 dark:border-fuchsia-700">
-        <div class="game-icon bg-gradient-to-br from-indigo-500 to-fuchsia-500 text-white">
+      <a href="https://t.me/dimap7221" target="_blank" class="game-card border-2 border-dashed border-fuchsia-500 fade-in">
+        <div class="game-icon bg-gradient-to-br from-indigo-500 to-fuchsia-600">
           <i class="fa-solid fa-plus"></i>
         </div>
-        <h3 class="text-xl font-bold">Предложи игру!</h3>
-        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Напиши в ТГ</p>
+        <h3 class="text-xl font-bold text-fuchsia-300">Предложи игру!</h3>
+        <p class="text-sm text-gray-300 mt-1">Напиши в ТГ</p>
       </a>
     </div>
 
-    <!-- Статистика -->
-    <div class="mt-12 text-center">
-      <p class="text-sm text-slate-600 dark:text-slate-300">
-        Разблокировано бейджей: <span id="badgeCount" class="font-bold text-indigo-600 dark:text-fuchsia-400">0</span>
+    <!-- СТАТИСТИКА -->
+    <div class="mt-12 text-center fade-in">
+      <p class="text-lg">
+        Разблокировано бейджей: 
+        <span id="badgeCount" class="text-2xl font-bold text-fuchsia-400 neon-glow">0</span>
       </p>
     </div>
   </div>
 
   <script>
-    // Тема
+    // Тема (пока только тёмная, но можно расширить)
     const themeToggle = document.getElementById('themeToggle');
     themeToggle.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-      themeToggle.querySelector('i').className = 
-        document.documentElement.classList.contains('dark') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+      document.body.classList.toggle('light-mode');
+      const icon = themeToggle.querySelector('i');
+      icon.className = document.body.classList.contains('light-mode') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
     });
 
     // Подсчёт бейджей
     const badgeCount = document.getElementById('badgeCount');
-    const badges = ['badge_2048_master']; // Только реальный бейдж от 2048
+    const badges = ['badge_2048_master'];
     let count = badges.filter(b => localStorage.getItem(b)).length;
     badgeCount.textContent = count;
 
-    // Анимация при загрузке
-    document.querySelectorAll('.game-card').forEach((card, i) => {
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(20px)';
-      setTimeout(() => {
-        card.style.transition = 'all 0.4s ease-out';
-        card.style.opacity = '1';
-        card.style.transform = 'translateY(0)';
-      }, i * 100);
-    });
+    // Анимация появления
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Неоновая подсветка счётчика
+    if (count > 0) {
+      badgeCount.classList.add('animate-pulse');
+    }
   </script>
 </body>
 </html>
