@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Видео | Mortis Play</title>
-  <meta name="description" content="Все стримы, блицы, мемы и подкасты от Mortis Play. Rutube + YouTube с переключателем." />
+  <meta name="description" content="Все стримы, блицы, мемы и подкасты от Mortis Play. Только YouTube." />
  
   <!-- FONT AWESOME -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link rel="icon" href="../favicon.ico" type="image/x-icon">
 
   <style>
-    /* === ОСНОВНЫЕ ЦВЕТА === */
+    /* === ОСНОВНЫЕ === */
     :root {
       --bg: #0f0f1a;
       --neon-purple: #a855f7;
@@ -71,7 +71,7 @@
       box-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
     }
 
-    /* === ГЛАСС КАРТОЧКИ (ТОЛЬКО ОДНО ОПРЕДЕЛЕНИЕ!) === */
+    /* === ГЛАСС КАРТОЧКИ === */
     .glass-card {
       background: var(--glass);
       border: 1px solid rgba(168, 85, 247, 0.3);
@@ -90,16 +90,14 @@
       background: linear-gradient(135deg, rgba(168,85,247,0.1), transparent);
       opacity: 0;
       transition: opacity 0.4s ease;
-      pointer-events: none;
     }
     .glass-card:hover::before { opacity: 1; }
     .glass-card:hover {
       transform: translateY(-6px);
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      border-color: rgba(168, 85, 247, 0.5);
     }
 
-    /* === ПРЕВЬЮ ВИДЕО === */
+    /* === ПРЕВЬЮ === */
     .video-thumb {
       position: relative;
       overflow: hidden;
@@ -186,12 +184,10 @@
     .mt-6 { margin-top: 1.5rem; }
     .mt-8 { margin-top: 2rem; }
     .mt-10 { margin-top: 2.5rem; }
-    .mb-6 { margin-bottom: 1.5rem; }
     .flex { display: flex; }
     .justify-center { justify-content: center; }
     .items-center { align-items: center; }
     .gap-3 { gap: 0.75rem; }
-    .gap-4 { gap: 1rem; }
     .space-x-4 > * + * { margin-left: 1rem; }
     .text-sm { font-size: 0.875rem; }
     .text-4xl { font-size: 2.25rem; }
@@ -218,15 +214,16 @@
     <section id="videos" class="mx-auto max-w-7xl px-4">
       <h1 class="neon-title text-4xl md:text-6xl font-bold text-center mb-8">Мои видео</h1>
 
-      <!-- ПЕРЕКЛЮЧАТЕЛЬ -->
+      <!-- ПЛАТФОРМА: ТОЛЬКО YOUTUBE -->
       <div class="flex justify-center mb-6">
         <div class="glass-card p-4 flex items-center gap-4 rounded-xl">
           <span class="text-gray-300 font-medium">Смотри на:</span>
-          <select id="platformSwitch" class="neon-btn bg-transparent border-purple-500 text-white px-4 py-2 rounded-lg">
-            <option value="rutube">Rutube</option>
-            <option value="youtube">YouTube</option>
-          </select>
-          <i class="fa-solid fa-sync-alt text-purple-400 animate-spin hidden" id="switchLoader"></i>
+          <button class="neon-btn active">
+            <i class="fa-brands fa-youtube"></i> YouTube
+          </button>
+          <button class="neon-btn opacity-50 cursor-not-allowed" disabled>
+            <i class="fa-brands fa-rutube"></i> Rutube <span class="text-xs">(скоро)</span>
+          </button>
         </div>
       </div>
 
@@ -250,8 +247,8 @@
         <button id="loadMoreVideos" class="neon-btn px-6 py-3">
           <i class="fa-solid fa-plus"></i> Загрузить ещё
         </button>
-        <a id="allVideosLink" href="#" target="_blank" class="neon-btn">
-          <i class="fa-brands fa-rutube"></i> Все видео
+        <a href="https://www.youtube.com/@MortisPlay/videos" target="_blank" class="neon-btn">
+          <i class="fa-brands fa-youtube"></i> Все видео
         </a>
       </div>
     </section>
@@ -259,13 +256,9 @@
 
   <script>
     // ========================================
-    // КОНФИГ
+    // КОНФИГ (ТОЛЬКО YOUTUBE)
     // ========================================
     const CONFIG = {
-      rutube: {
-        channelId: '1097477', // ← ПРАВИЛЬНЫЙ ID КАНАЛА
-        embed: id => `https://rutube.ru/play/embed/${id}?platform=mortisplay`
-      },
       youtube: {
         channelId: 'UC2VwlrbzSa8UGLHAYmbuEZA',
         apiKey: 'AIzaSyCzzl6nF8Jr1Insh0LFvsx80O5RO9CCoPw',
@@ -276,55 +269,20 @@
     // ========================================
     // ПЕРЕМЕННЫЕ
     // ========================================
-    let currentPlatform = localStorage.getItem('videoPlatform') || 'rutube';
     let currentPage = 1;
     let currentFilter = 'all';
     let allVideos = [];
     let filteredVideos = [];
     let nextPageToken = '';
 
-    const platformSwitch = document.getElementById('platformSwitch');
     const videosGrid = document.getElementById('videosGrid');
     const loadMoreBtn = document.getElementById('loadMoreVideos');
-    const allVideosLink = document.getElementById('allVideosLink');
-    const switchLoader = document.getElementById('switchLoader');
 
     // ========================================
     // ИНИЦИАЛИЗАЦИЯ
     // ========================================
-    platformSwitch.value = currentPlatform;
-    updateAllVideosLink();
     fetchVideos();
-    setupPlatformSwitch();
     setupFilters();
-
-    // ========================================
-    // ПЕРЕКЛЮЧАТЕЛЬ
-    // ========================================
-    function setupPlatformSwitch() {
-      platformSwitch.addEventListener('change', () => {
-        currentPlatform = platformSwitch.value;
-        localStorage.setItem('videoPlatform', currentPlatform);
-        currentPage = 1;
-        nextPageToken = '';
-        switchLoader.classList.remove('hidden');
-        videosGrid.innerHTML = '';
-        allVideos = [];
-        fetchVideos();
-        updateAllVideosLink();
-        showNotification('Переключено на ' + (currentPlatform === 'rutube' ? 'Rutube' : 'YouTube'));
-      });
-    }
-
-    function updateAllVideosLink() {
-      if (currentPlatform === 'rutube') {
-        allVideosLink.href = 'https://rutube.ru/channel/1097477/videos/';
-        allVideosLink.innerHTML = '<i class="fa-brands fa-rutube"></i> Все видео';
-      } else {
-        allVideosLink.href = 'https://www.youtube.com/@MortisPlay/videos';
-        allVideosLink.innerHTML = '<i class="fa-brands fa-youtube"></i> Все видео';
-      }
-    }
 
     // ========================================
     // ЗАГРУЗКА
@@ -335,36 +293,21 @@
       }
 
       try {
-        let videos = [];
+        const token = append ? nextPageToken : '';
+        const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CONFIG.youtube.channelId}&maxResults=12&pageToken=${token}&order=date&key=${CONFIG.youtube.apiKey}`);
+        const data = await res.json();
+        nextPageToken = data.nextPageToken || '';
 
-        if (currentPlatform === 'rutube') {
-          const res = await fetch(`https://rutube.ru/api/video/channel/${CONFIG.rutube.channelId}/?page=${currentPage}&page_size=12&sort=created_ts_desc`);
-          if (!res.ok) throw new Error(`Rutube: ${res.status}`);
-          const data = await res.json();
-          videos = data.results.map(v => ({
-            id: v.id,
-            title: v.title,
-            thumbnail: v.thumbnail_url || 'https://via.placeholder.com/480x360?text=No+Image',
-            duration: formatDuration(v.duration),
-            category: guessCategory(v.title),
-            url: CONFIG.rutube.embed(v.id)
+        const videos = data.items
+          .filter(i => i.id.kind === 'youtube#video')
+          .map(i => ({
+            id: i.id.videoId,
+            title: i.snippet.title,
+            thumbnail: i.snippet.thumbnails.high.url,
+            duration: '??',
+            category: guessCategory(i.snippet.title),
+            url: CONFIG.youtube.embed(i.id.videoId)
           }));
-        } else {
-          const token = append ? nextPageToken : '';
-          const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CONFIG.youtube.channelId}&maxResults=12&pageToken=${token}&order=date&key=${CONFIG.youtube.apiKey}`);
-          const data = await res.json();
-          nextPageToken = data.nextPageToken || '';
-          videos = data.items
-            .filter(i => i.id.kind === 'youtube#video')
-            .map(i => ({
-              id: i.id.videoId,
-              title: i.snippet.title,
-              thumbnail: i.snippet.thumbnails.high.url,
-              duration: '??',
-              category: guessCategory(i.snippet.title),
-              url: CONFIG.youtube.embed(i.id.videoId)
-            }));
-        }
 
         allVideos = append ? [...allVideos, ...videos] : videos;
         filterVideos();
@@ -372,8 +315,6 @@
       } catch (e) {
         videosGrid.innerHTML = `<p class="col-span-full text-center text-red-400 py-10">Ошибка: ${e.message}</p>`;
         console.error(e);
-      } finally {
-        switchLoader.classList.add('hidden');
       }
     }
 
@@ -391,7 +332,7 @@
         card.className = 'glass-card p-4 fade-in';
         card.dataset.category = v.category;
         card.innerHTML = `
-          <div class="video-thumb" onclick="openVideo('${v.url}')">
+          <div class="video-thumb" onclick="window.open('${v.url}', '_blank')">
             <img src="${v.thumbnail}" alt="${v.title}" loading="lazy">
             <div class="duration">${v.duration}</div>
             <div class="play-icon">
@@ -401,7 +342,7 @@
           <p class="mt-3 text-sm text-gray-300 line-clamp-2 font-medium">${v.title}</p>
           <div class="mt-2 flex items-center justify-between text-xs text-gray-400">
             <span class="badge badge-${v.category}">${getCategoryName(v.category)}</span>
-            <span>${currentPlatform === 'rutube' ? 'Rutube' : 'YouTube'}</span>
+            <span>YouTube</span>
           </div>
         `;
         videosGrid.appendChild(card);
@@ -451,21 +392,6 @@
       return 'fun';
     }
 
-    function formatDuration(sec) {
-      if (!sec) return '??:??';
-      const m = String(Math.floor(sec / 60)).padStart(2, '0');
-      const s = String(sec % 60).padStart(2, '0');
-      return `${m}:${s}`;
-    }
-
-    function showNotification(msg) {
-      const notif = document.createElement('div');
-      notif.className = 'fixed bottom-4 right-4 glass-card p-4 text-sm neon-btn z-50 animate-pulse';
-      notif.textContent = msg;
-      document.body.appendChild(notif);
-      setTimeout(() => notif.remove(), 3000);
-    }
-
     // ========================================
     // АНИМАЦИИ
     // ========================================
@@ -484,12 +410,6 @@
       document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
     }
 
-    // Открытие видео по клику
-    function openVideo(url) {
-      window.open(url, '_blank');
-    }
-
-    // Запуск анимаций при загрузке
     window.addEventListener('load', initAnimations);
   </script>
 </body>
