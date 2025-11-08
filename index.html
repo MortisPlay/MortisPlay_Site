@@ -176,7 +176,6 @@
       transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
-
     /* Адаптация существующих стилей главной под новый дизайн */
     @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
     @keyframes badgePop { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
@@ -792,23 +791,8 @@
       <section id="videos" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Мои видео</h2>
-          <div class="mt-6 flex justify-center gap-3 flex-wrap">
-            <button class="neon-btn active" data-filter="all" aria-label="Показать все видео" aria-pressed="true">Все</button>
-            <button class="neon-btn" data-filter="streams" aria-label="Показать стримы" aria-pressed="false">Стримы</button>
-            <button class="neon-btn" data-filter="fun" aria-label="Показать угарные видео" aria-pressed="false">Угар</button>
-            <button class="neon-btn" data-filter="blitz" aria-label="Показать БЛИЦ Play" aria-pressed="false">БЛИЦ Play</button>
-          </div>
-          <p id="category-desc" class="mt-2 text-center text-sm text-gray-300">Все видео от Mortis Play: стримы, мемы и подкасты!</p>
-          <div id="videosGrid" class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Видео вставляются JS -->
-          </div>
           <div class="mt-6 text-center">
-            <button id="loadMoreVideos" class="neon-btn" aria-label="Загрузить ещё видео">
-              <i class="fa-solid fa-plus"></i> Загрузить ещё
-            </button>
-            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="neon-btn" rel="noopener" aria-label="Смотреть все видео на YouTube">
-              <i class="fa-brands fa-youtube"></i> Смотреть все видео
-            </a>
+            <p class="text-lg text-gray-300">Раздел "Видео" временно закрыт для реализации Rutube API и переключателя на YouTube API. <i class="fa-solid fa-tools text-purple-400"></i></p>
           </div>
         </div>
       </section>
@@ -1224,6 +1208,7 @@
             localStorage.removeItem('secretClicks');
             localStorage.removeItem('mortis_hacker');
             localStorage.removeItem('ghostScrolls');
+            localStorage.removeItem('ghostScrollsEarned');
             root.classList.remove('dark', 'low-performance', 'no-animations', 'no-particles', 'high-contrast');
             root.style.setProperty('--font-scale', '1');
             const themeSelect = document.getElementById('themeSelect');
@@ -1256,14 +1241,13 @@
           });
         }
       };
-     
+   
 const setupGhostGesture = () => {
   let path = [];
   const tolerance = 50;
   const minPoints = 10;
   const recognizeM = (points) => {
   if (points.length < minPoints) return false;
- 
   const xs = points.map(p => p.x);
   const ys = points.map(p => p.y);
   const minX = Math.min(...xs), maxX = Math.max(...xs);
@@ -1333,6 +1317,7 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
             localStorage.removeItem('secretClicks');
             localStorage.removeItem('mortis_hacker');
             localStorage.removeItem('ghostScrolls');
+            localStorage.removeItem('ghostScrollsEarned');
             const userAvatar = document.getElementById('userAvatar');
             const usernameInput = document.getElementById('usernameInput');
             const badges = document.getElementById('badges');
@@ -1440,11 +1425,8 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
   {
     name: 'Мемолог',
     icon: 'fa-solid fa-laugh',
-    description: 'Посмотрите 4 видео в категории «Угар»',
-    earned: () => {
-      const watched = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-      return Object.values(watched).filter(v => v.category === 'fun').length >= 4;
-    },
+    description: 'Посмотрите 4 видео в категории «Угар» (Временно недоступно)',
+    earned: () => false, // Временно недоступно из-за закрытия раздела Видео
     progress: () => Math.min(Object.values(JSON.parse(localStorage.getItem('watchedVideos') || '{}')).filter(v => v.category === 'fun').length, 4),
     rarity: 'rare'
   },
@@ -1454,11 +1436,8 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
   {
     name: 'Исследователь',
     icon: 'fa-solid fa-compass',
-    description: 'Посмотри хотя бы одно видео из каждой категории',
-    earned: () => {
-      const watched = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-      return ['streams', 'fun', 'blitz'].every(cat => Object.values(watched).some(v => v.category === cat));
-    },
+    description: 'Посмотри хотя бы одно видео из каждой категории (Временно недоступно)',
+    earned: () => false, // Временно недоступно из-за закрытия раздела Видео
     rarity: 'rare'
   },
   {
@@ -1471,11 +1450,8 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
   {
   name: 'Эпик Мемолог',
   icon: 'fa-solid fa-medal',
-  description: 'Просмотрите 20 видео в категории «Угар»',
-  earned: () => {
-    const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-    return Object.values(watchedVideos).filter(v => v.category === 'fun').length >= 20;
-  },
+  description: 'Просмотрите 20 видео в категории «Угар» (Временно недоступно)',
+  earned: () => false, // Временно недоступно из-за закрытия раздела Видео
   progress: () => {
     const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
     return Math.min(Object.values(watchedVideos).filter(v => v.category === 'fun').length, 20);
@@ -1705,7 +1681,7 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
             <span class="${textClass}">${nameText} (${rarityText}): ${descText} ${progress}</span>
             <span>${status}</span>
           `;
-         
+       
           badgeList.appendChild(badgeItem);
           badgeItem.addEventListener('click', () => {
             const modal = document.getElementById('badgeModal');
@@ -1767,106 +1743,14 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         { src: 'https://rutube.ru/play/embed/0f958e52a3a7023734bfa562186a9bce', title: 'БЛИЦ Play: ВСЕ? ВСЕ.', category: 'blitz' }
       ];
       const setupVideos = () => {
-        const grid = document.getElementById('videosGrid');
-        const loadMoreButton = document.getElementById('loadMoreVideos');
-        const notification = document.getElementById('appearanceNotification');
-        if (!grid || !loadMoreButton || !notification) return;
-        let currentPage = 1;
-        const videosPerPage = 6;
-        let currentFilter = 'all';
-        let filteredVideos = videoData;
-        let ghostScrollCount = parseInt(localStorage.getItem('ghostScrolls') || '0');
-       
-        const renderVideos = (append = false) => {
-          if (!append) {
-            grid.innerHTML = '';
-            currentPage = 1;
-          }
-          const start = (currentPage - 1) * videosPerPage;
-          const end = start + videosPerPage;
-          const videosToShow = (currentFilter === 'all' ? videoData : filteredVideos).slice(start, end);
-          videosToShow.forEach(v => {
-            const card = document.createElement('div');
-            card.className = 'video-card glass-card p-4';
-            card.dataset.category = v.category;
-            card.innerHTML = `
-              <div class="relative aspect-video rounded-xl overflow-hidden">
-                <iframe class="w-full h-full" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen title="${v.title}"></iframe>
-                <img class="w-full h-full absolute top-0 left-0 object-cover hidden" src="/assets/fallback.jpg" alt="Видео недоступно" />
-              </div>
-              <p class="mt-3 text-sm text-gray-300">${v.title}</p>
-            `;
-            const iframe = card.querySelector('iframe');
-            iframe.src = v.src;
-            grid.appendChild(card);
-          });
-          loadMoreButton.style.display = end >= (currentFilter === 'all' ? videoData.length : filteredVideos.length) ? 'none' : 'inline-flex';
-          setupVideoTracking();
-        };
-        loadMoreButton.addEventListener('click', () => {
-          currentPage++;
-          renderVideos(true);
-          gtag('event', 'load_more_videos', { event_category: 'videos', event_label: `page_${currentPage}` });
-        });
-        const filterButtons = document.querySelectorAll('.video-filter');
-        const categoryDesc = document.getElementById('category-desc');
-        const categoryDescriptions = {
-          all: 'Все видео от Mortis Play: стримы, мемы и подкасты!',
-          streams: 'Стримы с эпичными моментами и геймплеем!',
-          fun: 'Угарные видео и мемы для настроения!',
-          blitz: 'Короткие и динамичные БЛИЦ Play ролики!'
-        };
-        filterButtons.forEach(button => {
-          button.addEventListener('click', () => {
-            const filter = button.dataset.filter;
-            filterButtons.forEach(btn => {
-              btn.classList.toggle('active', btn.dataset.filter === filter);
-              btn.setAttribute('aria-pressed', btn.dataset.filter === filter);
-            });
-            currentFilter = filter;
-            filteredVideos = filter === 'all' ? videoData : videoData.filter(v => v.category === filter);
-            renderVideos();
-            categoryDesc.textContent = categoryDescriptions[filter];
-            loadMoreButton.style.display = filteredVideos.length <= videosPerPage ? 'none' : 'inline-flex';
-            gtag('event', 'video_filter', { event_category: 'videos', event_label: filter });
-            logAction(`Фильтр видео: ${filter}`);
-          });
-        });
-        renderVideos();
-      };
-      const setupVideoTracking = () => {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-              const iframe = entry.target;
-              const card = iframe.closest('.video-card');
-              const title = card.querySelector('p').textContent;
-              const category = card.dataset.category;
-              setTimeout(() => {
-                if (iframe.offsetParent !== null) {
-                  let watched = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-                  if (!watched[title]) {
-                    watched[title] = { category, watched: true, timestamp: Date.now() };
-                    localStorage.setItem('watchedVideos', JSON.stringify(watched));
-                    showNotification(`Просмотрено: ${title}`, document.getElementById('appearanceNotification'));
-                    checkBadgeConditions();
-                  }
-                }
-              }, 2000);
-              observer.unobserve(iframe);
-            }
-          });
-        }, { threshold: 0.5 });
-        setTimeout(() => {
-          document.querySelectorAll('#videosGrid iframe').forEach(iframe => observer.observe(iframe));
-        }, 500);
+        // Раздел закрыт, ничего не рендерим, кроме сообщения (уже в HTML)
       };
       const newsData = [
-        { title: "Mortis Games! ", date: "6 ноября", content: "Да да, вы не услышали, игры от Mortis ОТКРЫТЫ! Теперь вы можете на нашем сайте играть в игры но для у вас должно быть в наличии интернет! Также вы можете предложить игру ту, которую вы хотите, а мы его разработаем и добавим специальный бейджик) Также мы пофиксили баги на сайте для мобилок и прочие исправления. В скором времени мы ещё кучу известных игр завезём и не только! ;)" },
+        { title: "Mortis Games! ", date: "6 ноября", content: "Да да, вы не услышали, игры от Mortis ОТКРЫТЫ! Теперь вы можете на нашем сайте играть в игры ту для у вас должно быть в наличии интернет! Также вы можете предложить игру ту, которую вы хотите, а мы его разработаем и добавим специальный бейджик) Также мы пофиксили баги на сайте для мобилок и прочие исправления. В скором времени мы ещё кучу известных игр завезём и не только! ;)" },
         { title: "Раздел Профиль и система достижений ", date: "29 октября 2025", content: "Итак, мы добавили на сайт профиль и ачивки, с помощью ачивок вы можете показать своё настоящее достоинство! Как это работает и как их получать? Вы можете глянуть раздел FAQ или в разделе профиль глянуть получение ачивок. На сегодня всё, скоро мы зальём еще пару грядущих новинок на сайт) " },
-        { title: "Обновили немного сайт", date: "25 сентября 2025", content: "Вернули узоры на сайт, также обновили чуть чуть дизайн и обновили бота. Также, сообщаем вам новость о том, что сайт не будет обновляться в течение месяца, ведь мы сейчас начнем заниматься контентом поэтому все изменения которые у вас попадутся на сайте, будут исправлены только когда мы закончим с контентом, если вы обнаружите проблему на сайте, пишите в Telegram: <a href=\"https://t.me/dimap7221\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">MortisPlay</a>. Приятного времяпровождение на сайте :3" },
+        { title: "Обновили немного сайт", date: "25 сентября 2025", content: "Вернули узоры на сайт, также обновили чуть чуть дизайн и обновили бота. Также, сообщаем вам новость о том, что сайт не будет обновляться в течение месяца, ведь мы сейчас начнем заниматься контентом поэтому все изменения которые у вас попадутся на сайте, будут исправлены только когда мы закончим с контентом, если вы вы обнаружите проблему на сайте, пишите в Telegram: <a href=\"https://t.me/dimap7221\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">MortisPlay</a>. Приятного времяпровождение на сайте :3" },
         { title: "Технический перерыв завершён!", date: "22 сентября 2025", content: "Йоу, геймеры! 🎮🔥 Сайт Mortis Play вернулся! Проверь новые фичи, обновления и Q&A. Пиши вопросы боту: <a href=\"https://t.me/MortisplayQABot\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">MortisplayQABot</a>. Следи за новостями в Telegram: <a href=\"https://t.me/MortisPlayTG\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">@MortisPlayTG</a>." },
-        { title: "Новый раздел «Настройки» и бот готов!", date: "18 сентября 2025", content: "Йоу, геймеры! 🎮🔥 Новый раздел «Настройки» уже на сайте — настраивай тему, шрифты и производительность под себя! В будущем добавим ещё больше кастомизаций. 😎 Плюс, наш бот закончен и ждёт вопросов: <a href=\"https://t.me/MortisplayQABot\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">MortisplayQABot</a>." },
+        { title: "Новый раздел «Настройки» и бот готов!", date: "18 сентября 2025", content: "Йоу, геймеры! 🎮🔥 Новый раздел «Настройки» уже на сайте — настраивай тему, шрифты и производительность! В будущем добавим ещё больше кастомизаций. 😎 Плюс, наш бот закончен и ждёт вопросов: <a href=\"https://t.me/MortisplayQABot\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">MortisplayQABot</a>." },
         { title: "Q&A открыт!", date: "15 сентября 2025", content: "Йоу, геймеры! 🎮🔥 Q&A стартовал! Пиши вопросы в Telegram: <a href=\"https://t.me/MortisplayQABot\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">MortisplayQABot</a>. Раздел «Видео» теперь с категориями (Все, Стримы, Угар). «FAQ» переехал на отдельную страницу. «Биография» получила новый стиль и плейлист! 🔥" },
         { title: "Улучшена Биография!", date: "10 сентября 2025", content: "Переработали страницу Биографии! Больше деталей о моём пути и планах. Проверь по кнопке \"Биография\"! 😎" },
         { title: "Редизайн сайта!", date: "19 августа 2025", content: "Новый дизайн сайта: красивый, уникальный, обновлённый! Оцени и следи за апдейтами! 😎" },
@@ -2054,7 +1938,6 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
   setupLoader();
   setupVideoErrorHandling();
   setupBadges();
-  setupVideoTracking();
   setupSecretBadgeTrigger();
   setupGhostGesture();
 });
