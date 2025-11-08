@@ -14,6 +14,107 @@
 
   <!-- ВСТРОЕННЫЙ CSS — ВЕСЬ ДИЗАЙН ЗДЕСЬ -->
   <style>
+    /* === ГЛАСС КАРТОЧКИ + НЕОН === */
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s ease;
+  overflow: hidden;
+  position: relative;
+}
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(168,85,247,0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.glass-card:hover::before { opacity: 1; }
+.glass-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+/* === ПРЕВЬЮ ВИДЕО === */
+.video-thumb {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+.video-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.video-thumb:hover img {
+  transform: scale(1.05);
+}
+.video-thumb .duration {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+.video-thumb .play-icon {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px; height: 48px;
+  background: rgba(168,85,247,0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.video-thumb:hover .play-icon { opacity: 1; }
+
+/* === ФИЛЬТРЫ === */
+.video-filter {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(168,85,247,0.4);
+  color: #e0d6ff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(8px);
+}
+.video-filter.active,
+.video-filter:hover {
+  background: rgba(168,85,247,0.3);
+  border-color: #c084fc;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(168,85,247,0.3);
+}
+
+/* === АНИМАЦИЯ ПОЯВЛЕНИЯ === */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
     /* === ОСНОВНЫЕ ЦВЕТА И ШРИФТЫ === */
     :root {
       --bg: #0f0f1a;
@@ -296,52 +397,57 @@
     // ЗАГРУЗКА
     // ========================================
     async function fetchVideos(append = false) {
-      if (!append) {
-        videosGrid.innerHTML = '<div class="col-span-full text-center py-10"><i class="fa-solid fa-spinner animate-spin text-5xl text-purple-400"></i></div>';
-      }
+  if (!append) {
+    videosGrid.innerHTML = '<div class="col-span-full text-center py-10"><i class="fa-solid fa-spinner animate-spin text-5xl text-purple-400"></i></div>';
+  }
 
-      try {
-        let videos = [];
+  try {
+    let videos = [];
 
-        if (currentPlatform === 'rutube') {
-          const res = await fetch(`${CONFIG.rutube.baseUrl}/${CONFIG.rutube.personId}?sort=created_ts_desc&page=${currentPage}&page_size=12`);
-          const data = await res.json();
-          videos = data.results.map(v => ({
-            id: v.id,
-            title: v.title,
-            thumbnail: v.thumbnail_url,
-            duration: formatDuration(v.duration),
-            category: guessCategory(v.title),
-            url: CONFIG.rutube.embed(v.id)
-          }));
-        } else {
-          const token = append ? nextPageToken : '';
-          const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CONFIG.youtube.channelId}&maxResults=12&pageToken=${token}&order=date&key=${CONFIG.youtube.apiKey}`);
-          const data = await res.json();
-          nextPageToken = data.nextPageToken || '';
-          videos = data.items
-            .filter(i => i.id.kind === 'youtube#video')
-            .map(i => ({
-              id: i.id.videoId,
-              title: i.snippet.title,
-              thumbnail: i.snippet.thumbnails.high.url,
-              duration: '??',
-              category: guessCategory(i.snippet.title),
-              url: CONFIG.youtube.embed(i.id.videoId)
-            }));
-        }
+    if (currentPlatform === 'rutube') {
+      // ПРАВИЛЬНЫЙ API ДЛЯ Rutube
+      const channelId = '24189155'; // ← ТВОЙ ID КАНАЛА
+      const res = await fetch(`https://rutube.ru/api/video/channel/${channelId}/?page=${currentPage}&page_size=12&sort=created_ts_desc`);
+      if (!res.ok) throw new Error(`Rutube API error: ${res.status}`);
+      const data = await res.json();
 
-        allVideos = append ? [...allVideos, ...videos] : videos;
-        filterVideos();
-        renderVideos(append);
-
-      } catch (e) {
-        videosGrid.innerHTML = `<p class="col-span-full text-center text-red-400 py-10">Ошибка загрузки 😢 Попробуй позже!</p>`;
-        console.error(e);
-      } finally {
-        switchLoader.classList.add('hidden');
-      }
+      videos = data.results.map(v => ({
+        id: v.id,
+        title: v.title,
+        thumbnail: v.thumbnail_url || 'https://via.placeholder.com/480x360?text=No+Image',
+        duration: formatDuration(v.duration),
+        category: guessCategory(v.title),
+        url: CONFIG.rutube.embed(v.id)
+      }));
+    } 
+    else {
+      // YouTube — оставляем как есть
+      const token = append ? nextPageToken : '';
+      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CONFIG.youtube.channelId}&maxResults=12&pageToken=${token}&order=date&key=${CONFIG.youtube.apiKey}`);
+      const data = await res.json();
+      nextPageToken = data.nextPageToken || '';
+      videos = data.items
+        .filter(i => i.id.kind === 'youtube#video')
+        .map(i => ({
+          id: i.id.videoId,
+          title: i.snippet.title,
+          thumbnail: i.snippet.thumbnails.high.url,
+          duration: '??',
+          category: guessCategory(i.snippet.title),
+          url: CONFIG.youtube.embed(i.id.videoId)
+        }));
     }
+
+    allVideos = append ? [...allVideos, ...videos] : videos;
+    filterVideos();
+    renderVideos(append);
+  } catch (e) {
+    videosGrid.innerHTML = `<p class="col-span-full text-center text-red-400 py-10">Ошибка: ${e.message}. Попробуй позже!</p>`;
+    console.error('Ошибка загрузки видео:', e);
+  } finally {
+    switchLoader.classList.add('hidden');
+  }
+}
 
     // ========================================
     // РЕНДЕР
@@ -357,13 +463,21 @@
         card.className = 'video-card glass-card p-4 opacity-0 translate-y-4 transition-all duration-500';
         card.dataset.category = v.category;
         card.innerHTML = `
-          <div class="relative aspect-video rounded-xl overflow-hidden ring-1 ring-purple-500/30 shadow-lg">
-            <iframe src="${v.url}" loading="lazy" allowfullscreen class="w-full h-full" title="${v.title}"></iframe>
-            <div class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded font-mono">${v.duration}</div>
-          </div>
-          <p class="mt-3 text-sm text-gray-300 line-clamp-2 font-medium">${v.title}</p>
-        `;
-
+  <div class="glass-card p-4 fade-in">
+    <div class="video-thumb">
+      <img src="${v.thumbnail}" alt="${v.title}" loading="lazy">
+      <div class="duration">${v.duration}</div>
+      <div class="play-icon">
+        <i class="fa-solid fa-play text-white text-xl"></i>
+      </div>
+    </div>
+    <p class="mt-3 text-sm text-gray-300 line-clamp-2 font-medium">${v.title}</p>
+    <div class="mt-2 flex items-center justify-between text-xs text-gray-400">
+      <span class="badge badge-${v.category}">${getCategoryName(v.category)}</span>
+      <span>${currentPlatform === 'rutube' ? 'Rutube' : 'YouTube'}</span>
+    </div>
+  </div>
+`;
         const iframe = card.querySelector('iframe');
         iframe.onload = () => card.classList.remove('opacity-0', 'translate-y-4');
 
@@ -399,6 +513,21 @@
       currentPage++;
       fetchVideos(true);
     });
+    function getCategoryName(cat) {
+  const names = { fun: 'Угар', streams: 'Стримы', blitz: 'БЛИЦ' };
+  return names[cat] || 'Видео';
+}
+
+// Анимация появления
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
     function guessCategory(title) {
       title = title.toLowerCase();
@@ -422,6 +551,30 @@
       document.body.appendChild(notif);
       setTimeout(() => notif.remove(), 3000);
     }
-  </script>
+    // Запуск анимаций после рендера
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  // Перезапускаем после каждого рендера
+  function initAnimations() {
+    document.querySelectorAll('.fade-in').forEach(el => {
+      el.classList.remove('visible');
+      observer.observe(el);
+    });
+  }
+
+  // Вызываем после renderVideos
+  const originalRender = renderVideos;
+  renderVideos = function(append) {
+    originalRender(append);
+    setTimeout(initAnimations, 100);
+  };
+</script>
 </body>
 </html>
