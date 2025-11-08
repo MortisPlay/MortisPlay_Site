@@ -5,133 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Видео | Mortis Play</title>
   <meta name="description" content="Все стримы, блицы, мемы и подкасты от Mortis Play. Rutube + YouTube с переключателем." />
-  
+ 
   <!-- FONT AWESOME -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  
-  <!-- FAVICON (если есть) -->
   <link rel="icon" href="../favicon.ico" type="image/x-icon">
 
-  <!-- ВСТРОЕННЫЙ CSS — ВЕСЬ ДИЗАЙН ЗДЕСЬ -->
   <style>
-    /* === ГЛАСС КАРТОЧКИ + НЕОН === */
-.glass-card {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(168, 85, 247, 0.3);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 1.5rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  transition: all 0.4s ease;
-  overflow: hidden;
-  position: relative;
-}
-.glass-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, rgba(168,85,247,0.1), transparent);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-}
-.glass-card:hover::before { opacity: 1; }
-.glass-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  border-color: rgba(168, 85, 247, 0.5);
-}
-
-/* === ПРЕВЬЮ ВИДЕО === */
-.video-thumb {
-  position: relative;
-  overflow: hidden;
-  border-radius: 1rem;
-  aspect-ratio: 16 / 9;
-  background: #000;
-}
-.video-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-.video-thumb:hover img {
-  transform: scale(1.05);
-}
-.video-thumb .duration {
-  position: absolute;
-  bottom: 0.5rem;
-  right: 0.5rem;
-  background: rgba(0,0,0,0.8);
-  color: white;
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-}
-.video-thumb .play-icon {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 48px; height: 48px;
-  background: rgba(168,85,247,0.9);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.video-thumb:hover .play-icon { opacity: 1; }
-
-/* === ФИЛЬТРЫ === */
-.video-filter {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(168,85,247,0.4);
-  color: #e0d6ff;
-  padding: 0.75rem 1.5rem;
-  border-radius: 9999px;
-  font-weight: 600;
-  transition: all 0.4s ease;
-  backdrop-filter: blur(8px);
-}
-.video-filter.active,
-.video-filter:hover {
-  background: rgba(168,85,247,0.3);
-  border-color: #c084fc;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(168,85,247,0.3);
-}
-
-/* === АНИМАЦИЯ ПОЯВЛЕНИЯ === */
-.fade-in {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.6s ease;
-}
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-    /* === ОСНОВНЫЕ ЦВЕТА И ШРИФТЫ === */
+    /* === ОСНОВНЫЕ ЦВЕТА === */
     :root {
       --bg: #0f0f1a;
-      --card-bg: rgba(30, 30, 60, 0.6);
       --neon-purple: #a855f7;
       --neon-cyan: #22d3ee;
       --text: #e2e8f0;
       --text-light: #94a3b8;
-      --glass: rgba(255, 255, 255, 0.05);
+      --glass: rgba(255, 255, 255, 0.08);
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
       color: var(--text);
@@ -145,8 +34,9 @@
       background: rgba(15, 15, 26, 0.7);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+      position: fixed;
+      top: 0; width: 100%; z-index: 50;
     }
-
     .neon-title {
       background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan));
       -webkit-background-clip: text;
@@ -171,103 +61,150 @@
       text-decoration: none;
       font-size: 1rem;
     }
-
     .neon-btn:hover {
       background: rgba(168, 85, 247, 0.2);
       box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
       transform: translateY(-2px);
     }
-
     .neon-btn.active {
       background: var(--neon-purple);
       box-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
     }
 
-    /* === СТЕКЛЯННЫЕ КАРТОЧКИ === */
+    /* === ГЛАСС КАРТОЧКИ (ТОЛЬКО ОДНО ОПРЕДЕЛЕНИЕ!) === */
     .glass-card {
       background: var(--glass);
-      border: 1px solid rgba(168, 85, 247, 0.2);
-      border-radius: 16px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      transition: all 0.4s ease;
+      overflow: hidden;
+      position: relative;
+    }
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(168,85,247,0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .glass-card:hover::before { opacity: 1; }
+    .glass-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(168, 85, 247, 0.5);
     }
 
-    /* === СЕТКА ВИДЕО === */
+    /* === ПРЕВЬЮ ВИДЕО === */
+    .video-thumb {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1rem;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      cursor: pointer;
+    }
+    .video-thumb img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .video-thumb:hover img { transform: scale(1.05); }
+    .video-thumb .duration {
+      position: absolute;
+      bottom: 0.5rem; right: 0.5rem;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+    }
+    .video-thumb .play-icon {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 48px; height: 48px;
+      background: rgba(168,85,247,0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .video-thumb:hover .play-icon { opacity: 1; }
+
+    /* === ФИЛЬТРЫ === */
+    .video-filter {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(168,85,247,0.4);
+      color: #e0d6ff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(8px);
+    }
+    .video-filter.active,
+    .video-filter:hover {
+      background: rgba(168,85,247,0.3);
+      border-color: #c084fc;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(168,85,247,0.3);
+    }
+
+    /* === АНИМАЦИЯ === */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === СЕТКА === */
     #videosGrid {
       display: grid;
       gap: 1.5rem;
+      grid-template-columns: 1fr;
     }
-
     @media (min-width: 640px) { #videosGrid { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 1024px) { #videosGrid { grid-template-columns: repeat(3, 1fr); } }
     @media (min-width: 1280px) { #videosGrid { grid-template-columns: repeat(4, 1fr); } }
 
-    .video-card {
-      transition: all 0.5s ease;
-    }
-
-    .video-card iframe {
-      border: none;
-      border-radius: 12px;
-    }
-
-    /* === АНИМАЦИИ === */
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .animate-spin { animation: spin 1s linear infinite; }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-
-    .animate-pulse { animation: pulse 2s infinite; }
-
     /* === УТИЛИТЫ === */
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .aspect-video {
-      aspect-ratio: 16 / 9;
-    }
-
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .text-center { text-align: center; }
     .mt-3 { margin-top: 0.75rem; }
     .mt-6 { margin-top: 1.5rem; }
     .mt-8 { margin-top: 2rem; }
     .mt-10 { margin-top: 2.5rem; }
     .mb-6 { margin-bottom: 1.5rem; }
-    .mb-8 { margin-bottom: 2rem; }
-    .py-10 { padding: 2.5rem 0; }
-    .px-4 { padding-left: 1rem; padding-right: 1rem; }
-    .gap-3 { gap: 0.75rem; }
-    .gap-4 { gap: 1rem; }
     .flex { display: flex; }
-    .flex-col { flex-direction: column; }
     .justify-center { justify-content: center; }
     .items-center { align-items: center; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
     .space-x-4 > * + * { margin-left: 1rem; }
-    .rounded-xl { border-radius: 0.75rem; }
-    .rounded-lg { border-radius: 0.5rem; }
-    .font-medium { font-weight: 500; }
     .text-sm { font-size: 0.875rem; }
     .text-4xl { font-size: 2.25rem; }
     .text-6xl { font-size: 3.75rem; }
-    @media (min-width: 768px) {
-      .md\:text-6xl { font-size: 3.75rem; }
-    }
+    @media (min-width: 768px) { .md\:text-6xl { font-size: 3.75rem; } }
+    .badge-fun { color: #f59e0b; }
+    .badge-streams { color: #10b981; }
+    .badge-blitz { color: #ec4899; }
   </style>
 </head>
 <body>
-
   <!-- НАВИГАЦИЯ -->
-  <nav class="glass-nav fixed top-0 w-full z-50">
+  <nav class="glass-nav">
     <div class="mx-auto max-w-7xl px-4 flex justify-between items-center py-4">
       <a href="/" class="neon-title text-2xl font-bold">Mortis Play</a>
       <a href="/" class="neon-btn text-sm px-4 py-2">
@@ -276,7 +213,7 @@
     </div>
   </nav>
 
-  <!-- ГЛАВНЫЙ КОНТЕНТ -->
+  <!-- КОНТЕНТ -->
   <main class="pt-24 pb-16">
     <section id="videos" class="mx-auto max-w-7xl px-4">
       <h1 class="neon-title text-4xl md:text-6xl font-bold text-center mb-8">Мои видео</h1>
@@ -305,10 +242,8 @@
         Все видео от Mortis Play: стримы, мемы, блицы и подкасты!
       </p>
 
-      <!-- СЕТКА ВИДЕО -->
-      <div id="videosGrid" class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <!-- JS вставит видео -->
-      </div>
+      <!-- СЕТКА -->
+      <div id="videosGrid" class="mt-10"></div>
 
       <!-- КНОПКИ -->
       <div class="mt-10 text-center space-x-4">
@@ -322,21 +257,19 @@
     </section>
   </main>
 
-  <!-- JS — ВЕСЬ ФУНКЦИОНАЛ -->
   <script>
     // ========================================
     // КОНФИГ
     // ========================================
     const CONFIG = {
       rutube: {
-        personId: '24189155',
-        baseUrl: 'https://rutube.ru/api/video/person',
-        embed: function(id) { return `https://rutube.ru/play/embed/${id}?platform=mortisplay`; }
+        channelId: '1097477', // ← ПРАВИЛЬНЫЙ ID КАНАЛА
+        embed: id => `https://rutube.ru/play/embed/${id}?platform=mortisplay`
       },
       youtube: {
         channelId: 'UC2VwlrbzSa8UGLHAYmbuEZA',
         apiKey: 'AIzaSyCzzl6nF8Jr1Insh0LFvsx80O5RO9CCoPw',
-        embed: function(id) { return `https://www.youtube-nocookie.com/embed/${id}?rel=0`; }
+        embed: id => `https://www.youtube-nocookie.com/embed/${id}?rel=0`
       }
     };
 
@@ -369,7 +302,7 @@
     // ПЕРЕКЛЮЧАТЕЛЬ
     // ========================================
     function setupPlatformSwitch() {
-      platformSwitch.addEventListener('change', function() {
+      platformSwitch.addEventListener('change', () => {
         currentPlatform = platformSwitch.value;
         localStorage.setItem('videoPlatform', currentPlatform);
         currentPage = 1;
@@ -379,7 +312,7 @@
         allVideos = [];
         fetchVideos();
         updateAllVideosLink();
-        showNotification('Переключено на ' + (currentPlatform === 'rutube' ? 'Rutube' : 'YouTube') + '!');
+        showNotification('Переключено на ' + (currentPlatform === 'rutube' ? 'Rutube' : 'YouTube'));
       });
     }
 
@@ -397,57 +330,52 @@
     // ЗАГРУЗКА
     // ========================================
     async function fetchVideos(append = false) {
-  if (!append) {
-    videosGrid.innerHTML = '<div class="col-span-full text-center py-10"><i class="fa-solid fa-spinner animate-spin text-5xl text-purple-400"></i></div>';
-  }
+      if (!append) {
+        videosGrid.innerHTML = '<div class="col-span-full text-center py-10"><i class="fa-solid fa-spinner animate-spin text-5xl text-purple-400"></i></div>';
+      }
 
-  try {
-    let videos = [];
+      try {
+        let videos = [];
 
-    if (currentPlatform === 'rutube') {
-      // ПРАВИЛЬНЫЙ API ДЛЯ Rutube
-      const channelId = '24189155'; // ← ТВОЙ ID КАНАЛА
-      const res = await fetch(`https://rutube.ru/api/video/channel/${channelId}/?page=${currentPage}&page_size=12&sort=created_ts_desc`);
-      if (!res.ok) throw new Error(`Rutube API error: ${res.status}`);
-      const data = await res.json();
+        if (currentPlatform === 'rutube') {
+          const res = await fetch(`https://rutube.ru/api/video/channel/${CONFIG.rutube.channelId}/?page=${currentPage}&page_size=12&sort=created_ts_desc`);
+          if (!res.ok) throw new Error(`Rutube: ${res.status}`);
+          const data = await res.json();
+          videos = data.results.map(v => ({
+            id: v.id,
+            title: v.title,
+            thumbnail: v.thumbnail_url || 'https://via.placeholder.com/480x360?text=No+Image',
+            duration: formatDuration(v.duration),
+            category: guessCategory(v.title),
+            url: CONFIG.rutube.embed(v.id)
+          }));
+        } else {
+          const token = append ? nextPageToken : '';
+          const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CONFIG.youtube.channelId}&maxResults=12&pageToken=${token}&order=date&key=${CONFIG.youtube.apiKey}`);
+          const data = await res.json();
+          nextPageToken = data.nextPageToken || '';
+          videos = data.items
+            .filter(i => i.id.kind === 'youtube#video')
+            .map(i => ({
+              id: i.id.videoId,
+              title: i.snippet.title,
+              thumbnail: i.snippet.thumbnails.high.url,
+              duration: '??',
+              category: guessCategory(i.snippet.title),
+              url: CONFIG.youtube.embed(i.id.videoId)
+            }));
+        }
 
-      videos = data.results.map(v => ({
-        id: v.id,
-        title: v.title,
-        thumbnail: v.thumbnail_url || 'https://via.placeholder.com/480x360?text=No+Image',
-        duration: formatDuration(v.duration),
-        category: guessCategory(v.title),
-        url: CONFIG.rutube.embed(v.id)
-      }));
-    } 
-    else {
-      // YouTube — оставляем как есть
-      const token = append ? nextPageToken : '';
-      const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CONFIG.youtube.channelId}&maxResults=12&pageToken=${token}&order=date&key=${CONFIG.youtube.apiKey}`);
-      const data = await res.json();
-      nextPageToken = data.nextPageToken || '';
-      videos = data.items
-        .filter(i => i.id.kind === 'youtube#video')
-        .map(i => ({
-          id: i.id.videoId,
-          title: i.snippet.title,
-          thumbnail: i.snippet.thumbnails.high.url,
-          duration: '??',
-          category: guessCategory(i.snippet.title),
-          url: CONFIG.youtube.embed(i.id.videoId)
-        }));
+        allVideos = append ? [...allVideos, ...videos] : videos;
+        filterVideos();
+        renderVideos(append);
+      } catch (e) {
+        videosGrid.innerHTML = `<p class="col-span-full text-center text-red-400 py-10">Ошибка: ${e.message}</p>`;
+        console.error(e);
+      } finally {
+        switchLoader.classList.add('hidden');
+      }
     }
-
-    allVideos = append ? [...allVideos, ...videos] : videos;
-    filterVideos();
-    renderVideos(append);
-  } catch (e) {
-    videosGrid.innerHTML = `<p class="col-span-full text-center text-red-400 py-10">Ошибка: ${e.message}. Попробуй позже!</p>`;
-    console.error('Ошибка загрузки видео:', e);
-  } finally {
-    switchLoader.classList.add('hidden');
-  }
-}
 
     // ========================================
     // РЕНДЕР
@@ -460,31 +388,27 @@
 
       toShow.forEach(v => {
         const card = document.createElement('div');
-        card.className = 'video-card glass-card p-4 opacity-0 translate-y-4 transition-all duration-500';
+        card.className = 'glass-card p-4 fade-in';
         card.dataset.category = v.category;
         card.innerHTML = `
-  <div class="glass-card p-4 fade-in">
-    <div class="video-thumb">
-      <img src="${v.thumbnail}" alt="${v.title}" loading="lazy">
-      <div class="duration">${v.duration}</div>
-      <div class="play-icon">
-        <i class="fa-solid fa-play text-white text-xl"></i>
-      </div>
-    </div>
-    <p class="mt-3 text-sm text-gray-300 line-clamp-2 font-medium">${v.title}</p>
-    <div class="mt-2 flex items-center justify-between text-xs text-gray-400">
-      <span class="badge badge-${v.category}">${getCategoryName(v.category)}</span>
-      <span>${currentPlatform === 'rutube' ? 'Rutube' : 'YouTube'}</span>
-    </div>
-  </div>
-`;
-        const iframe = card.querySelector('iframe');
-        iframe.onload = () => card.classList.remove('opacity-0', 'translate-y-4');
-
+          <div class="video-thumb" onclick="openVideo('${v.url}')">
+            <img src="${v.thumbnail}" alt="${v.title}" loading="lazy">
+            <div class="duration">${v.duration}</div>
+            <div class="play-icon">
+              <i class="fa-solid fa-play text-white text-xl"></i>
+            </div>
+          </div>
+          <p class="mt-3 text-sm text-gray-300 line-clamp-2 font-medium">${v.title}</p>
+          <div class="mt-2 flex items-center justify-between text-xs text-gray-400">
+            <span class="badge badge-${v.category}">${getCategoryName(v.category)}</span>
+            <span>${currentPlatform === 'rutube' ? 'Rutube' : 'YouTube'}</span>
+          </div>
+        `;
         videosGrid.appendChild(card);
       });
 
       loadMoreBtn.style.display = allVideos.length >= filteredVideos.length ? 'none' : 'inline-flex';
+      initAnimations();
     }
 
     // ========================================
@@ -513,21 +437,11 @@
       currentPage++;
       fetchVideos(true);
     });
+
     function getCategoryName(cat) {
-  const names = { fun: 'Угар', streams: 'Стримы', blitz: 'БЛИЦ' };
-  return names[cat] || 'Видео';
-}
-
-// Анимация появления
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
+      const names = { fun: 'Угар', streams: 'Стримы', blitz: 'БЛИЦ' };
+      return names[cat] || 'Видео';
     }
-  });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
     function guessCategory(title) {
       title = title.toLowerCase();
@@ -551,30 +465,32 @@ document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
       document.body.appendChild(notif);
       setTimeout(() => notif.remove(), 3000);
     }
-    // Запуск анимаций после рендера
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
 
-  // Перезапускаем после каждого рендера
-  function initAnimations() {
-    document.querySelectorAll('.fade-in').forEach(el => {
-      el.classList.remove('visible');
-      observer.observe(el);
-    });
-  }
+    // ========================================
+    // АНИМАЦИИ
+    // ========================================
+    let observer = null;
+    function initAnimations() {
+      if (observer) observer.disconnect();
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
 
-  // Вызываем после renderVideos
-  const originalRender = renderVideos;
-  renderVideos = function(append) {
-    originalRender(append);
-    setTimeout(initAnimations, 100);
-  };
-</script>
+      document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    }
+
+    // Открытие видео по клику
+    function openVideo(url) {
+      window.open(url, '_blank');
+    }
+
+    // Запуск анимаций при загрузке
+    window.addEventListener('load', initAnimations);
+  </script>
 </body>
 </html>
