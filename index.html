@@ -224,12 +224,12 @@
     .low-performance .card-hover { transition: none; }
     .low-performance .card-hover:hover { transform: none; box-shadow: none; }
     .low-performance .fade-in { transition: none; opacity: 1; transform: none; }
-    .low-performance .animate-[floaty_5s_ease-in-out_infinite] { animation: none; }
+    .low-performance .animate-[floaty_5s ease-in-out_infinite] { animation: none; }
     .low-performance #videos { display: none; }
     .low-performance .banner-video, .low-performance .banner-quote { display: none; }
     .banner-fallback { display: none; }
     .low-performance .banner-fallback { display: block; }
-    .no-animations .fade-in, .no-animations .card-hover, .no-animations .animate-[floaty_5s_ease-in-out_infinite], .no-animations .bg-particles {
+    .no-animations .fade-in, .no-animations .card-hover, .no-animations .animate-[floaty_5s ease-in-out_infinite], .no-animations .bg-particles {
       transition: none;
       transform: none;
       opacity: 1;
@@ -557,7 +557,7 @@
       .glass { backdrop-filter: none; background: linear-gradient(180deg, rgb(255 255 255 / .9), rgb(255 255 255 / .8)); }
       .dark .glass { background: linear-gradient(180deg, rgb(17 24 39 / .9), rgb(17 24 39 / .8)); }
       .card-hover:hover { transform: none; }
-      .animate-[floaty_5s_ease-in-out_infinite] { animation: none; }
+      .animate-[floaty_5s ease-in-out_infinite] { animation: none; }
       iframe, video, img { max-width: 100%; height: auto; }
       #settings .notification { max-width: 80%; right: 0.5rem; bottom: 0.5rem; }
     }
@@ -653,7 +653,6 @@
         </div>
         <div class="hidden sm:flex items-center gap-2">
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#videos">Видео</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#profile">Профиль</a>
@@ -668,7 +667,7 @@
           </button>
         </div>
       </nav>
-      <div id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 sm:hidden glass">
+      <nav id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-900 transform -translate-x-full transition-transform duration-300 ease-in-out z-50 sm:hidden glass">
         <div class="p-4">
           <button id="closeMenu" class="absolute top-4 right-4 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
             <i class="fa-solid fa-xmark"></i>
@@ -679,14 +678,13 @@
           </div>
           <nav class="space-y-2">
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#videos">Видео</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#profile">Профиль</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#settings">Настройки</a>
           </nav>
         </div>
-      </div>
+      </nav>
     </header>
     <main>
       <section id="welcome" class="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -705,27 +703,27 @@
         Эпичные видео, новости и обновления от Mortis Play. Присоединяйся к вайбу! 😎
       </p>
       <!-- Кнопки -->
-<div class="flex flex-wrap justify-center gap-3 mb-6">
-  <a href="#contact" class="neon-btn flex items-center gap-2">
-    <i class="fa-solid fa-envelope"></i> Контакты
-  </a>
-  <a href="biography.html" class="neon-btn flex items-center gap-2">
-    <i class="fa-solid fa-user"></i> Биография
-  </a>
-  <a href="qa.html" class="neon-btn flex items-center gap-2">
-    <i class="fa-solid fa-question-circle"></i> Задать вопрос
-  </a>
-  <a href="faq.html" class="neon-btn flex items-center gap-2">
-    <i class="fa-solid fa-circle-question"></i> FAQ
-  </a>
-  <a href="/games/" class="neon-btn flex items-center gap-2">
-    <i class="fa-solid fa-gamepad"></i> Игры
-  </a>
-  <!-- НОВАЯ КНОПКА -->
-  <a href="/videos/index.html" class="neon-btn flex items-center gap-2 fade-in">
-    <i class="fa-solid fa-video"></i> Видео
-  </a>
-</div>
+      <div class="flex flex-wrap justify-center gap-3 mb-6">
+        <a href="#contact" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-envelope"></i> Контакты
+        </a>
+        <a href="biography.html" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-user"></i> Биография
+        </a>
+        <a href="qa.html" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-question-circle"></i> Задать вопрос
+        </a>
+        <a href="faq.html" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-circle-question"></i> FAQ
+        </a>
+        <a href="/games/" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-gamepad"></i> Игры
+        </a>
+        <!-- НОВАЯ КНОПКА -->
+        <a href="/videos/index.html" class="neon-btn flex items-center gap-2 fade-in">
+          <i class="fa-solid fa-video"></i> Видео
+        </a>
+      </div>
       <!-- Статистика -->
       <div class="flex justify-center gap-6 text-sm text-gray-300">
         <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">421</span></div>
@@ -792,14 +790,6 @@
           </div>
         </div>
       </section>
-      <section id="videos" class="py-16 fade-in">
-        <div class="mx-auto max-w-7xl px-4">
-          <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Мои видео</h2>
-          <div class="mt-6 text-center">
-            <p class="text-lg text-gray-300">Раздел "Видео" временно закрыт для реализации Rutube API и переключателя на YouTube API. <i class="fa-solid fa-tools text-purple-400"></i></p>
-          </div>
-        </div>
-      </section>
       <section id="news" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Новости</h2>
@@ -827,7 +817,7 @@
             </label>
             <p id="lowPerformanceDesc" class="mt-2 text-xs text-gray-300">Отключает анимации, эффекты и видео для плавной работы на слабых телефонах.</p>
             <label class="mt-3 flex items-center gap-2">
-              <input type="checkbox" id="disableAnimationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить анимации" aria-describedby="disableAnimationsDesc">
+              <input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500" id="disableAnimationsToggle" aria-label="Отключить анимации" aria-describedby="disableAnimationsDesc">
               <span class="text-sm text-gray-300">Отключить анимации</span>
             </label>
             <p id="disableAnimationsDesc" class="mt-2 text-xs text-gray-300">Отключает только анимации для улучшения производительности.</p>
@@ -1141,7 +1131,7 @@
                 }
                 gtag('event', 'font_size_change', { event_category: 'settings', event_label: fontSize });
                 logAction(`Размер шрифта изменён: ${fontSize}%`);
-              }, 1000); // Скрыть после 1 секунды паузы
+              }, 1000);
             }
           });
           const fontNotifClose = document.getElementById('fontNotification').querySelector('button');
@@ -1245,59 +1235,59 @@
           });
         }
       };
-   
-const setupGhostGesture = () => {
-  let path = [];
-  const tolerance = 50;
-  const minPoints = 10;
-  const recognizeM = (points) => {
-  if (points.length < minPoints) return false;
-  const xs = points.map(p => p.x);
-  const ys = points.map(p => p.y);
-  const minX = Math.min(...xs), maxX = Math.max(...xs);
-  const minY = Math.min(...ys), maxY = Math.max(...ys);
-  const w = maxX - minX;
-  const h = maxY - minY;
-  if (w < 50 || h < 50) return false;
-  const thirdsX = [minX + w/3, minX + 2*w/3];
-  const halfY = minY + h/2;
-  const leftUp = points.some(p => p.x < thirdsX[0] && p.y < halfY);
-  const leftDown = points.some(p => p.x < thirdsX[0] && p.y > halfY);
-  const midDown = points.some(p => p.x > thirdsX[0] && p.x < thirdsX[1] && p.y > halfY);
-  const rightUp = points.some(p => p.x > thirdsX[1] && p.y < halfY);
-  const rightDown = points.some(p => p.x > thirdsX[1] && p.y > halfY);
-  return leftUp && leftDown && midDown && rightUp && rightDown;
-};
-  const handleStart = (e) => {
-    path = [];
-    const addPoint = (clientX, clientY) => {
-      path.push({ x: clientX, y: clientY });
-    };
-    const handleMove = (e) => {
-      const touch = e.touches ? e.touches[0] : e;
-      addPoint(touch.clientX, touch.clientY);
-    };
-    const handleEnd = () => {
-      if (recognizeM(path)) {
-        localStorage.setItem('ghostScrolls', '3');
-        localStorage.setItem('ghostScrollsEarned', 'true');
-        checkBadgeConditions();
-        showNotification('Призрачный режим активирован! Бейдж получен! 👻', document.getElementById('appearanceNotification'));
-      }
-      document.removeEventListener('mousemove', handleMove);
-      document.removeEventListener('touchmove', handleMove);
-      document.removeEventListener('mouseup', handleEnd);
-      document.removeEventListener('touchend', handleEnd);
-    };
-    document.addEventListener('mousemove', handleMove);
-    document.addEventListener('touchmove', handleMove, { passive: true });
-    document.addEventListener('mouseup', handleEnd);
-    document.addEventListener('touchend', handleEnd);
-  };
-  document.addEventListener('mousedown', handleStart);
-  document.addEventListener('touchstart', handleStart, { passive: true });
-};
-document.addEventListener('DOMContentLoaded', setupGhostGesture);
+  
+      const setupGhostGesture = () => {
+        let path = [];
+        const tolerance = 50;
+        const minPoints = 10;
+        const recognizeM = (points) => {
+          if (points.length < minPoints) return false;
+          const xs = points.map(p => p.x);
+          const ys = points.map(p => p.y);
+          const minX = Math.min(...xs), maxX = Math.max(...xs);
+          const minY = Math.min(...ys), maxY = Math.max(...ys);
+          const w = maxX - minX;
+          const h = maxY - minY;
+          if (w < 50 || h < 50) return false;
+          const thirdsX = [minX + w/3, minX + 2*w/3];
+          const halfY = minY + h/2;
+          const leftUp = points.some(p => p.x < thirdsX[0] && p.y < halfY);
+          const leftDown = points.some(p => p.x < thirdsX[0] && p.y > halfY);
+          const midDown = points.some(p => p.x > thirdsX[0] && p.x < thirdsX[1] && p.y > halfY);
+          const rightUp = points.some(p => p.x > thirdsX[1] && p.y < halfY);
+          const rightDown = points.some(p => p.x > thirdsX[1] && p.y > halfY);
+          return leftUp && leftDown && midDown && rightUp && rightDown;
+        };
+        const handleStart = (e) => {
+          path = [];
+          const addPoint = (clientX, clientY) => {
+            path.push({ x: clientX, y: clientY });
+          };
+          const handleMove = (e) => {
+            const touch = e.touches ? e.touches[0] : e;
+            addPoint(touch.clientX, touch.clientY);
+          };
+          const handleEnd = () => {
+            if (recognizeM(path)) {
+              localStorage.setItem('ghostScrolls', '3');
+              localStorage.setItem('ghostScrollsEarned', 'true');
+              checkBadgeConditions();
+              showNotification('Призрачный режим активирован! Бейдж получен! 👻', document.getElementById('appearanceNotification'));
+            }
+            document.removeEventListener('mousemove', handleMove);
+            document.removeEventListener('touchmove', handleMove);
+            document.removeEventListener('mouseup', handleEnd);
+            document.removeEventListener('touchend', handleEnd);
+          };
+          document.addEventListener('mousemove', handleMove);
+          document.addEventListener('touchmove', handleMove, { passive: true });
+          document.addEventListener('mouseup', handleEnd);
+          document.addEventListener('touchend', handleEnd);
+        };
+        document.addEventListener('mousedown', handleStart);
+        document.addEventListener('touchstart', handleStart, { passive: true });
+      };
+      document.addEventListener('DOMContentLoaded', setupGhostGesture);
       const setupResetProfile = () => {
         const resetProfileButton = document.getElementById('resetProfile');
         const notification = document.getElementById('appearanceNotification');
@@ -1430,18 +1420,16 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     name: 'Мемолог',
     icon: 'fa-solid fa-laugh',
     description: 'Посмотрите 4 видео в категории «Угар» (Временно недоступно)',
-    earned: () => false, // Временно недоступно из-за закрытия раздела Видео
+    earned: () => false,
     progress: () => Math.min(Object.values(JSON.parse(localStorage.getItem('watchedVideos') || '{}')).filter(v => v.category === 'fun').length, 4),
     rarity: 'rare'
   },
-  { name: 'Стример', icon: 'fa-solid fa-video', description: 'Загрузите аватар и установите имя пользователя', earned: () => {
-    return !!localStorage.getItem('userAvatar') && !!localStorage.getItem('username');
-  }, rarity: 'common' },
+  { name: 'Стример', icon: 'fa-solid fa-video', description: 'Загрузите аватар и установите имя пользователя', earned: () => !!localStorage.getItem('userAvatar') && !!localStorage.getItem('username'), rarity: 'common' },
   {
     name: 'Исследователь',
     icon: 'fa-solid fa-compass',
     description: 'Посмотри хотя бы одно видео из каждой категории (Временно недоступно)',
-    earned: () => false, // Временно недоступно из-за закрытия раздела Видео
+    earned: () => false,
     rarity: 'rare'
   },
   {
@@ -1452,16 +1440,16 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     rarity: 'legendary'
   },
   {
-  name: 'Эпик Мемолог',
-  icon: 'fa-solid fa-medal',
-  description: 'Просмотрите 20 видео в категории «Угар» (Временно недоступно)',
-  earned: () => false, // Временно недоступно из-за закрытия раздела Видео
-  progress: () => {
-    const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
-    return Math.min(Object.values(watchedVideos).filter(v => v.category === 'fun').length, 20);
+    name: 'Эпик Мемолог',
+    icon: 'fa-solid fa-medal',
+    description: 'Просмотрите 20 видео в категории «Угар» (Временно недоступно)',
+    earned: () => false,
+    progress: () => {
+      const watchedVideos = JSON.parse(localStorage.getItem('watchedVideos') || '{}');
+      return Math.min(Object.values(watchedVideos).filter(v => v.category === 'fun').length, 20);
+    },
+    rarity: 'legendary'
   },
-  rarity: 'legendary'
-},
   {
     name: 'Легенда',
     icon: 'fa-solid fa-crown',
@@ -1472,12 +1460,8 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     },
     rarity: 'legendary'
   },
-  { name: 'Секретный Агент', icon: 'fa-solid fa-user-secret', description: 'Секретный бейдж! Как вы его нашли?', earned: () => {
-    return parseInt(localStorage.getItem('secretClicks') || '0') >= 5;
-  }, rarity: 'secret' },
-  { name: 'Кодовый Взломщик', icon: 'fa-solid fa-terminal', description: 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈', earned: () => {
-    return localStorage.getItem('mortis_hacker') === 'true';
-  }, rarity: 'code-breaker' },
+  { name: 'Секретный Агент', icon: 'fa-solid fa-user-secret', description: 'Секретный бейдж! Как вы его нашли?', earned: () => parseInt(localStorage.getItem('secretClicks') || '0') >= 5, rarity: 'secret' },
+  { name: 'Кодовый Взломщик', icon: 'fa-solid fa-terminal', description: 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈', earned: () => localStorage.getItem('mortis_hacker') === 'true', rarity: 'code-breaker' },
   {
     name: 'Призрачный Зритель',
     icon: 'fa-solid fa-ghost',
@@ -1486,6 +1470,7 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     rarity: 'secret'
   }
 ];
+
       const setupSecretBadgeTrigger = () => {
         const logo = document.querySelector('a[href="#welcome"] img');
         if (logo) {
@@ -1500,130 +1485,124 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         }
       };
       const createBadgeParticles = (badgeEl, badgeName) => {
-  const canvas = document.createElement('canvas');
-  canvas.style.cssText = `
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none; border-radius: 9999px; will-change: contents;
-  `;
-  badgeEl.style.position = 'relative';
-  badgeEl.style.overflow = 'hidden';
-  badgeEl.appendChild(canvas);
-  const ctx = canvas.getContext('2d');
-  let animationId;
-  const resizeCanvas = () => {
-    const rect = badgeEl.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    canvas.style.width = rect.width + 'px';
-    canvas.style.height = rect.height + 'px';
-    ctx.scale(dpr, dpr);
-  };
-  // Принудительно вызываем ресайз сразу
-  resizeCanvas();
-  const ro = new ResizeObserver(() => {
-    resizeCanvas();
-  });
-  ro.observe(badgeEl);
-  const particles = [];
-  const centerX = () => canvas.width / 2 / (window.devicePixelRatio || 1);
-  const centerY = () => canvas.height / 2 / (window.devicePixelRatio || 1);
-  const radius = () => Math.min(centerX(), centerY()) * 0.8;
-  // Инициализация частиц
-  if (badgeName.includes('Секретный Агент')) {
-    for (let i = 0; i < 8; i++) {
-      particles.push({
-        angle: (i / 8) * Math.PI * 2,
-        speed: 0.015 + Math.random() * 0.01,
-        size: 1.8 + Math.random() * 1.2,
-        color: Math.random() > 0.5 ? '#a855f7' : '#d946ef'
-      });
-    }
-  } else if (badgeName.includes('Кодовый Взломщик')) {
-    for (let i = 0; i < 12; i++) {
-      particles.push({
-        x: Math.random() * 100,
-        y: Math.random() * 100 - 100,
-        speed: 1.8 + Math.random() * 1,
-        color: '#22c55e'
-      });
-    }
-  } else if (badgeName.includes('Призрачный Зритель')) {
-    for (let i = 0; i < 6; i++) {
-      particles.push({
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: 3 + Math.random() * 3,
-        speedX: (Math.random() - 0.5) * 1.2,
-        speedY: (Math.random() - 0.5) * 1.2
-      });
-    }
-  }
-  const animate = () => {
-    if (document.documentElement.classList.contains('low-performance')) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Секретный Агент
-    if (badgeName.includes('Секретный Агент')) {
-      particles.forEach(p => {
-        p.angle += p.speed;
-        const x = centerX() + Math.cos(p.angle) * radius();
-        const y = centerY() + Math.sin(p.angle) * radius();
-        ctx.globalAlpha = 0.6 + 0.4 * Math.sin(p.angle * 3);
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(x, y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-    }
-    // Кодовый Взломщик
-    if (badgeName.includes('Кодовый Взломщик')) {
-      particles.forEach(p => {
-        p.y += p.speed;
-        if (p.y > 100) {
-          p.y = -15;
-          p.x = Math.random() * 100;
+        const canvas = document.createElement('canvas');
+        canvas.style.cssText = `
+          position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+          pointer-events: none; border-radius: 9999px; will-change: contents;
+        `;
+        badgeEl.style.position = 'relative';
+        badgeEl.style.overflow = 'hidden';
+        badgeEl.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        let animationId;
+        const resizeCanvas = () => {
+          const rect = badgeEl.getBoundingClientRect();
+          const dpr = window.devicePixelRatio || 1;
+          canvas.width = rect.width * dpr;
+          canvas.height = rect.height * dpr;
+          canvas.style.width = rect.width + 'px';
+          canvas.style.height = rect.height + 'px';
+          ctx.scale(dpr, dpr);
+        };
+        resizeCanvas();
+        const ro = new ResizeObserver(() => {
+          resizeCanvas();
+        });
+        ro.observe(badgeEl);
+        const particles = [];
+        const centerX = () => canvas.width / 2 / (window.devicePixelRatio || 1);
+        const centerY = () => canvas.height / 2 / (window.devicePixelRatio || 1);
+        const radius = () => Math.min(centerX(), centerY()) * 0.8;
+        if (badgeName.includes('Секретный Агент')) {
+          for (let i = 0; i < 8; i++) {
+            particles.push({
+              angle: (i / 8) * Math.PI * 2,
+              speed: 0.015 + Math.random() * 0.01,
+              size: 1.8 + Math.random() * 1.2,
+              color: Math.random() > 0.5 ? '#a855f7' : '#d946ef'
+            });
+          }
+        } else if (badgeName.includes('Кодовый Взломщик')) {
+          for (let i = 0; i < 12; i++) {
+            particles.push({
+              x: Math.random() * 100,
+              y: Math.random() * 100 - 100,
+              speed: 1.8 + Math.random() * 1,
+              color: '#22c55e'
+            });
+          }
+        } else if (badgeName.includes('Призрачный Зритель')) {
+          for (let i = 0; i < 6; i++) {
+            particles.push({
+              x: Math.random() * 100,
+              y: Math.random() * 100,
+              size: 3 + Math.random() * 3,
+              speedX: (Math.random() - 0.5) * 1.2,
+              speedY: (Math.random() - 0.5) * 1.2
+            });
+          }
         }
-        ctx.strokeStyle = p.color;
-        ctx.globalAlpha = 0.7;
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.x, p.y + 15);
-        ctx.stroke();
-        if (Math.random() < 0.05) {
-          ctx.fillStyle = '#22c55e';
-          ctx.globalAlpha = 1;
-          ctx.font = '10px monospace';
-          ctx.fillText(Math.random() < 0.5 ? '0' : '1', p.x - 5, p.y + 10);
-        }
-      });
-    }
-    // Призрачный Зритель
-    if (badgeName.includes('Призрачный Зритель')) {
-      particles.forEach(p => {
-        p.x += p.speedX;
-        p.y += p.speedY;
-        if (p.x < 0 || p.x > 100) p.speedX *= -1;
-        if (p.y < 0 || p.y > 100) p.speedY *= -1;
-        ctx.globalAlpha = 0.4;
-        ctx.fillStyle = '#e5e7eb';
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.x + p.size * 2, p.y);
-        ctx.lineTo(p.x + p.size, p.y - p.size);
-        ctx.closePath();
-        ctx.fill();
-      });
-    }
-    animationId = requestAnimationFrame(animate);
-  };
-  // Запускаем анимацию ПРИНУДИТЕЛЬНО
-  animate();
-  return () => {
-    cancelAnimationFrame(animationId);
-    ro.disconnect();
-  };
-};
+        const animate = () => {
+          if (document.documentElement.classList.contains('low-performance')) return;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          if (badgeName.includes('Секретный Агент')) {
+            particles.forEach(p => {
+              p.angle += p.speed;
+              const x = centerX() + Math.cos(p.angle) * radius();
+              const y = centerY() + Math.sin(p.angle) * radius();
+              ctx.globalAlpha = 0.6 + 0.4 * Math.sin(p.angle * 3);
+              ctx.fillStyle = p.color;
+              ctx.beginPath();
+              ctx.arc(x, y, p.size, 0, Math.PI * 2);
+              ctx.fill();
+            });
+          }
+          if (badgeName.includes('Кодовый Взломщик')) {
+            particles.forEach(p => {
+              p.y += p.speed;
+              if (p.y > 100) {
+                p.y = -15;
+                p.x = Math.random() * 100;
+              }
+              ctx.strokeStyle = p.color;
+              ctx.globalAlpha = 0.7;
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p.x, p.y + 15);
+              ctx.stroke();
+              if (Math.random() < 0.05) {
+                ctx.fillStyle = '#22c55e';
+                ctx.globalAlpha = 1;
+                ctx.font = '10px monospace';
+                ctx.fillText(Math.random() < 0.5 ? '0' : '1', p.x - 5, p.y + 10);
+              }
+            });
+          }
+          if (badgeName.includes('Призрачный Зритель')) {
+            particles.forEach(p => {
+              p.x += p.speedX;
+              p.y += p.speedY;
+              if (p.x < 0 || p.x > 100) p.speedX *= -1;
+              if (p.y < 0 || p.y > 100) p.speedY *= -1;
+              ctx.globalAlpha = 0.4;
+              ctx.fillStyle = '#e5e7eb';
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p.x + p.size * 2, p.y);
+              ctx.lineTo(p.x + p.size, p.y - p.size);
+              ctx.closePath();
+              ctx.fill();
+            });
+          }
+          animationId = requestAnimationFrame(animate);
+        };
+        animate();
+        return () => {
+          cancelAnimationFrame(animationId);
+          ro.disconnect();
+        };
+      };
       const triggerBadgeEffect = (badgeName) => {
         // Убрали эффект для 'Кодовый Взломщик'
       };
@@ -1643,21 +1622,19 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         badgeDefinitions.forEach(badge => {
           if (savedBadges.includes(badge.name) || badge.earned()) {
             if (!savedBadges.includes(badge.name)) {
-  savedBadges.push(badge.name);
-  localStorage.setItem('userBadges', JSON.stringify(savedBadges));
-  showNotification(`Новый бейдж: ${badge.name}! 🎉`, notification);
-  gtag('event', 'badge_earned', { event_category: 'profile', event_label: badge.name });
-  logAction(`Получен новый бейдж: ${badge.name}`);
-  triggerBadgeEffect(badge.name);
-              badgeEl.classList.add('new-badge');
-  setTimeout(() => badgeEl.classList.remove('new-badge'), 5000);
+              savedBadges.push(badge.name);
+              localStorage.setItem('userBadges', JSON.stringify(savedBadges));
+              showNotification(`Новый бейдж: ${badge.name}! 🎉`, notification);
+              gtag('event', 'badge_earned', { event_category: 'profile', event_label: badge.name });
+              logAction(`Получен новый бейдж: ${badge.name}`);
+              triggerBadgeEffect(badge.name);
             }
             const badgeEl = document.createElement('span');
             badgeEl.className = `badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${badge.rarity} ${badge.name.toLowerCase().replace(' ', '-').replace('ё', 'e')}`;
             badgeEl.innerHTML = `<i class="${badge.icon}"></i>${badge.name}`;
             if (badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost') {
-  createBadgeParticles(badgeEl, badge.name); // Передаём имя бейджика
-}
+              createBadgeParticles(badgeEl, badge.name);
+            }
             badges.appendChild(badgeEl);
           }
         });
@@ -1685,7 +1662,6 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
             <span class="${textClass}">${nameText} (${rarityText}): ${descText} ${progress}</span>
             <span>${status}</span>
           `;
-       
           badgeList.appendChild(badgeItem);
           badgeItem.addEventListener('click', () => {
             const modal = document.getElementById('badgeModal');
@@ -1729,70 +1705,38 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
       const checkBadgeConditions = () => {
         setupBadges();
       };
-      const videoData = [
-        { src: 'https://rutube.ru/play/embed/17ab491deff35ceaacdbe027e266e9f6/', title: 'Угар в Content Warning', category: 'fun' },
-        { src: 'https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/', title: 'УГАР В REPO', category: 'fun' },
-        { src: 'https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/', title: 'Игра CS2 (feat. Johnny Drill)', category: 'streams' },
-        { src: 'https://rutube.ru/play/embed/2ba4872771e827b6ce560a8390462643/', title: 'ВРЕМЯ УГАРА И ПРЕДАТЕЛЬСТВА PEAK!', category: 'fun' },
-        { src: 'https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/', title: 'Mortisplay32 ИГРАЕТ В PEAK', category: 'streams' },
-        { src: 'https://rutube.ru/play/embed/3de912692f3520aad3ccf648b30f0247', title: 'ВРЕМЯ БЕЗУМИЙ В РАБОТЕ!!!', category: 'fun' },
-        { src: 'https://rutube.ru/play/embed/1cb1388800c0a573bb4c6942bc12c752', title: 'УМНЫЙ НО КОСОЙ', category: 'fun' },
-        { src: 'https://rutube.ru/play/embed/8e2f7da5ca6582d3b66ea73d39b53130', title: 'СПЕЦ ВЫПУСК!!! СМЕРТЕЛЬНЫЙ КОНТЕНТ!', category: 'fun' },
-        { src: 'https://rutube.ru/play/embed/f50e8d94d8228d9a8ffce5e37773a8e2', title: 'НОВЫЕ ВРЕМЕНА НАЧИНАЮТСЯ С РЕЛАКСА', category: 'fun' },
-        { src: 'https://rutube.ru/play/embed/522c3d4a29970e19b74f8cdfa9e2eb3e', title: 'СПЕЦ ВЫПУСК! ЧАС РАБОТЫ В ЛЕТАЛ КОМПАНИ!', category: 'fun' },
-        { src: 'https://rutube.ru/play/embed/2c266a516ea35150036cd6298ef6db68', title: 'ВРОДЕ ОБНОВА ТОП НО НЕ СОВСЕМ...', category: 'fun' },
-        { src: 'https://rutube.ru/play/embed/36faf3fd0b2c5dac09f907297925db41', title: 'НОВАЯ ВЕБКА, НОВЫЕ ГОРИЗОНТЫ!', category: 'fun' },
-        { src: 'https://rutube.ru/play/embed/5b51c9a3e15b4d75bfb08783c90bcc85', title: 'БЛИЦ Play: КОНЕЦ ГОДА, ЧТО ДАЛЬШЕ?', category: 'blitz' },
-        { src: 'https://rutube.ru/play/embed/171e2dae98076c82e5c49f3dfda7bb33', title: 'БЛИЦ Play: ПОСЛЕЖНИЙ РУБЕЖ!', category: 'blitz' },
-        { src: 'https://rutube.ru/play/embed/0f958e52a3a7023734bfa562186a9bce', title: 'БЛИЦ Play: ВСЕ? ВСЕ.', category: 'blitz' }
-      ];
-      const setupVideos = () => {
-        // Раздел закрыт, ничего не рендерим, кроме сообщения (уже в HTML)
-      };
-      const newsData = [
-        { title: "Mortis Games! ", date: "6 ноября", content: "Да да, вы не услышали, игры от Mortis ОТКРЫТЫ! Теперь вы можете на нашем сайте играть в игры ту для у вас должно быть в наличии интернет! Также вы можете предложить игру ту, которую вы хотите, а мы его разработаем и добавим специальный бейджик) Также мы пофиксили баги на сайте для мобилок и прочие исправления. В скором времени мы ещё кучу известных игр завезём и не только! ;)" },
-        { title: "Раздел Профиль и система достижений ", date: "29 октября 2025", content: "Итак, мы добавили на сайт профиль и ачивки, с помощью ачивок вы можете показать своё настоящее достоинство! Как это работает и как их получать? Вы можете глянуть раздел FAQ или в разделе профиль глянуть получение ачивок. На сегодня всё, скоро мы зальём еще пару грядущих новинок на сайт) " },
-        { title: "Обновили немного сайт", date: "25 сентября 2025", content: "Вернули узоры на сайт, также обновили чуть чуть дизайн и обновили бота. Также, сообщаем вам новость о том, что сайт не будет обновляться в течение месяца, ведь мы сейчас начнем заниматься контентом поэтому все изменения которые у вас попадутся на сайте, будут исправлены только когда мы закончим с контентом, если вы вы обнаружите проблему на сайте, пишите в Telegram: <a href=\"https://t.me/dimap7221\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">MortisPlay</a>. Приятного времяпровождение на сайте :3" },
-        { title: "Технический перерыв завершён!", date: "22 сентября 2025", content: "Йоу, геймеры! 🎮🔥 Сайт Mortis Play вернулся! Проверь новые фичи, обновления и Q&A. Пиши вопросы боту: <a href=\"https://t.me/MortisplayQABot\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">MortisplayQABot</a>. Следи за новостями в Telegram: <a href=\"https://t.me/MortisPlayTG\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">@MortisPlayTG</a>." },
-        { title: "Новый раздел «Настройки» и бот готов!", date: "18 сентября 2025", content: "Йоу, геймеры! 🎮🔥 Новый раздел «Настройки» уже на сайте — настраивай тему, шрифты и производительность! В будущем добавим ещё больше кастомизаций. 😎 Плюс, наш бот закончен и ждёт вопросов: <a href=\"https://t.me/MortisplayQABot\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">MortisplayQABot</a>." },
-        { title: "Q&A открыт!", date: "15 сентября 2025", content: "Йоу, геймеры! 🎮🔥 Q&A стартовал! Пиши вопросы в Telegram: <a href=\"https://t.me/MortisplayQABot\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">MortisplayQABot</a>. Раздел «Видео» теперь с категориями (Все, Стримы, Угар). «FAQ» переехал на отдельную страницу. «Биография» получила новый стиль и плейлист! 🔥" },
-        { title: "Улучшена Биография!", date: "10 сентября 2025", content: "Переработали страницу Биографии! Больше деталей о моём пути и планах. Проверь по кнопке \"Биография\"! 😎" },
-        { title: "Редизайн сайта!", date: "19 августа 2025", content: "Новый дизайн сайта: красивый, уникальный, обновлённый! Оцени и следи за апдейтами! 😎" },
-        { title: "Форум временно убран", date: "27 июля 2025", content: "Спам-боты атаковали форум, поэтому мы его временно убрали. Планируем вернуть в августе с новым дизайном! Вопросы пока в Telegram: <a href=\"https://t.me/MortisplayQABot\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">MortisplayQABot</a>." },
-        { title: "Новые мемы!", date: "16 июля 2025", content: "Добавили 7 новых мемов! Проверь на сайте и удиви друзей! 😋" }
-      ];
       const setupNews = () => {
-  const grid = document.getElementById('newsGrid');
-  const loadMore = document.getElementById('loadMoreNews');
-  let page = 1;
-  const perPage = 3;
-  const renderNews = (append = false) => {
-    if (!append) {
-      grid.innerHTML = '';
-      page = 1;
-    }
-    const start = (page - 1) * perPage;
-    const end = start + perPage;
-    const items = newsData.slice(start, end);
-    items.forEach(item => {
-      const article = document.createElement('article');
-      article.className = 'glass-card p-6 fade-in';
-      article.innerHTML = `
-        <h3 class="text-lg font-semibold text-purple-300">${item.title}</h3>
-        <p class="mt-2 text-sm text-gray-300">${item.content}</p>
-        <p class="mt-3 text-xs text-gray-400">С любовью Mortis32 &lt;3 · ${item.date}</p>
-      `;
-      grid.appendChild(article);
-    });
-    loadMore.style.display = end >= newsData.length ? 'none' : 'inline-flex';
-    setupFadeIn(); // ← Фикс: анимация для новых карточек
-  };
-  loadMore.addEventListener('click', () => {
-    page++;
-    renderNews(true);
-  });
-  renderNews();
-}
+        const grid = document.getElementById('newsGrid');
+        const loadMore = document.getElementById('loadMoreNews');
+        let page = 1;
+        const perPage = 3;
+        const renderNews = (append = false) => {
+          if (!append) {
+            grid.innerHTML = '';
+            page = 1;
+          }
+          const start = (page - 1) * perPage;
+          const end = start + perPage;
+          const items = newsData.slice(start, end);
+          items.forEach(item => {
+            const article = document.createElement('article');
+            article.className = 'glass-card p-6 fade-in';
+            article.innerHTML = `
+              <h3 class="text-lg font-semibold text-purple-300">${item.title}</h3>
+              <p class="mt-2 text-sm text-gray-300">${item.content}</p>
+              <p class="mt-3 text-xs text-gray-400">С любовью Mortis32 &lt;3 · ${item.date}</p>
+            `;
+            grid.appendChild(article);
+          });
+          loadMore.style.display = end >= newsData.length ? 'none' : 'inline-flex';
+          setupFadeIn();
+        };
+        loadMore.addEventListener('click', () => {
+          page++;
+          renderNews(true);
+        });
+        renderNews();
+      };
       const setupNavigation = () => {
         const menuToggle = document.getElementById('menuToggle');
         const sidebarMenu = document.getElementById('sidebarMenu');
@@ -1877,19 +1821,6 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         }, { threshold: 0.1 });
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
       };
-      const setupVideoErrorHandling = () => {
-        const video = document.querySelector('.banner-video');
-        if (video) {
-          video.addEventListener('error', () => {
-            const fallbackImg = video.nextElementSibling;
-            if (fallbackImg) {
-              video.classList.add('hidden');
-              fallbackImg.classList.remove('hidden');
-              logAction('Ошибка загрузки видео в баннере');
-            }
-          });
-        }
-      };
       const setupLoader = () => {
         const loader = document.getElementById('loader');
         const siteContent = document.getElementById('siteContent');
@@ -1922,29 +1853,27 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         }
       });
       document.addEventListener('DOMContentLoaded', () => {
-  setupProfileBetaNotice();
-  setupThemeToggle();
-  setupThemeSelect();
-  setupPerformance();
-  setupAnimations();
-  setupParticleToggle();
-  setupFontSize();
-  setupHighContrast();
-  setupBadgeNotificationsToggle();
-  setupResetSettings();
-  setupResetProfile();
-  setupProfile();
-  setupVideos();
-  setupNews();
-  setupNavigation();
-  setupParticles();
-  setupFadeIn();
-  setupLoader();
-  setupVideoErrorHandling();
-  setupBadges();
-  setupSecretBadgeTrigger();
-  setupGhostGesture();
-});
+        setupProfileBetaNotice();
+        setupThemeToggle();
+        setupThemeSelect();
+        setupPerformance();
+        setupAnimations();
+        setupParticleToggle();
+        setupFontSize();
+        setupHighContrast();
+        setupBadgeNotificationsToggle();
+        setupResetSettings();
+        setupResetProfile();
+        setupProfile();
+        setupNews();
+        setupNavigation();
+        setupParticles();
+        setupFadeIn();
+        setupLoader();
+        setupBadges();
+        setupSecretBadgeTrigger();
+        setupGhostGesture();
+      });
     </script>
   </div>
 </body>
