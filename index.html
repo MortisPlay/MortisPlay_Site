@@ -1393,16 +1393,28 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
       };
       const badgeDefinitions = [
   { name: 'Фанат', icon: 'fa-solid fa-star', description: 'Выдаётся за посещение сайта!', earned: () => true, rarity: 'common' },
+
+  // === НОВЫЙ: НОЧНОЙ СТАЛКЕР (замена Социальный) ===
   {
-    name: 'Социальный',
-    icon: 'fa-solid fa-users',
-    description: 'Подпишись на Telegram-канал и напиши в личку',
-    earned: () => localStorage.getItem('social_subscribed') === 'true',
+    name: 'Ночной Сталкер',
+    icon: 'fa-solid fa-moon',
+    description: 'Посети сайт 5 раз с 00:00 до 06:00',
+    earned: () => {
+      const hour = new Date().getHours();
+      if (hour >= 0 && hour < 6) {
+        const count = (parseInt(localStorage.getItem('night_visits') || '0') || 0) + 1;
+        localStorage.setItem('night_visits', count);
+        checkBadgeConditions(); // мгновенный апдейт
+      }
+      return parseInt(localStorage.getItem('night_visits') || '0') >= 5;
+    },
     rarity: 'rare'
   },
+
   { name: 'Стример', icon: 'fa-solid fa-video', description: 'Загрузите аватар и установите имя пользователя', earned: () => {
     return !!localStorage.getItem('userAvatar') && !!localStorage.getItem('username');
   }, rarity: 'common' },
+
   {
     name: 'Игровой Эксперт',
     icon: 'fa-solid fa-gamepad',
@@ -1418,22 +1430,63 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     rarity: 'legendary'
   },
   {
-  name: 'Мега Фанат',
-  icon: 'fa-solid fa-heart',
-  description: 'Посети все разделы сайта 5 раз',
-  earned: () => localStorage.getItem('sections_visited') >= '25',
-  rarity: 'legendary'
-},
+    name: 'Мега Фанат',
+    icon: 'fa-solid fa-heart',
+    description: 'Посети все разделы сайта 5 раз',
+    earned: () => localStorage.getItem('sections_visited') >= '25',
+    rarity: 'legendary'
+  },
+
+  // === НОВЫЕ БЕЙДЖИ ===
+  {
+    name: 'Скоростной Читатель',
+    icon: 'fa-solid fa-bolt',
+    description: 'Прочитай 5 новостей за один визит',
+    earned: () => parseInt(localStorage.getItem('news_read_session') || '0') >= 5,
+    rarity: 'rare'
+  },
+  {
+    name: 'Мобильный Воин',
+    icon: 'fa-solid fa-mobile',
+    description: 'Зайди с телефона 5 раз',
+    earned: () => {
+      if (/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        const count = (parseInt(localStorage.getItem('mobile_visits') || '0') || 0) + 1;
+        localStorage.setItem('mobile_visits', count);
+      }
+      return parseInt(localStorage.getItem('mobile_visits') || '0') >= 5;
+    },
+    rarity: 'rare'
+  },
+  {
+    name: 'Тёмный Принц',
+    icon: 'fa-solid fa-crown',
+    description: 'Проведи 1 час в тёмной теме',
+    earned: () => {
+      if (document.documentElement.classList.contains('dark')) {
+        const time = (parseInt(localStorage.getItem('dark_time') || '0') || 0) + 1;
+        localStorage.setItem('dark_time', time);
+      }
+      return parseInt(localStorage.getItem('dark_time') || '0') >= 3600;
+    },
+    rarity: 'rare'
+  },
+
   {
     name: 'Легенда',
     icon: 'fa-solid fa-crown',
     description: 'Получи все остальные бейджи',
     earned: () => {
       const saved = JSON.parse(localStorage.getItem('userBadges') || '[]');
-      return ['Фанат', 'Социальный', 'Стример', 'Игровой Эксперт', '2048 Мастер', 'Мега Фанат'].every(b => saved.includes(b));
+      return [
+        'Фанат', 'Ночной Сталкер', 'Стример', 'Игровой Эксперт', '2048 Мастер', 'Мега Фанат',
+        'Скоростной Читатель', 'Мобильный Воин', 'Тёмный Принц'
+      ].every(b => saved.includes(b));
     },
     rarity: 'legendary'
   },
+
+  // Секретные остаются без изменений
   { name: 'Секретный Агент', icon: 'fa-solid fa-user-secret', description: 'Секретный бейдж! Как вы его нашли?', earned: () => {
     return parseInt(localStorage.getItem('secretClicks') || '0') >= 5;
   }, rarity: 'secret' },
@@ -1579,6 +1632,46 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     }
     animationId = requestAnimationFrame(animate);
   };
+        // === ЭФФЕКТ ДЛЯ "НОЧНОЙ СТАЛКЕР" (как у Кодовый Взломщик) ===
+else if (badgeName.includes('Ночной Сталкер')) {
+  for (let i = 0; i < 10; i++) {
+    particles.push({
+      x: Math.random() * 100,
+      y: Math.random() * 100 - 100,
+      speed: 1.5 + Math.random() * 1,
+      color: '#e0f2fe',
+      isStar: Math.random() > 0.7
+    });
+  }
+}
+// В animate():
+if (badgeName.includes('Ночной Сталкер')) {
+  particles.forEach(p => {
+    p.y += p.speed;
+    if (p.y > 100) {
+      p.y = -10;
+      p.x = Math.random() * 100;
+    }
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = 0.8;
+    if (p.isStar) {
+      // Звезда
+      ctx.beginPath();
+      for (let j = 0; j < 5; j++) {
+        const angle = (j * Math.PI * 2) / 5 - Math.PI / 2;
+        const radius = j % 2 === 0 ? 3 : 1.5;
+        ctx.lineTo(p.x + Math.cos(angle) * radius, p.y + Math.sin(angle) * radius);
+      }
+      ctx.closePath();
+      ctx.fill();
+    } else {
+      // Луна
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+}
   // Запускаем анимацию ПРИНУДИТЕЛЬНО
   animate();
   return () => {
@@ -1735,6 +1828,20 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
   });
   renderNews();
 }
+      // === ТРИГГЕР ДЛЯ "СКОРОСТНОЙ ЧИТАТЕЛЬ" ===
+document.querySelectorAll('#newsGrid article').forEach(article => {
+  article.addEventListener('click', () => {
+    const sessionCount = (parseInt(localStorage.getItem('news_read_session') || '0') || 0) + 1;
+    localStorage.setItem('news_read_session', sessionCount);
+    checkBadgeConditions();
+  });
+});
+
+// Сброс счётчика при выходе
+window.addEventListener('beforeunload', () => {
+  localStorage.removeItem('news_read_session');
+});
+      
       const setupNavigation = () => {
         const menuToggle = document.getElementById('menuToggle');
         const sidebarMenu = document.getElementById('sidebarMenu');
