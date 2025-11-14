@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Видео | Mortis Play</title>
-  <meta name="description" content="Все стримы, блицы, мемы и подкасты от Mortis Play. Только YouTube." />
+  <meta name="description" content="Все стримы, блицы, мемы и подкасты от Mortis Play. Только Rutube." />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link rel="icon" href="../favicon.ico" type="image/x-icon">
   <style>
@@ -209,11 +209,11 @@
       <div class="flex justify-center mb-6">
         <div class="glass-card p-4 flex items-center gap-4 rounded-xl">
           <span class="text-gray-300 font-medium">Смотри на:</span>
-          <button class="neon-btn active">
+          <button class="neon-btn opacity-50 cursor-not-allowed" disabled>
             <i class="fa-brands fa-youtube"></i> YouTube
           </button>
-          <button class="neon-btn opacity-50 cursor-not-allowed" disabled>
-            <i class="fa-brands fa-rutube"></i> Rutube <span class="text-xs">(скоро)</span>
+          <button class="neon-btn active">
+            <i class="fa-brands fa-rutube"></i> Rutube
           </button>
         </div>
       </div>
@@ -241,8 +241,8 @@
         <button id="loadMoreVideos" class="neon-btn px-6 py-3">
           <i class="fa-solid fa-plus"></i> Загрузить ещё
         </button>
-        <a href="https://www.youtube.com/@MortisPlay/videos" target="_blank" class="neon-btn">
-          <i class="fa-brands fa-youtube"></i> Все видео
+        <a href="https://rutube.ru/channel/ВАШ_ID/" target="_blank" class="neon-btn">
+          <i class="fa-brands fa-rutube"></i> Все видео
         </a>
       </div>
     </section>
@@ -250,14 +250,13 @@
 
   <script>
     // ========================================
-    // КОНФИГ (БЕЗ КЛЮЧА!)
+    // КОНФИГ RUTUBE
     // ========================================
     const CONFIG = {
-      youtube: {
-        channelId: 'UC2VwlrbzSa8UGLHAYmbuEZA',
-        // КЛЮЧ ДОЛЖЕН БЫТЬ НА СЕРВЕРЕ!
-        apiKey: 'YOUR_API_KEY_HERE', // ← Замени на бэкенд или используй прокси
-        embed: id => `https://www.youtube-nocookie.com/embed/${id}?rel=0`
+      rutube: {
+        channelId: '24189155', // ← ЗАМЕНИ НА СВОЙ ID ИЗ URL КАНАЛА
+        rss: channelId => `https://rutube.ru/api/video/person/${channelId}/?format=rss`,
+        embed: id => `https://rutube.ru/play/embed/${id}`
       }
     };
 
@@ -266,8 +265,9 @@
     // ========================================
     let allVideos = [];
     let currentFilter = 'all';
-    let nextPageToken = '';
     let isLoading = false;
+    let lastItemIndex = 0;
+    const PAGE_SIZE = 12;
 
     const videosGrid = document.getElementById('videosGrid');
     const loadMoreBtn = document.getElementById('loadMoreVideos');
@@ -277,52 +277,50 @@
     // ========================================
     document.addEventListener('DOMContentLoaded', () => {
       setupFilters();
-      fetchVideos();
+      fetchRutubeRSS();
     });
 
     // ========================================
-    // ЗАГРУЗКА ВИДЕО
+    // ЗАГРУЗКА RSS
     // ========================================
-    async function fetchVideos() {
+    async function fetchRutubeRSS() {
       if (isLoading) return;
       isLoading = true;
       showLoader();
 
       try {
-        const token = nextPageToken ? `&pageToken=${nextPageToken}` : '';
-        const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CONFIG.youtube.channelId}&maxResults=12${token}&order=date&type=video&key=${CONFIG.youtube.apiKey}`;
-        const searchRes = await fetch(searchUrl);
-        const searchData = await searchRes.json();
+        // Используем CORS-прокси (бесплатный)
+        const proxy = 'https://api.allorigins.win/get?url=';
+        const url = encodeURIComponent(CONFIG.rutube.rss(CONFIG.rutube.channelId));
+        const response = await fetch(proxy + url);
+        const data = await response.json();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(data.contents, 'text/xml');
+        const items = xml.querySelectorAll('item');
 
-        if (!searchData.items?.length) {
-          showEmpty();
-          return;
-        }
+        allVideos = Array.from(items).map(item => {
+          const title = item.querySelector('title')?.textContent || 'Без названия';
+          const link = item.querySelector('link')?.textContent || '';
+          const id = link.match(/video\/([a-z0-9]+)\//)?.[1] || '';
+          const thumb = item.querySelector('media\\:thumbnail, thumbnail')?.getAttribute('url') || '';
+          const duration = item.querySelector('media\\:content, content')?.getAttribute('duration') || '0';
+          const pubDate = item.querySelector('pubDate')?.textContent || '';
 
-        const videoIds = searchData.items.map(i => i.id.videoId).join(',');
-        const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${videoIds}&key=${CONFIG.youtube.apiKey}`;
-        const detailsRes = await fetch(detailsUrl);
-        const detailsData = await detailsRes.json();
-
-        const videos = detailsData.items.map(video => {
-          const duration = parseDuration(video.contentDetails.duration);
-          const snippet = searchData.items.find(i => i.id.videoId === video.id)?.snippet || video.snippet;
           return {
-            id: video.id,
-            title: snippet.title,
-            thumbnail: snippet.thumbnails.high.url,
-            duration,
-            category: guessCategory(snippet.title),
-            url: CONFIG.youtube.embed(video.id)
+            id,
+            title,
+            thumbnail: thumb || `https://rutube.ru/api/video/${id}/thumbnail/?size=l`,
+            duration: formatDuration(parseInt(duration)),
+            category: guessCategory(title),
+            url: CONFIG.rutube.embed(id),
+            date: new Date(pubDate)
           };
-        });
+        }).filter(v => v.id);
 
-        allVideos = [...allVideos, ...videos];
-        nextPageToken = searchData.nextPageToken || '';
-        filterAndRender();
+        renderInitialVideos();
       } catch (e) {
-        showError(e.message);
-        console.error('YouTube API Error:', e);
+        showError('Не удалось загрузить видео. Проверь ID канала.');
+        console.error(e);
       } finally {
         isLoading = false;
         hideLoader();
@@ -330,32 +328,40 @@
     }
 
     // ========================================
-    // ПАРСИНГ ДЛИТЕЛЬНОСТИ
+    // ФОРМАТ ДЛИТЕЛЬНОСТИ
     // ========================================
-    function parseDuration(duration) {
-      const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-      const hours = (match[1] || '0H').slice(0, -1) || 0;
-      const minutes = (match[2] || '0M').slice(0, -1) || 0;
-      const seconds = (match[3] || '0S').slice(0, -1) || 0;
-      return hours ? `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}` 
-                    : `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    function formatDuration(seconds) {
+      if (!seconds) return '??:??';
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      return h ? `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}` 
+               : `${m}:${s.toString().padStart(2,'0')}`;
     }
 
     // ========================================
-    // ФИЛЬТРАЦИЯ И РЕНДЕР
+    // РЕНДЕР
     // ========================================
-    function filterAndRender() {
-      const filtered = currentFilter === 'all' ? allVideos : allVideos.filter(v => v.category === currentFilter);
+    function renderInitialVideos() {
+      lastItemIndex = 0;
+      renderPage();
+      loadMoreBtn.style.display = allVideos.length > PAGE_SIZE ? 'inline-flex' : 'none';
+    }
+
+    function renderPage() {
+      const start = lastItemIndex;
+      const end = Math.min(start + PAGE_SIZE, allVideos.length);
+      const pageVideos = allVideos.slice(start, end);
+
+      const filtered = currentFilter === 'all' ? pageVideos : pageVideos.filter(v => v.category === currentFilter);
       renderVideos(filtered);
-      loadMoreBtn.style.display = nextPageToken ? 'inline-flex' : 'none';
+
+      lastItemIndex = end;
+      loadMoreBtn.style.display = lastItemIndex < allVideos.length ? 'inline-flex' : 'none';
     }
 
     function renderVideos(videos) {
-      videosGrid.innerHTML = '';
-      if (!videos.length) {
-        videosGrid.innerHTML = '<p class="col-span-full text-center text-gray-400 py-10">Видео не найдены :(</p>';
-        return;
-      }
+      if (lastItemIndex === PAGE_SIZE) videosGrid.innerHTML = '';
 
       videos.forEach(video => {
         const card = document.createElement('div');
@@ -364,7 +370,7 @@
 
         card.innerHTML = `
           <div class="video-thumb">
-            <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
+            <img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/480x270?text=No+Image'">
             <div class="duration">${video.duration}</div>
             <div class="play-icon">
               <i class="fa-solid fa-play text-white text-xl"></i>
@@ -373,11 +379,10 @@
           <p class="mt-3 text-sm text-gray-300 line-clamp-2 font-medium">${video.title}</p>
           <div class="mt-2 flex items-center justify-between text-xs text-gray-400">
             <span class="badge badge-${video.category}">${getCategoryName(video.category)}</span>
-            <span>YouTube</span>
+            <span>Rutube</span>
           </div>
         `;
 
-        // Безопасный клик
         card.querySelector('.video-thumb').addEventListener('click', () => {
           window.open(video.url, '_blank');
         });
@@ -397,16 +402,17 @@
           document.querySelectorAll('.video-filter').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           currentFilter = btn.dataset.filter;
-          filterAndRender();
+          lastItemIndex = 0;
+          renderPage();
         });
       });
     }
 
     // ========================================
-    // КНОПКА "ЗАГРУЗИТЬ ЕЩЁ"
+    // ЗАГРУЗИТЬ ЕЩЁ
     // ========================================
     loadMoreBtn.addEventListener('click', () => {
-      if (nextPageToken && !isLoading) fetchVideos();
+      if (lastItemIndex < allVideos.length) renderPage();
     });
 
     // ========================================
@@ -439,12 +445,8 @@
       if (spinner) spinner.parentElement.remove();
     }
 
-    function showEmpty() {
-      videosGrid.innerHTML = '<p class="col-span-full text-center text-gray-400 py-10">Видео не найдены :(</p>';
-    }
-
     function showError(msg) {
-      videosGrid.innerHTML = `<p class="col-span-full text-center text-red-400 py-10">Ошибка: ${msg}</p>`;
+      videosGrid.innerHTML = `<p class="col-span-full text-center text-red-400 py-10">${msg}</p>`;
     }
 
     // ========================================
