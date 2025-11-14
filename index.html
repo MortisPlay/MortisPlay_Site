@@ -1250,6 +1250,15 @@ const setupGhostGesture = () => {
         localStorage.setItem('ghostScrolls', '3');
         localStorage.setItem('ghostScrollsEarned', 'true');
         checkBadgeConditions();
+        // Авто-таймер для Тёмного Принца
+setInterval(() => {
+  if (document.documentElement.classList.contains('dark')) {
+    const badge = badgeDefinitions.find(b => b.name === 'Тёмный Принц');
+    if (badge && badge.earned()) {
+      checkBadgeConditions();
+    }
+  }
+}, 1000);
         showNotification('Призрачный режим активирован! Бейдж получен! 👻', document.getElementById('appearanceNotification'));
       }
       document.removeEventListener('mousemove', handleMove);
