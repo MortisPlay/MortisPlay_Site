@@ -461,17 +461,17 @@
     .badge { animation: badgePop 0.5s ease forwards; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 0.875rem; padding: 0.4rem 0.8rem; position: relative; }
     .badge.common { background: linear-gradient(to right, #4f46e5, #9333ea); }
     .badge.rare { background: linear-gradient(to right, #0ea5e9, #3b82f6); box-shadow: 0 0 8px rgba(59, 130, 246, 0.5); }
-    .badge.legendary { background: linear-gradient(to right, #f59e0b, #eab308); box-shadow: 0 0 12px rgba(234, 179, 8, 0.7); animation: badgePop 0.5s ease forwards, pulse 2s infinite; }
+    .badge.legendary { background: linear-gradient(to right, #f59e0b, #eab308); box-shadow: 0 0 12px rgba(234, 179, 8, 0.7); animation: badgePop 0.5s ease forwards; }
     @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    .badge.epic { background: linear-gradient(to right, #7c3aed, #a855f7); box-shadow: 0 0 12px rgba(124, 58, 237, 0.6); animation: badgePop 0.5s ease forwards; }
     .badge.secret { background: linear-gradient(to right, #a855f7, #d946ef); box-shadow: 0 0 16px rgba(168, 85, 247, 0.8); }
     .badge.secret canvas { position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height: calc(100% + 20px); pointer-events: none; }
     .badge.code-breaker { background: linear-gradient(to right, #22c55e, #15803d); box-shadow: 0 0 12px rgba(34, 197, 94, 0.7); font-family: monospace; text-shadow: 0 0 5px #22c55e; position: relative; overflow: hidden; }
     @keyframes glitch { 0% { left: -100%; } 100% { left: 100%; } }
+    .badge.night-stalker { background: linear-gradient(to right, #1f2937, #374151); box-shadow: 0 0 12px rgba(31, 41, 55, 0.7); font-family: monospace; text-shadow: 0 0 5px #4b5563; position: relative; overflow: hidden; }
     .badge.ghost { background: linear-gradient(to right, #6b7280, #4b5563); opacity: 0.7; box-shadow: 0 0 12px rgba(107, 114, 128, 0.5); }
     .badge.ghost canvas { position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height: calc(100% + 20px); pointer-events: none; }
-    /* Новый стиль для Ночной Сталкер */
-    .badge.night-stalker { background: linear-gradient(to right, #1f2937, #374151); box-shadow: 0 0 12px rgba(75, 85, 99, 0.7); opacity: 0.9; position: relative; overflow: hidden; }
-    .badge.night-stalker canvas { position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height: calc(100% + 20px); pointer-events: none; }
+    .badge.dark-prince { background: linear-gradient(to right, #1e293b, #334155); box-shadow: 0 0 16px rgba(30, 41, 59, 0.8); position: relative; overflow: hidden; }
     .encrypted-text { filter: blur(3px); transition: filter 0.3s ease; }
     .encrypted-text:hover { filter: blur(0); }
     @media (max-width: 640px) {
@@ -525,6 +525,14 @@
 }
 .badge.new-badge {
   animation: badgePulseGlow 1.5s ease-out 3;
+}
+/* Вращение короны для легендарных при получении */
+@keyframes crownRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.badge.legendary.new-badge i.fa-crown {
+  animation: crownRotate 2s linear infinite;
 }
     @media (max-width: 640px) {
       .glass-button {
@@ -1184,9 +1192,9 @@
             localStorage.removeItem('mortis_hacker');
             localStorage.removeItem('ghostScrolls');
             localStorage.removeItem('ghostScrollsEarned');
-            localStorage.removeItem('news_scrolled'); // Для новых бейджей
-            localStorage.removeItem('dark_time'); // Для Тёмного ПРИНЦа
-            localStorage.removeItem('mobile_visits'); // Для Мобильного Воина
+            localStorage.removeItem('speed_reader');
+            localStorage.removeItem('mobile_views');
+            localStorage.removeItem('dark_prince');
             root.classList.remove('dark', 'low-performance', 'no-animations', 'no-particles', 'high-contrast');
             root.style.setProperty('--font-scale', '1');
             const themeSelect = document.getElementById('themeSelect');
@@ -1294,9 +1302,9 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
             localStorage.removeItem('mortis_hacker');
             localStorage.removeItem('ghostScrolls');
             localStorage.removeItem('ghostScrollsEarned');
-            localStorage.removeItem('news_scrolled'); // Новые
-            localStorage.removeItem('dark_time');
-            localStorage.removeItem('mobile_visits');
+            localStorage.removeItem('speed_reader');
+            localStorage.removeItem('mobile_views');
+            localStorage.removeItem('dark_prince');
             const userAvatar = document.getElementById('userAvatar');
             const usernameInput = document.getElementById('usernameInput');
             const badges = document.getElementById('badges');
@@ -1399,14 +1407,13 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
           logAction('Бейджи сброшены через консоль');
         };
       };
-      // Обновлённые badgeDefinitions с заменой и новыми бейджами
       const badgeDefinitions = [
   { name: 'Фанат', icon: 'fa-solid fa-star', description: 'Выдаётся за посещение сайта!', earned: () => true, rarity: 'common' },
   {
     name: 'Ночной Сталкер',
-    icon: 'fa-solid fa-moon-stars',
-    description: 'Подпишись на Telegram-канал и напиши в личку ночью (после 22:00)',
-    earned: () => localStorage.getItem('social_subscribed') === 'true', // Можно доработать по времени
+    icon: 'fa-solid fa-users',
+    description: 'Подпишись на Telegram-канал и напиши в личку ночью',
+    earned: () => localStorage.getItem('social_subscribed') === 'true',
     rarity: 'night-stalker'
   },
   { name: 'Стример', icon: 'fa-solid fa-video', description: 'Загрузите аватар и установите имя пользователя', earned: () => {
@@ -1439,7 +1446,7 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     description: 'Получи все остальные бейджи',
     earned: () => {
       const saved = JSON.parse(localStorage.getItem('userBadges') || '[]');
-      return ['Фанат', 'Ночной Сталкер', 'Стример', 'Игровой Эксперт', '2048 Мастер', 'Мега Фанат', 'Скоростной Читатель', 'Мобильный Воин', 'Тёмный ПРИНЦ'].every(b => saved.includes(b)); // Обновили список
+      return ['Фанат', 'Ночной Сталкер', 'Стример', 'Игровой Эксперт', '2048 Мастер', 'Мега Фанат', 'Скоростной Читатель', 'Мобильный Воин', 'Тёмный ПРИНЦ'].every(b => saved.includes(b));
     },
     rarity: 'legendary'
   },
@@ -1456,38 +1463,26 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     earned: () => localStorage.getItem('ghostScrollsEarned') === 'true',
     rarity: 'secret'
   },
-  // Новые бейджи
   {
     name: 'Скоростной Читатель',
     icon: 'fa-solid fa-book-open-reader',
-    description: 'Пролистай 5+ новостей за одну сессию',
-    earned: () => parseInt(localStorage.getItem('news_scrolled') || '0') >= 5,
+    description: 'Прочитай все новости за минуту',
+    earned: () => localStorage.getItem('speed_reader') === 'true',
     rarity: 'rare'
   },
   {
     name: 'Мобильный Воин',
     icon: 'fa-solid fa-mobile-screen-button',
-    description: 'Посети сайт с мобильного устройства',
-    earned: () => {
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      if (isMobile) localStorage.setItem('mobile_visits', '1');
-      return localStorage.getItem('mobile_visits') === '1';
-    },
+    description: 'Просмотр с мобильного 10 раз',
+    earned: () => localStorage.getItem('mobile_views') >= '10',
     rarity: 'common'
   },
   {
     name: 'Тёмный ПРИНЦ',
     icon: 'fa-solid fa-crown',
-    description: 'Проведи 10+ минут в тёмной теме',
-    earned: () => {
-      let darkTime = parseInt(localStorage.getItem('dark_time') || '0');
-      if (root.classList.contains('dark')) {
-        darkTime += 1; // Инкремент каждую минуту (можно доработать таймером)
-        localStorage.setItem('dark_time', darkTime.toString());
-      }
-      return darkTime >= 10;
-    },
-    rarity: 'legendary'
+    description: 'Альтернатива Тёмный Мастер',
+    earned: () => localStorage.getItem('dark_prince') === 'true',
+    rarity: 'epic'
   }
 ];
       const setupSecretBadgeTrigger = () => {
@@ -1503,7 +1498,6 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
           });
         }
       };
-      // Обновлённая createBadgeParticles с эффектом для Ночной Сталкер
       const createBadgeParticles = (badgeEl, badgeName) => {
   const canvas = document.createElement('canvas');
   canvas.style.cssText = `
@@ -1564,16 +1558,21 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
       });
     }
   } else if (badgeName.includes('Ночной Сталкер')) {
-    // Новый эффект: падающие "тени" + редкие вспышки
     for (let i = 0; i < 10; i++) {
       particles.push({
         x: Math.random() * 100,
-        y: Math.random() * -50,
-        speed: 0.5 + Math.random() * 0.5,
-        length: 10 + Math.random() * 10,
-        color: '#1f2937' // Тёмная тень
+        y: Math.random() * 100 - 100,
+        speed: 1.2 + Math.random() * 0.8,
+        color: '#4b5563'
       });
     }
+  } else if (badgeName.includes('Тёмный ПРИНЦ')) {
+    // Статичный тёмный меч на камне (простая SVG-подобная отрисовка с лёгкой анимацией свечения)
+    particles.push({
+      x: centerX() - 10,
+      y: centerY() + 5,
+      glow: 0
+    });
   }
   const animate = () => {
     if (document.documentElement.classList.contains('low-performance')) return;
@@ -1631,34 +1630,56 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         ctx.fill();
       });
     }
-    // Ночной Сталкер: падающие тени + вспышки
+    // Ночной Сталкер (похоже на кодовый, но с "тенями" - горизонтальные линии)
     if (badgeName.includes('Ночной Сталкер')) {
       particles.forEach(p => {
         p.y += p.speed;
         if (p.y > 100) {
-          p.y = -p.length;
+          p.y = -10;
           p.x = Math.random() * 100;
         }
-        // Тень (градиентная линия)
-        const gradient = ctx.createLinearGradient(p.x, p.y, p.x, p.y + p.length);
-        gradient.addColorStop(0, 'rgba(31, 41, 55, 0.8)');
-        gradient.addColorStop(1, 'rgba(31, 41, 55, 0)');
-        ctx.strokeStyle = gradient;
-        ctx.globalAlpha = 0.6;
+        ctx.strokeStyle = p.color;
+        ctx.globalAlpha = 0.5;
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.x, p.y + p.length);
+        ctx.lineTo(p.x + 20, p.y);
         ctx.stroke();
-        // Редкая вспышка (как фонарик)
         if (Math.random() < 0.03) {
-          ctx.globalAlpha = 1;
-          ctx.fillStyle = '#ffffff';
-          ctx.beginPath();
-          ctx.arc(p.x + Math.random() * 10 - 5, p.y + p.length / 2, 2, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.fillStyle = '#4b5563';
+          ctx.globalAlpha = 0.8;
+          ctx.font = '8px monospace';
+          ctx.fillText('...', p.x + 5, p.y + 8);
         }
       });
+    }
+    // Тёмный ПРИНЦ (тёмный меч на камне)
+    if (badgeName.includes('Тёмный ПРИНЦ')) {
+      const p = particles[0];
+      p.glow += 0.05;
+      if (p.glow > Math.PI * 2) p.glow = 0;
+      // Камень
+      ctx.fillStyle = '#1e293b';
+      ctx.globalAlpha = 0.8;
+      ctx.beginPath();
+      ctx.ellipse(centerX(), centerY() + 15, 15, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Меч (линия с рукояткой)
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 3;
+      ctx.globalAlpha = 1;
+      ctx.beginPath();
+      ctx.moveTo(centerX(), centerY() - 10);
+      ctx.lineTo(centerX(), centerY() + 10);
+      ctx.stroke();
+      // Свечение меча
+      ctx.globalAlpha = 0.6 + 0.4 * Math.sin(p.glow);
+      ctx.strokeStyle = '#a855f7';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(centerX(), centerY() - 10);
+      ctx.lineTo(centerX(), centerY() + 5);
+      ctx.stroke();
     }
     animationId = requestAnimationFrame(animate);
   };
@@ -1684,13 +1705,6 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
           localStorage.setItem('userBadges', JSON.stringify(savedBadges));
           showNotification('Получен бейдж: Фанат! 🎉', notification);
         }
-        // Проверка новых бейджей (авто-выдача для Мобильного Воина)
-        badgeDefinitions.forEach(badge => {
-          if (badge.name === 'Мобильный Воин' && badge.earned() && !savedBadges.includes(badge.name)) {
-            savedBadges.push(badge.name);
-            localStorage.setItem('userBadges', JSON.stringify(savedBadges));
-          }
-        });
         badges.innerHTML = '';
         badgeDefinitions.forEach(badge => {
           if (savedBadges.includes(badge.name) || badge.earned()) {
@@ -1705,9 +1719,9 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
   setTimeout(() => badgeEl.classList.remove('new-badge'), 5000);
             }
             const badgeEl = document.createElement('span');
-            badgeEl.className = `badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${badge.rarity} ${badge.name.toLowerCase().replace(' ', '-').replace('ё', 'e').replace('принц', 'prince')}`; // Адаптировали классы
+            badgeEl.className = `badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${badge.rarity} ${badge.name.toLowerCase().replace(' ', '-').replace('ё', 'e').replace('принц', 'prince')}`;
             badgeEl.innerHTML = `<i class="${badge.icon}"></i>${badge.name}`;
-            if (badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost' || badge.rarity === 'night-stalker') {
+            if (badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost' || badge.rarity === 'night-stalker' || badge.rarity === 'epic') {
   createBadgeParticles(badgeEl, badge.name); // Передаём имя бейджика
 }
             badges.appendChild(badgeEl);
@@ -1721,14 +1735,14 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
           let iconClass = badge.icon;
           let nameText = badge.name;
           let descText = badge.description;
-          let rarityText = { common: 'Обычный', rare: 'Редкий', legendary: 'Легендарный', secret: 'Секретный', 'code-breaker': 'Секретный', ghost: 'Секретный', 'night-stalker': 'Ночной' }[badge.rarity] || badge.rarity;
+          let rarityText = { common: 'Обычный', rare: 'Редкий', legendary: 'Легендарный', secret: 'Секретный', 'code-breaker': 'Секретный', ghost: 'Секретный', 'night-stalker': 'Редкий', epic: 'Эпический' }[badge.rarity] || badge.rarity;
           let textClass = earned ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600';
           let iconColor = earned ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600';
           const status = earned ? '✅' : '🔒';
           const progress = badge.progress ? `(${badge.progress()}/${badge.name === 'Мемолог' ? '4' : badge.name === 'Эпик Мемолог' ? '20' : '20'})` : '';
-          if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost' || badge.rarity === 'night-stalker') && !earned) {
+          if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost' || badge.rarity === 'night-stalker' || badge.rarity === 'epic') && !earned) {
             iconClass = 'fa-solid fa-question-circle';
-            nameText = badge.name === 'Кодовый Взломщик' ? '?' : badge.name === 'Ночной Сталкер' ? '???' : '???';
+            nameText = badge.name === 'Кодовый Взломщик' ? '?' : badge.name === 'Ночной Сталкер' ? '?' : badge.name === 'Тёмный ПРИНЦ' ? '???' : '???';
             descText = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈';
             rarityText = 'Секретный';
           }
@@ -1752,8 +1766,8 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
               let mIcon = badge.icon;
               let mProgress = badge.progress ? `Прогресс: ${badge.progress()}/${badge.name === 'Мемолог' ? '4' : '50'}` : '';
               let mRarity = `Редкость: ${rarityText}`;
-              if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost' || badge.rarity === 'night-stalker') && !earned) {
-                mTitle = badge.name === 'Кодовый Взломщик' ? '?' : badge.name === 'Ночной Сталкер' ? '???' : '???';
+              if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost' || badge.rarity === 'night-stalker' || badge.rarity === 'epic') && !earned) {
+                mTitle = badge.name === 'Кодовый Взломщик' ? '?' : badge.name === 'Ночной Сталкер' ? '?' : badge.name === 'Тёмный ПРИНЦ' ? '???' : '???';
                 mDesc = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈';
                 mIcon = 'fa-solid fa-question-circle';
                 mProgress = '';
@@ -1781,28 +1795,6 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
       const checkBadgeConditions = () => {
         setupBadges();
       };
-      // Трекер для новостей (для Скоростной Читатель)
-      const setupNewsTracker = () => {
-        let scrolledNews = parseInt(localStorage.getItem('news_scrolled') || '0');
-        const newsObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              scrolledNews++;
-              localStorage.setItem('news_scrolled', scrolledNews.toString());
-              checkBadgeConditions();
-            }
-          });
-        }, { threshold: 0.5 });
-        document.querySelectorAll('#newsGrid article').forEach(article => newsObserver.observe(article));
-      };
-      // Таймер для Тёмного ПРИНЦ (упрощённо, каждую минуту)
-      setInterval(() => {
-        if (root.classList.contains('dark')) {
-          let darkTime = parseInt(localStorage.getItem('dark_time') || '0') + 1;
-          localStorage.setItem('dark_time', darkTime.toString());
-          checkBadgeConditions();
-        }
-      }, 60000); // Каждую минуту
       const newsData = [
         { title: "Mortis Games! ", date: "6 ноября", content: "Да да, вы не услышали, игры от Mortis ОТКРЫТЫ! Теперь вы можете на нашем сайте играть в игры ту для у вас должно быть в наличии интернет! Также вы можете предложить игру ту, которую вы хотите, а мы его разработаем и добавим специальный бейджик) Также мы пофиксили баги на сайте для мобилок и прочие исправления. В скором времени мы ещё кучу известных игр завезём и не только! ;)" },
         { title: "Раздел Профиль и система достижений ", date: "29 октября 2025", content: "Итак, мы добавили на сайт профиль и ачивки, с помощью ачивок вы можете показать своё настоящее достоинство! Как это работает и как их получать? Вы можете глянуть раздел FAQ или в разделе профиль глянуть получение ачивок. На сегодня всё, скоро мы зальём еще пару грядущих новинок на сайт) " },
@@ -1840,7 +1832,6 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     });
     loadMore.style.display = end >= newsData.length ? 'none' : 'inline-flex';
     setupFadeIn(); // ← Фикс: анимация для новых карточек
-    setupNewsTracker(); // Трекер для бейджа
   };
   loadMore.addEventListener('click', () => {
     page++;
