@@ -8,154 +8,30 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link rel="icon" href="../favicon.ico" type="image/x-icon">
   <style>
-    /* === ОСНОВНЫЕ === */
-    :root {
-      --bg: #0f0f1a;
-      --neon-purple: #a855f7;
-      --neon-cyan: #22d3ee;
-      --text: #e2e8f0;
-      --text-light: #94a3b8;
-      --glass: rgba(255, 255, 255, 0.08);
-    }
+    /* === ВСЁ СТИЛИ ОСТАЮТСЯ === */
+    :root { --bg: #0f0f1a; --neon-purple: #a855f7; --neon-cyan: #22d3ee; --text: #e2e8f0; --text-light: #94a3b8; --glass: rgba(255, 255, 255, 0.08); }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
-      color: var(--text);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      min-height: 100vh;
-      line-height: 1.6;
-    }
-    .glass-nav {
-      background: rgba(15, 15, 26, 0.7);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(168, 85, 247, 0.2);
-      position: fixed;
-      top: 0; width: 100%; z-index: 50;
-    }
-    .neon-title {
-      background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-weight: 800;
-    }
-    .neon-btn {
-      background: linear-gradient(45deg, transparent, rgba(168, 85, 247, 0.1));
-      border: 1.5px solid var(--neon-purple);
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      text-decoration: none;
-      font-size: 1rem;
-    }
-    .neon-btn:hover {
-      background: rgba(168, 85, 247, 0.2);
-      box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
-      transform: translateY(-2px);
-    }
-    .neon-btn.active {
-      background: var(--neon-purple);
-      box-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
-    }
-    .glass-card {
-      background: var(--glass);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 1.5rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-      transition: all 0.4s ease;
-      overflow: hidden;
-      position: relative;
-    }
-    .glass-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(135deg, rgba(168,85,247,0.1), transparent);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
+    body { background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%); color: var(--text); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; line-height: 1.6; }
+    .glass-nav { background: rgba(15, 15, 26, 0.7); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(168, 85, 247, 0.2); position: fixed; top: 0; width: 100%; z-index: 50; }
+    .neon-title { background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 800; }
+    .neon-btn { background: linear-gradient(45deg, transparent, rgba(168, 85, 247, 0.1)); border: 1.5px solid var(--neon-purple); color: white; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; font-size: 1rem; }
+    .neon-btn:hover { background: rgba(168, 85, 247, 0.2); box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); transform: translateY(-2px); }
+    .neon-btn.active { background: var(--neon-purple); box-shadow: 0 0 15px rgba(168, 85, 247, 0.6); }
+    .glass-card { background: var(--glass); border: 1px solid rgba(168, 85, 247, 0.3); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 1.5rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: all 0.4s ease; overflow: hidden; position: relative; }
+    .glass-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(168,85,247,0.1), transparent); opacity: 0; transition: opacity 0.4s ease; }
     .glass-card:hover::before { opacity: 1; }
-    .glass-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    }
-    .video-thumb {
-      position: relative;
-      overflow: hidden;
-      border-radius: 1rem;
-      aspect-ratio: 16 / 9;
-      background: #000;
-      cursor: pointer;
-    }
-    .video-thumb img {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: transform 0.4s ease;
-    }
+    .glass-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); }
+    .video-thumb { position: relative; overflow: hidden; border-radius: 1rem; aspect-ratio: 16 / 9; background: #000; cursor: pointer; }
+    .video-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
     .video-thumb:hover img { transform: scale(1.05); }
-    .video-thumb .duration {
-      position: absolute;
-      bottom: 0.5rem; right: 0.5rem;
-      background: rgba(0,0,0,0.8);
-      color: white;
-      font-size: 0.75rem;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.5rem;
-      font-weight: 600;
-    }
-    .video-thumb .play-icon {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 48px; height: 48px;
-      background: rgba(168,85,247,0.9);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
+    .video-thumb .duration { position: absolute; bottom: 0.5rem; right: 0.5rem; background: rgba(0,0,0,0.8); color: white; font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 0.5rem; font-weight: 600; }
+    .video-thumb .play-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: rgba(168,85,247,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
     .video-thumb:hover .play-icon { opacity: 1; }
-    .video-filter {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(168,85,247,0.4);
-      color: #e0d6ff;
-      padding: 0.75rem 1.5rem;
-      border-radius: 9999px;
-      font-weight: 600;
-      transition: all 0.4s ease;
-      backdrop-filter: blur(8px);
-    }
-    .video-filter.active,
-    .video-filter:hover {
-      background: rgba(168,85,247,0.3);
-      border-color: #c084fc;
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(168,85,247,0.3);
-    }
-    .fade-in {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.6s ease;
-    }
-    .fade-in.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    #videosGrid {
-      display: grid;
-      gap: 1.5rem;
-      grid-template-columns: 1fr;
-    }
+    .video-filter { background: rgba(255,255,255,0.1); border: 1px solid rgba(168,85,247,0.4); color: #e0d6ff; padding: 0.75rem 1.5rem; border-radius: 9999px; font-weight: 600; transition: all 0.4s ease; backdrop-filter: blur(8px); }
+    .video-filter.active, .video-filter:hover { background: rgba(168,85,247,0.3); border-color: #c084fc; color: white; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(168,85,247,0.3); }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    #videosGrid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
     @media (min-width: 640px) { #videosGrid { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 1024px) { #videosGrid { grid-template-columns: repeat(3, 1fr); } }
     @media (min-width: 1280px) { #videosGrid { grid-template-columns: repeat(4, 1fr); } }
@@ -177,14 +53,7 @@
     .badge-fun { color: #f59e0b; }
     .badge-streams { color: #10b981; }
     .badge-blitz { color: #ec4899; }
-    .spinner {
-      width: 40px; height: 40px;
-      border: 4px solid rgba(168,85,247,0.3);
-      border-top-color: #a855f7;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 2rem auto;
-    }
+    .spinner { width: 40px; height: 40px; border: 4px solid rgba(168,85,247,0.3); border-top-color: #a855f7; border-radius: 50%; animation: spin 1s linear infinite; margin: 2rem auto; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .col-span-full { grid-column: 1 / -1; }
   </style>
@@ -250,12 +119,12 @@
 
   <script>
     // ========================================
-    // КОНФИГ RUTUBE
+    // КОНФИГ RUTUBE (ОФИЦИАЛЬНЫЙ API)
     // ========================================
     const CONFIG = {
       rutube: {
-        channelId: '24189155', // ← ЗАМЕНИ НА СВОЙ ID ИЗ URL КАНАЛА
-        rss: channelId => `https://rutube.ru/api/video/person/${channelId}/?format=rss`,
+        channelId: '24189155',
+        api: (id, page = 1) => `https://rutube.ru/api/video/person/${id}/?page=${page}&page_size=12`,
         embed: id => `https://rutube.ru/play/embed/${id}`
       }
     };
@@ -266,8 +135,8 @@
     let allVideos = [];
     let currentFilter = 'all';
     let isLoading = false;
-    let lastItemIndex = 0;
-    const PAGE_SIZE = 12;
+    let currentPage = 1;
+    let hasMore = true;
 
     const videosGrid = document.getElementById('videosGrid');
     const loadMoreBtn = document.getElementById('loadMoreVideos');
@@ -277,53 +146,47 @@
     // ========================================
     document.addEventListener('DOMContentLoaded', () => {
       setupFilters();
-      fetchRutubeRSS();
+      fetchVideos();
     });
 
     // ========================================
-    // ЗАГРУЗКА RSS
+    // ЗАГРУЗКА ВИДЕО (ОФИЦИАЛЬНЫЙ API)
     // ========================================
-    async function fetchRutubeRSS() {
-      if (isLoading) return;
+    async function fetchVideos(append = false) {
+      if (isLoading || !hasMore) return;
       isLoading = true;
-      showLoader();
+      if (!append) showLoader();
 
       try {
-        // Используем CORS-прокси (бесплатный)
-        const proxy = 'https://api.allorigins.win/get?url=';
-        const url = encodeURIComponent(CONFIG.rutube.rss(CONFIG.rutube.channelId));
-        const response = await fetch(proxy + url);
+        // Используем надёжный прокси
+        const proxy = 'https://api.allorigins.win/raw?url=';
+        const url = CONFIG.rutube.api(CONFIG.rutube.channelId, currentPage);
+        const response = await fetch(proxy + encodeURIComponent(url));
+        
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
         const data = await response.json();
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(data.contents, 'text/xml');
-        const items = xml.querySelectorAll('item');
+        const videos = data.results.map(video => ({
+          id: video.id,
+          title: video.title,
+          thumbnail: video.thumbnail_url || `https://rutube.ru/api/video/${video.id}/thumbnail/?size=l`,
+          duration: formatDuration(video.duration),
+          category: guessCategory(video.title),
+          url: CONFIG.rutube.embed(video.id),
+          date: new Date(video.created_ts * 1000)
+        }));
 
-        allVideos = Array.from(items).map(item => {
-          const title = item.querySelector('title')?.textContent || 'Без названия';
-          const link = item.querySelector('link')?.textContent || '';
-          const id = link.match(/video\/([a-z0-9]+)\//)?.[1] || '';
-          const thumb = item.querySelector('media\\:thumbnail, thumbnail')?.getAttribute('url') || '';
-          const duration = item.querySelector('media\\:content, content')?.getAttribute('duration') || '0';
-          const pubDate = item.querySelector('pubDate')?.textContent || '';
+        allVideos = append ? [...allVideos, ...videos] : videos;
+        hasMore = data.has_next;
+        currentPage++;
 
-          return {
-            id,
-            title,
-            thumbnail: thumb || `https://rutube.ru/api/video/${id}/thumbnail/?size=l`,
-            duration: formatDuration(parseInt(duration)),
-            category: guessCategory(title),
-            url: CONFIG.rutube.embed(id),
-            date: new Date(pubDate)
-          };
-        }).filter(v => v.id);
-
-        renderInitialVideos();
+        filterAndRender();
       } catch (e) {
-        showError('Не удалось загрузить видео. Проверь ID канала.');
-        console.error(e);
+        showError('Не удалось загрузить видео. Попробуй позже.');
+        console.error('Rutube API Error:', e);
       } finally {
         isLoading = false;
-        hideLoader();
+        if (!append) hideLoader();
       }
     }
 
@@ -342,26 +205,14 @@
     // ========================================
     // РЕНДЕР
     // ========================================
-    function renderInitialVideos() {
-      lastItemIndex = 0;
-      renderPage();
-      loadMoreBtn.style.display = allVideos.length > PAGE_SIZE ? 'inline-flex' : 'none';
-    }
-
-    function renderPage() {
-      const start = lastItemIndex;
-      const end = Math.min(start + PAGE_SIZE, allVideos.length);
-      const pageVideos = allVideos.slice(start, end);
-
-      const filtered = currentFilter === 'all' ? pageVideos : pageVideos.filter(v => v.category === currentFilter);
+    function filterAndRender() {
+      const filtered = currentFilter === 'all' ? allVideos : allVideos.filter(v => v.category === currentFilter);
       renderVideos(filtered);
-
-      lastItemIndex = end;
-      loadMoreBtn.style.display = lastItemIndex < allVideos.length ? 'inline-flex' : 'none';
+      loadMoreBtn.style.display = hasMore ? 'inline-flex' : 'none';
     }
 
     function renderVideos(videos) {
-      if (lastItemIndex === PAGE_SIZE) videosGrid.innerHTML = '';
+      if (currentPage === 2) videosGrid.innerHTML = ''; // Очистка только при первой загрузке
 
       videos.forEach(video => {
         const card = document.createElement('div');
@@ -370,7 +221,7 @@
 
         card.innerHTML = `
           <div class="video-thumb">
-            <img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/480x270?text=No+Image'">
+            <img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/480x270/1a1a2e/ffffff?text=No+Image'">
             <div class="duration">${video.duration}</div>
             <div class="play-icon">
               <i class="fa-solid fa-play text-white text-xl"></i>
@@ -402,8 +253,7 @@
           document.querySelectorAll('.video-filter').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           currentFilter = btn.dataset.filter;
-          lastItemIndex = 0;
-          renderPage();
+          filterAndRender();
         });
       });
     }
@@ -412,7 +262,7 @@
     // ЗАГРУЗИТЬ ЕЩЁ
     // ========================================
     loadMoreBtn.addEventListener('click', () => {
-      if (lastItemIndex < allVideos.length) renderPage();
+      fetchVideos(true);
     });
 
     // ========================================
