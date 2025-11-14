@@ -5,11 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Видео | Mortis Play</title>
   <meta name="description" content="Все стримы, блицы, мемы и подкасты от Mortis Play. Только YouTube." />
- 
-  <!-- FONT AWESOME -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link rel="icon" href="../favicon.ico" type="image/x-icon">
-
   <style>
     /* === ОСНОВНЫЕ === */
     :root {
@@ -28,8 +25,6 @@
       min-height: 100vh;
       line-height: 1.6;
     }
-
-    /* === НАВИГАЦИЯ === */
     .glass-nav {
       background: rgba(15, 15, 26, 0.7);
       backdrop-filter: blur(12px);
@@ -44,8 +39,6 @@
       background-clip: text;
       font-weight: 800;
     }
-
-    /* === КНОПКИ === */
     .neon-btn {
       background: linear-gradient(45deg, transparent, rgba(168, 85, 247, 0.1));
       border: 1.5px solid var(--neon-purple);
@@ -70,8 +63,6 @@
       background: var(--neon-purple);
       box-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
     }
-
-    /* === ГЛАСС КАРТОЧКИ === */
     .glass-card {
       background: var(--glass);
       border: 1px solid rgba(168, 85, 247, 0.3);
@@ -96,8 +87,6 @@
       transform: translateY(-6px);
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
-
-    /* === ПРЕВЬЮ === */
     .video-thumb {
       position: relative;
       overflow: hidden;
@@ -135,8 +124,6 @@
       transition: opacity 0.3s ease;
     }
     .video-thumb:hover .play-icon { opacity: 1; }
-
-    /* === ФИЛЬТРЫ === */
     .video-filter {
       background: rgba(255,255,255,0.1);
       border: 1px solid rgba(168,85,247,0.4);
@@ -155,8 +142,6 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(168,85,247,0.3);
     }
-
-    /* === АНИМАЦИЯ === */
     .fade-in {
       opacity: 0;
       transform: translateY(20px);
@@ -166,8 +151,6 @@
       opacity: 1;
       transform: translateY(0);
     }
-
-    /* === СЕТКА === */
     #videosGrid {
       display: grid;
       gap: 1.5rem;
@@ -176,8 +159,6 @@
     @media (min-width: 640px) { #videosGrid { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 1024px) { #videosGrid { grid-template-columns: repeat(3, 1fr); } }
     @media (min-width: 1280px) { #videosGrid { grid-template-columns: repeat(4, 1fr); } }
-
-    /* === УТИЛИТЫ === */
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .text-center { text-align: center; }
     .mt-3 { margin-top: 0.75rem; }
@@ -196,6 +177,16 @@
     .badge-fun { color: #f59e0b; }
     .badge-streams { color: #10b981; }
     .badge-blitz { color: #ec4899; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid rgba(168,85,247,0.3);
+      border-top-color: #a855f7;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 2rem auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .col-span-full { grid-column: 1 / -1; }
   </style>
 </head>
 <body>
@@ -214,7 +205,7 @@
     <section id="videos" class="mx-auto max-w-7xl px-4">
       <h1 class="neon-title text-4xl md:text-6xl font-bold text-center mb-8">Мои видео</h1>
 
-      <!-- ПЛАТФОРМА: ТОЛЬКО YOUTUBE -->
+      <!-- ПЛАТФОРМА -->
       <div class="flex justify-center mb-6">
         <div class="glass-card p-4 flex items-center gap-4 rounded-xl">
           <span class="text-gray-300 font-medium">Смотри на:</span>
@@ -234,13 +225,16 @@
         <button class="neon-btn video-filter" data-filter="fun">Угар</button>
         <button class="neon-btn video-filter" data-filter="blitz">БЛИЦ Play</button>
       </div>
-
       <p class="mt-3 text-center text-sm text-gray-300 italic">
         Все видео от Mortis Play: стримы, мемы, блицы и подкасты!
       </p>
 
       <!-- СЕТКА -->
-      <div id="videosGrid" class="mt-10"></div>
+      <div id="videosGrid" class="mt-10">
+        <div class="col-span-full text-center py-10">
+          <div class="spinner"></div>
+        </div>
+      </div>
 
       <!-- КНОПКИ -->
       <div class="mt-10 text-center space-x-4">
@@ -256,12 +250,13 @@
 
   <script>
     // ========================================
-    // КОНФИГ (ТОЛЬКО YOUTUBE)
+    // КОНФИГ (БЕЗ КЛЮЧА!)
     // ========================================
     const CONFIG = {
       youtube: {
         channelId: 'UC2VwlrbzSa8UGLHAYmbuEZA',
-        apiKey: 'AIzaSyCzzl6nF8Jr1Insh0LFvsx80O5RO9CCoPw',
+        // КЛЮЧ ДОЛЖЕН БЫТЬ НА СЕРВЕРЕ!
+        apiKey: 'YOUR_API_KEY_HERE', // ← Замени на бэкенд или используй прокси
         embed: id => `https://www.youtube-nocookie.com/embed/${id}?rel=0`
       }
     };
@@ -269,11 +264,10 @@
     // ========================================
     // ПЕРЕМЕННЫЕ
     // ========================================
-    let currentPage = 1;
-    let currentFilter = 'all';
     let allVideos = [];
-    let filteredVideos = [];
+    let currentFilter = 'all';
     let nextPageToken = '';
+    let isLoading = false;
 
     const videosGrid = document.getElementById('videosGrid');
     const loadMoreBtn = document.getElementById('loadMoreVideos');
@@ -281,74 +275,116 @@
     // ========================================
     // ИНИЦИАЛИЗАЦИЯ
     // ========================================
-    fetchVideos();
-    setupFilters();
+    document.addEventListener('DOMContentLoaded', () => {
+      setupFilters();
+      fetchVideos();
+    });
 
     // ========================================
-    // ЗАГРУЗКА
+    // ЗАГРУЗКА ВИДЕО
     // ========================================
-    async function fetchVideos(append = false) {
-      if (!append) {
-        videosGrid.innerHTML = '<div class="col-span-full text-center py-10"><i class="fa-solid fa-spinner animate-spin text-5xl text-purple-400"></i></div>';
-      }
+    async function fetchVideos() {
+      if (isLoading) return;
+      isLoading = true;
+      showLoader();
 
       try {
-        const token = append ? nextPageToken : '';
-        const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CONFIG.youtube.channelId}&maxResults=12&pageToken=${token}&order=date&key=${CONFIG.youtube.apiKey}`);
-        const data = await res.json();
-        nextPageToken = data.nextPageToken || '';
+        const token = nextPageToken ? `&pageToken=${nextPageToken}` : '';
+        const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CONFIG.youtube.channelId}&maxResults=12${token}&order=date&type=video&key=${CONFIG.youtube.apiKey}`;
+        const searchRes = await fetch(searchUrl);
+        const searchData = await searchRes.json();
 
-        const videos = data.items
-          .filter(i => i.id.kind === 'youtube#video')
-          .map(i => ({
-            id: i.id.videoId,
-            title: i.snippet.title,
-            thumbnail: i.snippet.thumbnails.high.url,
-            duration: '??',
-            category: guessCategory(i.snippet.title),
-            url: CONFIG.youtube.embed(i.id.videoId)
-          }));
+        if (!searchData.items?.length) {
+          showEmpty();
+          return;
+        }
 
-        allVideos = append ? [...allVideos, ...videos] : videos;
-        filterVideos();
-        renderVideos(append);
+        const videoIds = searchData.items.map(i => i.id.videoId).join(',');
+        const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${videoIds}&key=${CONFIG.youtube.apiKey}`;
+        const detailsRes = await fetch(detailsUrl);
+        const detailsData = await detailsRes.json();
+
+        const videos = detailsData.items.map(video => {
+          const duration = parseDuration(video.contentDetails.duration);
+          const snippet = searchData.items.find(i => i.id.videoId === video.id)?.snippet || video.snippet;
+          return {
+            id: video.id,
+            title: snippet.title,
+            thumbnail: snippet.thumbnails.high.url,
+            duration,
+            category: guessCategory(snippet.title),
+            url: CONFIG.youtube.embed(video.id)
+          };
+        });
+
+        allVideos = [...allVideos, ...videos];
+        nextPageToken = searchData.nextPageToken || '';
+        filterAndRender();
       } catch (e) {
-        videosGrid.innerHTML = `<p class="col-span-full text-center text-red-400 py-10">Ошибка: ${e.message}</p>`;
-        console.error(e);
+        showError(e.message);
+        console.error('YouTube API Error:', e);
+      } finally {
+        isLoading = false;
+        hideLoader();
       }
     }
 
     // ========================================
-    // РЕНДЕР
+    // ПАРСИНГ ДЛИТЕЛЬНОСТИ
     // ========================================
-    function renderVideos(append = false) {
-      if (!append) videosGrid.innerHTML = '';
+    function parseDuration(duration) {
+      const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+      const hours = (match[1] || '0H').slice(0, -1) || 0;
+      const minutes = (match[2] || '0M').slice(0, -1) || 0;
+      const seconds = (match[3] || '0S').slice(0, -1) || 0;
+      return hours ? `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}` 
+                    : `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
 
-      const start = (currentPage - 1) * 12;
-      const toShow = filteredVideos.slice(start, start + 12);
+    // ========================================
+    // ФИЛЬТРАЦИЯ И РЕНДЕР
+    // ========================================
+    function filterAndRender() {
+      const filtered = currentFilter === 'all' ? allVideos : allVideos.filter(v => v.category === currentFilter);
+      renderVideos(filtered);
+      loadMoreBtn.style.display = nextPageToken ? 'inline-flex' : 'none';
+    }
 
-      toShow.forEach(v => {
+    function renderVideos(videos) {
+      videosGrid.innerHTML = '';
+      if (!videos.length) {
+        videosGrid.innerHTML = '<p class="col-span-full text-center text-gray-400 py-10">Видео не найдены :(</p>';
+        return;
+      }
+
+      videos.forEach(video => {
         const card = document.createElement('div');
         card.className = 'glass-card p-4 fade-in';
-        card.dataset.category = v.category;
+        card.dataset.category = video.category;
+
         card.innerHTML = `
-          <div class="video-thumb" onclick="window.open('${v.url}', '_blank')">
-            <img src="${v.thumbnail}" alt="${v.title}" loading="lazy">
-            <div class="duration">${v.duration}</div>
+          <div class="video-thumb">
+            <img src="${video.thumbnail}" alt="${video.title}" loading="lazy">
+            <div class="duration">${video.duration}</div>
             <div class="play-icon">
               <i class="fa-solid fa-play text-white text-xl"></i>
             </div>
           </div>
-          <p class="mt-3 text-sm text-gray-300 line-clamp-2 font-medium">${v.title}</p>
+          <p class="mt-3 text-sm text-gray-300 line-clamp-2 font-medium">${video.title}</p>
           <div class="mt-2 flex items-center justify-between text-xs text-gray-400">
-            <span class="badge badge-${v.category}">${getCategoryName(v.category)}</span>
+            <span class="badge badge-${video.category}">${getCategoryName(video.category)}</span>
             <span>YouTube</span>
           </div>
         `;
+
+        // Безопасный клик
+        card.querySelector('.video-thumb').addEventListener('click', () => {
+          window.open(video.url, '_blank');
+        });
+
         videosGrid.appendChild(card);
       });
 
-      loadMoreBtn.style.display = allVideos.length >= filteredVideos.length ? 'none' : 'inline-flex';
       initAnimations();
     }
 
@@ -358,27 +394,24 @@
     function setupFilters() {
       document.querySelectorAll('.video-filter').forEach(btn => {
         btn.addEventListener('click', () => {
-          document.querySelectorAll('.video-filter').forEach(b => b.classList.toggle('active', b === btn));
+          document.querySelectorAll('.video-filter').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
           currentFilter = btn.dataset.filter;
-          currentPage = 1;
-          filterVideos();
-          renderVideos();
+          filterAndRender();
         });
       });
     }
 
-    function filterVideos() {
-      filteredVideos = currentFilter === 'all' ? allVideos : allVideos.filter(v => v.category === currentFilter);
-    }
+    // ========================================
+    // КНОПКА "ЗАГРУЗИТЬ ЕЩЁ"
+    // ========================================
+    loadMoreBtn.addEventListener('click', () => {
+      if (nextPageToken && !isLoading) fetchVideos();
+    });
 
     // ========================================
     // УТИЛИТЫ
     // ========================================
-    loadMoreBtn.addEventListener('click', () => {
-      currentPage++;
-      fetchVideos(true);
-    });
-
     function getCategoryName(cat) {
       const names = { fun: 'Угар', streams: 'Стримы', blitz: 'БЛИЦ' };
       return names[cat] || 'Видео';
@@ -390,6 +423,28 @@
       if (title.includes('угар') || title.includes('мем') || title.includes('прикол')) return 'fun';
       if (title.includes('блиц') || title.includes('blitz')) return 'blitz';
       return 'fun';
+    }
+
+    function showLoader() {
+      if (!videosGrid.querySelector('.spinner')) {
+        const spinner = document.createElement('div');
+        spinner.className = 'col-span-full text-center py-10';
+        spinner.innerHTML = '<div class="spinner"></div>';
+        videosGrid.appendChild(spinner);
+      }
+    }
+
+    function hideLoader() {
+      const spinner = videosGrid.querySelector('.spinner');
+      if (spinner) spinner.parentElement.remove();
+    }
+
+    function showEmpty() {
+      videosGrid.innerHTML = '<p class="col-span-full text-center text-gray-400 py-10">Видео не найдены :(</p>';
+    }
+
+    function showError(msg) {
+      videosGrid.innerHTML = `<p class="col-span-full text-center text-red-400 py-10">Ошибка: ${msg}</p>`;
     }
 
     // ========================================
@@ -406,11 +461,8 @@
           }
         });
       }, { threshold: 0.1 });
-
       document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
     }
-
-    window.addEventListener('load', initAnimations);
   </script>
 </body>
 </html>
