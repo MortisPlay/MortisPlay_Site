@@ -9,8 +9,10 @@
   <link rel="preconnect" href="https://rutube.ru">
   <link rel="dns-prefetch" href="https://rutube.ru">
 
-  <!-- Font Awesome (иконки) -->
-  <script src="https://kit.fontawesome.com/1b1b1b1b1b.js" crossorigin="anonymous"></script>
+  <!-- Font Awesome через CDN (надёжно, без кита) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
     /* === ПЕРЕМЕННЫЕ И СБРОС === */
@@ -27,13 +29,11 @@
       --radius-lg: 1.5rem;
       --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
     *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
       color: var(--text-primary);
@@ -42,7 +42,6 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
-
     /* === НАВИГАЦИЯ === */
     .nav {
       position: fixed;
@@ -57,7 +56,6 @@
       padding: 1rem 0;
       transition: var(--transition);
     }
-
     .nav-container {
       max-width: 1600px;
       margin: 0 auto;
@@ -66,7 +64,6 @@
       justify-content: space-between;
       align-items: center;
     }
-
     .logo {
       font-weight: 900;
       font-size: 1.75rem;
@@ -76,7 +73,6 @@
       -webkit-text-fill-color: transparent;
       text-decoration: none;
     }
-
     .nav-btn {
       background: transparent;
       border: 1.5px solid var(--accent-purple);
@@ -92,30 +88,25 @@
       text-decoration: none;
       transition: var(--transition);
     }
-
     .nav-btn:hover {
       background: rgba(192, 132, 252, 0.15);
       box-shadow: 0 0 20px rgba(192, 132, 252, 0.4);
       transform: translateY(-2px);
     }
-
     /* === КОНТЕНТ === */
     .main {
       padding-top: 100px;
       padding-bottom: 4rem;
     }
-
     .container {
       max-width: 1600px;
       margin: 0 auto;
       padding: 0 1.5rem;
     }
-
     .header {
       text-align: center;
       margin-bottom: 3rem;
     }
-
     .title {
       font-size: 2.75rem;
       font-weight: 900;
@@ -125,18 +116,15 @@
       -webkit-text-fill-color: transparent;
       margin-bottom: 0.75rem;
     }
-
     @media (min-width: 768px) {
       .title { font-size: 3.5rem; }
     }
-
     .subtitle {
       color: var(--text-secondary);
       font-size: 1.1rem;
       max-width: 600px;
       margin: 0 auto;
     }
-
     /* === ФИЛЬТРЫ === */
     .filters {
       display: flex;
@@ -145,7 +133,6 @@
       justify-content: center;
       margin: 2.5rem 0;
     }
-
     .filter-btn {
       background: var(--glass);
       border: 1px solid var(--border-glow);
@@ -158,7 +145,6 @@
       transition: var(--transition);
       backdrop-filter: blur(8px);
     }
-
     .filter-btn.active,
     .filter-btn:hover {
       background: rgba(192, 132, 252, 0.25);
@@ -167,18 +153,15 @@
       box-shadow: 0 8px 25px rgba(192, 132, 252, 0.3);
       transform: translateY(-3px);
     }
-
     /* === СЕТКА ВИДЕО === */
     .grid {
       display: grid;
       gap: 2rem;
       grid-template-columns: 1fr;
     }
-
     @media (min-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
     @media (min-width: 1400px) { .grid { grid-template-columns: repeat(4, 1fr); } }
-
     /* === КАРТОЧКА === */
     .card {
       background: var(--glass);
@@ -190,18 +173,15 @@
       opacity: 0;
       transform: translateY(30px);
     }
-
     .card.visible {
       opacity: 1;
       transform: translateY(0);
     }
-
     .card:hover {
       transform: translateY(-8px);
       box-shadow: var(--shadow-lg);
       border-color: var(--accent-purple);
     }
-
     .card::before {
       content: '';
       position: absolute;
@@ -211,11 +191,9 @@
       transition: opacity 0.4s ease;
       pointer-events: none;
     }
-
     .card:hover::before {
       opacity: 1;
     }
-
     .thumb {
       position: relative;
       aspect-ratio: 16 / 9;
@@ -223,18 +201,15 @@
       overflow: hidden;
       cursor: pointer;
     }
-
     .thumb img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       transition: transform 0.5s ease;
     }
-
     .thumb:hover img {
       transform: scale(1.08);
     }
-
     .duration {
       position: absolute;
       bottom: 0.75rem;
@@ -247,7 +222,6 @@
       border-radius: 0.5rem;
       backdrop-filter: blur(4px);
     }
-
     .play-overlay {
       position: absolute;
       inset: 0;
@@ -258,11 +232,9 @@
       opacity: 0;
       transition: var(--transition);
     }
-
     .thumb:hover .play-overlay {
       opacity: 1;
     }
-
     .play-icon {
       width: 60px;
       height: 60px;
@@ -275,11 +247,9 @@
       font-size: 1.5rem;
       box-shadow: 0 0 20px rgba(192, 132, 252, 0.6);
     }
-
     .card-body {
       padding: 1.25rem;
     }
-
     .card-title {
       font-size: 1.05rem;
       font-weight: 600;
@@ -290,7 +260,6 @@
       overflow: hidden;
       margin-bottom: 0.75rem;
     }
-
     .card-meta {
       display: flex;
       justify-content: space-between;
@@ -298,24 +267,20 @@
       font-size: 0.85rem;
       color: var(--text-secondary);
     }
-
     .badge {
       padding: 0.25rem 0.75rem;
       border-radius: 9999px;
       font-weight: 600;
       font-size: 0.8rem;
     }
-
     .badge-streams { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-    .badge-blitz   { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
-    .badge-fun     { background: rgba(251, 146, 60, 0.2); color: #fbbf24; }
-
+    .badge-blitz { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
+    .badge-fun { background: rgba(251, 146, 60, 0.2); color: #fbbf24; }
     /* === ЗАГРУЗКА === */
     .loader {
       text-align: center;
       padding: 3rem 0;
     }
-
     .spinner {
       width: 48px;
       height: 48px;
@@ -325,11 +290,9 @@
       animation: spin 1s ease-in-out infinite;
       margin: 0 auto;
     }
-
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-
     /* === КНОПКИ ДЕЙСТВИЙ === */
     .actions {
       display: flex;
@@ -338,7 +301,6 @@
       justify-content: center;
       margin-top: 3rem;
     }
-
     .btn {
       background: transparent;
       border: 1.5px solid var(--accent-purple);
@@ -352,22 +314,18 @@
       gap: 0.5rem;
       transition: var(--transition);
     }
-
     .btn:hover {
       background: rgba(192, 132, 252, 0.15);
       box-shadow: 0 0 25px rgba(192, 132, 252, 0.4);
       transform: translateY(-3px);
     }
-
     .btn.rutube {
       background: linear-gradient(45deg, #7c3aed, #a855f7);
       border: none;
     }
-
     .btn.rutube:hover {
       box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
     }
-
     /* === ПУСТО / ОШИБКА === */
     .empty, .error {
       text-align: center;
@@ -375,7 +333,6 @@
       color: var(--text-secondary);
       font-size: 1.1rem;
     }
-
     .error { color: #fca5a5; }
   </style>
 </head>
@@ -438,6 +395,10 @@
       }
     };
 
+    // КЭШИРОВАНИЕ
+    const CACHE_KEY = 'rutube_mortis_cache';
+    const CACHE_TTL = 1000 * 60 * 10; // 10 минут
+
     // ========================================
     // СОСТОЯНИЕ
     // ========================================
@@ -460,16 +421,36 @@
     // ЗАГРУЗКА ВИДЕО
     // ========================================
     async function loadVideos(append = false) {
-      if (state.loading || !state.hasMore) return;
+      if (stateHAS_MORE === false || state.loading) return;
       state.loading = true;
 
       if (!append) showLoader();
 
+      // ПРОВЕРКА КЭША
+      if (!append) {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          if (Date.now() - timestamp < CACHE_TTL) {
+            state.videos = data;
+            state.hasMore = data.length >= 12;
+            filterVideos();
+            updateLoadMore();
+            state.loading = false;
+            hideLoader();
+            return;
+          }
+        }
+      }
+
       try {
-        // Используем allorigins как CORS-прокси (надёжно)
-        const proxy = 'https://api.allorigins.win/raw?url=';
+        // НАДЁЖНЫЙ ПРОКСИ
+        const proxy = 'https://corsproxy.io/?';
         const url = RUTUBE.api(state.page);
-        const res = await fetch(proxy + encodeURIComponent(url));
+        const res = await fetch(proxy + encodeURIComponent(url), {
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         const data = await res.json();
@@ -492,11 +473,17 @@
         state.hasMore = data.has_next;
         state.page++;
 
+        // СОХРАНЕНИЕ В КЭШ
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          data: state.videos,
+          timestamp: Date.now()
+        }));
+
         filterVideos();
         updateLoadMore();
       } catch (err) {
         console.error('Rutube API Error:', err);
-        showError('Не удалось загрузить видео. Попробуйте позже.');
+        showError('Не удалось загрузить видео. Проверьте интернет.');
       } finally {
         state.loading = false;
         if (!append) hideLoader();
@@ -529,7 +516,6 @@
       state.filtered = state.currentFilter === 'all'
         ? state.videos
         : state.videos.filter(v => v.category === state.currentFilter);
-
       renderVideos(state.filtered);
     }
 
@@ -537,17 +523,15 @@
       if (state.page === 2) DOM.grid.innerHTML = '';
 
       if (!videos.length && !state.loading) {
-        DOM.grid.innerHTML = '<div class="empty">Видео не найдены 😔</div>';
+        DOM.grid.innerHTML = '<div class="empty">Видео не найдены</div>';
         return;
       }
 
       const fragment = document.createDocumentFragment();
-
       videos.forEach(video => {
         const card = document.createElement('article');
         card.className = 'card';
         card.dataset.category = video.category;
-
         card.innerHTML = `
           <div class="thumb">
             <img src="${video.thumbnail}" alt="${video.title}" loading="lazy"
@@ -565,14 +549,11 @@
             </div>
           </div>
         `;
-
         card.querySelector('.thumb').addEventListener('click', () => {
           window.open(video.url, '_blank', 'noopener');
         });
-
         fragment.appendChild(card);
       });
-
       DOM.grid.appendChild(fragment);
       observeCards();
     }
@@ -609,16 +590,13 @@
         DOM.grid.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
       }
     }
-
     function hideLoader() {
       const loader = DOM.grid.querySelector('.loader');
       if (loader) loader.remove();
     }
-
     function showEmpty() {
-      DOM.grid.innerHTML = '<div class="empty">Видео закончились! 🎉</div>';
+      DOM.grid.innerHTML = '<div class="empty">Видео закончились!</div>';
     }
-
     function showError(msg) {
       DOM.grid.innerHTML = `<div class="error">${msg}</div>`;
     }
