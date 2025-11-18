@@ -36,7 +36,8 @@
   <style>
     /* === ОСНОВНОЙ ДИЗАЙН === */
     body {
-      background: linear-gradient(135deg, #1a0033 0%, #2a0066 50%, #4a00b3 100%);
+      /* ЗИМНИЙ ФОН для тестирования */
+      background: linear-gradient(135deg, #0a1f3a 0%, #1a3a5f 50%, #2c5282 100%);
       color: #e0d6ff;
       font-family: 'Inter', 'Segoe UI', sans-serif;
       overflow-y: auto;
@@ -591,7 +592,7 @@
     }
     .dark body {
       color: #e5e7eb;
-      background: linear-gradient(to bottom right, #1e1b4b, #312e81, #4c1d95);
+      background: linear-gradient(to bottom right, #0a1f3a, #1a3a5f, #2c5282);
     }
     .text-slate-600 { color: #4b5563; }
     .dark .text-slate-600 { color: #9ca3af; }
@@ -649,6 +650,7 @@
         </div>
         <div class="hidden sm:flex items-center gap-2">
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
+          <a class="px-3 py-2 rounded-lg bg-slate-100/50 dark:bg-slate-800/50 opacity-60 pointer-events-none" href="#video">Видео <span class="text-xs opacity-70">(скоро)</span></a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#profile">Профиль</a>
@@ -674,6 +676,7 @@
           </div>
           <nav class="space-y-2">
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
+            <a class="block px-3 py-2 rounded-lg bg-slate-100/50 dark:bg-slate-800/50 opacity-60 pointer-events-none" href="#video">Видео <span class="text-xs opacity-70">(скоро)</span></a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#profile">Профиль</a>
@@ -735,6 +738,24 @@
     </div>
   </div>
 </section>
+
+      <!-- === НОВЫЙ РАЗДЕЛ ВИДЕО (ПОКА НЕДОСТУПЕН) === -->
+      <section id="video" class="py-24 fade-in bg-gradient-to-b from-purple-900/20 to-transparent">
+        <div class="mx-auto max-w-7xl px-4 text-center">
+          <h2 class="neon-title text-4xl md:text-6xl font-bold mb-12">Видео</h2>
+          <div class="glass-card p-12 max-w-3xl mx-auto">
+            <p class="text-5xl mb-6">🔧</p>
+            <p class="text-2xl font-bold text-purple-300 mb-4">Раздел в активной разработке</p>
+            <p class="text-lg text-gray-300 leading-relaxed">
+              Мы сейчас очень активно пилим новый раздел с видео (категории, плейлисты, поиск и т.д.).<br>
+              Скоро всё будет — стримы, лучшие моменты, угараны и эксклюзивы в одном месте! 🚀
+            </p>
+            <p class="mt-8 text-sm text-gray-400">
+              Следи за новостями в Telegram — объявиим, как только запустим!
+            </p>
+          </div>
+        </div>
+      </section>
       <section id="profile" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Твой профиль</h2>
@@ -1474,7 +1495,11 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
     name: 'Мобильный Воин',
     icon: 'fa-solid fa-mobile-screen-button',
     description: 'Просмотр с мобильного 10 раз',
-    earned: () => localStorage.getItem('mobile_views') >= '10',
+    earned: () => {
+      // Показываем бейдж только на мобильных устройствах
+      if (window.innerWidth > 768) return false; // Скрываем на ПК
+      return localStorage.getItem('mobile_views') >= '10';
+    },
     rarity: 'common'
   },
   {
