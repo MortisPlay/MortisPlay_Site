@@ -722,7 +722,7 @@
       <!-- Статистика -->
       <div class="flex justify-center gap-6 text-sm text-gray-300">
         <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">421</span></div>
-        <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">147K</span></div>
+        <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">153K</span></div>
       </div>
     </div>
     <!-- Видео + цитата -->
@@ -733,13 +733,13 @@
       </video>
       <img class="banner-fallback w-full max-w-md rounded-3xl shadow-2xl ring-1 ring-slate-200 dark:ring-slate-700" src="/assets/photo.jpg" alt="Аватар канала Mortis Play" />
       <div class="banner-quote mt-6 lg:mt-8 lg:absolute lg:-bottom-6 lg:-right-6 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-5 py-3 shadow card-hover w-full max-w-xs mx-auto lg:mx-0">
-        <p class="text-sm text-slate-600 dark:text-slate-300 text-center lg:text-left">Гений, миллиардер, плейбой, филантроп 😎</p>
+        <p class="text-sm text-slate-600 dark:text-slate-300 text-center lg:text-left">У самурая нет цели, у него есть только путь. 🥷</p>
       </div>
     </div>
   </div>
 </section>
 
-      <!-- === НОВЫЙ РАЗДЕЛ ВИДЕО (ПОКА НЕДОСТУПЕН) === -->
+      <!-- === НОВЫЙ РАЗДЕЛ ВИДЕО С ДОРОЖКОЙ ТЕСТИРОВАНИЯ === -->
       <section id="video" class="py-24 fade-in bg-gradient-to-b from-purple-900/20 to-transparent">
         <div class="mx-auto max-w-7xl px-4 text-center">
           <h2 class="neon-title text-4xl md:text-6xl font-bold mb-12">Видео</h2>
@@ -750,12 +750,50 @@
               Мы сейчас очень активно пилим новый раздел с видео (категории, плейлисты, поиск и т.д.).<br>
               Скоро всё будет — стримы, лучшие моменты, угараны и эксклюзивы в одном месте! 🚀
             </p>
+            
+            <!-- Дорожка тестирования -->
+            <div class="mt-8 p-6 bg-slate-800/50 rounded-2xl">
+              <h3 class="text-xl font-bold text-purple-300 mb-4">📊 Дорожка тестирования</h3>
+              <div class="space-y-4 text-left">
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-300">Дизайн интерфейса:</span>
+                  <span class="text-green-400 font-bold">✅ Завершено</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-300">Система категорий:</span>
+                  <span class="text-yellow-400 font-bold">🔄 В разработке</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-300">Плейлисты:</span>
+                  <span class="text-yellow-400 font-bold">🔄 В разработке</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-300">Поиск и фильтры:</span>
+                  <span class="text-blue-400 font-bold">⏳ В планах</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-gray-300">Интеграция с Rutube:</span>
+                  <span class="text-blue-400 font-bold">⏳ В планах</span>
+                </div>
+                <div class="mt-4 pt-4 border-t border-slate-600">
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-300">Общий прогресс:</span>
+                    <span class="text-purple-300 font-bold">40%</span>
+                  </div>
+                  <div class="w-full bg-slate-700 rounded-full h-2 mt-2">
+                    <div class="bg-purple-500 h-2 rounded-full" style="width: 40%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <p class="mt-8 text-sm text-gray-400">
               Следи за новостями в Telegram — объявиим, как только запустим!
             </p>
           </div>
         </div>
       </section>
+
       <section id="profile" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Твой профиль</h2>
@@ -788,11 +826,11 @@
             <div id="badgeList" class="mt-2 space-y-2"></div>
           </div>
           <!-- Модальное окно для бейджиков -->
-          <div id="badgeModal" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-50" aria-modal="true" role="dialog">
-            <div class="glass-card p-6 max-w-sm w-full shadow-2xl ring-1 ring-indigo-500/50 dark:ring-indigo-400/50 transform transition-all duration-300">
+          <div id="badgeModal" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-50 p-4" aria-modal="true" role="dialog">
+            <div class="glass-card p-6 max-w-sm w-full shadow-2xl ring-1 ring-indigo-500/50 dark:ring-indigo-400/50 transform transition-all duration-300 max-h-[90vh] overflow-y-auto">
               <div class="flex justify-between items-center mb-4">
                 <h3 id="modalTitle" class="font-semibold text-indigo-600 dark:text-indigo-400 text-xl"></h3>
-                <button id="closeModal" class="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400"><i class="fa-solid fa-xmark"></i></button>
+                <button id="closeModal" class="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
               </div>
               <div id="modalIcon" class="text-center mb-4"></div>
               <p id="modalDesc" class="mt-2 text-sm text-gray-300"></p>
@@ -803,6 +841,7 @@
           </div>
         </div>
       </section>
+
       <section id="news" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Новости</h2>
@@ -816,6 +855,7 @@
           </div>
         </div>
       </section>
+
       <section id="settings" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Настройки</h2>
@@ -887,6 +927,7 @@
           </div>
         </div>
       </section>
+
       <section id="contact" class="py-16 fade-in">
         <div class="mx-auto max-w-5xl px-4">
           <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Связь со мной</h2>
@@ -914,6 +955,7 @@
           </div>
         </div>
       </section>
+
       <footer class="border-t border-slate-200/60 dark:border-slate-700/60 py-8">
         <div class="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p class="text-sm text-gray-300">© 2025 Mortis Play. Все права защищены.</p>
@@ -1732,6 +1774,11 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         }
         badges.innerHTML = '';
         badgeDefinitions.forEach(badge => {
+          // Пропускаем бейдж "Мобильный Воин" на ПК версии
+          if (badge.name === 'Мобильный Воин' && window.innerWidth > 768) {
+            return;
+          }
+          
           if (savedBadges.includes(badge.name) || badge.earned()) {
             if (!savedBadges.includes(badge.name)) {
   savedBadges.push(badge.name);
@@ -1754,6 +1801,11 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         });
         badgeList.innerHTML = '';
         badgeDefinitions.forEach((badge, index) => {
+          // Пропускаем бейдж "Мобильный Воин" на ПК версии в списке доступных бейджей
+          if (badge.name === 'Мобильный Воин' && window.innerWidth > 768) {
+            return;
+          }
+          
           const badgeItem = document.createElement('div');
           badgeItem.className = 'flex items-center gap-2 text-sm cursor-pointer';
           const earned = savedBadges.includes(badge.name) || badge.earned();
@@ -1805,14 +1857,25 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
               modalRarity.textContent = mRarity;
               modal.style.display = 'flex';
               modal.style.animation = 'modalFadeIn 0.3s ease forwards';
-              const close = () => {
+              
+              // Функция закрытия модального окна
+              const closeModal = () => {
                 modal.style.animation = 'modalFadeOut 0.3s ease forwards';
                 setTimeout(() => {
                   modal.style.display = 'none';
                 }, 300);
               };
-              document.getElementById('closeModal').addEventListener('click', close, { once: true });
-              document.getElementById('closeModalBtn').addEventListener('click', close, { once: true });
+              
+              // Убираем старые обработчики и добавляем новые
+              document.getElementById('closeModal').onclick = closeModal;
+              document.getElementById('closeModalBtn').onclick = closeModal;
+              
+              // Закрытие по клику вне модального окна
+              modal.onclick = (e) => {
+                if (e.target === modal) {
+                  closeModal();
+                }
+              };
             }
           });
         });
@@ -1821,6 +1884,7 @@ document.addEventListener('DOMContentLoaded', setupGhostGesture);
         setupBadges();
       };
       const newsData = [
+        { title: "Раздел 'Видео' в процессе!", date: "18 ноября", content: "Раньше нам пришлось удалить этот раздел, теперь мы его обновили благодаря новому стилю сайта! В разделе вы можете посмотреть, на каком сейчас этапе находится раздел ?_? Также мы сменили обычный фон на зимний вайб! В декабре фон сменится и в целом атмосфера. Пока что на этом всё, скоро в декабре мы ещё с вами встретимся!" },
         { title: "Mortis Games! ", date: "6 ноября", content: "Да да, вы не услышали, игры от Mortis ОТКРЫТЫ! Теперь вы можете на нашем сайте играть в игры ту для у вас должно быть в наличии интернет! Также вы можете предложить игру ту, которую вы хотите, а мы его разработаем и добавим специальный бейджик) Также мы пофиксили баги на сайте для мобилок и прочие исправления. В скором времени мы ещё кучу известных игр завезём и не только! ;)" },
         { title: "Раздел Профиль и система достижений ", date: "29 октября 2025", content: "Итак, мы добавили на сайт профиль и ачивки, с помощью ачивок вы можете показать своё настоящее достоинство! Как это работает и как их получать? Вы можете глянуть раздел FAQ или в разделе профиль глянуть получение ачивок. На сегодня всё, скоро мы зальём еще пару грядущих новинок на сайт) " },
         { title: "Обновили немного сайт", date: "25 сентября 2025", content: "Вернули узоры на сайт, также обновили чуть чуть дизайн и обновили бота. Также, сообщаем вам новость о том, что сайт не будет обновляться в течение месяца, ведь мы сейчас начнем заниматься контентом поэтому все изменения которые у вас попадутся на сайте, будут исправлены только когда мы закончим с контентом, если вы вы обнаружите проблему на сайте, пишите в Telegram: <a href=\"https://t.me/dimap7221\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">MortisPlay</a>. Приятного времяпровождение на сайте :3" },
