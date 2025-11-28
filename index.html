@@ -2395,382 +2395,394 @@
         renderNews();
       };
 
+      // ФУНКЦИЯ ДЛЯ ВСТРАИВАНИЯ ПЛЕЕРА RUTUBE
+      const setupVideoPlayers = () => {
+        // Удаляем старые обработчики чтобы избежать дублирования
+        document.querySelectorAll('.play-embed-btn').forEach(btn => {
+          btn.replaceWith(btn.cloneNode(true));
+        });
+
+        // Добавляем новые обработчики
+        document.querySelectorAll('.play-embed-btn').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const embedUrl = this.getAttribute('data-embed-url');
+            const videoCard = this.closest('.glass-card');
+            const videoId = videoCard.querySelector('[data-video-id]').getAttribute('data-video-id');
+            const playerContainer = document.getElementById(`player-${videoId}`);
+            
+            console.log('Кнопка нажата, videoId:', videoId, 'embedUrl:', embedUrl); // Для отладки
+            
+            // Скрываем все другие плееры
+            document.querySelectorAll('[id^="player-"]').forEach(container => {
+              if (container.id !== `player-${videoId}`) {
+                container.classList.add('hidden');
+                container.innerHTML = '';
+              }
+            });
+            
+            // Показываем/скрываем текущий плеер
+            if (playerContainer.classList.contains('hidden')) {
+              playerContainer.innerHTML = `
+                <iframe 
+                  src="${embedUrl}" 
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowfullscreen
+                  class="w-full h-64 rounded-lg"
+                ></iframe>
+                <button class="mt-2 neon-btn w-full close-player-btn" data-video-id="${videoId}">
+                  <i class="fa-solid fa-times mr-2"></i>Скрыть видео
+                </button>
+              `;
+              playerContainer.classList.remove('hidden');
+              
+              // Прокрутка к плееру
+              playerContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              
+              // Отслеживание просмотра
+              trackVideoView('embedded', 'rutube');
+              
+              // Добавляем обработчик для кнопки закрытия
+              const closeBtn = playerContainer.querySelector('.close-player-btn');
+              if (closeBtn) {
+                closeBtn.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  playerContainer.classList.add('hidden');
+                  playerContainer.innerHTML = '';
+                });
+              }
+            } else {
+              playerContainer.classList.add('hidden');
+              playerContainer.innerHTML = '';
+            }
+          });
+        });
+      };
+
       // НОВАЯ ФУНКЦИЯ: Настройка системы поиска и фильтрации видео
       const setupVideoSearchAndFilter = () => {
-  const videoSearch = document.getElementById('videoSearch');
-  const categoryFilter = document.getElementById('categoryFilter');
-  const resetFilters = document.getElementById('resetFilters');
-  const videoList = document.getElementById('videoList');
-  const noVideosMessage = document.getElementById('noVideosMessage');
-  const loadMoreVideosContainer = document.getElementById('loadMoreVideosContainer');
-  const loadMoreVideos = document.getElementById('loadMoreVideos');
-  
-  // ДАННЫЕ ВИДЕО ТОЛЬКО С RUTUBE
-  const allVideoData = [
-    { 
-      id: 1, 
-      title: "CS2 НО ЭТО УГАР С ТИМЕЙТАМИ! | mortis32 лучшее", 
-      category: "угар", 
-      views: "33", 
-      duration: "7:23", 
-      thumbnail: "/preview/preview1.jpg", 
-      platform: "rutube", 
-      url: "https://rutube.ru/video/b292141cd870aaec3a38f350f3a0114e/",
-      embedUrl: "https://rutube.ru/play/embed/b292141cd870aaec3a38f350f3a0114e"
-    },
-    { 
-      id: 2, 
-      title: "НОВАЯ ВЕБКА, НОВЫЕ ГОРИЗОНТЫ!", 
-      category: "угар", 
-      views: "15", 
-      duration: "16:07", 
-      thumbnail: "/preview/preview2.jpg", 
-      platform: "rutube", 
-      url: "https://rutube.ru/video/36faf3fd0b2c5dac09f907297925db41/",
-      embedUrl: "https://rutube.ru/play/embed/36faf3fd0b2c5dac09f907297925db41/"
-    },
-    { 
-      id: 3, 
-      title: "Mortisplay32 ИГРАЕТ В COUNTER STRIKE 2 #1 (ft. Johnny_Drill) mortis32 лучшее", 
-      category: "стримы", 
-      views: "25", 
-      duration: "23:43", 
-      thumbnail: "/preview/preview3.jpg", 
-      platform: "rutube", 
-      url: "https://rutube.ru/video/46b92548cd13429c14348feb10dbd35d/",
-      embedUrl: "https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/"
-    },
-    { 
-      id: 4, 
-      title: "ГЕНИЙ, РОМАН, НОВИЧОК, БЫВАЛЫЙ. mortis32 лучшее", 
-      category: "угар", 
-      views: "27", 
-      duration: "7:38", 
-      thumbnail: "/preview/preview4.jpg", 
-      platform: "rutube", 
-      url: "https://rutube.ru/video/ea7fa319476924cad6ae44e7972f7f7e/",
-      embedUrl: "https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/"
-    },
-    { 
-      id: 5, 
-      title: "ВСЕ? ВСЕ. #3", 
-      category: "подкаст", 
-      views: "24", 
-      duration: "11:08", 
-      thumbnail: "/preview/preview5.jpg", 
-      platform: "rutube", 
-      url: "https://rutube.ru/video/baa4dc7a858f2925571dfd0791715414/",
-      embedUrl: "https://rutube.ru/play/embed/baa4dc7a858f2925571dfd0791715414/"
-    },
-    { 
-      id: 6, 
-      title: "РАСПАКОВКА НОВОГО МИКРО!!!", 
-      category: "другое", 
-      views: "25", 
-      duration: "6:45", 
-      thumbnail: "/preview/preview6.jpg", 
-      platform: "rutube", 
-      url: "https://rutube.ru/video/72b98560f8378225efc62bb68b82cb8c/",
-      embedUrl: "https://rutube.ru/play/embed/72b98560f8378225efc62bb68b82cb8c/"
-    },
-    { 
-      id: 7, 
-      title: "ПОСЛЕЖНИЙ РУБЕЖ!", 
-      category: "подкаст", 
-      views: "6", 
-      duration: "7:08", 
-      thumbnail: "/preview/preview7.jpg", 
-      platform: "rutube", 
-      url: "https://rutube.ru/video/171e2dae98076c82e5c49f3dfda7bb33/",
-      embedUrl: "https://rutube.ru/play/embed/171e2dae98076c82e5c49f3dfda7bb33/"
-    },
-    { 
-      id: 8, 
-      title: "КОНЕЦ ГОДА, ЧТО ДАЛЬШЕ", 
-      category: "подкаст", 
-      views: "30", 
-      duration: "12:32", 
-      thumbnail: "/preview/preview8.jpg", 
-      platform: "rutube", 
-      url: "https://rutube.ru/video/5b51c9a3e15b4d75bfb08783c90bcc85/",
-      embedUrl: "https://rutube.ru/play/embed/5b51c9a3e15b4d75bfb08783c90bcc85/"
-    },
-    { 
-      id: 9, 
-      title: "НОВЫЕ ВРЕМЕНА НАЧИНАЮТСЯ С РЕЛАКСА", 
-      category: "угар", 
-      views: "27", 
-      duration: "24:20", 
-      thumbnail: "/preview/preview9.jpg", 
-      platform: "rutube", 
-      url: "https://rutube.ru/video/f50e8d94d8228d9a8ffce5e37773a8e2/",
-      embedUrl: "https://rutube.ru/play/embed/f50e8d94d8228d9a8ffce5e37773a8e2/"
-    },
-    { 
-      id: 10, 
-      title: "Mortisplay32 ИГРАЕТ В PEAK И ДОХОДЯТ ДО ВЕРШИНЫ (ft. Johnny_Drill, sayheyalldayman)", 
-      category: "стримы", 
-      views: "17", 
-      duration: "1:38:14", 
-      thumbnail: "/preview/preview10.jpg", 
-      platform: "rutube", 
-      url: "https://rutube.ru/video/4e88d1d8cacec555ddb17bff2720394a/",
-      embedUrl: "https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/"
-    },
-    { 
-      id: 11, 
-      title: "Mortisplay32 ПРОХОДИТ ХОРРОР GARRY'S MOD #1 (ft. Johnny_Drill) | mortis32 лучшее", 
-      category: "стримы", 
-      views: "12", 
-      duration: "19:22", 
-      thumbnail: "/preview/preview11.jpg", 
-      platform: "rutube", 
-      url: "https://rutube.ru/video/f81b9ced0e2d196c7024e3f4fb6b0fab/",
-      embedUrl: "https://rutube.ru/play/embed/f81b9ced0e2d196c7024e3f4fb6b0fab/"
-    },
-    { 
-      id: 12, 
-      title: "Mortisplay32 ПРОХОДИТ ХОРРОР GARRY'S MOD #2 (ft. Johnny_Drill) | mortis32 лучшее", 
-      category: "стримы", 
-      views: "12", 
-      duration: "18:35", 
-      thumbnail: "/preview/preview12.jpg", 
-      platform: "rutube", 
-      url: "https://rutube.ru/video/3a968fb9c4bd5cf4dc7b3ab93174fe8e/",
-      embedUrl: "https://rutube.ru/play/embed/3a968fb9c4bd5cf4dc7b3ab93174fe8e/"
-    }
-  ];
-  
-  let currentPage = 1;
-  const videosPerPage = 6;
-  let currentFilteredVideos = [];
-  
-  // Функция отрисовки видео
-  const renderVideos = (videos, page = 1, append = false) => {
-    if (!append) {
-      videoList.innerHTML = '';
-      currentPage = page;
-    }
-    
-    noVideosMessage.classList.add('hidden');
-    loadMoreVideosContainer.classList.add('hidden');
-    
-    if (videos.length === 0) {
-      noVideosMessage.classList.remove('hidden');
-      return;
-    }
-    
-    // Пагинация
-    const startIndex = (page - 1) * videosPerPage;
-    const endIndex = startIndex + videosPerPage;
-    const paginatedVideos = videos.slice(startIndex, endIndex);
-    
-    // Отрисовка видео
-    paginatedVideos.forEach(video => {
-      const videoElement = document.createElement('div');
-      videoElement.className = 'glass-card p-4 fade-in';
-      
-      videoElement.innerHTML = `
-  <div class="relative mb-3">
-    <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-40 object-cover rounded-lg cursor-pointer video-thumbnail" data-video-id="${video.id}">
-    <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-      ${video.duration}
-    </div>
-    <div class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
-      <i class="fa-solid fa-play-circle"></i> Rutube
-    </div>
-    <div class="absolute inset-0 flex items-center justify-center">
-      <div class="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center cursor-pointer play-button" data-video-id="${video.id}">
-        <i class="fa-solid fa-play text-white text-2xl"></i>
-      </div>
-    </div>
-  </div>
-  <h3 class="font-semibold text-white mb-2 line-clamp-2">${video.title}</h3>
-  <div class="flex justify-between text-sm text-gray-300">
-    <span><i class="fa-solid fa-eye mr-1"></i>${video.views}</span>
-    <span class="badge ${getCategoryBadgeClass(video.category)}">${getCategoryName(video.category)}</span>
-  </div>
-  <div class="mt-3 flex gap-2">
-    <button class="neon-btn flex-1 text-center play-embed-btn" data-embed-url="${video.embedUrl}">
-      <i class="fa-solid fa-play mr-2"></i>Смотреть на сайте
-    </button>
-    <a href="${video.url}" target="_blank" class="neon-btn bg-red-600 hover:bg-red-700 border-red-400 flex-1 text-center" onclick="trackVideoView('${video.category}', 'rutube')">
-      <i class="fa-solid fa-external-link mr-2"></i>На Rutube
-    </a>
-  </div>
-  <div id="player-${video.id}" class="hidden mt-3"></div>
-`;
-// Функция для встраивания плеера Rutube
-const setupVideoPlayers = () => {
-  document.querySelectorAll('.play-embed-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const embedUrl = this.getAttribute('data-embed-url');
-      const videoId = this.closest('.glass-card').querySelector('[data-video-id]').getAttribute('data-video-id');
-      const playerContainer = document.getElementById(`player-${videoId}`);
-      
-      // Скрываем все другие плееры
-      document.querySelectorAll('[id^="player-"]').forEach(container => {
-        if (container.id !== `player-${videoId}`) {
-          container.classList.add('hidden');
-          container.innerHTML = '';
-        }
-      });
-      
-      // Показываем/скрываем текущий плеер
-      if (playerContainer.classList.contains('hidden')) {
-        playerContainer.innerHTML = `
-          <iframe 
-            src="${embedUrl}" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen
-            class="w-full h-64 rounded-lg"
-          ></iframe>
-          <button class="mt-2 neon-btn w-full close-player-btn" data-video-id="${videoId}">
-            <i class="fa-solid fa-times mr-2"></i>Скрыть видео
-          </button>
-        `;
-        playerContainer.classList.remove('hidden');
+        const videoSearch = document.getElementById('videoSearch');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const resetFilters = document.getElementById('resetFilters');
+        const videoList = document.getElementById('videoList');
+        const noVideosMessage = document.getElementById('noVideosMessage');
+        const loadMoreVideosContainer = document.getElementById('loadMoreVideosContainer');
+        const loadMoreVideos = document.getElementById('loadMoreVideos');
         
-        // Прокрутка к плееру
-        playerContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // ДАННЫЕ ВИДЕО ТОЛЬКО С RUTUBE
+        const allVideoData = [
+          { 
+            id: 1, 
+            title: "CS2 НО ЭТО УГАР С ТИМЕЙТАМИ! | mortis32 лучшее", 
+            category: "угар", 
+            views: "33", 
+            duration: "7:23", 
+            thumbnail: "/preview/preview1.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/b292141cd870aaec3a38f350f3a0114e/",
+            embedUrl: "https://rutube.ru/play/embed/b292141cd870aaec3a38f350f3a0114e"
+          },
+          { 
+            id: 2, 
+            title: "НОВАЯ ВЕБКА, НОВЫЕ ГОРИЗОНТЫ!", 
+            category: "угар", 
+            views: "15", 
+            duration: "16:07", 
+            thumbnail: "/preview/preview2.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/36faf3fd0b2c5dac09f907297925db41/",
+            embedUrl: "https://rutube.ru/play/embed/36faf3fd0b2c5dac09f907297925db41/"
+          },
+          { 
+            id: 3, 
+            title: "Mortisplay32 ИГРАЕТ В COUNTER STRIKE 2 #1 (ft. Johnny_Drill) mortis32 лучшее", 
+            category: "стримы", 
+            views: "25", 
+            duration: "23:43", 
+            thumbnail: "/preview/preview3.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/46b92548cd13429c14348feb10dbd35d/",
+            embedUrl: "https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/"
+          },
+          { 
+            id: 4, 
+            title: "ГЕНИЙ, РОМАН, НОВИЧОК, БЫВАЛЫЙ. mortis32 лучшее", 
+            category: "угар", 
+            views: "27", 
+            duration: "7:38", 
+            thumbnail: "/preview/preview4.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/ea7fa319476924cad6ae44e7972f7f7e/",
+            embedUrl: "https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/"
+          },
+          { 
+            id: 5, 
+            title: "ВСЕ? ВСЕ. #3", 
+            category: "подкаст", 
+            views: "24", 
+            duration: "11:08", 
+            thumbnail: "/preview/preview5.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/baa4dc7a858f2925571dfd0791715414/",
+            embedUrl: "https://rutube.ru/play/embed/baa4dc7a858f2925571dfd0791715414/"
+          },
+          { 
+            id: 6, 
+            title: "РАСПАКОВКА НОВОГО МИКРО!!!", 
+            category: "другое", 
+            views: "25", 
+            duration: "6:45", 
+            thumbnail: "/preview/preview6.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/72b98560f8378225efc62bb68b82cb8c/",
+            embedUrl: "https://rutube.ru/play/embed/72b98560f8378225efc62bb68b82cb8c/"
+          },
+          { 
+            id: 7, 
+            title: "ПОСЛЕЖНИЙ РУБЕЖ!", 
+            category: "подкаст", 
+            views: "6", 
+            duration: "7:08", 
+            thumbnail: "/preview/preview7.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/171e2dae98076c82e5c49f3dfda7bb33/",
+            embedUrl: "https://rutube.ru/play/embed/171e2dae98076c82e5c49f3dfda7bb33/"
+          },
+          { 
+            id: 8, 
+            title: "КОНЕЦ ГОДА, ЧТО ДАЛЬШЕ", 
+            category: "подкаст", 
+            views: "30", 
+            duration: "12:32", 
+            thumbnail: "/preview/preview8.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/5b51c9a3e15b4d75bfb08783c90bcc85/",
+            embedUrl: "https://rutube.ru/play/embed/5b51c9a3e15b4d75bfb08783c90bcc85/"
+          },
+          { 
+            id: 9, 
+            title: "НОВЫЕ ВРЕМЕНА НАЧИНАЮТСЯ С РЕЛАКСА", 
+            category: "угар", 
+            views: "27", 
+            duration: "24:20", 
+            thumbnail: "/preview/preview9.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/f50e8d94d8228d9a8ffce5e37773a8e2/",
+            embedUrl: "https://rutube.ru/play/embed/f50e8d94d8228d9a8ffce5e37773a8e2/"
+          },
+          { 
+            id: 10, 
+            title: "Mortisplay32 ИГРАЕТ В PEAK И ДОХОДЯТ ДО ВЕРШИНЫ (ft. Johnny_Drill, sayheyalldayman)", 
+            category: "стримы", 
+            views: "17", 
+            duration: "1:38:14", 
+            thumbnail: "/preview/preview10.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/4e88d1d8cacec555ddb17bff2720394a/",
+            embedUrl: "https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/"
+          },
+          { 
+            id: 11, 
+            title: "Mortisplay32 ПРОХОДИТ ХОРРОР GARRY'S MOD #1 (ft. Johnny_Drill) | mortis32 лучшее", 
+            category: "стримы", 
+            views: "12", 
+            duration: "19:22", 
+            thumbnail: "/preview/preview11.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/f81b9ced0e2d196c7024e3f4fb6b0fab/",
+            embedUrl: "https://rutube.ru/play/embed/f81b9ced0e2d196c7024e3f4fb6b0fab/"
+          },
+          { 
+            id: 12, 
+            title: "Mortisplay32 ПРОХОДИТ ХОРРОР GARRY'S MOD #2 (ft. Johnny_Drill) | mortis32 лучшее", 
+            category: "стримы", 
+            views: "12", 
+            duration: "18:35", 
+            thumbnail: "/preview/preview12.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/3a968fb9c4bd5cf4dc7b3ab93174fe8e/",
+            embedUrl: "https://rutube.ru/play/embed/3a968fb9c4bd5cf4dc7b3ab93174fe8e/"
+          }
+        ];
         
-        // Отслеживание просмотра
-        trackVideoView('embedded', 'rutube');
-      } else {
-        playerContainer.classList.add('hidden');
-        playerContainer.innerHTML = '';
-      }
-    });
-  });
-  
-  // Обработчик для кнопки закрытия
-  document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('close-player-btn')) {
-      const videoId = e.target.getAttribute('data-video-id');
-      const playerContainer = document.getElementById(`player-${videoId}`);
-      playerContainer.classList.add('hidden');
-      playerContainer.innerHTML = '';
-    }
-  });
-};
-      videoList.appendChild(videoElement);
-    });
-    
-    // Показываем кнопку "Загрузить ещё" если есть еще видео
-    const hasMoreVideos = videos.length > page * videosPerPage;
-    if (hasMoreVideos) {
-      loadMoreVideosContainer.classList.remove('hidden');
-    }
-    
-    // Анимация для новых элементов
-    setupFadeIn();
-  };
-  
-  // Функция получения класса для бейджа категории
-  const getCategoryBadgeClass = (category) => {
-    const classes = {
-      'угар': 'common',
-      'стримы': 'rare',
-      'подкаст': 'legendary',
-      'другое': 'secret'
-    };
-    return classes[category] || 'common';
-  };
-  
-  // Функция получения названия категории
-  const getCategoryName = (category) => {
-    const names = {
-      'угар': 'Угар',
-      'стримы': 'Стримы',
-      'подкаст': 'Подкаст',
-      'другое': 'Другое'
-    };
-    return names[category] || category;
-  };
-  
-  // Функция фильтрации видео
-  const filterVideos = () => {
-    const searchTerm = videoSearch.value.toLowerCase();
-    const selectedCategory = categoryFilter.value;
-    
-    currentFilteredVideos = allVideoData.filter(video => {
-      const matchesSearch = video.title.toLowerCase().includes(searchTerm);
-      const matchesCategory = selectedCategory === 'all' || video.category === selectedCategory;
-      return matchesSearch && matchesCategory;
-    });
-    
-    return currentFilteredVideos;
-  };
-  
-  // Функция фильтрации и отрисовки видео
-  const filterAndRenderVideos = () => {
-    const filteredVideos = filterVideos();
-    renderVideos(filteredVideos, 1);
-  };
-  
-  // Функция загрузки дополнительных видео
-  const loadMoreVideosHandler = () => {
-    currentPage++;
-    renderVideos(currentFilteredVideos, currentPage, true);
-  };
-  
-  // Обработчики событий
-  videoSearch.addEventListener('input', debounce(() => {
-    filterAndRenderVideos();
-  }, 300));
-  
-  categoryFilter.addEventListener('change', () => {
-    filterAndRenderVideos();
-  });
-  
-  resetFilters.addEventListener('click', () => {
-    videoSearch.value = '';
-    categoryFilter.value = 'all';
-    filterAndRenderVideos();
-  });
-  
-  loadMoreVideos.addEventListener('click', loadMoreVideosHandler);
-  
-  // Обработчики для категорий
-  document.querySelectorAll('.category-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const category = card.getAttribute('data-category');
-      categoryFilter.value = category;
-      filterAndRenderVideos();
-    });
-  });
-  
-  // Инициализация - показываем первые 6 видео
-  currentFilteredVideos = allVideoData;
-  renderVideos(allVideoData, 1);
-};
-// В конце функции renderVideos добавь:
-setTimeout(() => {
-  setupVideoPlayers();
-}, 100);
+        let currentPage = 1;
+        const videosPerPage = 6;
+        let currentFilteredVideos = [];
+        
+        // Функция отрисовки видео
+        const renderVideos = (videos, page = 1, append = false) => {
+          if (!append) {
+            videoList.innerHTML = '';
+            currentPage = page;
+          }
+          
+          noVideosMessage.classList.add('hidden');
+          loadMoreVideosContainer.classList.add('hidden');
+          
+          if (videos.length === 0) {
+            noVideosMessage.classList.remove('hidden');
+            return;
+          }
+          
+          // Пагинация
+          const startIndex = (page - 1) * videosPerPage;
+          const endIndex = startIndex + videosPerPage;
+          const paginatedVideos = videos.slice(startIndex, endIndex);
+          
+          // Отрисовка видео
+          paginatedVideos.forEach(video => {
+            const videoElement = document.createElement('div');
+            videoElement.className = 'glass-card p-4 fade-in';
+            
+            videoElement.innerHTML = `
+              <div class="relative mb-3">
+                <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-40 object-cover rounded-lg cursor-pointer video-thumbnail" data-video-id="${video.id}">
+                <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                  ${video.duration}
+                </div>
+                <div class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
+                  <i class="fa-solid fa-play-circle"></i> Rutube
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center cursor-pointer play-button" data-video-id="${video.id}">
+                    <i class="fa-solid fa-play text-white text-2xl"></i>
+                  </div>
+                </div>
+              </div>
+              <h3 class="font-semibold text-white mb-2 line-clamp-2">${video.title}</h3>
+              <div class="flex justify-between text-sm text-gray-300">
+                <span><i class="fa-solid fa-eye mr-1"></i>${video.views}</span>
+                <span class="badge ${getCategoryBadgeClass(video.category)}">${getCategoryName(video.category)}</span>
+              </div>
+              <div class="mt-3 flex gap-2">
+                <button class="neon-btn flex-1 text-center play-embed-btn" data-embed-url="${video.embedUrl}">
+                  <i class="fa-solid fa-play mr-2"></i>Смотреть на сайте
+                </button>
+                <a href="${video.url}" target="_blank" class="neon-btn bg-red-600 hover:bg-red-700 border-red-400 flex-1 text-center" onclick="trackVideoView('${video.category}', 'rutube')">
+                  <i class="fa-solid fa-external-link mr-2"></i>На Rutube
+                </a>
+              </div>
+              <div id="player-${video.id}" class="hidden mt-3"></div>
+            `;
+            
+            videoList.appendChild(videoElement);
+          });
+          
+          // Показываем кнопку "Загрузить ещё" если есть еще видео
+          const hasMoreVideos = videos.length > page * videosPerPage;
+          if (hasMoreVideos) {
+            loadMoreVideosContainer.classList.remove('hidden');
+          }
+          
+          // Анимация для новых элементов
+          setupFadeIn();
+          
+          // ВАЖНО: Вызываем setupVideoPlayers после отрисовки видео
+          setupVideoPlayers();
+        };
+        
+        // Функция получения класса для бейджа категории
+        const getCategoryBadgeClass = (category) => {
+          const classes = {
+            'угар': 'common',
+            'стримы': 'rare',
+            'подкаст': 'legendary',
+            'другое': 'secret'
+          };
+          return classes[category] || 'common';
+        };
+        
+        // Функция получения названия категории
+        const getCategoryName = (category) => {
+          const names = {
+            'угар': 'Угар',
+            'стримы': 'Стримы',
+            'подкаст': 'Подкаст',
+            'другое': 'Другое'
+          };
+          return names[category] || category;
+        };
+        
+        // Функция фильтрации видео
+        const filterVideos = () => {
+          const searchTerm = videoSearch.value.toLowerCase();
+          const selectedCategory = categoryFilter.value;
+          
+          currentFilteredVideos = allVideoData.filter(video => {
+            const matchesSearch = video.title.toLowerCase().includes(searchTerm);
+            const matchesCategory = selectedCategory === 'all' || video.category === selectedCategory;
+            return matchesSearch && matchesCategory;
+          });
+          
+          return currentFilteredVideos;
+        };
+        
+        // Функция фильтрации и отрисовки видео
+        const filterAndRenderVideos = () => {
+          const filteredVideos = filterVideos();
+          renderVideos(filteredVideos, 1);
+        };
+        
+        // Функция загрузки дополнительных видео
+        const loadMoreVideosHandler = () => {
+          currentPage++;
+          renderVideos(currentFilteredVideos, currentPage, true);
+        };
+        
+        // Обработчики событий
+        videoSearch.addEventListener('input', debounce(() => {
+          filterAndRenderVideos();
+        }, 300));
+        
+        categoryFilter.addEventListener('change', () => {
+          filterAndRenderVideos();
+        });
+        
+        resetFilters.addEventListener('click', () => {
+          videoSearch.value = '';
+          categoryFilter.value = 'all';
+          filterAndRenderVideos();
+        });
+        
+        loadMoreVideos.addEventListener('click', loadMoreVideosHandler);
+        
+        // Обработчики для категорий
+        document.querySelectorAll('.category-card').forEach(card => {
+          card.addEventListener('click', () => {
+            const category = card.getAttribute('data-category');
+            categoryFilter.value = category;
+            filterAndRenderVideos();
+          });
+        });
+        
+        // Инициализация - показываем первые 6 видео
+        currentFilteredVideos = allVideoData;
+        renderVideos(allVideoData, 1);
+      };
 
       // Функция для отслеживания просмотров видео
-window.trackVideoView = (category, platform) => {
-  // Общие просмотры видео
-  let videoViews = parseInt(localStorage.getItem('video_views') || '0');
-  videoViews++;
-  localStorage.setItem('video_views', videoViews.toString());
-  
-  // Просмотры Rutube (все видео теперь с Rutube)
-  let rutubeViews = parseInt(localStorage.getItem('rutube_views') || '0');
-  rutubeViews++;
-  localStorage.setItem('rutube_views', rutubeViews.toString());
-  
-  // Проверяем условия для бейджей
-  checkBadgeConditions();
-  
-  // Отправляем событие в аналитику
-  gtag('event', 'video_play', {
-    event_category: 'video',
-    event_label: `${category}_rutube`
-  });
-};
+      window.trackVideoView = (category, platform) => {
+        // Общие просмотры видео
+        let videoViews = parseInt(localStorage.getItem('video_views') || '0');
+        videoViews++;
+        localStorage.setItem('video_views', videoViews.toString());
+        
+        // Просмотры Rutube (все видео теперь с Rutube)
+        let rutubeViews = parseInt(localStorage.getItem('rutube_views') || '0');
+        rutubeViews++;
+        localStorage.setItem('rutube_views', rutubeViews.toString());
+        
+        // Проверяем условия для бейджей
+        checkBadgeConditions();
+        
+        // Отправляем событие в аналитику
+        gtag('event', 'video_play', {
+          event_category: 'video',
+          event_label: `${category}_rutube`
+        });
+      };
+
       const setupNavigation = () => {
         const menuToggle = document.getElementById('menuToggle');
         const sidebarMenu = document.getElementById('sidebarMenu');
