@@ -6,7 +6,7 @@
   <title>Игры — Mortis Play</title>
   <meta name="description" content="Мини-игры от Mortis Play: 2048, Змейка, Тетрис и другие!" />
   <meta property="og:title" content="Игры — Mortis Play" />
-  <meta property="og:description" content="Сыграй в 2048 и Змейку, разблокируй бейджи, побей рекорды!" />
+  <meta property="og:description" content="Сыграй в Змейку и стань легендой — бейдж «Змеиный Король» за 1000+ очков!" />
   <meta property="og:image" content="https://mortis-play.ru/images/og-games.jpg" />
   <link rel="icon" href="/images/favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
@@ -17,8 +17,8 @@
       --neon-purple: #a78bfa;
       --neon-pink: #f0abfc;
       --neon-blue: #60a5fa;
+      --neon-green: #10b981;
       --bg-dark: #0f0020;
-      --glass-dark: rgba(15, 0, 32, 0.7);
     }
     body {
       background: linear-gradient(135deg, #1a0033 0%, #2a0066 50%, #4a00b3 100%);
@@ -77,13 +77,28 @@
     }
     .game-card:hover .game-icon {
       transform: scale(1.15);
-      box-shadow: 0 0 25px currentColor;
+      box-shadow: 0 0 30px currentColor;
     }
-    .coming-soon {
-      opacity: 0.5;
-      pointer-events: none;
-      position: relative;
+
+    /* Эпичный бейджик Змейки */
+    .badge-snake {
+      background: linear-gradient(135deg, #064e3b, #10b981);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      border: 2px solid #34d399;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+      animation: pulseGlow 3s infinite;
     }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.6); }
+      50% { box-shadow: 0 0 35px rgba(16, 185, 129, 1); }
+    }
+
+    .coming-soon { opacity: 0.5; pointer-events: none; position: relative; }
     .coming-soon::after {
       content: 'Скоро';
       position: absolute;
@@ -102,8 +117,6 @@
       border-radius: 9999px;
       font-weight: 600;
       transition: all 0.4s ease;
-      position: relative;
-      overflow: hidden;
     }
     .neon-btn:hover {
       background: rgba(167, 139, 250, 0.2);
@@ -120,13 +133,10 @@
       color: transparent;
       animation: neonFlow 3s ease-in-out infinite;
     }
-    @keyframes neonFlow {
-      0%, 100% { background-position: 0%; }
-      50% { background-position: 100%; }
-    }
+    @keyframes neonFlow { 0%,100%{background-position:0%} 50%{background-position:100%} }
     .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
-    @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+    @keyframes pulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
     @media (max-width: 640px) {
       .game-card { padding: 1.25rem; }
       .game-icon { width: 3.5rem; height: 3.5rem; font-size: 1.5rem; }
@@ -158,18 +168,29 @@
         <p class="text-xs text-fuchsia-400 font-medium mt-2">Бейдж: "2048 Мастер"</p>
       </a>
 
-      <!-- ЗМЕЙКА — С БЕЙДЖИКОМ! -->
-      <a href="/games/snake.html" class="game-card fade-in">
-        <div class="game-icon bg-gradient-to-br from-green-500 to-emerald-600">
+      <!-- ЗМЕЙКА — ЛЕГЕНДАРНЫЙ БЕЙДЖИК -->
+      <a href="/games/snake.html" class="game-card fade-in relative">
+        <div class="game-icon bg-gradient-to-br from-green-500 to-emerald-700">
           <i class="fa-solid fa-worm"></i>
         </div>
         <h3 class="text-xl font-bold text-green-300">Змейка</h3>
         <p class="text-sm text-gray-300 mt-1">Классика на новый лад</p>
-        <p class="text-xs text-emerald-400 font-medium mt-2 flex items-center justify-center gap-1">
-          <span>Бейдж:</span>
-          <span class="font-bold">«Змеиный Король»</span>
-          <span class="text-yellow-400">100+</span>
-        </p>
+        
+        <div class="mt-3 flex flex-col items-center gap-2">
+          <div class="text-xs text-emerald-300 font-medium">Легендарный бейдж:</div>
+          <div class="badge-snake flex items-center gap-2">
+            <i class="fa-solid fa-crown"></i>
+            ЗМЕИНЫЙ КОРОЛЬ
+            <span class="text-yellow-300 ml-1">1000+</span>
+          </div>
+        </div>
+
+        <!-- Индикатор полученного бейджика -->
+        <div id="snakeBadgeUnlocked" class="absolute -top-2 -right-2 opacity-0 transition-opacity">
+          <div class="bg-emerald-500 text-black text-xs font-bold px-3 py-1 rounded-full animate-bounce">
+            Получено!
+          </div>
+        </div>
       </a>
 
       <!-- Крестики-нолики -->
@@ -204,34 +225,46 @@
       <p class="text-lg">
         Разблокировано бейджей:
         <span id="badgeCount" class="text-2xl font-bold text-fuchsia-400 neon-glow">0</span>
+        <span class="text-sm text-yellow-300 ml-3" id="legendaryHint" style="display:none">
+          — включая легендарный!
+        </span>
       </p>
     </div>
   </div>
 
   <script>
     // Переключение темы
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle.addEventListener('click', () => {
+    document.getElementById('themeToggle').addEventListener('click', () => {
       document.body.classList.toggle('light-mode');
-      const icon = themeToggle.querySelector('i');
+      const icon = document.querySelector('#themeToggle i');
       icon.className = document.body.classList.contains('light-mode') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
     });
 
-    // === ПОДСЧЁТ БЕЙДЖЕЙ ===
+    // === СИНХРОНИЗАЦИЯ БЕЙДЖЕЙ ===
     const badgeCount = document.getElementById('badgeCount');
+    const legendaryHint = document.getElementById('legendaryHint');
+    const snakeBadgeIndicator = document.getElementById('snakeBadgeUnlocked');
+
     const badges = [
-      'badge_2048_master',     // из 2048
-      'badge_snake_king'       // ← НОВЫЙ! из Змейки (100+ очков)
+      'badge_2048_master',
+      'badge_snake_king'  // ← теперь за 1000+ очков!
     ];
 
-    let count = badges.filter(b => localStorage.getItem(b) === 'unlocked').length;
+    let count = 0;
+    badges.forEach(key => {
+      if (localStorage.getItem(key) === 'unlocked') {
+        count++;
+        if (key === 'badge_snake_king') {
+          snakeBadgeIndicator.style.opacity = '1';
+          legendaryHint.style.display = 'inline';
+        }
+      }
+    });
+
     badgeCount.textContent = count;
+    if (count > 0) badgeCount.classList.add('animate-pulse');
 
-    if (count > 0) {
-      badgeCount.classList.add('animate-pulse');
-    }
-
-    // Анимация появления карточек
+    // Анимация появления
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -240,7 +273,6 @@
         }
       });
     }, { threshold: 0.1 });
-
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
   </script>
 </body>
