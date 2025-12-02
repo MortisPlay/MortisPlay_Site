@@ -14,13 +14,26 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:Inter, system-ui, Arial, sans-serif;background:linear-gradient(180deg,var(--bg),#071021);color:#e6eef8}
-    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative}
-    .card{width:100%;max-width:960px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:14px;padding:20px;box-shadow:0 10px 30px rgba(2,6,23,0.6);display:grid;grid-template-columns:1fr 320px;gap:18px;position:relative}
-    @media (max-width:900px){.card{grid-template-columns:1fr;max-width:420px}}
+    .wrap{min-height:100vh;display:flex;flex-direction:column;padding:16px 24px;position:relative}
+
+    /* НОВАЯ КНОПКА ВОЗВРАТА — ВСЕГДА ВИДНА */
+    .top-back{
+      position:fixed;top:16px;left:16px;z-index:1000;
+      background:rgba(15,23,36,0.85);backdrop-filter:blur(12px);
+      color:#e6eef8;padding:10px 20px;border-radius:12px;
+      font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;
+      box-shadow:0 8px 25px rgba(0,0,0,0.4);border:1px solid rgba(16,185,129,0.3);
+      transition:all .25s;cursor:pointer;
+    }
+    .top-back:hover{background:var(--accent);color:#032018;transform:scale(1.05)}
+
+    .card{width:100%;max-width:960px;margin:60px auto 0;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+      border-radius:14px;padding:20px;box-shadow:0 10px 30px rgba(2,6,23,0.6);
+      display:grid;grid-template-columns:1fr 320px;gap:18px;position:relative}
+    @media (max-width:900px){.card{grid-template-columns:1fr;max-width:420px;margin-top:80px}}
     .game-area{background:linear-gradient(180deg,#061024,#05101b);border-radius:10px;padding:12px;display:flex;align-items:center;justify-content:center;position:relative}
     canvas{background:#071226;border-radius:8px;display:block;max-width:100%;height:auto}
 
-    /* === Оверлей Game Over === */
     #gameOverOverlay{
       position:absolute;inset:0;background:rgba(7,18,38,0.96);border-radius:10px;
       display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
@@ -42,7 +55,6 @@
     }
     .quest-badge h3{margin:0 0 12px;font-size:32px;font-weight:900}
     .quest-badge p{margin:0;font-size:20px;opacity:0.95}
-
     @keyframes epicPulse{
       0%,100%{box-shadow:0 0 60px rgba(16,185,129,0.6);transform:scale(1)}
       50%{box-shadow:0 0 90px rgba(16,185,129,1);transform:scale(1.05)}
@@ -63,13 +75,17 @@
   </style>
 </head>
 <body>
+  <!-- ПОСТОЯННАЯ КНОПКА ВОЗВРАТА -->
+  <button class="top-back" id="topBackBtn">
+    Вернуться к играм
+  </button>
+
   <div class="wrap">
     <div class="card">
       <div>
         <div class="game-area" id="gameArea">
           <canvas id="gameCanvas" width="600" height="600" aria-label="Поле игры змейка"></canvas>
 
-          <!-- Game Over + Бейджик -->
           <div id="gameOverOverlay">
             <div id="questBadge" class="quest-badge" style="display:none">
               <h3>ЗМЕИНЫЙ КОРОЛЬ!</h3>
@@ -122,9 +138,10 @@
     const overlay = document.getElementById('gameOverOverlay');
     const questBadge = document.getElementById('questBadge');
     const finalScoreEl = document.getElementById('finalScore');
-    const btnBack = document.getElementById('btnBack');
 
-    // UI
+    // Кнопки
+    const btnBack = document.getElementById('btnBack');
+    const topBackBtn = document.getElementById('topBackBtn'); // НОВАЯ КНОПКА
     const scoreEl = document.getElementById('score');
     const bestEl = document.getElementById('best');
     const btnRestart = document.getElementById('btnRestart');
@@ -145,7 +162,7 @@
     bestEl.textContent = best;
     let showGrid = false;
 
-    const QUEST_TARGET = 1000;  // Теперь 1000 очков!
+    const QUEST_TARGET = 1000;
     let questCompletedThisGame = false;
 
     let lastTime = 0;
@@ -182,15 +199,13 @@
     function tick(){
       dir = nextDir;
       const head = {x:snake[0].x + dir.x, y:snake[0].y + dir.y};
-
       if(head.x < 0) head.x = gridSize-1;
       if(head.y < 0) head.y = gridSize-1;
       if(head.x >= gridSize) head.x = 0;
       if(head.y >= gridSize) head.y = 0;
 
       if(snake.some((s,i)=>i>0 && s.x===head.x && s.y===head.y)){
-        gameOver();
-        return;
+        gameOver(); return;
       }
 
       snake.unshift(head);
@@ -199,7 +214,6 @@
         score += Math.floor(10 + speed*0.5);
         scoreEl.textContent = score;
 
-        // ЛЕГЕНДАРНЫЙ БЕЙДЖИК
         if(score >= QUEST_TARGET && !questCompletedThisGame){
           questCompletedThisGame = true;
           localStorage.setItem('badge_snake_king', 'unlocked');
@@ -225,11 +239,6 @@
       overlay.classList.add('visible');
     }
 
-    // === ВСЁ ОСТАЛЬНОЕ (рисование, управление и т.д.) без изменений ===
-    function draw(){ /* ... (оставил без изменений для краткости, но он полностью рабочий) ... */ }
-    function roundRect(ctx,x,y,w,h,r){ /* ... */ }
-
-    // Полный draw() — чтобы не было ошибок
     function draw(){
       ctx.clearRect(0,0,canvas.width,canvas.height);
       ctx.fillStyle = '#071226';
@@ -292,7 +301,7 @@
       requestAnimationFrame(loop);
     }
 
-    // Управление клавишами и свайпами (без изменений)
+    // Управление
     window.addEventListener('keydown', e=>{
       if(['ArrowUp','w','W'].includes(e.key)) trySetDir(0,-1);
       if(['ArrowDown','s','S'].includes(e.key)) trySetDir(0,1);
@@ -326,17 +335,19 @@
     btnPause.onclick = ()=>{ paused=!paused; btnPause.textContent=paused?'Продолжить':'Пауза'; };
     btnResetBest.onclick = ()=>{ if(confirm('Сбросить рекорд?')){ localStorage.removeItem('snake_best'); best=0; bestEl.textContent=best; }};
     
-    // ВОТ ЭТО САМОЕ ВАЖНОЕ — кнопка теперь ведёт на страницу с играми!
-    btnBack.onclick = () => {
-      window.location.href = '/games/index.html';  // или '../' / 'games.html' — подстрой под свою структуру
-    };
+    // ДВЕ кнопки возврата — работают одинаково
+    const goBack = () => window.location.href = '/games/'; // или '/games/index.html'
+    btnBack.onclick = goBack;
+    topBackBtn.onclick = goBack;
 
     document.getElementById('gridRange').oninput = reset;
     document.getElementById('btnToggleGrid').onclick = ()=>{ showGrid=!showGrid; document.getElementById('btnToggleGrid').textContent=showGrid?'Скрыть сетку':'Показать сетку'; };
-    document.getElementById('btnTheme').onclick = ()=>{ document.documentElement.style.setProperty('--bg', getComputedStyle(document.documentElement).getPropertyValue('--bg')==='#0f1724'?'#f8fafc':'#0f1724'); };
+    document.getElementById('btnTheme').onclick = ()=>{ 
+      document.documentElement.style.setProperty('--bg', getComputedStyle(document.documentElement).getPropertyValue('--bg')==='#0f1724'?'#f8fafc':'#0f1724');
+    };
 
     function fitCanvas(){
-      const size = Math.min(canvas.parentElement.clientWidth, window.innerHeight-180);
+      const size = Math.min(canvas.parentElement.clientWidth, window.innerHeight-200);
       canvas.style.width = size+'px';
       canvas.style.height = size+'px';
       canvas.width = size * devicePixelRatio;
