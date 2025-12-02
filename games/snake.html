@@ -15,42 +15,40 @@
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:Inter, system-ui, Arial, sans-serif;background:linear-gradient(180deg,var(--bg),#071021);color:#e6eef8}
     .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative}
-    .card{width:100%;max-width:960px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:20px;box-shadow:0 10px 30px rgba(2,6,23,0.6);display:grid;grid-template-columns:1fr 320px;gap:18px;position:relative}
+    .card{width:100%;max-width:960px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:14px;padding:20px;box-shadow:0 10px 30px rgba(2,6,23,0.6);display:grid;grid-template-columns:1fr 320px;gap:18px;position:relative}
     @media (max-width:900px){.card{grid-template-columns:1fr;max-width:420px}}
 
-    /* Game area */
     .game-area{background:linear-gradient(180deg,#061024,#05101b);border-radius:10px;padding:12px;display:flex;align-items:center;justify-content:center;position:relative}
     canvas{background:#071226;border-radius:8px;display:block;max-width:100%;height:auto}
 
-    /* Кнопка «Вернуться» и бейджик */
-    .overlay{
-      position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
-      background:rgba(7,18,38,0.92);border-radius:10px;z-index:10;opacity:0;pointer-events:none;
-      transition:opacity .4s ease;
+    /* === Оверлей Game Over === */
+    #gameOverOverlay{
+      position:absolute;inset:0;background:rgba(7,18,38,0.96);border-radius:10px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+      opacity:0;pointer-events:none;z-index:20;transition:opacity .5s ease;
     }
-    .overlay.visible{opacity:1;pointer-events:all}
+    #gameOverOverlay.visible{opacity:1;pointer-events:all}
+
     .back-btn{
-      background:var(--accent);color:#032018;padding:14px 32px;border-radius:12px;font-weight:700;font-size:18px;
-      border:none;cursor:pointer;box-shadow:0 8px 20px rgba(16,185,129,0.3);
+      background:var(--accent);color:#032018;padding:16px 40px;border-radius:12px;font-weight:800;
+      font-size:20px;border:none;cursor:pointer;box-shadow:0 10px 30px rgba(16,185,129,0.4);
       transition:transform .2s;
     }
-    .back-btn:hover{transform:translateY(-3px)}
+    .back-btn:hover{transform:scale(1.05)}
 
-    /* Бейджик квеста */
     .quest-badge{
-      background:linear-gradient(135deg,#1e293b,#0f172a);padding:20px 40px;border-radius:20px;
-      border:2px solid #10b981;box-shadow:0 0 30px rgba(16,185,129,0.4);
-      text-align:center;color:#fff;animation:badgePulse 2s infinite;
+      background:linear-gradient(135deg,#1e293b,#0f172a);padding:24px 48px;border-radius:20px;
+      border:3px solid #10b981;box-shadow:0 0 40px rgba(16,185,129,0.5);
+      text-align:center;color:#fff;animation:pulseGlow 2s infinite;
     }
-    .quest-badge h3{margin:0 0 8px;font-size:24px}
-    .quest-badge p{margin:0;font-size:16px;opacity:0.9}
+    .quest-badge h3{margin:0 0 8px;font-size:28px}
+    .quest-badge p{margin:0;font-size:18px;opacity:0.9}
 
-    @keyframes badgePulse{
-      0%,100%{box-shadow:0 0 30px rgba(16,185,129,0.4)}
-      50%{box-shadow:0 0 50px rgba(16,185,129,0.7)}
+    @keyframes pulseGlow{
+      0%,100%{box-shadow:0 0 40px rgba(16,185,129,0.5)}
+      50%{box-shadow:0 0 60px rgba(16,185,129,0.8)}
     }
 
-    /* Panel */
     .panel{padding:12px;background:rgba(255,255,255,0.02);border-radius:10px}
     h1{font-size:18px;margin:4px 0 8px}
     .score{display:flex;gap:8px;align-items:center;margin-bottom:12px}
@@ -72,21 +70,21 @@
         <div class="game-area" id="gameArea">
           <canvas id="gameCanvas" width="600" height="600" aria-label="Поле игры змейка"></canvas>
 
-          <!-- Оверлей Game Over + бейджик -->
-          <div class="overlay" id="gameOverOverlay">
-            <div class="quest-badge" id="questBadge" style="display:none">
-              <h3>Квест выполнен!</h3>
+          <!-- Оверлей после проигрыша -->
+          <div id="gameOverOverlay">
+            <div id="questBadge" class="quest-badge" style="display:none">
+              <h3>Змеиный Король!</h3>
               <p>Ты набрал 100+ очков!</p>
             </div>
             <button class="back-btn" id="btnBack">Вернуться</button>
-            <div style="color:#94a3b8;font-size:14px">Очки: <span id="finalScore">0</span></div>
+            <div style="color:#94a3b8;font-size:16px">Финальный счёт: <span id="finalScore">0</span></div>
           </div>
         </div>
 
         <div style="margin-top:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
           <button id="btnRestart" class="small">Новая игра</button>
           <button id="btnPause" class="small secondary">Пауза</button>
-          <button id="btnSlow" class="small secondary">Слить очки (reset highscore)</button>
+          <button id="btnSlow" class="small secondary">Сбросить рекорд</button>
         </div>
       </div>
 
@@ -96,22 +94,23 @@
           <div class="pill">Очки: <span id="score">0</span></div>
           <div class="pill">Лучший: <span id="best">0</span></div>
         </div>
-        <div class="muted">Управление: стрелки или WASD. На мобильных — свайпы.</div>
+        <div class="muted">Управление: стрелки / WASD / свайпы</div>
         <div class="controls">
           <label>Скорость (такт/сек)</label>
           <input id="speedRange" type="range" min="4" max="18" value="8">
           <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>медленно</span><span>быстро</span></div>
+
           <label style="margin-top:8px">Размер сетки</label>
           <input id="gridRange" type="range" min="10" max="30" value="20">
           <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>мелко</span><span>крупно</span></div>
+
           <div style="display:flex;gap:8px;margin-top:8px">
-            <button id="btnToggleGrid" class="secondary small">Показать сетку</button>
-            <button id="btnTheme" class="secondary small">Тёмная/светлая</button>
+            <button id="btnToggleGrid" class="secondary small">Сетка</button>
+            <button id="btnTheme" class="secondary small">Тема</button>
           </div>
         </div>
         <div class="footer">
-          <div>Инструкции: собери пищу, избегай столкновений с собой.</div>
-          <div style="margin-top:8px">Есть квест: набери 100 очков → получи бейдж!</div>
+          <div>Цель: набрать 100+ очков → бейдж «Змеиный Король»</div>
         </div>
       </aside>
     </div>
@@ -121,13 +120,12 @@
   (function(){
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    const gameArea = document.getElementById('gameArea');
     const overlay = document.getElementById('gameOverOverlay');
-    const finalScoreEl = document.getElementById('finalScore');
     const questBadge = document.getElementById('questBadge');
+    const finalScoreEl = document.getElementById('finalScore');
     const btnBack = document.getElementById('btnBack');
 
-    // UI refs
+    // UI
     const scoreEl = document.getElementById('score');
     const bestEl = document.getElementById('best');
     const btnRestart = document.getElementById('btnRestart');
@@ -148,13 +146,12 @@
     let running = false;
     let paused = false;
     let score = 0;
-    let best = parseInt(localStorage.getItem('snake_best') || '0',10) || 0;
+    let best = parseInt(localStorage.getItem('snake_best') || '0',10);
     bestEl.textContent = best;
     let showGrid = false;
 
-    // --- НОВОЕ: квест ---
     const QUEST_TARGET = 100;
-    let questCompleted = false; // за текущую игру
+    let questCompletedThisGame = false;
 
     let lastTime = 0;
     let acc = 0;
@@ -167,26 +164,23 @@
       const startX = Math.floor(gridSize/2);
       const startY = Math.floor(gridSize/2);
       for(let i=0;i<startLen;i++) snake.push({x:startX-i,y:startY});
-      dir = {x:1,y:0}; nextDir = {x:1,y:0};
+      dir = nextDir = {x:1,y:0};
       placeFood();
       score = 0; scoreEl.textContent = score;
       running = true; paused = false;
       btnPause.textContent = 'Пауза';
       overlay.classList.remove('visible');
-      questCompleted = false;
       questBadge.style.display = 'none';
+      questCompletedThisGame = false;
     }
 
     function placeFood(){
-      let tries = 0;
-      while(true){
-        tries++;
-        if(tries>1000) break;
-        const x = Math.floor(Math.random()*gridSize);
-        const y = Math.floor(Math.random()*gridSize);
+      let x,y,tries=0;
+      while(tries++<1000){
+        x = Math.floor(Math.random()*gridSize);
+        y = Math.floor(Math.random()*gridSize);
         if(!snake.some(s=>s.x===x && s.y===y)){
-          food = {x,y};
-          return;
+          food = {x,y}; return;
         }
       }
       food = {x:0,y:0};
@@ -196,12 +190,14 @@
       dir = nextDir;
       const head = {x:snake[0].x + dir.x, y:snake[0].y + dir.y};
 
+      // wrap
       if(head.x < 0) head.x = gridSize-1;
       if(head.y < 0) head.y = gridSize-1;
       if(head.x >= gridSize) head.x = 0;
       if(head.y >= gridSize) head.y = 0;
 
-      if(snake.some((s,idx)=>idx>0 && s.x===head.x && s.y===head.y)){
+      // самопересечение
+      if(snake.some((s,i)=>i>0 && s.x===head.x && s.y===head.y)){
         gameOver();
         return;
       }
@@ -212,15 +208,16 @@
         score += Math.floor(10 + speed*0.5);
         scoreEl.textContent = score;
 
-        // Проверка квеста
-        if(score >= QUEST_TARGET && !questCompleted){
-          questCompleted = true;
+        // Квест
+        if(score >= QUEST_TARGET && !questCompletedThisGame){
+          questCompletedThisGame = true;
+          localStorage.setItem('badge_snake_king', 'unlocked');
         }
 
         placeFood();
-        if(score>best){
+        if(score > best){
           best = score;
-          localStorage.setItem('snake_best', String(best));
+          localStorage.setItem('snake_best', best);
           bestEl.textContent = best;
         }
       } else {
@@ -231,19 +228,12 @@
     function gameOver(){
       running = false;
       finalScoreEl.textContent = score;
-
-      if(questCompleted){
+      if(questCompletedThisGame){
         questBadge.style.display = 'block';
       }
-
       overlay.classList.add('visible');
     }
 
-    // --- остальной код рисования без изменений ---
-    function draw(){ /* ... тот же самый draw() из твоего оригинала ... */ }
-    function roundRect(ctx,x,y,w,h,r){ /* ... */ }
-
-    // (вставляю полностью draw() чтобы не было ошибок)
     function draw(){
       ctx.clearRect(0,0,canvas.width,canvas.height);
       ctx.fillStyle = '#071226';
@@ -270,18 +260,16 @@
 
       for(let i=snake.length-1;i>=0;i--){
         const s = snake[i];
-        const x = s.x*cell; const y = s.y*cell;
-        const radius = Math.max(2, cell*0.18);
+        const x = s.x*cell, y = s.y*cell;
         if(i===0){
           ctx.fillStyle = '#10b981';
-          roundRect(ctx,x+1,y+1,cell-2,cell-2,Math.max(2,cell*0.15)); ctx.fill();
+          roundRect(ctx,x+1,y+1,cell-2,cell-2,cell*0.15); ctx.fill();
           ctx.fillStyle = '#002018';
-          const ex = x + cell*0.65; const ey = y + cell*0.28;
-          ctx.beginPath(); ctx.arc(ex,ey,Math.max(1,cell*0.05),0,Math.PI*2); ctx.fill();
+          ctx.beginPath(); ctx.arc(x + cell*0.65, y + cell*0.28, cell*0.06,0,Math.PI*2); ctx.fill();
         } else {
           const t = i / snake.length;
-          ctx.fillStyle = `rgba(${16},${185},${129},${0.6 + 0.4*(1-t)})`;
-          roundRect(ctx,x+1,y+1,cell-2,cell-2,Math.max(1,cell*0.12)); ctx.fill();
+          ctx.fillStyle = `rgba(16,185,129,${0.6+0.4*(1-t)})`;
+          roundRect(ctx,x+1,y+1,cell-2,cell-2,cell*0.12); ctx.fill();
         }
       }
     }
@@ -298,26 +286,23 @@
 
     function loop(ts){
       if(!lastTime) lastTime = ts;
-      const dt = (ts - lastTime)/1000; lastTime = ts;
+      const dt = (ts-lastTime)/1000; lastTime = ts;
       acc += dt;
-      const interval = 1 / Math.max(1, parseInt(speedRange.value,10));
+      const interval = 1/Math.max(1,parseInt(speedRange.value,10));
       if(!paused && running){
-        while(acc >= interval){
-          tick(); acc -= interval;
-        }
+        while(acc >= interval){ tick(); acc -= interval; }
       }
       draw();
       requestAnimationFrame(loop);
     }
 
-    // --- Управление ---
+    // Управление
     window.addEventListener('keydown', e=>{
-      const k = e.key;
-      if(k==='ArrowUp' || k==='w' || k==='W') trySetDir(0,-1);
-      if(k==='ArrowDown' || k==='s' || k==='S') trySetDir(0,1);
-      if(k==='ArrowLeft' || k==='a' || k==='A') trySetDir(-1,0);
-      if(k==='ArrowRight' || k==='d' || k==='D') trySetDir(1,0);
-      if(k===' ') { paused = !paused; btnPause.textContent = paused? 'Продолжить' : 'Пауза'; }
+      if(['ArrowUp','w','W'].includes(e.key)) trySetDir(0,-1);
+      if(['ArrowDown','s','S'].includes(e.key)) trySetDir(0,1);
+      if(['ArrowLeft','a','A'].includes(e.key)) trySetDir(-1,0);
+      if(['ArrowRight','d','D'].includes(e.key)) trySetDir(1,0);
+      if(e.key===' ') { paused=!paused; btnPause.textContent=paused?'Продолжить':'Пауза'; }
     });
 
     function trySetDir(x,y){
@@ -325,49 +310,44 @@
       nextDir = {x,y};
     }
 
-    // touch свайпы
-    let touchStart = null;
-    canvas.addEventListener('touchstart', e=>{ if(e.touches && e.touches[0]) touchStart = {x: e.touches[0].clientX, y: e.touches[0].clientY}; }, {passive:true});
-    canvas.addEventListener('touchend', e=>{
+    // Свайпы
+    let touchStart=null;
+    canvas.addEventListener('touchstart', e=> { if(e.touches[0]) touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY}; }, {passive:true});
+    canvas.addEventListener('touchend', e=> {
       if(!touchStart) return;
       const te = e.changedTouches[0];
-      const dx = te.clientX - touchStart.x;
-      const dy = te.clientY - touchStart.y;
-      if(Math.abs(dx) > Math.abs(dy)){
-        if(dx>20) trySetDir(1,0); else if(dx<-20) trySetDir(-1,0);
+      const dx = te.clientX-touchStart.x;
+      const dy = te.clientY-touchStart.y;
+      if(Math.abs(dx)>Math.abs(dy)){
+        if(dx>30) trySetDir(1,0); else if(dx<-30) trySetDir(-1,0);
       } else {
-        if(dy>20) trySetDir(0,1); else if(dy<-20) trySetDir(0,-1);
+        if(dy>30) trySetDir(0,1); else if(dy<-30) trySetDir(0,-1);
       }
-      touchStart = null;
+      touchStart=null;
     }, {passive:true});
 
     // UI
-    btnRestart.addEventListener('click', ()=>{ reset(); });
-    btnPause.addEventListener('click', ()=>{ paused = !paused; btnPause.textContent = paused? 'Продолжить' : 'Пауза'; });
-    btnResetBest.addEventListener('click', ()=>{ if(confirm('Сбросить рекорд?')){ localStorage.removeItem('snake_best'); best = 0; bestEl.textContent = best; }});
-    speedRange.addEventListener('input', ()=>{});
-    gridRange.addEventListener('input', ()=>{ reset(); });
-    btnToggleGrid.addEventListener('click', ()=>{ showGrid = !showGrid; btnToggleGrid.textContent = showGrid? 'Скрыть сетку' : 'Показать сетку'; });
-    btnTheme.addEventListener('click', ()=>{
-      const isDark = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() === '#0f1724';
-      document.documentElement.style.setProperty('--bg', isDark ? '#f8fafc' : '#0f1724');
-    });
-
-    // Кнопка «Вернуться» — просто новая игра
-    btnBack.addEventListener('click', ()=>{ reset(); });
+    btnRestart.onclick = reset;
+    btnPause.onclick = ()=>{ paused=!paused; btnPause.textContent=paused?'Продолжить':'Пауза'; };
+    btnResetBest.onclick = ()=>{ if(confirm('Сбросить рекорд?')){ localStorage.removeItem('snake_best'); best=0; bestEl.textContent=best; }};
+    btnBack.onclick = reset;
+    gridRange.oninput = reset;
+    btnToggleGrid.onclick = ()=>{ showGrid=!showGrid; btnToggleGrid.textContent=showGrid?'Скрыть сетку':'Показать сетку'; };
+    btnTheme.onclick = ()=>{ document.documentElement.style.setProperty('--bg', getComputedStyle(document.documentElement).getPropertyValue('--bg')==='#0f1724'?'#f8fafc':'#0f1724'); };
 
     function fitCanvas(){
-      const rect = canvas.getBoundingClientRect();
-      const size = Math.min(rect.width, window.innerHeight - 160);
-      canvas.style.width = size + 'px';
-      canvas.style.height = size + 'px';
-      canvas.width = Math.floor(size * devicePixelRatio);
-      canvas.height = Math.floor(size * devicePixelRatio);
+      const size = Math.min(canvas.parentElement.clientWidth, window.innerHeight-180);
+      canvas.style.width = size+'px';
+      canvas.style.height = size+'px';
+      canvas.width = size * devicePixelRatio;
+      canvas.height = size * devicePixelRatio;
       cell = Math.floor(canvas.width / gridSize);
     }
 
-    window.addEventListener('resize', ()=>{ fitCanvas(); draw(); });
-    fitCanvas(); reset(); requestAnimationFrame(loop);
+    window.addEventListener('resize',()=>{ fitCanvas(); draw(); });
+    fitCanvas();
+    reset();
+    requestAnimationFrame(loop);
   })();
   </script>
 </body>
