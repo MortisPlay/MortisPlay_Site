@@ -141,19 +141,21 @@
       <h1 id="qaTitle" class="title-gradient text-4xl md:text-5xl font-bold tracking-tight text-center">
         Q&A с Mortis Play
       </h1>
-      <p class="mt-4 text-lg text-center text-slate-300">Архив вопросов и ответов. Задавайте вопросы, когда Q&A снова откроется! 😎</p>
+      <p class="mt-4 text-lg text-center text-slate-300">Архив вопросов и ответов. Наш бот всегда открыт к новым задачам и вопросам! 🚀</p>
       <div class="mt-12 grid gap-8">
         <div class="backdrop-blur-lg card border rounded-2xl p-6 shadow-md fade-in">
           <h2 class="text-2xl font-semibold text-purple-300 flex items-center gap-2">
             <i class="fa-solid fa-question-circle"></i> Задать вопрос
           </h2>
           <p id="qaStatus" class="mt-4 text-lg text-slate-300 leading-relaxed">
-            Q&A временно закрыт. Следите за обновлениями в Telegram канале: <a href="https://t.me/MortisPlayTG" class="underline text-indigo-400 hover:text-indigo-300" rel="noopener">@MortisPlayTG</a>!
+            Хочешь задать вопрос или предложить задачу для бота? Наш бот открыт к любым задачам и идеям! Пиши прямо сейчас в Telegram — ответим в ближайшее время и рассмотрим любые предложения. 🎯
           </p>
           <div class="mt-6 flex justify-center">
-            <button id="qaSubmitButton" class="px-4 py-2 rounded-full disabled-button flex items-center gap-2" disabled aria-label="Задать вопрос в Telegram (неактивно)">
-              <i class="fa-brands fa-telegram"></i> Задать вопрос в Telegram
-            </button>
+            <a href="https://t.me/MortisPlayBot" target="_blank" rel="noopener noreferrer" 
+               class="px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 hover:from-teal-500 hover:to-blue-500 transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2 transform hover:-translate-y-1"
+               aria-label="Задать вопрос в Telegram">
+              <i class="fa-brands fa-telegram text-xl"></i> Задать вопрос в Telegram
+            </a>
           </div>
         </div>
         <div class="backdrop-blur-lg card border rounded-2xl p-6 shadow-md fade-in">
@@ -219,6 +221,19 @@
             logAction(`Клик по кнопке: ${label}`);
           });
         });
+        
+        // Трекинг для кнопки Telegram
+        const telegramButton = document.querySelector('a[href*="t.me/MortisPlayBot"]');
+        if (telegramButton) {
+          telegramButton.addEventListener('click', () => {
+            gtag('event', 'telegram_button_click', { 
+              event_category: 'qa', 
+              event_label: 'Задать вопрос в Telegram' 
+            });
+            logAction('Клик по кнопке Telegram для вопроса');
+          });
+        }
+        
         logAction('Трекинг кнопок настроен');
       } catch (e) {
         logAction('Ошибка в setupButtonTracking: ' + e.message);
@@ -279,7 +294,7 @@
           { username: 'Shartkku', question: 'Когда новая серия Standoff пряток? уже 2 года ждём', answer: 'Серии пряток по Standoff 2 больше не будет из-за того, что канал заброшен.' },
           { username: 'Johnny_Drill', question: 'Когда стрим по PEAK?', answer: 'Сейчас времени на стрим нет, но скоро будет СЕКРЕТНОЕ ДОСЬЕ, которое перевернёт контору канала!!! >:D' },
           { username: 'sakhaboom_b00m', question: 'Функционирует ли бот с Discord сервером?', answer: 'Если ты про связь бота с Discord, то, к сожалению, нет. Но на нашем новом Discord-сервере есть свой бот!' },
-          { username: 'vakiliner', question: 'Где можно предложить идею или улучшение для твоего сайта или бота?', answer: 'Предложения можно отправлять в основном Telegram-канале: подпишись, нажми на три точки, выбери "Сообщение каналу" и отправь с иконкой $.' },
+          { username: 'vakiliner', question: 'Где можно предложить идею или улучшение для твоего сайта или бота?', answer: 'Предложения можно отправлять в основном Telegram-канале: подпишись, нажми на три точки, выбери "Сообщение каналу" и отправь с иконкой $. Бот всегда открыт к новым задачам!' },
           { username: 'Shartkku', question: 'В каком году ты начал играть в КС?', answer: 'В 2020–2021 году.' },
           { username: 'vakiliner', question: 'Какая твоя любимая игра?', answer: 'Сейчас это CS2, а за последний месяц понравились: PEAK, REPO и другие.' }
         ];
