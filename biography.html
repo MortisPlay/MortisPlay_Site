@@ -22,7 +22,7 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });
+    gtag('config', { send_page_view: true });
   </script>
   <style>
     body {
@@ -128,6 +128,9 @@
       position: relative;
       overflow: hidden;
       backdrop-filter: blur(8px);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     .neon-btn::before {
       content: '';
@@ -163,6 +166,7 @@
       box-shadow: 0 0 30px rgba(252, 211, 77, 0.8);
     }
     .yandex-music-btn i { color: #fcd34d; }
+    .yandex-music-btn:hover i { color: #000000; }
 
     @media (max-width: 640px) {
       .glass-card { padding: 1.5rem; border-radius: 1rem; }
@@ -201,19 +205,19 @@
             <span class="text-purple-300 font-semibold">Главное — эмоции зрителей, а не цифры.</span>
           </p>
           <div class="mt-6 flex flex-wrap justify-center gap-3">
-            <a href="https://t.me/dimap7221" target="_blank" class="neon-btn flex items-center gap-2">
-              Telegram
+            <a href="https://t.me/dimap7221" target="_blank" class="neon-btn">
+              <i class="fa-brands fa-telegram"></i> Telegram
             </a>
-            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="neon-btn flex items-center gap-2">
-              YouTube
+            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="neon-btn">
+              <i class="fa-brands fa-youtube"></i> YouTube
             </a>
-            <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="neon-btn flex items-center gap-2">
-              Поддержать
+            <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="neon-btn">
+              <i class="fa-solid fa-heart text-red-400"></i> Поддержать
             </a>
           </div>
         </div>
 
-        <!-- МОЙ ПУТЬ — ДОБАВЛЕНЫ 2022, 2023, 2024 -->
+        <!-- МОЙ ПУТЬ -->
         <div class="glass-card p-8 fade-in">
           <h2 class="text-3xl font-bold text-indigo-300 flex items-center gap-3 mb-6">
             Мой путь
@@ -232,12 +236,12 @@
               <p class="text-gray-300 mt-1">Создан первый ТГК и продолжение карьеры ютубера</p>
             </div>
             <div class="timeline-item">
-              <h3 class="text-xl font-bold text-purple-300">2023: Пробую что то новое</h3>
-              <p class="text-gray-300 mt-1">Начинаю красиво но карьера чутка поднимается вверх!</p>
+              <h3 class="text-xl font-bold text-purple-300">2023: Пробую что-то новое</h3>
+              <p class="text-gray-300 mt-1">Начинаю красиво, но карьера чутка поднимается вверх!</p>
             </div>
             <div class="timeline-item">
               <h3 class="text-xl font-bold text-purple-300">2024: Фан контент</h3>
-              <p class="text-gray-300 mt-1">Опубликовываю контенты не по каналу и я взлетел!</p>
+              <p class="text-gray-300 mt-1">Опубликовываю контент не по каналу и я взлетел!</p>
             </div>
             <div class="timeline-item">
               <h3 class="text-xl font-bold text-purple-300">2025: Запуск Сайта mortisplay.ru</h3>
@@ -253,24 +257,29 @@
           </h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
             <div class="flex items-center gap-3 text-gray-200">
+              <i class="fa-solid fa-id-card text-purple-400"></i>
               <span><strong>Имя:</strong> ? (в народе — Мортис)</span>
             </div>
             <div class="flex items-center gap-3 text-gray-200">
+              <i class="fa-solid fa-cake-candles text-pink-400"></i>
               <span><strong>ДР:</strong> 5 августа 2009</span>
             </div>
             <div class="flex items-center gap-3 text-gray-200">
+              <i class="fa-solid fa-hourglass-half text-yellow-400"></i>
               <span><strong>Возраст:</strong> 16 лет</span>
             </div>
             <div class="flex items-center gap-3 text-gray-200">
+              <i class="fa-solid fa-gamepad text-green-400"></i>
               <span><strong>Хобби:</strong> Карьера и личные дела :)</span>
             </div>
             <div class="flex items-center gap-3 text-gray-200 md:col-span-2">
+              <i class="fa-solid fa-camera-movie text-red-400"></i>
               <span><strong>Формат:</strong> Динамичные мемы с неожиданными переходами</span>
             </div>
           </div>
         </div>
 
-        <!-- ПЛЕЙЛИСТ — НОВАЯ КНОПКА Я.МУЗЫКА -->
+        <!-- ПЛЕЙЛИСТ -->
         <div class="glass-card p-8 fade-in">
           <h2 class="text-3xl font-bold text-green-300 flex items-center gap-3 mb-4">
             Мой вайб-плейлист
@@ -279,12 +288,11 @@
             Музыка, которая качает монтаж и настроение. Слушай и вдохновляйся!
           </p>
           <div class="flex flex-wrap justify-center gap-3">
-            <a href="https://open.spotify.com/playlist/3UEMLQdDi830YOoOvEF1RB?si=-yT6Kq4fQ_6STsIgQiGHrw" target="_blank" class="neon-btn flex items-center gap-2">
-              Spotify
+            <a href="https://open.spotify.com/playlist/3UEMLQdDi830YOoOvEF1RB?si=-yT6Kq4fQ_6STsIgQiGHrw" target="_blank" class="neon-btn">
+              <i class="fa-brands fa-spotify"></i> Spotify
             </a>
-            <!-- ВСТАВЬ СВОЮ ССЫЛКУ НА ЯНДЕКС.МУЗЫКУ СЮДА -->
-            <a href="https://music.yandex.ru/playlists/ps.6db9a630-27c5-4a23-8652-2fed534e2de5?utm_source=desktop&utm_medium=copy_link" target="_blank" class="neon-btn yandex-music-btn flex items-center gap-2 font-bold">
-              Я.Музыка
+            <a href="https://music.yandex.ru/playlists/ps.6db9a630-27c5-4a23-8652-2fed534e2de5?utm_source=desktop&utm_medium=copy_link" target="_blank" class="neon-btn yandex-music-btn">
+              <i class="fa-solid fa-music"></i> Я.Музыка
             </a>
           </div>
         </div>
@@ -293,7 +301,7 @@
       <!-- НА ГЛАВНУЮ -->
       <div class="mt-12 text-center">
         <a href="/" class="neon-btn text-lg px-8 py-3 inline-flex items-center gap-2">
-          На главную
+          <i class="fa-solid fa-house"></i> На главную
         </a>
       </div>
     </div>
