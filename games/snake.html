@@ -17,36 +17,35 @@
     .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative}
     .card{width:100%;max-width:960px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:14px;padding:20px;box-shadow:0 10px 30px rgba(2,6,23,0.6);display:grid;grid-template-columns:1fr 320px;gap:18px;position:relative}
     @media (max-width:900px){.card{grid-template-columns:1fr;max-width:420px}}
-
     .game-area{background:linear-gradient(180deg,#061024,#05101b);border-radius:10px;padding:12px;display:flex;align-items:center;justify-content:center;position:relative}
     canvas{background:#071226;border-radius:8px;display:block;max-width:100%;height:auto}
 
     /* === Оверлей Game Over === */
     #gameOverOverlay{
       position:absolute;inset:0;background:rgba(7,18,38,0.96);border-radius:10px;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
-      opacity:0;pointer-events:none;z-index:20;transition:opacity .5s ease;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
+      opacity:0;pointer-events:none;z-index:20;transition:opacity .6s ease;
     }
     #gameOverOverlay.visible{opacity:1;pointer-events:all}
 
     .back-btn{
-      background:var(--accent);color:#032018;padding:16px 40px;border-radius:12px;font-weight:800;
-      font-size:20px;border:none;cursor:pointer;box-shadow:0 10px 30px rgba(16,185,129,0.4);
-      transition:transform .2s;
+      background:var(--accent);color:#032018;padding:18px 48px;border-radius:14px;font-weight:800;
+      font-size:22px;border:none;cursor:pointer;box-shadow:0 12px 40px rgba(16,185,129,0.5);
+      transition:all .25s;
     }
-    .back-btn:hover{transform:scale(1.05)}
+    .back-btn:hover{transform:scale(1.08);box-shadow:0 16px 50px rgba(16,185,129,0.6)}
 
     .quest-badge{
-      background:linear-gradient(135deg,#1e293b,#0f172a);padding:24px 48px;border-radius:20px;
-      border:3px solid #10b981;box-shadow:0 0 40px rgba(16,185,129,0.5);
-      text-align:center;color:#fff;animation:pulseGlow 2s infinite;
+      background:linear-gradient(135deg,#1e293b,#0f172a);padding:28px 56px;border-radius:24px;
+      border:4px solid #10b981;box-shadow:0 0 60px rgba(16,185,129,0.6);
+      text-align:center;color:#fff;animation:epicPulse 2.5s infinite;
     }
-    .quest-badge h3{margin:0 0 8px;font-size:28px}
-    .quest-badge p{margin:0;font-size:18px;opacity:0.9}
+    .quest-badge h3{margin:0 0 12px;font-size:32px;font-weight:900}
+    .quest-badge p{margin:0;font-size:20px;opacity:0.95}
 
-    @keyframes pulseGlow{
-      0%,100%{box-shadow:0 0 40px rgba(16,185,129,0.5)}
-      50%{box-shadow:0 0 60px rgba(16,185,129,0.8)}
+    @keyframes epicPulse{
+      0%,100%{box-shadow:0 0 60px rgba(16,185,129,0.6);transform:scale(1)}
+      50%{box-shadow:0 0 90px rgba(16,185,129,1);transform:scale(1.05)}
     }
 
     .panel{padding:12px;background:rgba(255,255,255,0.02);border-radius:10px}
@@ -70,14 +69,14 @@
         <div class="game-area" id="gameArea">
           <canvas id="gameCanvas" width="600" height="600" aria-label="Поле игры змейка"></canvas>
 
-          <!-- Оверлей после проигрыша -->
+          <!-- Game Over + Бейджик -->
           <div id="gameOverOverlay">
             <div id="questBadge" class="quest-badge" style="display:none">
-              <h3>Змеиный Король!</h3>
-              <p>Ты набрал 100+ очков!</p>
+              <h3>ЗМЕИНЫЙ КОРОЛЬ!</h3>
+              <p>Ты набрал 1000+ очков!</p>
             </div>
-            <button class="back-btn" id="btnBack">Вернуться</button>
-            <div style="color:#94a3b8;font-size:16px">Финальный счёт: <span id="finalScore">0</span></div>
+            <button class="back-btn" id="btnBack">Вернуться к играм</button>
+            <div style="color:#94a3b8;font-size:18px">Финальный счёт: <span id="finalScore">0</span></div>
           </div>
         </div>
 
@@ -110,7 +109,7 @@
           </div>
         </div>
         <div class="footer">
-          <div>Цель: набрать 100+ очков → бейдж «Змеиный Король»</div>
+          <div><strong>Легендарный бейдж:</strong> набрать 1000+ очков → «Змеиный Король»</div>
         </div>
       </aside>
     </div>
@@ -131,14 +130,10 @@
     const btnRestart = document.getElementById('btnRestart');
     const btnPause = document.getElementById('btnPause');
     const btnResetBest = document.getElementById('btnSlow');
-    const speedRange = document.getElementById('speedRange');
-    const gridRange = document.getElementById('gridRange');
-    const btnToggleGrid = document.getElementById('btnToggleGrid');
-    const btnTheme = document.getElementById('btnTheme');
 
-    let gridSize = parseInt(gridRange.value,10);
+    let gridSize = 20;
     let cell = Math.floor(canvas.width / gridSize);
-    let speed = parseInt(speedRange.value,10);
+    let speed = 8;
     let snake = [];
     let dir = {x:1,y:0};
     let nextDir = {x:1,y:0};
@@ -146,18 +141,18 @@
     let running = false;
     let paused = false;
     let score = 0;
-    let best = parseInt(localStorage.getItem('snake_best') || '0',10);
+    let best = parseInt(localStorage.getItem('snake_best') || '0', 10);
     bestEl.textContent = best;
     let showGrid = false;
 
-    const QUEST_TARGET = 100;
+    const QUEST_TARGET = 1000;  // Теперь 1000 очков!
     let questCompletedThisGame = false;
 
     let lastTime = 0;
     let acc = 0;
 
     function reset(){
-      gridSize = parseInt(gridRange.value,10);
+      gridSize = parseInt(document.getElementById('gridRange').value, 10);
       cell = Math.floor(canvas.width / gridSize);
       snake = [];
       const startLen = 4;
@@ -168,7 +163,7 @@
       placeFood();
       score = 0; scoreEl.textContent = score;
       running = true; paused = false;
-      btnPause.textContent = 'Пауза';
+      document.getElementById('btnPause').textContent = 'Пауза';
       overlay.classList.remove('visible');
       questBadge.style.display = 'none';
       questCompletedThisGame = false;
@@ -179,9 +174,7 @@
       while(tries++<1000){
         x = Math.floor(Math.random()*gridSize);
         y = Math.floor(Math.random()*gridSize);
-        if(!snake.some(s=>s.x===x && s.y===y)){
-          food = {x,y}; return;
-        }
+        if(!snake.some(s=>s.x===x && s.y===y)){ food = {x,y}; return; }
       }
       food = {x:0,y:0};
     }
@@ -190,13 +183,11 @@
       dir = nextDir;
       const head = {x:snake[0].x + dir.x, y:snake[0].y + dir.y};
 
-      // wrap
       if(head.x < 0) head.x = gridSize-1;
       if(head.y < 0) head.y = gridSize-1;
       if(head.x >= gridSize) head.x = 0;
       if(head.y >= gridSize) head.y = 0;
 
-      // самопересечение
       if(snake.some((s,i)=>i>0 && s.x===head.x && s.y===head.y)){
         gameOver();
         return;
@@ -208,7 +199,7 @@
         score += Math.floor(10 + speed*0.5);
         scoreEl.textContent = score;
 
-        // Квест
+        // ЛЕГЕНДАРНЫЙ БЕЙДЖИК
         if(score >= QUEST_TARGET && !questCompletedThisGame){
           questCompletedThisGame = true;
           localStorage.setItem('badge_snake_king', 'unlocked');
@@ -234,6 +225,11 @@
       overlay.classList.add('visible');
     }
 
+    // === ВСЁ ОСТАЛЬНОЕ (рисование, управление и т.д.) без изменений ===
+    function draw(){ /* ... (оставил без изменений для краткости, но он полностью рабочий) ... */ }
+    function roundRect(ctx,x,y,w,h,r){ /* ... */ }
+
+    // Полный draw() — чтобы не было ошибок
     function draw(){
       ctx.clearRect(0,0,canvas.width,canvas.height);
       ctx.fillStyle = '#071226';
@@ -288,7 +284,7 @@
       if(!lastTime) lastTime = ts;
       const dt = (ts-lastTime)/1000; lastTime = ts;
       acc += dt;
-      const interval = 1/Math.max(1,parseInt(speedRange.value,10));
+      const interval = 1/Math.max(1,parseInt(document.getElementById('speedRange').value,10));
       if(!paused && running){
         while(acc >= interval){ tick(); acc -= interval; }
       }
@@ -296,7 +292,7 @@
       requestAnimationFrame(loop);
     }
 
-    // Управление
+    // Управление клавишами и свайпами (без изменений)
     window.addEventListener('keydown', e=>{
       if(['ArrowUp','w','W'].includes(e.key)) trySetDir(0,-1);
       if(['ArrowDown','s','S'].includes(e.key)) trySetDir(0,1);
@@ -310,7 +306,6 @@
       nextDir = {x,y};
     }
 
-    // Свайпы
     let touchStart=null;
     canvas.addEventListener('touchstart', e=> { if(e.touches[0]) touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY}; }, {passive:true});
     canvas.addEventListener('touchend', e=> {
@@ -326,14 +321,19 @@
       touchStart=null;
     }, {passive:true});
 
-    // UI
+    // Кнопки
     btnRestart.onclick = reset;
     btnPause.onclick = ()=>{ paused=!paused; btnPause.textContent=paused?'Продолжить':'Пауза'; };
     btnResetBest.onclick = ()=>{ if(confirm('Сбросить рекорд?')){ localStorage.removeItem('snake_best'); best=0; bestEl.textContent=best; }};
-    btnBack.onclick = reset;
-    gridRange.oninput = reset;
-    btnToggleGrid.onclick = ()=>{ showGrid=!showGrid; btnToggleGrid.textContent=showGrid?'Скрыть сетку':'Показать сетку'; };
-    btnTheme.onclick = ()=>{ document.documentElement.style.setProperty('--bg', getComputedStyle(document.documentElement).getPropertyValue('--bg')==='#0f1724'?'#f8fafc':'#0f1724'); };
+    
+    // ВОТ ЭТО САМОЕ ВАЖНОЕ — кнопка теперь ведёт на страницу с играми!
+    btnBack.onclick = () => {
+      window.location.href = '/games/index.html';  // или '../' / 'games.html' — подстрой под свою структуру
+    };
+
+    document.getElementById('gridRange').oninput = reset;
+    document.getElementById('btnToggleGrid').onclick = ()=>{ showGrid=!showGrid; document.getElementById('btnToggleGrid').textContent=showGrid?'Скрыть сетку':'Показать сетку'; };
+    document.getElementById('btnTheme').onclick = ()=>{ document.documentElement.style.setProperty('--bg', getComputedStyle(document.documentElement).getPropertyValue('--bg')==='#0f1724'?'#f8fafc':'#0f1724'); };
 
     function fitCanvas(){
       const size = Math.min(canvas.parentElement.clientWidth, window.innerHeight-180);
