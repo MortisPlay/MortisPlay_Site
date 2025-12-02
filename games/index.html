@@ -6,7 +6,7 @@
   <title>Игры — Mortis Play</title>
   <meta name="description" content="Мини-игры от Mortis Play: 2048, Змейка, Тетрис и другие!" />
   <meta property="og:title" content="Игры — Mortis Play" />
-  <meta property="og:description" content="Сыграй в 2048, разблокируй бейджи, побей рекорды!" />
+  <meta property="og:description" content="Сыграй в 2048 и Змейку, разблокируй бейджи, побей рекорды!" />
   <meta property="og:image" content="https://mortis-play.ru/images/og-games.jpg" />
   <link rel="icon" href="/images/favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
@@ -36,8 +36,6 @@
       pointer-events: none;
       z-index: -1;
     }
-
-    /* === ГЛАСС КАРТОЧКИ === */
     .game-card {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(167, 139, 250, 0.3);
@@ -65,8 +63,6 @@
       box-shadow: 0 20px 40px rgba(167, 139, 250, 0.3);
       border-color: #c084fc;
     }
-
-    /* === ИКОНКИ === */
     .game-icon {
       width: 4.5rem; height: 4.5rem;
       margin: 0 auto 1rem;
@@ -83,15 +79,13 @@
       transform: scale(1.15);
       box-shadow: 0 0 25px currentColor;
     }
-
-    /* === СКОРО === */
     .coming-soon {
       opacity: 0.5;
       pointer-events: none;
       position: relative;
     }
     .coming-soon::after {
-      content: '🔧 Скоро';
+      content: 'Скоро';
       position: absolute;
       top: 0.5rem; right: 0.5rem;
       font-size: 0.75rem;
@@ -100,8 +94,6 @@
       border-radius: 0.5rem;
       animation: pulse 2s infinite;
     }
-
-    /* === КНОПКИ === */
     .neon-btn {
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(167, 139, 250, 0.4);
@@ -119,8 +111,6 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(167, 139, 250, 0.3);
     }
-
-    /* === ЗАГОЛОВОК === */
     .neon-title {
       font-weight: 900;
       background: linear-gradient(90deg, #c084fc, #a78bfa, #ddd6fe, #a78bfa, #c084fc);
@@ -134,21 +124,9 @@
       0%, 100% { background-position: 0%; }
       50% { background-position: 100%; }
     }
-
-    /* === АНИМАЦИИ === */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.6s ease-out;
-    }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; }
-    }
-
-    /* === МОБИЛЬНАЯ АДАПТАЦИЯ === */
+    @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
     @media (max-width: 640px) {
       .game-card { padding: 1.25rem; }
       .game-icon { width: 3.5rem; height: 3.5rem; font-size: 1.5rem; }
@@ -158,7 +136,6 @@
 </head>
 <body class="text-white">
   <div class="mx-auto max-w-7xl px-4 py-8">
-    <!-- ШАПКА -->
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-12">
       <a href="/" class="neon-btn flex items-center gap-2 text-sm sm:text-base">
         <i class="fa-solid fa-arrow-left"></i> На главную
@@ -169,8 +146,8 @@
       </button>
     </div>
 
-    <!-- СЕТКА ИГР -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
       <!-- 2048 -->
       <a href="/games/2048.html" class="game-card fade-in">
         <div class="game-icon bg-gradient-to-br from-orange-500 to-red-600">
@@ -181,15 +158,19 @@
         <p class="text-xs text-fuchsia-400 font-medium mt-2">Бейдж: "2048 Мастер"</p>
       </a>
 
-      <!-- Змейка -->
+      <!-- ЗМЕЙКА — С БЕЙДЖИКОМ! -->
       <a href="/games/snake.html" class="game-card fade-in">
-  <div class="game-icon bg-gradient-to-br from-green-500 to-emerald-600">
-    <i class="fa-solid fa-worm"></i>
-  </div>
-  <h3 class="text-xl font-bold text-green-300">Змейка</h3>
-  <p class="text-sm text-gray-300 mt-1">Классика на новый лад</p>
-  <p class="text-xs text-emerald-400 font-medium mt-2">Доступно!</p>
-</a>
+        <div class="game-icon bg-gradient-to-br from-green-500 to-emerald-600">
+          <i class="fa-solid fa-worm"></i>
+        </div>
+        <h3 class="text-xl font-bold text-green-300">Змейка</h3>
+        <p class="text-sm text-gray-300 mt-1">Классика на новый лад</p>
+        <p class="text-xs text-emerald-400 font-medium mt-2 flex items-center justify-center gap-1">
+          <span>Бейдж:</span>
+          <span class="font-bold">«Змеиный Король»</span>
+          <span class="text-yellow-400">100+</span>
+        </p>
+      </a>
 
       <!-- Крестики-нолики -->
       <div class="game-card coming-soon fade-in">
@@ -219,17 +200,16 @@
       </a>
     </div>
 
-    <!-- СТАТИСТИКА -->
     <div class="mt-12 text-center fade-in">
       <p class="text-lg">
-        Разблокировано бейджей: 
+        Разблокировано бейджей:
         <span id="badgeCount" class="text-2xl font-bold text-fuchsia-400 neon-glow">0</span>
       </p>
     </div>
   </div>
 
   <script>
-    // Тема (пока только тёмная, но можно расширить)
+    // Переключение темы
     const themeToggle = document.getElementById('themeToggle');
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('light-mode');
@@ -237,13 +217,21 @@
       icon.className = document.body.classList.contains('light-mode') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
     });
 
-    // Подсчёт бейджей
+    // === ПОДСЧЁТ БЕЙДЖЕЙ ===
     const badgeCount = document.getElementById('badgeCount');
-    const badges = ['badge_2048_master'];
-    let count = badges.filter(b => localStorage.getItem(b)).length;
+    const badges = [
+      'badge_2048_master',     // из 2048
+      'badge_snake_king'       // ← НОВЫЙ! из Змейки (100+ очков)
+    ];
+
+    let count = badges.filter(b => localStorage.getItem(b) === 'unlocked').length;
     badgeCount.textContent = count;
 
-    // Анимация появления
+    if (count > 0) {
+      badgeCount.classList.add('animate-pulse');
+    }
+
+    // Анимация появления карточек
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -254,11 +242,6 @@
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-    // Неоновая подсветка счётчика
-    if (count > 0) {
-      badgeCount.classList.add('animate-pulse');
-    }
   </script>
 </body>
 </html>
