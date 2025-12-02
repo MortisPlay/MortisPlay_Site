@@ -14,13 +14,41 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:Inter, system-ui, Arial, sans-serif;background:linear-gradient(180deg,var(--bg),#071021);color:#e6eef8}
-    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-    .card{width:100%;max-width:960px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:20px;box-shadow:0 10px 30px rgba(2,6,23,0.6);display:grid;grid-template-columns:1fr 320px;gap:18px}
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative}
+    .card{width:100%;max-width:960px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:20px;box-shadow:0 10px 30px rgba(2,6,23,0.6);display:grid;grid-template-columns:1fr 320px;gap:18px;position:relative}
     @media (max-width:900px){.card{grid-template-columns:1fr;max-width:420px}}
 
     /* Game area */
-    .game-area{background:linear-gradient(180deg,#061024,#05101b);border-radius:10px;padding:12px;display:flex;align-items:center;justify-content:center}
+    .game-area{background:linear-gradient(180deg,#061024,#05101b);border-radius:10px;padding:12px;display:flex;align-items:center;justify-content:center;position:relative}
     canvas{background:#071226;border-radius:8px;display:block;max-width:100%;height:auto}
+
+    /* Кнопка «Вернуться» и бейджик */
+    .overlay{
+      position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+      background:rgba(7,18,38,0.92);border-radius:10px;z-index:10;opacity:0;pointer-events:none;
+      transition:opacity .4s ease;
+    }
+    .overlay.visible{opacity:1;pointer-events:all}
+    .back-btn{
+      background:var(--accent);color:#032018;padding:14px 32px;border-radius:12px;font-weight:700;font-size:18px;
+      border:none;cursor:pointer;box-shadow:0 8px 20px rgba(16,185,129,0.3);
+      transition:transform .2s;
+    }
+    .back-btn:hover{transform:translateY(-3px)}
+
+    /* Бейджик квеста */
+    .quest-badge{
+      background:linear-gradient(135deg,#1e293b,#0f172a);padding:20px 40px;border-radius:20px;
+      border:2px solid #10b981;box-shadow:0 0 30px rgba(16,185,129,0.4);
+      text-align:center;color:#fff;animation:badgePulse 2s infinite;
+    }
+    .quest-badge h3{margin:0 0 8px;font-size:24px}
+    .quest-badge p{margin:0;font-size:16px;opacity:0.9}
+
+    @keyframes badgePulse{
+      0%,100%{box-shadow:0 0 30px rgba(16,185,129,0.4)}
+      50%{box-shadow:0 0 50px rgba(16,185,129,0.7)}
+    }
 
     /* Panel */
     .panel{padding:12px;background:rgba(255,255,255,0.02);border-radius:10px}
@@ -33,7 +61,6 @@
     .small{padding:8px;font-size:14px}
     .muted{color:var(--muted);font-size:13px}
     .footer{margin-top:10px;font-size:13px;color:var(--muted)}
-
     label{font-size:13px;color:var(--muted)}
     input[type=range]{width:100%}
   </style>
@@ -42,9 +69,20 @@
   <div class="wrap">
     <div class="card">
       <div>
-        <div class="game-area">
+        <div class="game-area" id="gameArea">
           <canvas id="gameCanvas" width="600" height="600" aria-label="Поле игры змейка"></canvas>
+
+          <!-- Оверлей Game Over + бейджик -->
+          <div class="overlay" id="gameOverOverlay">
+            <div class="quest-badge" id="questBadge" style="display:none">
+              <h3>Квест выполнен!</h3>
+              <p>Ты набрал 100+ очков!</p>
+            </div>
+            <button class="back-btn" id="btnBack">Вернуться</button>
+            <div style="color:#94a3b8;font-size:14px">Очки: <span id="finalScore">0</span></div>
+          </div>
         </div>
+
         <div style="margin-top:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
           <button id="btnRestart" class="small">Новая игра</button>
           <button id="btnPause" class="small secondary">Пауза</button>
@@ -59,45 +97,35 @@
           <div class="pill">Лучший: <span id="best">0</span></div>
         </div>
         <div class="muted">Управление: стрелки или WASD. На мобильных — свайпы.</div>
-
         <div class="controls">
           <label>Скорость (такт/сек)</label>
           <input id="speedRange" type="range" min="4" max="18" value="8">
           <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>медленно</span><span>быстро</span></div>
-
           <label style="margin-top:8px">Размер сетки</label>
           <input id="gridRange" type="range" min="10" max="30" value="20">
           <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>мелко</span><span>крупно</span></div>
-
-          <div style="display:flex;gap:8px">
+          <div style="display:flex;gap:8px;margin-top:8px">
             <button id="btnToggleGrid" class="secondary small">Показать сетку</button>
             <button id="btnTheme" class="secondary small">Тёмная/светлая</button>
           </div>
         </div>
-
         <div class="footer">
           <div>Инструкции: собери пищу, избегай столкновений с собой.</div>
-          <div style="margin-top:8px">Могу добавить: уровни, стены, импорт очков — скажи, что нужно.</div>
+          <div style="margin-top:8px">Есть квест: набери 100 очков → получи бейдж!</div>
         </div>
       </aside>
     </div>
   </div>
 
   <script>
-  // ---------------------------
-  // Simple Snake game (HTML + Canvas)
-  // Features:
-  // - Responsive canvas (scaled by CSS)
-  // - Arrow keys / WASD
-  // - Mobile swipe support
-  // - Speed and grid size controls
-  // - Score and best score stored in localStorage
-  // - Pause / Restart
-  // ---------------------------
-
   (function(){
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+    const gameArea = document.getElementById('gameArea');
+    const overlay = document.getElementById('gameOverOverlay');
+    const finalScoreEl = document.getElementById('finalScore');
+    const questBadge = document.getElementById('questBadge');
+    const btnBack = document.getElementById('btnBack');
 
     // UI refs
     const scoreEl = document.getElementById('score');
@@ -110,10 +138,9 @@
     const btnToggleGrid = document.getElementById('btnToggleGrid');
     const btnTheme = document.getElementById('btnTheme');
 
-    let gridSize = parseInt(gridRange.value,10); // number of cells per side
+    let gridSize = parseInt(gridRange.value,10);
     let cell = Math.floor(canvas.width / gridSize);
-    let speed = parseInt(speedRange.value,10); // ticks per second
-
+    let speed = parseInt(speedRange.value,10);
     let snake = [];
     let dir = {x:1,y:0};
     let nextDir = {x:1,y:0};
@@ -125,7 +152,10 @@
     bestEl.textContent = best;
     let showGrid = false;
 
-    // Timing with requestAnimationFrame and accumulator
+    // --- НОВОЕ: квест ---
+    const QUEST_TARGET = 100;
+    let questCompleted = false; // за текущую игру
+
     let lastTime = 0;
     let acc = 0;
 
@@ -142,6 +172,9 @@
       score = 0; scoreEl.textContent = score;
       running = true; paused = false;
       btnPause.textContent = 'Пауза';
+      overlay.classList.remove('visible');
+      questCompleted = false;
+      questBadge.style.display = 'none';
     }
 
     function placeFood(){
@@ -156,22 +189,18 @@
           return;
         }
       }
-      // fallback
       food = {x:0,y:0};
     }
 
     function tick(){
-      // apply direction
       dir = nextDir;
       const head = {x:snake[0].x + dir.x, y:snake[0].y + dir.y};
 
-      // wrap around edges
       if(head.x < 0) head.x = gridSize-1;
       if(head.y < 0) head.y = gridSize-1;
       if(head.x >= gridSize) head.x = 0;
       if(head.y >= gridSize) head.y = 0;
 
-      // collision with self?
       if(snake.some((s,idx)=>idx>0 && s.x===head.x && s.y===head.y)){
         gameOver();
         return;
@@ -179,13 +208,20 @@
 
       snake.unshift(head);
 
-      // ate food?
       if(food && head.x===food.x && head.y===food.y){
         score += Math.floor(10 + speed*0.5);
         scoreEl.textContent = score;
+
+        // Проверка квеста
+        if(score >= QUEST_TARGET && !questCompleted){
+          questCompleted = true;
+        }
+
         placeFood();
         if(score>best){
-          best = score; localStorage.setItem('snake_best', String(best)); bestEl.textContent = best;
+          best = score;
+          localStorage.setItem('snake_best', String(best));
+          bestEl.textContent = best;
         }
       } else {
         snake.pop();
@@ -194,24 +230,25 @@
 
     function gameOver(){
       running = false;
-      // simple flash
-      for(let i=0;i<5;i++){
-        setTimeout(()=>draw(), i*120);
+      finalScoreEl.textContent = score;
+
+      if(questCompleted){
+        questBadge.style.display = 'block';
       }
-      setTimeout(()=>{
-        alert('Игра окончена. Очки: '+score);
-      }, 700);
+
+      overlay.classList.add('visible');
     }
 
-    function draw(){
-      // clear
-      ctx.clearRect(0,0,canvas.width,canvas.height);
+    // --- остальной код рисования без изменений ---
+    function draw(){ /* ... тот же самый draw() из твоего оригинала ... */ }
+    function roundRect(ctx,x,y,w,h,r){ /* ... */ }
 
-      // background
+    // (вставляю полностью draw() чтобы не было ошибок)
+    function draw(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
       ctx.fillStyle = '#071226';
       ctx.fillRect(0,0,canvas.width,canvas.height);
 
-      // grid
       if(showGrid){
         ctx.strokeStyle = 'rgba(255,255,255,0.03)';
         ctx.lineWidth = 1;
@@ -222,7 +259,6 @@
         }
       }
 
-      // draw food
       if(food){
         const fx = food.x*cell + cell*0.12;
         const fy = food.y*cell + cell*0.12;
@@ -232,21 +268,17 @@
         ctx.fill();
       }
 
-      // draw snake
       for(let i=snake.length-1;i>=0;i--){
         const s = snake[i];
         const x = s.x*cell; const y = s.y*cell;
         const radius = Math.max(2, cell*0.18);
         if(i===0){
-          // head
           ctx.fillStyle = '#10b981';
           roundRect(ctx,x+1,y+1,cell-2,cell-2,Math.max(2,cell*0.15)); ctx.fill();
-          // eye
           ctx.fillStyle = '#002018';
           const ex = x + cell*0.65; const ey = y + cell*0.28;
           ctx.beginPath(); ctx.arc(ex,ey,Math.max(1,cell*0.05),0,Math.PI*2); ctx.fill();
         } else {
-          // body gradient
           const t = i / snake.length;
           ctx.fillStyle = `rgba(${16},${185},${129},${0.6 + 0.4*(1-t)})`;
           roundRect(ctx,x+1,y+1,cell-2,cell-2,Math.max(1,cell*0.12)); ctx.fill();
@@ -264,12 +296,11 @@
       ctx.closePath();
     }
 
-    // main loop
     function loop(ts){
       if(!lastTime) lastTime = ts;
       const dt = (ts - lastTime)/1000; lastTime = ts;
       acc += dt;
-      const interval = 1 / Math.max(1, parseInt(speedRange.value,10)); // seconds per tick
+      const interval = 1 / Math.max(1, parseInt(speedRange.value,10));
       if(!paused && running){
         while(acc >= interval){
           tick(); acc -= interval;
@@ -279,29 +310,29 @@
       requestAnimationFrame(loop);
     }
 
-    // input
+    // --- Управление ---
     window.addEventListener('keydown', e=>{
       const k = e.key;
       if(k==='ArrowUp' || k==='w' || k==='W') trySetDir(0,-1);
       if(k==='ArrowDown' || k==='s' || k==='S') trySetDir(0,1);
       if(k==='ArrowLeft' || k==='a' || k==='A') trySetDir(-1,0);
       if(k==='ArrowRight' || k==='d' || k==='D') trySetDir(1,0);
-      if(k===' '){ paused = !paused; btnPause.textContent = paused? 'Продолжить' : 'Пауза'; }
+      if(k===' ') { paused = !paused; btnPause.textContent = paused? 'Продолжить' : 'Пауза'; }
     });
 
     function trySetDir(x,y){
-      // prevent reversing
       if(dir.x === -x && dir.y === -y) return;
       nextDir = {x,y};
     }
 
-    // touch: simple swipe detection
+    // touch свайпы
     let touchStart = null;
-    canvas.addEventListener('touchstart', e=>{
-      if(e.touches && e.touches[0]) touchStart = {x: e.touches[0].clientX, y: e.touches[0].clientY};
-    }, {passive:true});
+    canvas.addEventListener('touchstart', e=>{ if(e.touches && e.touches[0]) touchStart = {x: e.touches[0].clientX, y: e.touches[0].clientY}; }, {passive:true});
     canvas.addEventListener('touchend', e=>{
-      if(!touchStart) return; const te = e.changedTouches[0]; const dx = te.clientX - touchStart.x; const dy = te.clientY - touchStart.y;
+      if(!touchStart) return;
+      const te = e.changedTouches[0];
+      const dx = te.clientX - touchStart.x;
+      const dy = te.clientY - touchStart.y;
       if(Math.abs(dx) > Math.abs(dy)){
         if(dx>20) trySetDir(1,0); else if(dx<-20) trySetDir(-1,0);
       } else {
@@ -310,37 +341,33 @@
       touchStart = null;
     }, {passive:true});
 
-    // UI handlers
+    // UI
     btnRestart.addEventListener('click', ()=>{ reset(); });
     btnPause.addEventListener('click', ()=>{ paused = !paused; btnPause.textContent = paused? 'Продолжить' : 'Пауза'; });
     btnResetBest.addEventListener('click', ()=>{ if(confirm('Сбросить рекорд?')){ localStorage.removeItem('snake_best'); best = 0; bestEl.textContent = best; }});
-
-    speedRange.addEventListener('input', ()=>{ /* speed used in loop */ });
+    speedRange.addEventListener('input', ()=>{});
     gridRange.addEventListener('input', ()=>{ reset(); });
-
     btnToggleGrid.addEventListener('click', ()=>{ showGrid = !showGrid; btnToggleGrid.textContent = showGrid? 'Скрыть сетку' : 'Показать сетку'; });
     btnTheme.addEventListener('click', ()=>{
-      document.documentElement.style.setProperty('--bg', getComputedStyle(document.documentElement).getPropertyValue('--bg') === '#0f1724' ? '#f8fafc' : '#0f1724');
+      const isDark = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() === '#0f1724';
+      document.documentElement.style.setProperty('--bg', isDark ? '#f8fafc' : '#0f1724');
     });
 
-    // resize canvas to be square based on CSS size (but keep internal resolution high)
+    // Кнопка «Вернуться» — просто новая игра
+    btnBack.addEventListener('click', ()=>{ reset(); });
+
     function fitCanvas(){
       const rect = canvas.getBoundingClientRect();
-      const size = Math.min(rect.width, window.innerHeight - 120);
+      const size = Math.min(rect.width, window.innerHeight - 160);
       canvas.style.width = size + 'px';
       canvas.style.height = size + 'px';
-      // keep internal resolution for crisp look
       canvas.width = Math.floor(size * devicePixelRatio);
       canvas.height = Math.floor(size * devicePixelRatio);
-      // recompute cell based on internal resolution but keep grid counts
       cell = Math.floor(canvas.width / gridSize);
     }
 
     window.addEventListener('resize', ()=>{ fitCanvas(); draw(); });
-
-    // start
     fitCanvas(); reset(); requestAnimationFrame(loop);
-
   })();
   </script>
 </body>
