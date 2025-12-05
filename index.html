@@ -511,7 +511,7 @@
     @keyframes glitch { 0% { left: -100%; } 100% { left: 100%; } }
     .badge.night-stalker { background: linear-gradient(to right, #1f2937, #374151); box-shadow: 0 0 12px rgba(31, 41, 55, 0.7); font-family: monospace; text-shadow: 0 0 5px #4b5563; position: relative; overflow: hidden; }
     .badge.ghost { background: linear-gradient(to right, #6b7280, #4b5563); opacity: 0.7; box-shadow: 0 0 12px rgba(107, 114, 128, 0.5); }
-    .badge.ghost canvas { position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height: calc(100% + 20px); pointer-events: none; }
+    .badge.ghost canvas { position: absolute; top: -10px; left: -10px; width = calc(100% + 20px); height: calc(100% + 20px); pointer-events: none; }
     .badge.dark-prince { background: linear-gradient(to right, #1e293b, #334155); box-shadow: 0 0 16px rgba(30, 41, 59, 0.8); position: relative; overflow: hidden; }
     .encrypted-text { filter: blur(3px); transition: filter 0.3s ease; }
     .encrypted-text:hover { filter: blur(0); }
@@ -2642,6 +2642,168 @@
         });
       };
 
+      // === ИСПРАВЛЕННАЯ ИНИЦИАЛИЗАЦИЯ НАСТРОЕК ===
+      const initializeSettings = () => {
+        // 1. Уведомления
+        setupSettingsNotifications();
+        
+        // 2. Производительность
+        const lowPerformanceToggle = document.getElementById('lowPerformanceToggle');
+        const disableAnimationsToggle = document.getElementById('disableAnimationsToggle');
+        const disableParticlesToggle = document.getElementById('disableParticlesToggle');
+        
+        if (lowPerformanceToggle) {
+          let savedMode = localStorage.getItem('lowPerformance') === 'true';
+          lowPerformanceToggle.checked = savedMode;
+          root.classList.toggle('low-performance', savedMode);
+          
+          lowPerformanceToggle.addEventListener('change', () => {
+            localStorage.setItem('lowPerformance', lowPerformanceToggle.checked);
+            root.classList.toggle('low-performance', lowPerformanceToggle.checked);
+            showNotification(
+              lowPerformanceToggle.checked ? 'Лёгкий режим включён' : 'Лёгкий режим выключен',
+              document.getElementById('appearanceNotification')
+            );
+            gtag('event', 'low_performance_toggle', { 
+              event_category: 'settings', 
+              event_label: lowPerformanceToggle.checked ? 'on' : 'off' 
+            });
+          });
+        }
+        
+        if (disableAnimationsToggle) {
+          let savedAnimations = localStorage.getItem('disableAnimations') === 'true';
+          disableAnimationsToggle.checked = savedAnimations;
+          root.classList.toggle('no-animations', savedAnimations);
+          
+          disableAnimationsToggle.addEventListener('change', () => {
+            localStorage.setItem('disableAnimations', disableAnimationsToggle.checked);
+            root.classList.toggle('no-animations', disableAnimationsToggle.checked);
+            showNotification(
+              disableAnimationsToggle.checked ? 'Анимации отключены' : 'Анимации включены',
+              document.getElementById('appearanceNotification')
+            );
+          });
+        }
+        
+        if (disableParticlesToggle) {
+          let savedParticles = localStorage.getItem('disableParticles') === 'true';
+          disableParticlesToggle.checked = savedParticles;
+          root.classList.toggle('no-particles', savedParticles);
+          
+          disableParticlesToggle.addEventListener('change', () => {
+            localStorage.setItem('disableParticles', disableParticlesToggle.checked);
+            root.classList.toggle('no-particles', disableParticlesToggle.checked);
+            showNotification(
+              disableParticlesToggle.checked ? 'Частицы отключены' : 'Частицы включены',
+              document.getElementById('appearanceNotification')
+            );
+          });
+        }
+        
+        // 3. Доступность
+        const highContrastToggle = document.getElementById('highContrastToggle');
+        const largeTextToggle = document.getElementById('largeTextToggle');
+        
+        if (highContrastToggle) {
+          let savedHighContrast = localStorage.getItem('highContrast') === 'true';
+          highContrastToggle.checked = savedHighContrast;
+          root.classList.toggle('high-contrast', savedHighContrast);
+          
+          highContrastToggle.addEventListener('change', () => {
+            localStorage.setItem('highContrast', highContrastToggle.checked);
+            root.classList.toggle('high-contrast', highContrastToggle.checked);
+            showNotification(
+              highContrastToggle.checked ? 'Высокая контрастность включена' : 'Высокая контрастность выключена',
+              document.getElementById('appearanceNotification')
+            );
+          });
+        }
+        
+        if (largeTextToggle) {
+          let savedLargeText = localStorage.getItem('largeText') === 'true';
+          largeTextToggle.checked = savedLargeText;
+          root.classList.toggle('large-text', savedLargeText);
+          
+          largeTextToggle.addEventListener('change', () => {
+            localStorage.setItem('largeText', largeTextToggle.checked);
+            root.classList.toggle('large-text', largeTextToggle.checked);
+            showNotification(
+              largeTextToggle.checked ? 'Крупный текст включён' : 'Крупный текст выключен',
+              document.getElementById('appearanceNotification')
+            );
+          });
+        }
+        
+        // 4. Внешний вид (тема уже настраивается в setupThemeSelect)
+        // 5. Размер шрифта (уже настраивается в setupFontSize)
+        
+        // 6. Обработчик для кнопки "Сбросить всё"
+        const resetSettingsBtn = document.getElementById('resetSettings');
+        if (resetSettingsBtn) {
+          resetSettingsBtn.addEventListener('click', () => {
+            const confirmReset = confirm(
+              '⚠️ Точно сбросить ВСЕ настройки?\n\n' +
+              '• Тема и внешний вид\n' +
+              '• Размер шрифта\n' +
+              '• Настройки производительности\n' +
+              '• Настройки доступности\n\n' +
+              'Профиль (аватар, бейджи) не будет затронут.'
+            );
+            
+            if (!confirmReset) {
+              showNotification('Сброс настроек отменён', document.getElementById('appearanceNotification'));
+              return;
+            }
+            
+            // Сбрасываем настройки
+            localStorage.removeItem('theme');
+            localStorage.removeItem('lowPerformance');
+            localStorage.removeItem('disableAnimations');
+            localStorage.removeItem('disableParticles');
+            localStorage.removeItem('fontSize');
+            localStorage.removeItem('highContrast');
+            localStorage.removeItem('largeText');
+            localStorage.removeItem('badgeNotifications');
+            localStorage.removeItem('newsNotifications');
+            
+            // Сбрасываем визуальное состояние
+            root.classList.remove('low-performance', 'no-animations', 'no-particles', 'high-contrast', 'large-text');
+            root.style.setProperty('--font-scale', '1');
+            
+            // Сбрасываем значения элементов управления
+            if (lowPerformanceToggle) lowPerformanceToggle.checked = false;
+            if (disableAnimationsToggle) disableAnimationsToggle.checked = false;
+            if (disableParticlesToggle) disableParticlesToggle.checked = false;
+            if (highContrastToggle) highContrastToggle.checked = false;
+            if (largeTextToggle) largeTextToggle.checked = false;
+            
+            const themeSelect = document.getElementById('themeSelect');
+            if (themeSelect) themeSelect.value = 'auto';
+            
+            const fontSizeSlider = document.getElementById('fontSizeSlider');
+            const fontSizeValue = document.getElementById('fontSizeValue');
+            if (fontSizeSlider && fontSizeValue) {
+              fontSizeSlider.value = '100';
+              fontSizeValue.textContent = '100%';
+            }
+            
+            const badgeNotificationsToggle = document.getElementById('badgeNotificationsToggle');
+            if (badgeNotificationsToggle) badgeNotificationsToggle.checked = true;
+            
+            const newsNotificationsToggle = document.getElementById('newsNotificationsToggle');
+            if (newsNotificationsToggle) newsNotificationsToggle.checked = true;
+            
+            // Устанавливаем тему по умолчанию
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            setTheme(prefersDark ? 'dark' : 'light');
+            
+            showNotification('Все настройки сброшены', document.getElementById('appearanceNotification'));
+            gtag('event', 'reset_settings', { event_category: 'settings', event_label: 'confirmed_reset' });
+          });
+        }
+      };
+
       const setupNavigation = () => {
         const menuToggle = document.getElementById('menuToggle');
         const sidebarMenu = document.getElementById('sidebarMenu');
@@ -2749,10 +2911,7 @@
         setupProfileBetaNotice();
         setupThemeToggle();
         setupThemeSelect();
-        setupPerformance();
-        setupAnimations();
-        setupParticleToggle();
-        setupSettingsNotifications(); // Новая функция для уведомлений настроек
+        initializeSettings(); // <-- ДОБАВЛЕН ВЫЗОВ ИСПРАВЛЕННОЙ ФУНКЦИИ
         setupAccessibility();
         setupFontSize();
         setupResetSettings();
