@@ -190,6 +190,33 @@
       transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
+    
+    /* Стили для компактных настроек */
+    .compact-settings .text-2xl {
+      font-size: 1.25rem !important;
+    }
+    .compact-settings .notification {
+      max-width: 280px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+    }
+    .compact-settings .neon-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+    .compact-settings .glass-card {
+      padding: 1.5rem !important;
+    }
+    .compact-settings h3 {
+      margin-bottom: 0.75rem !important;
+    }
+    .compact-settings label {
+      margin-top: 0.5rem !important;
+    }
+    .compact-settings p {
+      margin-top: 0.25rem !important;
+    }
+    
     /* Адаптация существующих стилей главной под новый дизайн */
     @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
     @keyframes badgePop { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
@@ -735,10 +762,10 @@
   <a href="/games/" class="neon-btn flex items-center gap-2">
     <i class="fa-solid fa-gamepad"></i> Игры
   </a>
-  <!-- НЕАКТИВНАЯ КНОПКА "ИТОГИ ГОДА" -->
-  <button class="neon-btn inactive flex items-center gap-2">
+  <!-- АКТИВНАЯ КНОПКА "ИТОГИ ГОДА" -->
+  <a href="year-review.html" class="neon-btn flex items-center gap-2">
     <i class="fa-solid fa-calendar-days"></i> Итоги ГОДА
-  </button>
+  </a>
 </div>
       <!-- Статистика -->
       <div class="flex justify-center gap-6 text-sm text-gray-300">
@@ -803,7 +830,7 @@
           </div>
           <h3 class="text-xl font-bold text-white mb-2">Угар</h3>
           <p class="text-gray-300 text-sm">Смешные моменты и мемы</p>
-          <div class="mt-4 text-xs text-green-300">4 видео</div>
+          <div class="mt-4 text-xs text-green-300">10 видео</div>
         </div>
         
         <div class="glass-card p-6 text-center cursor-pointer hover:scale-105 transition-all duration-300 category-card" data-category="стримы">
@@ -812,7 +839,7 @@
           </div>
           <h3 class="text-xl font-bold text-white mb-2">Записи со стрима</h3>
           <p class="text-gray-300 text-sm">Прямые трансляции</p>
-          <div class="mt-4 text-xs text-blue-300">4 видео</div>
+          <div class="mt-4 text-xs text-blue-300">6 видео</div>
         </div>
         
         <div class="glass-card p-6 text-center cursor-pointer hover:scale-105 transition-all duration-300 category-card" data-category="подкаст">
@@ -912,137 +939,92 @@
         </div>
       </section>
 
-      <section id="settings" class="py-16 fade-in">
+      <section id="settings" class="py-12 fade-in compact-settings">
         <div class="mx-auto max-w-7xl px-4">
-          <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Настройки</h2>
+          <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-6">Компактные настройки</h2>
           <p class="mt-2 text-center text-gray-300 text-lg">Настрой сайт под себя для максимального комфорта! 😎</p>
-          <div class="mt-8 max-w-2xl mx-auto glass-card p-8">
+          <div class="mt-6 max-w-2xl mx-auto glass-card p-6">
             <!-- Персональные уведомления -->
-            <h3 class="text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
-              <i class="fa-solid fa-bell text-purple-400"></i> Персональные уведомления
+            <h3 class="text-2xl font-bold text-purple-300 flex items-center gap-3 mb-3">
+              <i class="fa-solid fa-bell text-purple-400"></i> Уведомления
             </h3>
             
-            <label class="mt-3 flex items-center gap-2">
-              <input type="checkbox" id="newsNotificationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Уведомления о новостях" aria-describedby="newsNotificationsDesc">
-              <span class="text-sm text-gray-300">Уведомления о новостях</span>
+            <label class="mt-2 flex items-center gap-2">
+              <input type="checkbox" id="newsNotificationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Уведомления о новостях">
+              <span class="text-sm text-gray-300">Новости</span>
             </label>
-            <p id="newsNotificationsDesc" class="mt-2 text-xs text-gray-300">Получай уведомления о важных новостях и обновлениях.</p>
             
-            <label class="mt-3 flex items-center gap-2">
-              <input type="checkbox" id="badgeNotificationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить уведомления о бейджах" aria-describedby="badgeNotificationsDesc">
-              <span class="text-sm text-gray-300">Уведомления о новых бейджах</span>
+            <label class="mt-2 flex items-center gap-2">
+              <input type="checkbox" id="badgeNotificationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить уведомления о бейджах">
+              <span class="text-sm text-gray-300">Новые бейджи</span>
             </label>
-            <p id="badgeNotificationsDesc" class="mt-2 text-xs text-gray-300">Получай уведомления при получении новых бейджей.</p>
             
-            <!-- Расширенные настройки производительности -->
-            <h3 class="mt-6 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
-              <i class="fa-solid fa-rocket text-purple-400"></i> Расширенные настройки производительности
+            <!-- Производительность -->
+            <h3 class="mt-4 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-3">
+              <i class="fa-solid fa-rocket text-purple-400"></i> Производительность
             </h3>
-            <label class="mt-3 flex items-center gap-2">
-              <input type="checkbox" id="lowPerformanceToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить лёгкий режим" aria-describedby="lowPerformanceDesc">
-              <span class="text-sm text-gray-300">Лёгкий режим (для слабых устройств)</span>
+            <label class="mt-2 flex items-center gap-2">
+              <input type="checkbox" id="lowPerformanceToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить лёгкий режим">
+              <span class="text-sm text-gray-300">Лёгкий режим</span>
             </label>
-            <p id="lowPerformanceDesc" class="mt-2 text-xs text-gray-300">Отключает анимации, эффекты и видео для плавной работы на слабых телефонах.</p>
             
-            <label class="mt-3 flex items-center gap-2">
-              <input type="checkbox" id="disableAnimationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить анимации" aria-describedby="disableAnimationsDesc">
-              <span class="text-sm text-gray-300">Отключить анимации</span>
+            <label class="mt-2 flex items-center gap-2">
+              <input type="checkbox" id="disableAnimationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить анимации">
+              <span class="text-sm text-gray-300">Без анимаций</span>
             </label>
-            <p id="disableAnimationsDesc" class="mt-2 text-xs text-gray-300">Отключает только анимации для улучшения производительности.</p>
             
-            <label class="mt-3 flex items-center gap-2">
-              <input type="checkbox" id="disableParticlesToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить фоновые частицы" aria-describedby="disableParticlesDesc">
-              <span class="text-sm text-gray-300">Отключить фоновые частицы</span>
+            <label class="mt-2 flex items-center gap-2">
+              <input type="checkbox" id="disableParticlesToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить фоновые частицы">
+              <span class="text-sm text-gray-300">Без частиц</span>
             </label>
-            <p id="disableParticlesDesc" class="mt-2 text-xs text-gray-300">Отключает фоновые частицы для повышения производительности.</p>
-            
-            <label class="mt-3 flex items-center gap-2">
-              <input type="checkbox" id="reduceImageQualityToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Снизить качество изображений" aria-describedby="reduceImageQualityDesc">
-              <span class="text-sm text-gray-300">Снизить качество изображений</span>
-            </label>
-            <p id="reduceImageQualityDesc" class="mt-2 text-xs text-gray-300">Загружает изображения в более низком качестве для экономии трафика.</p>
-            
-            <label class="mt-3 flex items-center gap-2">
-              <input type="checkbox" id="lazyLoadingToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить ленивую загрузку" aria-describedby="lazyLoadingDesc">
-              <span class="text-sm text-gray-300">Ленивая загрузка контента</span>
-            </label>
-            <p id="lazyLoadingDesc" class="mt-2 text-xs text-gray-300">Загружает контент по мере прокрутки для ускорения начальной загрузки.</p>
-            
-            <div id="performanceNotification" class="notification" role="alert" aria-live="assertive">
-              <span></span>
-              <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
-            </div>
             
             <!-- Доступность -->
-            <h3 class="mt-6 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
+            <h3 class="mt-4 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-3">
               <i class="fa-solid fa-universal-access text-purple-400"></i> Доступность
             </h3>
-            <label class="mt-3 flex items-center gap-2">
-              <input type="checkbox" id="highContrastToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить высокую контрастность" aria-describedby="highContrastDesc">
-              <span class="text-sm text-gray-300">Высокая контрастность</span>
+            <label class="mt-2 flex items-center gap-2">
+              <input type="checkbox" id="highContrastToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить высокую контрастность">
+              <span class="text-sm text-gray-300">Высокий контраст</span>
             </label>
-            <p id="highContrastDesc" class="mt-2 text-xs text-gray-300">Увеличивает контрастность для лучшей читаемости.</p>
             
-            <label class="mt-3 flex items-center gap-2">
-              <input type="checkbox" id="largeTextToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Увеличить размер текста" aria-describedby="largeTextDesc">
-              <span class="text-sm text-gray-300">Увеличенный размер текста</span>
+            <label class="mt-2 flex items-center gap-2">
+              <input type="checkbox" id="largeTextToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Увеличить размер текста">
+              <span class="text-sm text-gray-300">Крупный текст</span>
             </label>
-            <p id="largeTextDesc" class="mt-2 text-xs text-gray-300">Увеличивает размер текста для лучшей читаемости.</p>
-            
-            <label class="mt-3 flex items-center gap-2">
-              <input type="checkbox" id="reduceMotionToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Уменьшить движение" aria-describedby="reduceMotionDesc">
-              <span class="text-sm text-gray-300">Уменьшить движение</span>
-            </label>
-            <p id="reduceMotionDesc" class="mt-2 text-xs text-gray-300">Уменьшает или отключает анимации для пользователей с чувствительностью к движению.</p>
-            
-            <label class="mt-3 flex items-center gap-2">
-              <input type="checkbox" id="keyboardNavigationToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить навигацию с клавиатуры" aria-describedby="keyboardNavigationDesc">
-              <span class="text-sm text-gray-300">Улучшенная навигация с клавиатуры</span>
-            </label>
-            <p id="keyboardNavigationDesc" class="mt-2 text-xs text-gray-300">Улучшает поддержку навигации с помощью клавиатуры.</p>
-            
-            <label class="mt-3 flex items-center gap-2">
-              <input type="checkbox" id="screenReaderToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить поддержку скринридеров" aria-describedby="screenReaderDesc">
-              <span class="text-sm text-gray-300">Поддержка скринридеров</span>
-            </label>
-            <p id="screenReaderDesc" class="mt-2 text-xs text-gray-300">Оптимизирует сайт для работы с программами чтения с экрана.</p>
             
             <!-- Внешний вид -->
-            <h3 class="mt-6 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
+            <h3 class="mt-4 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-3">
               <i class="fa-solid fa-palette text-purple-400"></i> Внешний вид
             </h3>
-            <label class="mt-3 flex items-center gap-2">
-              <span class="text-sm text-gray-300">Тема сайта:</span>
-              <select id="themeSelect" class="rounded text-indigo-600 focus:ring-indigo-500 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <label class="mt-2 flex items-center gap-2">
+              <span class="text-sm text-gray-300">Тема:</span>
+              <select id="themeSelect" class="rounded text-indigo-600 focus:ring-indigo-500 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm">
                 <option value="auto">Авто</option>
                 <option value="light">Светлая</option>
                 <option value="dark">Тёмная</option>
               </select>
             </label>
             
-            <label class="mt-3 flex flex-col gap-2">
-              <span class="text-sm text-gray-300">Размер шрифта:</span>
-              <input type="range" id="fontSizeSlider" min="50" max="200" value="100" class="w-full" aria-label="Регулировка размера шрифта" aria-valuemin="50" aria-valuemax="200" aria-valuenow="100">
-            </label>
-            <p class="mt-2 text-xs text-gray-300">Регулируй размер шрифта для удобства чтения (50%–200%).</p>
+            <div class="mt-3">
+              <label class="text-sm text-gray-300 mb-1 block">Размер шрифта: <span id="fontSizeValue">100%</span></label>
+              <input type="range" id="fontSizeSlider" min="50" max="200" value="100" class="w-full" aria-label="Регулировка размера шрифта">
+            </div>
             
-            <!-- Кнопка сброса размера шрифта -->
-            <button id="resetFontSize" class="neon-btn mt-2">
-              <i class="fa-solid fa-rotate-left"></i> Сбросить размер шрифта (100%)
-            </button>
+            <div class="mt-4 flex flex-col sm:flex-row gap-2">
+              <button id="resetFontSize" class="neon-btn text-sm">
+                <i class="fa-solid fa-rotate-left"></i> Сбросить шрифт
+              </button>
+              <button id="resetSettings" class="neon-btn text-sm" aria-label="Сбросить настройки">
+                <i class="fa-solid fa-rotate-left"></i> Сбросить всё
+              </button>
+              <button id="resetProfile" class="neon-btn text-sm bg-red-500 hover:bg-red-600" aria-label="Сбросить профиль">
+                <i class="fa-solid fa-user-slash"></i> Сбросить профиль
+              </button>
+            </div>
             
             <div id="appearanceNotification" class="notification" role="alert" aria-live="assertive">
               <span></span>
               <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div class="mt-6 text-center">
-              <button id="resetSettings" class="neon-btn" aria-label="Сбросить настройки">
-                <i class="fa-solid fa-rotate-left"></i> Сбросить настройки
-              </button>
-              <button id="resetProfile" class="neon-btn mt-2 bg-red-500 hover:bg-red-600" aria-label="Сбросить профиль">
-                <i class="fa-solid fa-user-slash"></i> Сбросить профиль
-              </button>
             </div>
           </div>
         </div>
@@ -1238,60 +1220,6 @@
             );
           });
         }
-
-        // Настройка производительности с уведомлениями
-        const setupToggleWithNotification = (toggleId, storageKey, notificationElement, messages) => {
-          const toggle = document.getElementById(toggleId);
-          if (toggle && notificationElement) {
-            let savedState;
-            try {
-              savedState = localStorage.getItem(storageKey) === 'true';
-            } catch (e) {
-              savedState = false;
-            }
-            toggle.checked = savedState;
-            toggle.addEventListener('change', debounce(() => {
-              const isEnabled = toggle.checked;
-              try {
-                localStorage.setItem(storageKey, isEnabled);
-              } catch (e) {
-                logAction(`Ошибка записи localStorage для ${storageKey}: ` + e.message);
-              }
-              showNotification(isEnabled ? messages.on : messages.off, notificationElement);
-              gtag('event', `${storageKey}_toggle`, { event_category: 'settings', event_label: isEnabled ? 'on' : 'off' });
-              logAction(`${messages.label}: ${isEnabled ? 'Включено' : 'Отключено'}`);
-            }, 300));
-          }
-        };
-
-        // Применяем ко всем настройкам
-        setupToggleWithNotification(
-          'lowPerformanceToggle', 
-          'lowPerformance', 
-          document.getElementById('performanceNotification'),
-          { on: 'Лёгкий режим включён', off: 'Лёгкий режим выключен', label: 'Лёгкий режим' }
-        );
-
-        setupToggleWithNotification(
-          'disableAnimationsToggle',
-          'disableAnimations',
-          document.getElementById('performanceNotification'),
-          { on: 'Анимации отключены', off: 'Анимации включены', label: 'Анимации' }
-        );
-
-        setupToggleWithNotification(
-          'disableParticlesToggle',
-          'disableParticles',
-          document.getElementById('performanceNotification'),
-          { on: 'Фоновые частицы отключены', off: 'Фоновые частицы включены', label: 'Фоновые частицы' }
-        );
-
-        setupToggleWithNotification(
-          'highContrastToggle',
-          'highContrast',
-          document.getElementById('appearanceNotification'),
-          { on: 'Высокая контрастность включена', off: 'Высокая контрастность выключена', label: 'Высокая контрастность' }
-        );
       };
 
       // Остальной код остается без изменений...
@@ -1376,7 +1304,7 @@
 
       const setupPerformance = () => {
         const toggle = document.getElementById('lowPerformanceToggle');
-        const notification = document.getElementById('performanceNotification');
+        const notification = document.getElementById('appearanceNotification');
         if (toggle && notification) {
           let savedMode;
           try {
@@ -1392,7 +1320,7 @@
 
       const setupAnimations = () => {
         const animationsToggle = document.getElementById('disableAnimationsToggle');
-        const notification = document.getElementById('performanceNotification');
+        const notification = document.getElementById('appearanceNotification');
         if (animationsToggle && notification) {
           let savedAnimations;
           try {
@@ -1408,7 +1336,7 @@
 
       const setupParticleToggle = () => {
         const toggle = document.getElementById('disableParticlesToggle');
-        const notification = document.getElementById('performanceNotification');
+        const notification = document.getElementById('appearanceNotification');
         if (toggle && notification) {
           let savedParticles;
           try {
@@ -1419,34 +1347,6 @@
           }
           toggle.checked = savedParticles;
           root.classList.toggle('no-particles', savedParticles);
-        }
-      };
-
-      const setupAdvancedPerformance = () => {
-        // Настройка снижения качества изображений
-        const reduceImageQualityToggle = document.getElementById('reduceImageQualityToggle');
-        if (reduceImageQualityToggle) {
-          let savedQuality;
-          try {
-            savedQuality = localStorage.getItem('reduceImageQuality') === 'true';
-          } catch (e) {
-            savedQuality = false;
-            logAction('Ошибка чтения localStorage для reduceImageQuality: ' + e.message);
-          }
-          reduceImageQualityToggle.checked = savedQuality;
-        }
-        
-        // Настройка ленивой загрузки
-        const lazyLoadingToggle = document.getElementById('lazyLoadingToggle');
-        if (lazyLoadingToggle) {
-          let savedLazyLoading;
-          try {
-            savedLazyLoading = localStorage.getItem('lazyLoading') === 'true';
-          } catch (e) {
-            savedLazyLoading = true; // По умолчанию включено
-            logAction('Ошибка чтения localStorage для lazyLoading: ' + e.message);
-          }
-          lazyLoadingToggle.checked = savedLazyLoading;
         }
       };
 
@@ -1466,76 +1366,26 @@
           root.classList.toggle('large-text', savedLargeText);
         }
         
-        // Уменьшение движения
-        const reduceMotionToggle = document.getElementById('reduceMotionToggle');
-        if (reduceMotionToggle) {
-          let savedReduceMotion;
+        // Высокая контрастность
+        const highContrastToggle = document.getElementById('highContrastToggle');
+        if (highContrastToggle) {
+          let savedHighContrast;
           try {
-            savedReduceMotion = localStorage.getItem('reduceMotion') === 'true';
+            savedHighContrast = localStorage.getItem('highContrast') === 'true';
           } catch (e) {
-            savedReduceMotion = false;
-            logAction('Ошибка чтения localStorage для reduceMotion: ' + e.message);
+            savedHighContrast = false;
+            logAction('Ошибка чтения localStorage для highContrast: ' + e.message);
           }
-          reduceMotionToggle.checked = savedReduceMotion;
-          root.classList.toggle('reduce-motion', savedReduceMotion);
+          highContrastToggle.checked = savedHighContrast;
+          root.classList.toggle('high-contrast', savedHighContrast);
         }
-        
-        // Навигация с клавиатуры
-        const keyboardNavigationToggle = document.getElementById('keyboardNavigationToggle');
-        if (keyboardNavigationToggle) {
-          let savedKeyboardNavigation;
-          try {
-            savedKeyboardNavigation = localStorage.getItem('keyboardNavigation') === 'true';
-          } catch (e) {
-            savedKeyboardNavigation = false;
-            logAction('Ошибка чтения localStorage для keyboardNavigation: ' + e.message);
-          }
-          keyboardNavigationToggle.checked = savedKeyboardNavigation;
-        }
-        
-        // Поддержка скринридеров
-        const screenReaderToggle = document.getElementById('screenReaderToggle');
-        if (screenReaderToggle) {
-          let savedScreenReader;
-          try {
-            savedScreenReader = localStorage.getItem('screenReader') === 'true';
-          } catch (e) {
-            savedScreenReader = false;
-            logAction('Ошибка чтения localStorage для screenReader: ' + e.message);
-          }
-          screenReaderToggle.checked = savedScreenReader;
-        }
-
-        // Восстановление состояния всех переключателей
-        const restoreToggleState = (toggleId, storageKey) => {
-          const toggle = document.getElementById(toggleId);
-          if (toggle) {
-            try {
-              const savedState = localStorage.getItem(storageKey);
-              if (savedState !== null) {
-                toggle.checked = savedState === 'true';
-              }
-            } catch (e) {
-              logAction(`Ошибка восстановления ${toggleId}: ` + e.message);
-            }
-          }
-        };
-        
-        // Восстанавливаем состояния
-        restoreToggleState('reduceImageQualityToggle', 'reduceImageQuality');
-        restoreToggleState('lazyLoadingToggle', 'lazyLoading');
-        restoreToggleState('largeTextToggle', 'largeText');
-        restoreToggleState('reduceMotionToggle', 'reduceMotion');
-        restoreToggleState('keyboardNavigationToggle', 'keyboardNavigation');
-        restoreToggleState('screenReaderToggle', 'screenReader');
-        restoreToggleState('newsNotificationsToggle', 'newsNotifications');
-        restoreToggleState('badgeNotificationsToggle', 'badgeNotifications');
       };
 
       const setupFontSize = () => {
         const slider = document.getElementById('fontSizeSlider');
+        const fontSizeValue = document.getElementById('fontSizeValue');
         const resetButton = document.getElementById('resetFontSize');
-        if (slider) {
+        if (slider && fontSizeValue) {
           let savedFontSize;
           try {
             savedFontSize = localStorage.getItem('fontSize') || '100';
@@ -1544,10 +1394,12 @@
             logAction('Ошибка чтения localStorage для fontSize: ' + e.message);
           }
           slider.value = savedFontSize;
+          fontSizeValue.textContent = `${savedFontSize}%`;
           root.style.setProperty('--font-scale', savedFontSize / 100);
           let fontNotificationTimer;
           slider.addEventListener('input', () => {
             const fontSize = slider.value;
+            fontSizeValue.textContent = `${fontSize}%`;
             root.style.setProperty('--font-scale', fontSize / 100);
             const notif = document.getElementById('fontNotification');
             if (notif) {
@@ -1555,7 +1407,6 @@
               span.textContent = `Размер шрифта: ${fontSize}%`;
               if (!notif.classList.contains('show')) {
                 notif.classList.add('show');
-                // Исправление бага - уведомление теперь корректно позиционируется
                 notif.style.top = '1rem';
                 notif.style.left = '50%';
                 notif.style.transform = 'translateX(-50%)';
@@ -1570,7 +1421,7 @@
                 }
                 gtag('event', 'font_size_change', { event_category: 'settings', event_label: fontSize });
                 logAction(`Размер шрифта изменён: ${fontSize}%`);
-              }, 1000); // Скрыть после 1 секунды паузы
+              }, 1000);
             }
           });
           
@@ -1578,6 +1429,7 @@
           if (resetButton) {
             resetButton.addEventListener('click', () => {
               slider.value = '100';
+              fontSizeValue.textContent = '100%';
               root.style.setProperty('--font-scale', '1');
               localStorage.setItem('fontSize', '100');
               showNotification('Размер шрифта сброшен до 100%', document.getElementById('appearanceNotification'));
@@ -1593,22 +1445,6 @@
               clearTimeout(fontNotificationTimer);
             });
           }
-        }
-      };
-
-      const setupHighContrast = () => {
-        const toggle = document.getElementById('highContrastToggle');
-        const notification = document.getElementById('appearanceNotification');
-        if (toggle && notification) {
-          let savedHighContrast;
-          try {
-            savedHighContrast = localStorage.getItem('highContrast') === 'true';
-          } catch (e) {
-            savedHighContrast = false;
-            logAction('Ошибка чтения localStorage для highContrast: ' + e.message);
-          }
-          toggle.checked = savedHighContrast;
-          root.classList.toggle('high-contrast', savedHighContrast);
         }
       };
 
@@ -1648,12 +1484,6 @@
             localStorage.removeItem('mobile_views');
             localStorage.removeItem('dark_prince');
             localStorage.removeItem('newsNotifications');
-            localStorage.removeItem('reduceImageQuality');
-            localStorage.removeItem('lazyLoading');
-            localStorage.removeItem('largeText');
-            localStorage.removeItem('reduceMotion');
-            localStorage.removeItem('keyboardNavigation');
-            localStorage.removeItem('screenReader');
             root.classList.remove('dark', 'low-performance', 'no-animations', 'no-particles', 'high-contrast', 'large-text', 'reduce-motion', 'winter-theme');
             root.style.setProperty('--font-scale', '1');
             const themeSelect = document.getElementById('themeSelect');
@@ -1661,6 +1491,7 @@
             const animationsToggle = document.getElementById('disableAnimationsToggle');
             const particleToggle = document.getElementById('disableParticlesToggle');
             const fontSizeSlider = document.getElementById('fontSizeSlider');
+            const fontSizeValue = document.getElementById('fontSizeValue');
             const highContrastToggle = document.getElementById('highContrastToggle');
             const userAvatar = document.getElementById('userAvatar');
             const usernameInput = document.getElementById('usernameInput');
@@ -1668,26 +1499,17 @@
             const badgeList = document.getElementById('badgeList');
             const badgeNotificationsToggle = document.getElementById('badgeNotificationsToggle');
             const newsNotificationsToggle = document.getElementById('newsNotificationsToggle');
-            const reduceImageQualityToggle = document.getElementById('reduceImageQualityToggle');
-            const lazyLoadingToggle = document.getElementById('lazyLoadingToggle');
-            const largeTextToggle = document.getElementById('largeTextToggle');
-            const reduceMotionToggle = document.getElementById('reduceMotionToggle');
-            const keyboardNavigationToggle = document.getElementById('keyboardNavigationToggle');
-            const screenReaderToggle = document.getElementById('screenReaderToggle');
             if (themeSelect) themeSelect.value = 'auto';
             if (lowPerformanceToggle) lowPerformanceToggle.checked = false;
             if (animationsToggle) animationsToggle.checked = false;
             if (particleToggle) particleToggle.checked = false;
-            if (fontSizeSlider) fontSizeSlider.value = '100';
+            if (fontSizeSlider && fontSizeValue) {
+              fontSizeSlider.value = '100';
+              fontSizeValue.textContent = '100%';
+            }
             if (highContrastToggle) highContrastToggle.checked = false;
             if (badgeNotificationsToggle) badgeNotificationsToggle.checked = true;
             if (newsNotificationsToggle) newsNotificationsToggle.checked = true;
-            if (reduceImageQualityToggle) reduceImageQualityToggle.checked = false;
-            if (lazyLoadingToggle) lazyLoadingToggle.checked = true;
-            if (largeTextToggle) largeTextToggle.checked = false;
-            if (reduceMotionToggle) reduceMotionToggle.checked = false;
-            if (keyboardNavigationToggle) keyboardNavigationToggle.checked = false;
-            if (screenReaderToggle) screenReaderToggle.checked = false;
             if (userAvatar) userAvatar.src = '/assets/fallback.jpg';
             if (usernameInput) usernameInput.value = '';
             if (badges) badges.innerHTML = '';
@@ -2348,6 +2170,7 @@
       };
 
       const newsData = [
+        { title: "ИТОГИ ГОДА - Открыто!", date: "5 декабря", content: "Кнопка Итоги года - активирована! Можете смотреть итоги года канала (Лично мною отредактировано). А также потихоньку заливаем новые и старые видосы из канала, ожидаем)..." },
         { title: "ЗИМА УЖЕ РЯДОМ.", date: "28 ноября", content: "Зимняя обнова на месте! А значит и новые фишки: Новый раздел, новые функции но самое главное НОВОГОДНЯЯ ТРАДИЦИЯ, это ИТОГИ ГОДА! Как будет работать эта кнопка: Переходя по ней, вы увидите уникальные карточки через что мы прошли) Эта кнопка останется долго. Теперь к разделу: Мы выкатываем новую версию раздела Видео! Но скоро будет видосов много, пока что добавим 12 видосов которые будут поделены на категории. Если вы столкнётесь с проблемой напишите мне в Telegram и мы разберемся с этой проблемой. Ну и на этом всё, скоро в новом году завезем ещё несколько сюрпризов)" },
         { title: "Раздел 'Видео' в процессе!", date: "18 ноября", content: "Раньше нам пришлось удалить этот раздел, теперь мы его обновили благодаря новому стилю сайта! В разделе вы можете посмотреть, на каком сейчас этапе находится раздел ?_? Также мы сменили обычный фон на зимний вайб! В декабре фон сменится и в целом атмосфера. Пока что на этом всё, скоро в декабре мы ещё с вами встретимся!" },
         { title: "Mortis Games! ", date: "6 ноября", content: "Да да, вы не услышали, игры от Mortis ОТКРЫТЫ! Теперь вы можете на нашем сайте играть в игры ту для у вас должно быть в наличии интернет! Также вы можете предложить игру ту, которую вы хотите, а мы его разработаем и добавим специальный бейджик) Также мы пофиксили баги на сайте для мобилок и прочие исправления. В скором времени мы ещё кучу известных игр завезём и не только! ;)" },
@@ -2593,6 +2416,7 @@
             url: "https://rutube.ru/video/f81b9ced0e2d196c7024e3f4fb6b0fab/",
             embedUrl: "https://rutube.ru/play/embed/f81b9ced0e2d196c7024e3f4fb6b0fab/"
           },
+          
           { 
             id: 12, 
             title: "Mortisplay32 ПРОХОДИТ ХОРРОР GARRY'S MOD #2 (ft. Johnny_Drill) | mortis32 лучшее", 
@@ -2603,6 +2427,17 @@
             platform: "rutube", 
             url: "https://rutube.ru/video/3a968fb9c4bd5cf4dc7b3ab93174fe8e/",
             embedUrl: "https://rutube.ru/play/embed/3a968fb9c4bd5cf4dc7b3ab93174fe8e/"
+          },
+          { 
+            id: 13, 
+            title: "Mortisplay32 ИГРАЕТ В COUNTER STRIKE 2 В РЕЖИМЕ НАПАРНИКИ #1 (ft. rol1j) | mortis32 лучшее", 
+            category: "стримы", 
+            views: "0", 
+            duration: "28:40", 
+            thumbnail: "/preview/preview13.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/81be91207498c68ec74b0a231f6c695c/",
+            embedUrl: "https://rutube.ru/play/embed/81be91207498c68ec74b0a231f6c695c/"
           }
         ];
         
@@ -2610,7 +2445,7 @@
         const videosPerPage = 6;
         let currentFilteredVideos = [];
         
-        // Функция отрисовки видео
+        // Функция отрисовки видео (БЕЗ КНОПКИ PLAY НА ПРЕВЬЮ)
         const renderVideos = (videos, page = 1, append = false) => {
           if (!append) {
             videoList.innerHTML = '';
@@ -2630,24 +2465,19 @@
           const endIndex = startIndex + videosPerPage;
           const paginatedVideos = videos.slice(startIndex, endIndex);
           
-          // Отрисовка видео
+          // Отрисовка видео (БЕЗ КНОПКИ PLAY НА ПРЕВЬЮ)
           paginatedVideos.forEach(video => {
             const videoElement = document.createElement('div');
             videoElement.className = 'glass-card p-4 fade-in';
             
             videoElement.innerHTML = `
               <div class="relative mb-3">
-                <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-40 object-cover rounded-lg cursor-pointer video-thumbnail" data-video-id="${video.id}">
+                <img src="${video.thumbnail}" alt="${video.title}" class="w-full h-40 object-cover rounded-lg">
                 <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
                   ${video.duration}
                 </div>
                 <div class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
                   <i class="fa-solid fa-play-circle"></i> Rutube
-                </div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                  <div class="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center cursor-pointer play-button" data-video-id="${video.id}">
-                    <i class="fa-solid fa-play text-white text-2xl"></i>
-                  </div>
                 </div>
               </div>
               <h3 class="font-semibold text-white mb-2 line-clamp-2">${video.title}</h3>
@@ -2656,7 +2486,7 @@
                 <span class="badge ${getCategoryBadgeClass(video.category)}">${getCategoryName(video.category)}</span>
               </div>
               <div class="mt-3 flex gap-2">
-                <button class="neon-btn flex-1 text-center play-embed-btn" data-embed-url="${video.embedUrl}">
+                <button class="neon-btn flex-1 text-center play-embed-btn" data-embed-url="${video.embedUrl}" data-video-id="${video.id}">
                   <i class="fa-solid fa-play mr-2"></i>Смотреть на сайте
                 </button>
                 <a href="${video.url}" target="_blank" class="neon-btn bg-red-600 hover:bg-red-700 border-red-400 flex-1 text-center" onclick="trackVideoView('${video.category}', 'rutube')">
@@ -2893,11 +2723,9 @@
         setupPerformance();
         setupAnimations();
         setupParticleToggle();
-        setupAdvancedPerformance();
         setupSettingsNotifications(); // Новая функция для уведомлений настроек
         setupAccessibility();
         setupFontSize();
-        setupHighContrast();
         setupResetSettings();
         setupResetProfile();
         setupProfile();
