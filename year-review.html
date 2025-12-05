@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>Итоги года — 2023-2025 | Mortis Play</title>
+  <meta name="description" content="Итоги 2023, 2024, 2025: реальный путь роста, достижения и ключевые события" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #0a0a1f 0%, #1a1a3a 50%, #2a1a4a 100%);
+      color: #e8e6f3;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      overflow-y: auto;
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="4"/><feColorMatrix type="saturate" values="0"/></filter><rect width="120" height="120" filter="url(%23n)" opacity="0.05"/></svg>') repeat;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(24px);
+      border-radius: 2rem;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .glass-card:hover { transform: translateY(-10px); box-shadow: 0 32px 64px rgba(0, 0, 0, 0.4); }
+
+    .neon-title {
+      font-weight: 900;
+      background: linear-gradient(90deg, #3b82f6, #a855f7, #ec4899, #f59e0b, #3b82f6);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: neonFlow 5s ease-in-out infinite;
+    }
+    @keyframes neonFlow { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+    .year-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      padding: 2px;
+      background: linear-gradient(135deg, #3b82f6, #a855f7, #ec4899, #f59e0b);
+      border-radius: 1.5rem;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: borderRotate 4s linear infinite;
+    }
+    @keyframes borderRotate { to { transform: rotate(360deg); } }
+
+    .neon-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #e8e6f3;
+      padding: 0.875rem 2rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      transition: all 0.4s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .neon-btn:hover {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: #3b82f6;
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(59, 130, 246, 0.3);
+    }
+
+    .fade-in { opacity: 0; transform: translateY(40px); transition: all 0.8s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .emoji { font-size: 1.7rem; margin-right: 0.5rem; }
+    strong { color: #c084fc; }
+    a { color: #a78bfa; text-decoration: underline; }
+    a:hover { color: #c084fc; }
+  </style>
+</head>
+<body class="text-white">
+  <main class="relative min-h-screen">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-20 left-20 w-80 h-80 bg-gradient-to-br from-blue-500/10 to-purple-600/10 rounded-full blur-3xl animate-pulse"></div>
+      <div class="absolute bottom-32 right-20 w-96 h-96 bg-gradient-to-br from-purple-500/10 to-pink-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+    </div>
+
+    <div class="mx-auto max-w-6xl px-4 py-20 relative z-10">
+      <div class="text-center mb-20">
+        <h1 class="neon-title text-6xl md:text-8xl font-extrabold mb-6">ИТОГИ ГОДА</h1>
+        <p class="text-xl md:text-2xl text-gray-300">2023 → 2024 → 2025 — три года настоящего пути</p>
+      </div>
+
+      <div class="space-y-20">
+
+        <!-- 2023 -->
+        <div class="glass-card p-8 md:p-12 fade-in year-card" id="2023">
+          <h2 class="text-6xl md:text-8xl font-black text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-center mb-8">2023</h2>
+          <div class="space-y-5 text-lg leading-relaxed">
+            <p><strong>Ну что, время итоги года!</strong></p>
+            <p>В 2023 году мы сделали ой сколько много переворотов в жизни, столько всего произошло за последние месяцы, но начнём с самого малого:</p>
+            <p><span class="emoji">Январь</span> — мало что произошло, но я начал вкачивать аудиторию по полной, несмотря на войну и блокировки игр.</p>
+            <p><span class="emoji">Февраль</span> — самый худший месяц года. 13-14 февраля — полный капец в жизни. Зато начал <strong>ТикТок</strong> (да, с кринжем 2020-2021)</p>
+            <p><span class="emoji">Март</span> — стабильно работал с аудиторией.</p>
+            <p><span class="emoji">Апрель</span> — <strong>Бравл Старс заблокировали навсегда!</strong> Создал чистый канал <strong>F.U.J.I.N</strong> + серверу Discord 1 год!</p>
+            <p><span class="emoji">Май</span> — <strong>10 ТЫСЯЧ ЛАЙКОВ!</strong> Лучшее, что я видел в жизни. Спасибо вам</p>
+            <p><span class="emoji">Август</span> — <strong>14 лет!</strong> Вернул старый канал ради вас и стал лидером по аудитории</p>
+            <p>Спасибо за 2023! В 2024 ждите: анимационный трейлер, новые форматы, прятки, сериалы и переворот канала</p>
+          </div>
+        </div>
+
+        <!-- 2024 -->
+        <div class="glass-card p-8 md:p-12 fade-in year-card" id="2024">
+          <h2 class="text-6xl md:text-8xl font-black text-transparent bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-600 bg-clip-text text-center mb-8">2024</h2>
+          <div class="space-y-5 text-lg leading-relaxed">
+            <p><strong>Итоги ГОДА!!!</strong> За этот год мы постарались на славу.</p>
+            <p><span class="emoji">Январь</span> — первые Standoff прятки, новогоднее поздравление, трейлер Летал Компани</p>
+            <p><span class="emoji">Февраль</span> — пилот Летал Компани, демка CS:GO, Типичные случаи</p>
+            <p><span class="emoji">Март</span> — <strong>Прятки в Майнкрафте</strong>, 100 стардропов, весь 1 сезон <strong>Бароны</strong>!</p>
+            <p><span class="emoji">Май</span> — <strong>первая работа в 14 лет</strong> + последний звонок</p>
+            <p><span class="emoji">Июль</span> — обзор Oculus Quest 2, море спустя 2 года</p>
+            <p><span class="emoji">Август</span> — <strong>15 лет!</strong> Fall Guys, канал в Дзене, Content Warning</p>
+            <p><span class="emoji">Сентябрь</span> — <strong>ФАНДОМ ТРЕК — 47К ПРОСМОТРОВ!</strong></p>
+            <p><span class="emoji">Декабрь</span> — спецвыпуск на час + <strong>первый подкаст нового формата</strong></p>
+            <p><strong>Планы на 2025:</strong> новые серии, форматы, игры, прятки КС, подкаст в декабре!</p>
+          </div>
+        </div>
+
+        <!-- 2025 — ПОЛНЫЙ ТЕКСТ 2025 ГОДА -->
+        <div class="glass-card p-8 md:p-12 fade-in year-card" id="2025">
+          <h2 class="text-6xl md:text-8xl font-black text-transparent bg-gradient-to-r from-orange-400 via-pink-500 to-red-600 bg-clip-text text-center mb-8">2025</h2>
+          <p class="text-2xl font-semibold text-orange-400 text-center mb-10">Новый уровень</p>
+
+          <div class="space-y-6 text-lg leading-relaxed">
+            <p><strong>Сегодня настал этот день — ИТОГИ ГОДА!</strong> И этот год МЫ ЖЕСТКО ВЫ*** его!</p>
+            <p><span class="emoji">Январь</span> — анонс анимационного подкаста, Lethal Company с модами. Больше ничего — учёба</p>
+            <p><span class="emoji">Февраль</span> — ничего на канале, личные дела (кл. руководитель, работа). Но всё встало на места</p>
+            <p><span class="emoji">Март</span> — <strong>возвращение сериала "Бароны"</strong>. Учёба давила, но я не сдаюсь!</p>
+            <p><span class="emoji">Апрель</span> — серверу Discord <strong>3 года!</strong> Выпуск серии Бароны + стримчатский</p>
+            <p><span class="emoji">Май</span> — анонс финальной анимационной серии, БЛИЦ PLAY подкаст, R.E.P.O УГАР, последний ежемесячный стрим. <strong>Начало 3-месячных каникул и МАСШТАБНЫХ ИЗМЕНЕНИЙ!</strong></p>
+            <p><span class="emoji">Июнь</span> — много стримов, новый формат в ТГК, <strong>ПЕРЕЕЗД КОНТЕНТОВ</strong>, <strong>8 серия — финал 2 сезона "Бароны"</strong></p>
+            <p><span class="emoji">Июль</span> — <strong>ВЫПУСК ПОЛНОЦЕННОЙ АНИМАЦИИ 8 СЕРИИ!</strong> Угар в PEAK, <strong>новый уровень монтажа</strong>, собрал команду на стримах<br>
+              <strong>И САМОЕ ГЛАВНОЕ:</strong> <span style="color:#f59e0b">11.07.2025 начал разработку сайта mortisplay.ru</span><br>
+              16.07 — бета, <span style="color:#f59e0b">22.07 — ПОЛНЫЙ РЕЛИЗ!</span> Сайт изменился до неузнаваемости</p>
+            <p><span class="emoji">Август</span> — первый розыгрыш в ТГК, Discord 2.0, Q&A на сайте, <strong>16 лет!</strong>, начал 3 сезон Бароны (но потом закрыл), уникальный дизайн сайта<br>
+              Были падения сайта и закрытие Q&A, но вернули с новой версией!</p>
+            <p><span class="emoji">Сентябрь</span> — 9 класс, один угар-видос</p>
+            <p><span class="emoji">Октябрь</span> — угар с вебкой (эксперимент), добавил бейджики на сайт</p>
+            <p><span class="emoji">Ноябрь</span> — угар в CS2, распаковка нового микро, вернул раздел "Видео" на сайт</p>
+            <p><strong>Итог:</strong> РКН заблокировал почти всё, но мы ищем обходы. Год получился красивым</p>
+            <p><strong>Планы на 2026:</strong> меньше актива — выпускной год. Жизнь будет нелёгкой... Но мы не сдаёмся</p>
+            <p>Всем спасибо за 2025. Год был — WTF. Увидимся скоро</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- КНОПКИ -->
+      <div class="mt-20 text-center space-y-6">
+        <a href="/" class="neon-btn text-lg px-10 py-4"><i class="fa-solid fa-house"></i> На главную</a><br>
+        <a href="https://t.me/MortisPlayTG" target="_blank" class="neon-btn text-lg px-10 py-4"><i class="fa-brands fa-telegram"></i>Наш Telegram-канал</a><br>
+        <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="neon-btn text-lg px-10 py-4"><i class="fa-brands fa-youtube"></i> YouTube</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const observer = new IntersectionObserver(e => e.forEach(en => en.isIntersecting && (en.target.classList.add('visible'), observer.unobserve(en.target))), { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
