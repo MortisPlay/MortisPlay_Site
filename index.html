@@ -770,7 +770,7 @@
       <!-- Статистика -->
       <div class="flex justify-center gap-6 text-sm text-gray-300">
         <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">422</span></div>
-        <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">153K</span></div>
+        <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">154K</span></div>
       </div>
     </div>
     <!-- Видео + цитата -->
@@ -812,6 +812,7 @@
             <option value="угар">Угар</option>
             <option value="стримы">Записи со стрима</option>
             <option value="подкаст">Подкаст</option>
+            <option value="shorts">Shorts</option>
             <option value="другое">Другое</option>
           </select>
           
@@ -849,6 +850,16 @@
           <h3 class="text-xl font-bold text-white mb-2">Подкаст</h3>
           <p class="text-gray-300 text-sm">Аудио и видео подкасты</p>
           <div class="mt-4 text-xs text-yellow-300">3 видео</div>
+        </div>
+
+        <!-- Добавлена категория Shorts -->
+        <div class="glass-card p-6 text-center cursor-pointer hover:scale-105 transition-all duration-300 category-card" data-category="shorts">
+          <div class="text-4xl mb-4 text-pink-400">
+            <i class="fa-solid fa-mobile-screen"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">Shorts</h3>
+          <p class="text-gray-300 text-sm">Короткие видео до 60 секунд</p>
+          <div class="mt-4 text-xs text-pink-300">10 видео</div>
         </div>
       </div>
       
@@ -1136,40 +1147,47 @@
         if (notificationElement) {
           const span = notificationElement.querySelector('span');
           if (span) {
-            // Скрываем все предыдущие уведомления
-            document.querySelectorAll('.notification.show').forEach(el => {
-              if (el !== notificationElement) {
-                el.classList.remove('show');
+            // Используем правильный элемент для уведомлений из настроек
+            const targetElement = notificationElement.id === 'appearanceNotification' 
+              ? notificationElement 
+              : document.getElementById('appearanceNotification');
+            
+            if (targetElement) {
+              // Скрываем все предыдущие уведомления
+              document.querySelectorAll('.notification.show').forEach(el => {
+                if (el !== targetElement) {
+                  el.classList.remove('show');
+                }
+              });
+              
+              span.textContent = message;
+              targetElement.classList.add('show');
+              
+              // Гарантируем правильное позиционирование
+              targetElement.style.position = 'fixed';
+              targetElement.style.bottom = '1rem';
+              targetElement.style.right = '1rem';
+              targetElement.style.zIndex = '1000';
+              targetElement.style.maxWidth = '320px';
+              
+              gtag('event', 'notification_shown', { event_category: 'settings', event_label: message });
+              
+              const timeout = setTimeout(() => {
+                targetElement.classList.remove('show');
+              }, 5000);
+              
+              const closeButton = targetElement.querySelector('button');
+              if (closeButton) {
+                // Удаляем старые обработчики и добавляем новый
+                closeButton.replaceWith(closeButton.cloneNode(true));
+                const newCloseButton = targetElement.querySelector('button');
+                newCloseButton.addEventListener('click', () => {
+                  targetElement.classList.remove('show');
+                  clearTimeout(timeout);
+                  gtag('event', 'notification_dismiss', { event_category: 'settings', event_label: 'dismiss_notification' });
+                  logAction('Уведомление закрыто');
+                }, { once: true });
               }
-            });
-            
-            span.textContent = message;
-            notificationElement.classList.add('show');
-            
-            // Гарантируем позиционирование в правом нижнем углу
-            notificationElement.style.position = 'fixed';
-            notificationElement.style.bottom = '1rem';
-            notificationElement.style.right = '1rem';
-            notificationElement.style.zIndex = '1000';
-            notificationElement.style.maxWidth = '320px';
-            
-            gtag('event', 'notification_shown', { event_category: 'settings', event_label: message });
-            
-            const timeout = setTimeout(() => {
-              notificationElement.classList.remove('show');
-            }, 5000);
-            
-            const closeButton = notificationElement.querySelector('button');
-            if (closeButton) {
-              // Удаляем старые обработчики и добавляем новый
-              closeButton.replaceWith(closeButton.cloneNode(true));
-              const newCloseButton = notificationElement.querySelector('button');
-              newCloseButton.addEventListener('click', () => {
-                notificationElement.classList.remove('show');
-                clearTimeout(timeout);
-                gtag('event', 'notification_dismiss', { event_category: 'settings', event_label: 'dismiss_notification' });
-                logAction('Уведомление закрыто');
-              }, { once: true });
             }
           }
         }
@@ -1298,82 +1316,181 @@
         }
       };
 
-      const setupPerformance = () => {
-        const toggle = document.getElementById('lowPerformanceToggle');
-        const notification = document.getElementById('appearanceNotification');
-        if (toggle && notification) {
-          let savedMode;
-          try {
-            savedMode = localStorage.getItem('lowPerformance') === 'true';
-          } catch (e) {
-            savedMode = false;
-            logAction('Ошибка чтения localStorage для lowPerformance: ' + e.message);
-          }
-          toggle.checked = savedMode;
+      // === ИСПРАВЛЕННАЯ ИНИЦИАЛИЗАЦИЯ НАСТРОЕК ===
+      const initializeSettings = () => {
+        // 1. Уведомления
+        setupSettingsNotifications();
+        
+        // 2. Производительность
+        const lowPerformanceToggle = document.getElementById('lowPerformanceToggle');
+        const disableAnimationsToggle = document.getElementById('disableAnimationsToggle');
+        const disableParticlesToggle = document.getElementById('disableParticlesToggle');
+        
+        if (lowPerformanceToggle) {
+          let savedMode = localStorage.getItem('lowPerformance') === 'true';
+          lowPerformanceToggle.checked = savedMode;
           root.classList.toggle('low-performance', savedMode);
-        }
-      };
-
-      const setupAnimations = () => {
-        const animationsToggle = document.getElementById('disableAnimationsToggle');
-        const notification = document.getElementById('appearanceNotification');
-        if (animationsToggle && notification) {
-          let savedAnimations;
-          try {
-            savedAnimations = localStorage.getItem('disableAnimations') === 'true';
-          } catch (e) {
-            savedAnimations = false;
-            logAction('Ошибка чтения localStorage для disableAnimations: ' + e.message);
-          }
-          animationsToggle.checked = savedAnimations;
-          root.classList.toggle('no-animations', savedAnimations);
-        }
-      };
-
-      const setupParticleToggle = () => {
-        const toggle = document.getElementById('disableParticlesToggle');
-        const notification = document.getElementById('appearanceNotification');
-        if (toggle && notification) {
-          let savedParticles;
-          try {
-            savedParticles = localStorage.getItem('disableParticles') === 'true';
-          } catch (e) {
-            savedParticles = false;
-            logAction('Ошибка чтения localStorage для disableParticles: ' + e.message);
-          }
-          toggle.checked = savedParticles;
-          root.classList.toggle('no-particles', savedParticles);
-        }
-      };
-
-      // ИСПРАВЛЕННАЯ ФУНКЦИЯ setupAccessibility
-      const setupAccessibility = () => {
-        // Увеличенный текст
-        const largeTextToggle = document.getElementById('largeTextToggle');
-        if (largeTextToggle) {
-          let savedLargeText;
-          try {
-            savedLargeText = localStorage.getItem('largeText') === 'true';
-          } catch (e) {
-            savedLargeText = false;
-            logAction('Ошибка чтения localStorage для largeText: ' + e.message);
-          }
-          largeTextToggle.checked = savedLargeText;
-          root.classList.toggle('large-text', savedLargeText);
+          
+          lowPerformanceToggle.addEventListener('change', () => {
+            localStorage.setItem('lowPerformance', lowPerformanceToggle.checked);
+            root.classList.toggle('low-performance', lowPerformanceToggle.checked);
+            showNotification(
+              lowPerformanceToggle.checked ? 'Лёгкий режим включён' : 'Лёгкий режим выключен',
+              document.getElementById('appearanceNotification')
+            );
+            gtag('event', 'low_performance_toggle', { 
+              event_category: 'settings', 
+              event_label: lowPerformanceToggle.checked ? 'on' : 'off' 
+            });
+          });
         }
         
-        // Высокая контрастность
+        if (disableAnimationsToggle) {
+          let savedAnimations = localStorage.getItem('disableAnimations') === 'true';
+          disableAnimationsToggle.checked = savedAnimations;
+          root.classList.toggle('no-animations', savedAnimations);
+          
+          disableAnimationsToggle.addEventListener('change', () => {
+            localStorage.setItem('disableAnimations', disableAnimationsToggle.checked);
+            root.classList.toggle('no-animations', disableAnimationsToggle.checked);
+            showNotification(
+              disableAnimationsToggle.checked ? 'Анимации отключены' : 'Анимации включены',
+              document.getElementById('appearanceNotification')
+            );
+          });
+        }
+        
+        if (disableParticlesToggle) {
+          let savedParticles = localStorage.getItem('disableParticles') === 'true';
+          disableParticlesToggle.checked = savedParticles;
+          root.classList.toggle('no-particles', savedParticles);
+          
+          disableParticlesToggle.addEventListener('change', () => {
+            localStorage.setItem('disableParticles', disableParticlesToggle.checked);
+            root.classList.toggle('no-particles', disableParticlesToggle.checked);
+            showNotification(
+              disableParticlesToggle.checked ? 'Частицы отключены' : 'Частицы включены',
+              document.getElementById('appearanceNotification')
+            );
+          });
+        }
+        
+        // 3. Доступность
         const highContrastToggle = document.getElementById('highContrastToggle');
+        const largeTextToggle = document.getElementById('largeTextToggle');
+        
         if (highContrastToggle) {
-          let savedHighContrast;
-          try {
-            savedHighContrast = localStorage.getItem('highContrast') === 'true';
-          } catch (e) {
-            savedHighContrast = false;
-            logAction('Ошибка чтения localStorage для highContrast: ' + e.message);
-          }
+          let savedHighContrast = localStorage.getItem('highContrast') === 'true';
           highContrastToggle.checked = savedHighContrast;
           root.classList.toggle('high-contrast', savedHighContrast);
+          
+          highContrastToggle.addEventListener('change', () => {
+            localStorage.setItem('highContrast', highContrastToggle.checked);
+            root.classList.toggle('high-contrast', highContrastToggle.checked);
+            showNotification(
+              highContrastToggle.checked ? 'Высокая контрастность включена' : 'Высокая контрастность выключена',
+              document.getElementById('appearanceNotification')
+            );
+          });
+        }
+        
+        if (largeTextToggle) {
+          let savedLargeText = localStorage.getItem('largeText') === 'true';
+          largeTextToggle.checked = savedLargeText;
+          
+          // Теперь это работает правильно
+          if (savedLargeText) {
+            document.documentElement.classList.add('large-text');
+            document.documentElement.style.setProperty('--font-scale', '1.25'); // Увеличиваем на 25%
+          }
+          
+          largeTextToggle.addEventListener('change', () => {
+            const isChecked = largeTextToggle.checked;
+            localStorage.setItem('largeText', isChecked);
+            
+            if (isChecked) {
+              document.documentElement.classList.add('large-text');
+              document.documentElement.style.setProperty('--font-scale', '1.25');
+            } else {
+              document.documentElement.classList.remove('large-text');
+              document.documentElement.style.setProperty('--font-scale', 
+                localStorage.getItem('fontSize') ? localStorage.getItem('fontSize') / 100 : '1'
+              );
+            }
+            
+            showNotification(
+              isChecked ? 'Крупный текст включён' : 'Крупный текст выключен',
+              document.getElementById('appearanceNotification')
+            );
+          });
+        }
+        
+        // 4. Внешний вид (тема уже настраивается в setupThemeSelect)
+        // 5. Размер шрифта (уже настраивается в setupFontSize)
+        
+        // 6. Обработчик для кнопки "Сбросить всё"
+        const resetSettingsBtn = document.getElementById('resetSettings');
+        if (resetSettingsBtn) {
+          resetSettingsBtn.addEventListener('click', () => {
+            const confirmReset = confirm(
+              '⚠️ Точно сбросить ВСЕ настройки?\n\n' +
+              '• Тема и внешний вид\n' +
+              '• Размер шрифта\n' +
+              '• Настройки производительности\n' +
+              '• Настройки доступности\n\n' +
+              'Профиль (аватар, бейджи) не будет затронут.'
+            );
+            
+            if (!confirmReset) {
+              showNotification('Сброс настроек отменён', document.getElementById('appearanceNotification'));
+              return;
+            }
+            
+            // Сбрасываем настройки
+            localStorage.removeItem('theme');
+            localStorage.removeItem('lowPerformance');
+            localStorage.removeItem('disableAnimations');
+            localStorage.removeItem('disableParticles');
+            localStorage.removeItem('fontSize');
+            localStorage.removeItem('highContrast');
+            localStorage.removeItem('largeText');
+            localStorage.removeItem('badgeNotifications');
+            localStorage.removeItem('newsNotifications');
+            
+            // Сбрасываем визуальное состояние
+            root.classList.remove('low-performance', 'no-animations', 'no-particles', 'high-contrast', 'large-text');
+            root.style.setProperty('--font-scale', '1');
+            
+            // Сбрасываем значения элементов управления
+            if (lowPerformanceToggle) lowPerformanceToggle.checked = false;
+            if (disableAnimationsToggle) disableAnimationsToggle.checked = false;
+            if (disableParticlesToggle) disableParticlesToggle.checked = false;
+            if (highContrastToggle) highContrastToggle.checked = false;
+            if (largeTextToggle) largeTextToggle.checked = false;
+            
+            const themeSelect = document.getElementById('themeSelect');
+            if (themeSelect) themeSelect.value = 'auto';
+            
+            const fontSizeSlider = document.getElementById('fontSizeSlider');
+            const fontSizeValue = document.getElementById('fontSizeValue');
+            if (fontSizeSlider && fontSizeValue) {
+              fontSizeSlider.value = '100';
+              fontSizeValue.textContent = '100%';
+            }
+            
+            const badgeNotificationsToggle = document.getElementById('badgeNotificationsToggle');
+            if (badgeNotificationsToggle) badgeNotificationsToggle.checked = true;
+            
+            const newsNotificationsToggle = document.getElementById('newsNotificationsToggle');
+            if (newsNotificationsToggle) newsNotificationsToggle.checked = true;
+            
+            // Устанавливаем тему по умолчанию
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            setTheme(prefersDark ? 'dark' : 'light');
+            
+            showNotification('Все настройки сброшены', document.getElementById('appearanceNotification'));
+            gtag('event', 'reset_settings', { event_category: 'settings', event_label: 'confirmed_reset' });
+          });
         }
       };
 
@@ -1391,12 +1508,22 @@
           }
           slider.value = savedFontSize;
           fontSizeValue.textContent = `${savedFontSize}%`;
-          root.style.setProperty('--font-scale', savedFontSize / 100);
+          
+          // Если включен крупный текст, игнорируем ползунок
+          if (!document.documentElement.classList.contains('large-text')) {
+            root.style.setProperty('--font-scale', savedFontSize / 100);
+          }
+          
           let fontNotificationTimer;
           slider.addEventListener('input', () => {
             const fontSize = slider.value;
             fontSizeValue.textContent = `${fontSize}%`;
-            root.style.setProperty('--font-scale', fontSize / 100);
+            
+            // Если включен крупный текст, игнорируем ползунок
+            if (!document.documentElement.classList.contains('large-text')) {
+              root.style.setProperty('--font-scale', fontSize / 100);
+            }
+            
             const notif = document.getElementById('fontNotification');
             if (notif) {
               const span = notif.querySelector('span');
@@ -1519,43 +1646,72 @@
         }
       };
 
-      // ИСПРАВЛЕННАЯ ФУНКЦИЯ createBadgeParticles
+      // === ИСПРАВЛЕННАЯ ФУНКЦИЯ createBadgeParticles ===
       const createBadgeParticles = (badgeEl, badgeName) => {
+        // Убедимся, что элемент видим и имеет размеры
+        if (!badgeEl.offsetParent) return () => {};
+        
         // Проверяем, нет ли уже canvas в этом элементе
         if (badgeEl.querySelector('canvas')) {
-          return () => {}; // Возвращаем пустую функцию для очистки
+          return () => {};
         }
         
         const canvas = document.createElement('canvas');
         canvas.style.cssText = `
-          position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-          pointer-events: none; border-radius: 9999px; will-change: contents;
+          position: absolute; 
+          top: 0; 
+          left: 0; 
+          width: 100%; 
+          height: 100%;
+          pointer-events: none; 
+          border-radius: inherit;
+          z-index: 1;
         `;
+        
         badgeEl.style.position = 'relative';
         badgeEl.style.overflow = 'hidden';
         badgeEl.appendChild(canvas);
+        
         const ctx = canvas.getContext('2d');
         let animationId;
+        
+        // Функция для установки правильного размера canvas
         const resizeCanvas = () => {
           const rect = badgeEl.getBoundingClientRect();
+          if (rect.width === 0 || rect.height === 0) {
+            // Если элемент еще не отрисован, пробуем позже
+            setTimeout(resizeCanvas, 100);
+            return;
+          }
+          
           const dpr = window.devicePixelRatio || 1;
           canvas.width = rect.width * dpr;
           canvas.height = rect.height * dpr;
           canvas.style.width = rect.width + 'px';
           canvas.style.height = rect.height + 'px';
           ctx.scale(dpr, dpr);
+          
+          // Немедленно запускаем анимацию после ресайза
+          if (animationId) {
+            cancelAnimationFrame(animationId);
+          }
+          animate();
         };
-        // Принудительно вызываем ресайз сразу
-        resizeCanvas();
+        
+        // Используем ResizeObserver для отслеживания изменений размера
         const ro = new ResizeObserver(() => {
           resizeCanvas();
         });
+        
         ro.observe(badgeEl);
+        
+        // Инициализируем частицы
         const particles = [];
         const centerX = () => canvas.width / 2 / (window.devicePixelRatio || 1);
         const centerY = () => canvas.height / 2 / (window.devicePixelRatio || 1);
         const radius = () => Math.min(centerX(), centerY()) * 0.8;
-        // Инициализация частиц
+        
+        // Инициализация частиц в зависимости от типа бейджа
         if (badgeName.includes('Секретный Агент')) {
           for (let i = 0; i < 8; i++) {
             particles.push({
@@ -1601,10 +1757,16 @@
             glow: 0
           });
         }
+        
         const animate = () => {
-          if (document.documentElement.classList.contains('low-performance')) return;
+          if (document.documentElement.classList.contains('low-performance') || 
+              document.documentElement.classList.contains('no-animations')) {
+            return;
+          }
+          
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          // Секретный Агент
+          
+          // Анимация частиц в зависимости от типа бейджа
           if (badgeName.includes('Секретный Агент')) {
             particles.forEach(p => {
               p.angle += p.speed;
@@ -1617,6 +1779,7 @@
               ctx.fill();
             });
           }
+          
           // Кодовый Взломщик
           if (badgeName.includes('Кодовый Взломщик')) {
             particles.forEach(p => {
@@ -1640,6 +1803,7 @@
               }
             });
           }
+          
           // Призрачный Зритель
           if (badgeName.includes('Призрачный Зритель')) {
             particles.forEach(p => {
@@ -1657,6 +1821,7 @@
               ctx.fill();
             });
           }
+          
           // Ночной Сталкер (похоже на кодовый, но с "тенями" - горизонтальные линии)
           if (badgeName.includes('Ночной Сталкер')) {
             particles.forEach(p => {
@@ -1680,6 +1845,7 @@
               }
             });
           }
+          
           // Тёмный ПРИНЦ (тёмный меч на камне)
           if (badgeName.includes('Тёмный ПРИНЦ')) {
             const p = particles[0];
@@ -1708,17 +1874,42 @@
             ctx.lineTo(centerX(), centerY() + 5);
             ctx.stroke();
           }
+          
           animationId = requestAnimationFrame(animate);
         };
-        // Запускаем анимацию ПРИНУДИТЕЛЬНО
-        animate();
+        
+        // Запускаем инициализацию с небольшой задержкой для гарантии
+        setTimeout(resizeCanvas, 50);
+        
         return () => {
           cancelAnimationFrame(animationId);
           ro.disconnect();
         };
       };
 
-      // ИСПРАВЛЕННАЯ ФУНКЦИЯ setupBadges
+      // === ФУНКЦИЯ ДЛЯ ПРИНУДИТЕЛЬНОЙ ИНИЦИАЛИЗАЦИИ БЕЙДЖЕЙ ПРИ ЗАГРУЗКЕ ===
+      const initializeBadgesOnLoad = () => {
+        // Ждем полной загрузки DOM
+        document.addEventListener('DOMContentLoaded', () => {
+          // Даем время для рендеринга
+          setTimeout(() => {
+            const badges = document.querySelectorAll('.badge');
+            badges.forEach(badge => {
+              const badgeName = badge.textContent || badge.innerText;
+              // Для определенных типов бейджей создаем частицы
+              if (badgeName.includes('Секретный Агент') || 
+                  badgeName.includes('Кодовый Взломщик') ||
+                  badgeName.includes('Призрачный Зритель') ||
+                  badgeName.includes('Ночной Сталкер') ||
+                  badgeName.includes('Тёмный ПРИНЦ')) {
+                createBadgeParticles(badge, badgeName);
+              }
+            });
+          }, 500); // Даем 500ms на полную загрузку и рендеринг
+        });
+      };
+
+      // === ИСПРАВЛЕННАЯ ФУНКЦИЯ setupBadges ===
       const setupBadges = () => {
         const badges = document.getElementById('badges');
         const badgeList = document.getElementById('badgeList');
@@ -1751,7 +1942,6 @@
               showNotification(`Новый бейдж: ${badge.name}! 🎉`, notification);
               gtag('event', 'badge_earned', { event_category: 'profile', event_label: badge.name });
               logAction(`Получен новый бейдж: ${badge.name}`);
-              triggerBadgeEffect(badge.name);
               // Добавляем класс new-badge для анимации
               const badgeEl = document.createElement('span');
               badgeEl.className = `badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${badge.rarity} ${badge.name.toLowerCase().replace(/ /g, '-').replace('ё', 'e').replace('принц', 'prince')} new-badge`;
@@ -2279,7 +2469,7 @@
         });
       };
 
-      // НОВАЯ ФУНКЦИЯ: Настройка системы поиска и фильтрации видео
+      // === НОВАЯ ФУНКЦИЯ: Настройка системы поиска и фильтрации видео ===
       const setupVideoSearchAndFilter = () => {
         const videoSearch = document.getElementById('videoSearch');
         const categoryFilter = document.getElementById('categoryFilter');
@@ -2412,7 +2602,6 @@
             url: "https://rutube.ru/video/f81b9ced0e2d196c7024e3f4fb6b0fab/",
             embedUrl: "https://rutube.ru/play/embed/f81b9ced0e2d196c7024e3f4fb6b0fab/"
           },
-          
           { 
             id: 12, 
             title: "Mortisplay32 ПРОХОДИТ ХОРРОР GARRY'S MOD #2 (ft. Johnny_Drill) | mortis32 лучшее", 
@@ -2428,7 +2617,7 @@
             id: 13, 
             title: "Mortisplay32 ИГРАЕТ В COUNTER STRIKE 2 В РЕЖИМЕ НАПАРНИКИ #1 (ft. rol1j) | mortis32 лучшее", 
             category: "стримы", 
-            views: "5", 
+            views: "13", 
             duration: "28:40", 
             thumbnail: "/preview/preview13.jpg", 
             platform: "rutube", 
@@ -2439,7 +2628,7 @@
             id: 14, 
             title: "Mortisplay32 ИГРАЕТ В PEAK С ПОДПИСЧИКОМ (ft. Johnny_Drill, rol1j)", 
             category: "стримы", 
-            views: "0", 
+            views: "17", 
             duration: "01:11:10", 
             thumbnail: "/preview/preview14.jpg", 
             platform: "rutube", 
@@ -2450,7 +2639,7 @@
             id: 15, 
             title: "Mortisplay32 ОФОРМЛЯЕТ ЗАВОЗ НА СТРИМЕ (ft. rol1j) | mortis32 лучшее", 
             category: "стримы", 
-            views: "0", 
+            views: "8", 
             duration: "28:55", 
             thumbnail: "/preview/preview15.jpg", 
             platform: "rutube", 
@@ -2461,20 +2650,187 @@
             id: 16, 
             title: "Mortisplay32 ИГРАЕТ В R.E.P.O И ОН ЖЁСТКО ГОРИТ НА НЕГО (ft. Johnny_drill) | mortis32 лучшее", 
             category: "стримы", 
-            views: "0", 
+            views: "4", 
             duration: "51:04", 
             thumbnail: "/preview/preview16.jpg", 
             platform: "rutube", 
             url: "https://rutube.ru/video/5de3b57efa1be1eaf79c6dee00a46935/",
             embedUrl: "https://rutube.ru/play/embed/5de3b57efa1be1eaf79c6dee00a46935/"
-          }
+          },
+          // === ДОБАВЛЕНЫ 10 SHORTS ВИДЕО ===
+          { 
+            id: 17, 
+            title: "Новая позиция в CS2", 
+            category: "shorts", 
+            views: "991", 
+            duration: "2:11", 
+            thumbnail: "/preview/short1.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/1b5188c6194f927865feb95850ccd8d6/",
+            embedUrl: "https://rutube.ru/play/embed/1b5188c6194f927865feb95850ccd8d6/"
+          },
+          { 
+            id: 18, 
+            title: "А ниче тот факт что... ", 
+            category: "shorts", 
+            views: "840", 
+            duration: "0:16", 
+            thumbnail: "/preview/short2.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/81057b17dfe1206ca7d60d4d9136a060/",
+            embedUrl: "https://rutube.ru/play/embed/81057b17dfe1206ca7d60d4d9136a060/"
+          },
+          { 
+            id: 19, 
+            title: "Кто он?", 
+            category: "shorts", 
+            views: "16", 
+            duration: "0:35", 
+            thumbnail: "/preview/short3.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/d23e833873190bcb0d4d253f45143cbd/",
+            embedUrl: "https://rutube.ru/play/embed/d23e833873190bcb0d4d253f45143cbd/"
+          },
+          { 
+            id: 20, 
+            title: "Дал отпор называется.", 
+            category: "shorts", 
+            views: "30", 
+            duration: "2:12", 
+            thumbnail: "/preview/short4.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/1b6d609c5fb9c1e361aa6f0f2a21d9a3/",
+            embedUrl: "https://rutube.ru/play/embed/1b6d609c5fb9c1e361aa6f0f2a21d9a3/"
+          },
+          { 
+            id: 21, 
+            title: "Руина в команде", 
+            category: "shorts", 
+            views: "975", 
+            duration: "1:46", 
+            thumbnail: "/preview/short5.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/621da3218d3fe91ffdca0e2f5facddfc/",
+            embedUrl: "https://rutube.ru/play/embed/621da3218d3fe91ffdca0e2f5facddfc/"
+          },
+          { 
+            id: 22, 
+            title: "Mortis Play покинул чат.", 
+            category: "shorts", 
+            views: "39", 
+            duration: "1:31", 
+            thumbnail: "/preview/short6.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/78cdb0ffd8b086fd5f575cad99fbe67d/",
+            embedUrl: "https://rutube.ru/play/embed/78cdb0ffd8b086fd5f575cad99fbe67d/"
+          },
+          { 
+            id: 23, 
+            title: "WHAT THE SIGMA?", 
+            category: "shorts", 
+            views: "1,1K", 
+            duration: "0:53", 
+            thumbnail: "/preview/short7.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/77728dacc48030405a680864cf22b398/",
+            embedUrl: "https://rutube.ru/play/embed/77728dacc48030405a680864cf22b398/"
+          },
+          { 
+            id: 24, 
+            title: "ASMR", 
+            category: "shorts", 
+            views: "22", 
+            duration: "0:28", 
+            thumbnail: "/preview/short8.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/81c365fccd79dae81f591b24b9851508/",
+            embedUrl: "https://rutube.ru/play/embed/81c365fccd79dae81f591b24b9851508/"
+          },
+          { 
+            id: 25, 
+            title: "Принимай подачу!", 
+            category: "shorts", 
+            views: "1,9K", 
+            duration: "0:22", 
+            thumbnail: "/preview/short9.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/8f2f9f2b3f8c6ac252f1ff07f9651af4/",
+            embedUrl: "https://rutube.ru/play/embed/8f2f9f2b3f8c6ac252f1ff07f9651af4/"
+          },
+          { 
+            id: 26, 
+            title: "упс X_X", 
+            category: "shorts", 
+            views: "34", 
+            duration: "0:16", 
+            thumbnail: "/preview/short10.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/41663abe6c914c1ccaa941749626302f/",
+            embedUrl: "https://rutube.ru/play/embed/41663abe6c914c1ccaa941749626302f/"
+          },
+          // ВИДЕО НЕКСТ
+          { 
+            id: 27, 
+            title: "SLAY 2025 (OST)", 
+            category: "другое", 
+            views: "8", 
+            duration: "2:52", 
+            thumbnail: "/preview/preview17.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/8d9403c9ff3662450050b551dc8dddb8/",
+            embedUrl: "https://rutube.ru/play/embed/8d9403c9ff3662450050b551dc8dddb8/"
+          },
+          { 
+            id: 28, 
+            title: "ВРЕМЯ БЕЗУМИЙ В РАБОТЕ!!! | mortis32 лучшее", 
+            category: "угар", 
+            views: "18", 
+            duration: "22:11", 
+            thumbnail: "/preview/preview18.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/3de912692f3520aad3ccf648b30f0247/",
+            embedUrl: "https://rutube.ru/play/embed/3de912692f3520aad3ccf648b30f0247/"
+          },
+          { 
+            id: 29, 
+            title: "СПЕЦ ВЫПУСК! ЧАС РАБОТЫ В ЛЕТАЛ КОМПАНИ! | mortis32 лучшее", 
+            category: "угар", 
+            views: "29", 
+            duration: "55:19", 
+            thumbnail: "/preview/preview19.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/06a6b97ccd99162052c14b60418c97f0/",
+            embedUrl: "https://rutube.ru/play/embed/06a6b97ccd99162052c14b60418c97f0/"
+          },
+          { 
+            id: 30, 
+            title: "КОМАНДА Л***ТРОНОВ ВОЗВРАЩАЮТСЯ В ИГРУ! | mortis32 лучшее", 
+            category: "угар", 
+            views: "19", 
+            duration: "18:45", 
+            thumbnail: "/preview/preview20.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/26b723e83d8775c75ad2afb856626ecf/",
+            embedUrl: "https://rutube.ru/play/embed/26b723e83d8775c75ad2afb856626ecf/"
+          },
+          { 
+            id: 31, 
+            title: "ЛЕГЕНДЫ НИКОГДА НЕ УМИРАЮТ... | mortis32 лучшее", 
+            category: "угар", 
+            views: "47", 
+            duration: "23:27", 
+            thumbnail: "/preview/preview21.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/fa9a360caf2a168a3920dc73e4d82399/",
+            embedUrl: "https://rutube.ru/play/embed/fa9a360caf2a168a3920dc73e4d82399/"
+          },
         ];
         
         let currentPage = 1;
         const videosPerPage = 6;
         let currentFilteredVideos = [];
         
-        // Функция отрисовки видео (БЕЗ КНОПКИ PLAY НА ПРЕВЬЮ)
+        // Функция отрисовки видео (БЕЗ КНОПКИ "На Rutube")
         const renderVideos = (videos, page = 1, append = false) => {
           if (!append) {
             videoList.innerHTML = '';
@@ -2494,7 +2850,7 @@
           const endIndex = startIndex + videosPerPage;
           const paginatedVideos = videos.slice(startIndex, endIndex);
           
-          // Отрисовка видео (БЕЗ КНОПКИ PLAY НА ПРЕВЬЮ)
+          // Отрисовка видео (БЕЗ КНОПКИ "На Rutube")
           paginatedVideos.forEach(video => {
             const videoElement = document.createElement('div');
             videoElement.className = 'glass-card p-4 fade-in';
@@ -2505,22 +2861,16 @@
                 <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
                   ${video.duration}
                 </div>
-                <div class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
-                  <i class="fa-solid fa-play-circle"></i> Rutube
-                </div>
               </div>
               <h3 class="font-semibold text-white mb-2 line-clamp-2">${video.title}</h3>
               <div class="flex justify-between text-sm text-gray-300">
                 <span><i class="fa-solid fa-eye mr-1"></i>${video.views}</span>
                 <span class="badge ${getCategoryBadgeClass(video.category)}">${getCategoryName(video.category)}</span>
               </div>
-              <div class="mt-3 flex gap-2">
-                <button class="neon-btn flex-1 text-center play-embed-btn" data-embed-url="${video.embedUrl}" data-video-id="${video.id}">
+              <div class="mt-3">
+                <button class="neon-btn w-full text-center play-embed-btn" data-embed-url="${video.embedUrl}" data-video-id="${video.id}">
                   <i class="fa-solid fa-play mr-2"></i>Смотреть на сайте
                 </button>
-                <a href="${video.url}" target="_blank" class="neon-btn bg-red-600 hover:bg-red-700 border-red-400 flex-1 text-center" onclick="trackVideoView('${video.category}', 'rutube')">
-                  <i class="fa-solid fa-external-link mr-2"></i>На Rutube
-                </a>
               </div>
               <div id="player-${video.id}" class="hidden mt-3"></div>
             `;
@@ -2547,7 +2897,8 @@
             'угар': 'common',
             'стримы': 'rare',
             'подкаст': 'legendary',
-            'другое': 'secret'
+            'другое': 'secret',
+            'shorts': 'epic' // Добавлено для Shorts
           };
           return classes[category] || 'common';
         };
@@ -2558,7 +2909,8 @@
             'угар': 'Угар',
             'стримы': 'Стримы',
             'подкаст': 'Подкаст',
-            'другое': 'Другое'
+            'другое': 'Другое',
+            'shorts': 'Shorts' // Добавлено для Shorts
           };
           return names[category] || category;
         };
@@ -2640,168 +2992,6 @@
           event_category: 'video',
           event_label: `${category}_rutube`
         });
-      };
-
-      // === ИСПРАВЛЕННАЯ ИНИЦИАЛИЗАЦИЯ НАСТРОЕК ===
-      const initializeSettings = () => {
-        // 1. Уведомления
-        setupSettingsNotifications();
-        
-        // 2. Производительность
-        const lowPerformanceToggle = document.getElementById('lowPerformanceToggle');
-        const disableAnimationsToggle = document.getElementById('disableAnimationsToggle');
-        const disableParticlesToggle = document.getElementById('disableParticlesToggle');
-        
-        if (lowPerformanceToggle) {
-          let savedMode = localStorage.getItem('lowPerformance') === 'true';
-          lowPerformanceToggle.checked = savedMode;
-          root.classList.toggle('low-performance', savedMode);
-          
-          lowPerformanceToggle.addEventListener('change', () => {
-            localStorage.setItem('lowPerformance', lowPerformanceToggle.checked);
-            root.classList.toggle('low-performance', lowPerformanceToggle.checked);
-            showNotification(
-              lowPerformanceToggle.checked ? 'Лёгкий режим включён' : 'Лёгкий режим выключен',
-              document.getElementById('appearanceNotification')
-            );
-            gtag('event', 'low_performance_toggle', { 
-              event_category: 'settings', 
-              event_label: lowPerformanceToggle.checked ? 'on' : 'off' 
-            });
-          });
-        }
-        
-        if (disableAnimationsToggle) {
-          let savedAnimations = localStorage.getItem('disableAnimations') === 'true';
-          disableAnimationsToggle.checked = savedAnimations;
-          root.classList.toggle('no-animations', savedAnimations);
-          
-          disableAnimationsToggle.addEventListener('change', () => {
-            localStorage.setItem('disableAnimations', disableAnimationsToggle.checked);
-            root.classList.toggle('no-animations', disableAnimationsToggle.checked);
-            showNotification(
-              disableAnimationsToggle.checked ? 'Анимации отключены' : 'Анимации включены',
-              document.getElementById('appearanceNotification')
-            );
-          });
-        }
-        
-        if (disableParticlesToggle) {
-          let savedParticles = localStorage.getItem('disableParticles') === 'true';
-          disableParticlesToggle.checked = savedParticles;
-          root.classList.toggle('no-particles', savedParticles);
-          
-          disableParticlesToggle.addEventListener('change', () => {
-            localStorage.setItem('disableParticles', disableParticlesToggle.checked);
-            root.classList.toggle('no-particles', disableParticlesToggle.checked);
-            showNotification(
-              disableParticlesToggle.checked ? 'Частицы отключены' : 'Частицы включены',
-              document.getElementById('appearanceNotification')
-            );
-          });
-        }
-        
-        // 3. Доступность
-        const highContrastToggle = document.getElementById('highContrastToggle');
-        const largeTextToggle = document.getElementById('largeTextToggle');
-        
-        if (highContrastToggle) {
-          let savedHighContrast = localStorage.getItem('highContrast') === 'true';
-          highContrastToggle.checked = savedHighContrast;
-          root.classList.toggle('high-contrast', savedHighContrast);
-          
-          highContrastToggle.addEventListener('change', () => {
-            localStorage.setItem('highContrast', highContrastToggle.checked);
-            root.classList.toggle('high-contrast', highContrastToggle.checked);
-            showNotification(
-              highContrastToggle.checked ? 'Высокая контрастность включена' : 'Высокая контрастность выключена',
-              document.getElementById('appearanceNotification')
-            );
-          });
-        }
-        
-        if (largeTextToggle) {
-          let savedLargeText = localStorage.getItem('largeText') === 'true';
-          largeTextToggle.checked = savedLargeText;
-          root.classList.toggle('large-text', savedLargeText);
-          
-          largeTextToggle.addEventListener('change', () => {
-            localStorage.setItem('largeText', largeTextToggle.checked);
-            root.classList.toggle('large-text', largeTextToggle.checked);
-            showNotification(
-              largeTextToggle.checked ? 'Крупный текст включён' : 'Крупный текст выключен',
-              document.getElementById('appearanceNotification')
-            );
-          });
-        }
-        
-        // 4. Внешний вид (тема уже настраивается в setupThemeSelect)
-        // 5. Размер шрифта (уже настраивается в setupFontSize)
-        
-        // 6. Обработчик для кнопки "Сбросить всё"
-        const resetSettingsBtn = document.getElementById('resetSettings');
-        if (resetSettingsBtn) {
-          resetSettingsBtn.addEventListener('click', () => {
-            const confirmReset = confirm(
-              '⚠️ Точно сбросить ВСЕ настройки?\n\n' +
-              '• Тема и внешний вид\n' +
-              '• Размер шрифта\n' +
-              '• Настройки производительности\n' +
-              '• Настройки доступности\n\n' +
-              'Профиль (аватар, бейджи) не будет затронут.'
-            );
-            
-            if (!confirmReset) {
-              showNotification('Сброс настроек отменён', document.getElementById('appearanceNotification'));
-              return;
-            }
-            
-            // Сбрасываем настройки
-            localStorage.removeItem('theme');
-            localStorage.removeItem('lowPerformance');
-            localStorage.removeItem('disableAnimations');
-            localStorage.removeItem('disableParticles');
-            localStorage.removeItem('fontSize');
-            localStorage.removeItem('highContrast');
-            localStorage.removeItem('largeText');
-            localStorage.removeItem('badgeNotifications');
-            localStorage.removeItem('newsNotifications');
-            
-            // Сбрасываем визуальное состояние
-            root.classList.remove('low-performance', 'no-animations', 'no-particles', 'high-contrast', 'large-text');
-            root.style.setProperty('--font-scale', '1');
-            
-            // Сбрасываем значения элементов управления
-            if (lowPerformanceToggle) lowPerformanceToggle.checked = false;
-            if (disableAnimationsToggle) disableAnimationsToggle.checked = false;
-            if (disableParticlesToggle) disableParticlesToggle.checked = false;
-            if (highContrastToggle) highContrastToggle.checked = false;
-            if (largeTextToggle) largeTextToggle.checked = false;
-            
-            const themeSelect = document.getElementById('themeSelect');
-            if (themeSelect) themeSelect.value = 'auto';
-            
-            const fontSizeSlider = document.getElementById('fontSizeSlider');
-            const fontSizeValue = document.getElementById('fontSizeValue');
-            if (fontSizeSlider && fontSizeValue) {
-              fontSizeSlider.value = '100';
-              fontSizeValue.textContent = '100%';
-            }
-            
-            const badgeNotificationsToggle = document.getElementById('badgeNotificationsToggle');
-            if (badgeNotificationsToggle) badgeNotificationsToggle.checked = true;
-            
-            const newsNotificationsToggle = document.getElementById('newsNotificationsToggle');
-            if (newsNotificationsToggle) newsNotificationsToggle.checked = true;
-            
-            // Устанавливаем тему по умолчанию
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            setTheme(prefersDark ? 'dark' : 'light');
-            
-            showNotification('Все настройки сброшены', document.getElementById('appearanceNotification'));
-            gtag('event', 'reset_settings', { event_category: 'settings', event_label: 'confirmed_reset' });
-          });
-        }
       };
 
       const setupNavigation = () => {
@@ -2912,7 +3102,6 @@
         setupThemeToggle();
         setupThemeSelect();
         initializeSettings(); // <-- ДОБАВЛЕН ВЫЗОВ ИСПРАВЛЕННОЙ ФУНКЦИИ
-        setupAccessibility();
         setupFontSize();
         setupResetSettings();
         setupResetProfile();
@@ -2926,6 +3115,7 @@
         setupSecretBadgeTrigger();
         setupGhostGesture();
         setupVideoSearchAndFilter();
+        initializeBadgesOnLoad(); // <-- ВЫЗЫВАЕМ ПРИНУДИТЕЛЬНУЮ ИНИЦИАЛИЗАЦИЮ БЕЙДЖЕЙ
       });
     </script>
   </div>
