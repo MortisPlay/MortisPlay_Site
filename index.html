@@ -159,7 +159,7 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(167, 139, 250, 0.3);
     }
-    
+   
     /* Неактивная кнопка */
     .neon-btn.inactive {
       opacity: 0.5;
@@ -172,7 +172,7 @@
       transform: none;
       box-shadow: none;
     }
-    
+   
     /* === АДАПТАЦИЯ === */
     @media (max-width: 640px) {
       .glass-card { padding: 1.5rem; border-radius: 1rem; }
@@ -190,7 +190,7 @@
       transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
-    
+   
     /* Стили для компактных настроек */
     .compact-settings .text-2xl {
       font-size: 1.25rem !important;
@@ -216,7 +216,7 @@
     .compact-settings p {
       margin-top: 0.25rem !important;
     }
-    
+   
     /* Адаптация существующих стилей главной под новый дизайн */
     @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
     @keyframes badgePop { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
@@ -249,7 +249,7 @@
     .pagination-button:hover { transform: scale(1.05); }
     .pagination-button:disabled { opacity: 0.5; cursor: not-allowed; }
     .notification { transition: opacity 0.5s ease, transform 0.5s ease; animation: slideIn 0.5s ease forwards, fadeOut 5s ease 3s forwards; position: fixed; bottom: 1rem; right: 1rem; z-index: 1000; max-width: 320px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
-    .notification.show { opacity: 1; transform: translateY(0); font-weight: bold; display: flex; align-items: center; gap: 1rem; }
+    .notification.show { opacity: 1; transform: translateY(0); font-weight: bold; display: flex; align-items: gap: 1rem; }
     @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeOut { 0% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
     body { overscroll-behavior: none; }
@@ -506,7 +506,7 @@
     @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
     .badge.epic { background: linear-gradient(to right, #7c3aed, #a855f7); box-shadow: 0 0 12px rgba(124, 58, 237, 0.6); animation: badgePop 0.5s ease forwards; }
     .badge.secret { background: linear-gradient(to right, #a855f7, #d946ef); box-shadow: 0 0 16px rgba(168, 85, 247, 0.8); }
-    .badge.secret canvas { position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height: calc(100% + 20px); pointer-events: none; }
+    .badge.secret canvas { position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height = calc(100% + 20px); pointer-events: none; }
     .badge.code-breaker { background: linear-gradient(to right, #22c55e, #15803d); box-shadow: 0 0 12px rgba(34, 197, 94, 0.7); font-family: monospace; text-shadow: 0 0 5px #22c55e; position: relative; overflow: hidden; }
     @keyframes glitch { 0% { left: -100%; } 100% { left: 100%; } }
     .badge.night-stalker { background: linear-gradient(to right, #1f2937, #374151); box-shadow: 0 0 12px rgba(31, 41, 55, 0.7); font-family: monospace; text-shadow: 0 0 5px #4b5563; position: relative; overflow: hidden; }
@@ -670,6 +670,15 @@
         overflow: hidden;
       }
     }
+    /* Стиль для красивых чисел */
+    .stat-number {
+      font-weight: 800;
+      background: linear-gradient(90deg, #c084fc, #a78bfa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 2px 10px rgba(167, 139, 250, 0.3);
+    }
   </style>
 </head>
 <body class="min-h-screen text-slate-800 dark:text-slate-100 selection:bg-indigo-200 selection:text-slate-900">
@@ -699,6 +708,7 @@
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#profile">Профиль</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#settings">Настройки</a>
+          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#feedback">Обратная связь</a>
         </div>
         <div class="flex items-center gap-2">
           <button id="themeToggle" class="glass-button relative flex items-center gap-1" aria-label="Переключить тему">
@@ -721,10 +731,11 @@
           <nav class="space-y-2">
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#welcome">Главная</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#video">Видео</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slice-100 dark:hover:bg-slate-800" href="#news">Новости</a>
+            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#profile">Профиль</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#settings">Настройки</a>
+            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#feedback">Обратная связь</a>
           </nav>
         </div>
       </div>
@@ -746,33 +757,48 @@
         Эпичные видео, новости и обновления от Mortis Play. Присоединяйся к вайбу! 😎
       </p>
       <!-- Кнопки -->
-<div class="flex flex-wrap justify-center gap-3 mb-6">
-  <a href="#contact" class="neon-btn flex items-center gap-2">
-    <i class="fa-solid fa-envelope"></i> Контакты
-  </a>
-  <a href="biography.html" class="neon-btn flex items-center gap-2">
-    <i class="fa-solid fa-user"></i> Биография
-  </a>
-  <a href="qa.html" class="neon-btn flex items-center gap-2">
-    <i class="fa-solid fa-question-circle"></i> Задать вопрос
-  </a>
-  <a href="faq.html" class="neon-btn flex items-center gap-2">
-    <i class="fa-solid fa-circle-question"></i> FAQ
-  </a>
-  <a href="/games/" class="neon-btn flex items-center gap-2">
-    <i class="fa-solid fa-gamepad"></i> Игры
-  </a>
-  <!-- АКТИВНАЯ КНОПКА "ИТОГИ ГОДА" -->
-  <a href="year-review.html" class="neon-btn flex items-center gap-2">
-    <i class="fa-solid fa-calendar-days"></i> Итоги ГОДА
-  </a>
-</div>
-      <!-- Статистика -->
-      <div class="flex justify-center gap-6 text-sm text-gray-300">
-        <div class="flex items-center gap-2"><i class="fa-solid fa-users"></i>Подписчиков: <span id="subscriberCount" class="font-semibold">422</span></div>
-        <div class="flex items-center gap-2"><i class="fa-solid fa-eye"></i>Просмотров: <span id="viewCount" class="font-semibold">154K</span></div>
+      <div class="flex flex-wrap justify-center gap-3 mb-6">
+        <a href="#contact" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-envelope"></i> Контакты
+        </a>
+        <a href="biography.html" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-user"></i> Биография
+        </a>
+        <a href="qa.html" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-question-circle"></i> Задать вопрос
+        </a>
+        <a href="faq.html" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-circle-question"></i> FAQ
+        </a>
+        <a href="/games/" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-gamepad"></i> Игры
+        </a>
+        <!-- АКТИВНАЯ КНОПКА "ИТОГИ ГОДА" -->
+        <a href="year-review.html" class="neon-btn flex items-center gap-2">
+          <i class="fa-solid fa-calendar-days"></i> Итоги ГОДА
+        </a>
+      </div>
+      
+      <!-- Статистика - ОБНОВЛЕНА для красивого отображения -->
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-6 text-lg mt-8">
+        <div class="flex flex-col items-center">
+          <div class="flex items-center gap-2 text-gray-300">
+            <i class="fa-solid fa-users text-purple-400 text-xl"></i>
+            <span class="text-sm">Подписчиков:</span>
+          </div>
+          <div class="stat-number text-3xl font-bold">422<span class="text-purple-300 text-lg ml-1"></span></div>
+        </div>
+        <div class="h-8 w-px bg-gradient-to-b from-transparent via-purple-400 to-transparent hidden sm:block"></div>
+        <div class="flex flex-col items-center">
+          <div class="flex items-center gap-2 text-gray-300">
+            <i class="fa-solid fa-eye text-indigo-400 text-xl"></i>
+            <span class="text-sm">Просмотров:</span>
+          </div>
+          <div class="stat-number text-3xl font-bold">154<span class="text-indigo-300 text-lg ml-1">К</span></div>
+        </div>
       </div>
     </div>
+    
     <!-- Видео + цитата -->
     <div class="relative mt-8 fade-in flex flex-col items-center">
       <video class="banner-video w-full max-w-md rounded-3xl shadow-2xl" loading="lazy" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала Mortis Play">
@@ -786,7 +812,6 @@
     </div>
   </div>
 </section>
-
       <!-- === ОБНОВЛЕННЫЙ РАЗДЕЛ ВИДЕО С КАТЕГОРИЯМИ И ПОИСКОМ === -->
 <section id="video" class="py-24 fade-in bg-gradient-to-b from-purple-900/20 to-transparent">
   <div class="mx-auto max-w-7xl px-4 text-center">
@@ -796,7 +821,7 @@
       <p class="text-lg text-gray-300 leading-relaxed mb-8">
         Теперь все видео организованы по категориям для удобного поиска и просмотра!
       </p>
-      
+     
       <!-- Поиск и фильтры -->
       <div class="mb-8">
         <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
@@ -805,7 +830,7 @@
             <input type="text" id="videoSearch" placeholder="Поиск видео..." class="w-full px-4 py-2 rounded-full bg-slate-800/50 border border-slate-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
             <i class="fa-solid fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
           </div>
-          
+         
           <!-- Фильтр по категориям -->
           <select id="categoryFilter" class="w-full md:w-48 px-4 py-2 rounded-full bg-slate-800/50 border border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
             <option value="all">Все категории</option>
@@ -815,14 +840,14 @@
             <option value="shorts">Shorts</option>
             <option value="другое">Другое</option>
           </select>
-          
+         
           <!-- Кнопка сброса фильтров -->
           <button id="resetFilters" class="neon-btn">
             <i class="fa-solid fa-rotate-left"></i> Сбросить
           </button>
         </div>
       </div>
-      
+     
       <!-- Категории видео -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <div class="glass-card p-6 text-center cursor-pointer hover:scale-105 transition-all duration-300 category-card" data-category="угар">
@@ -833,7 +858,7 @@
           <p class="text-gray-300 text-sm">Смешные моменты и мемы</p>
           <div class="mt-4 text-xs text-green-300">8 видео</div>
         </div>
-        
+       
         <div class="glass-card p-6 text-center cursor-pointer hover:scale-105 transition-all duration-300 category-card" data-category="стримы">
           <div class="text-4xl mb-4 text-blue-400">
             <i class="fa-solid fa-broadcast-tower"></i>
@@ -842,7 +867,7 @@
           <p class="text-gray-300 text-sm">Прямые трансляции</p>
           <div class="mt-4 text-xs text-blue-300">8 видео</div>
         </div>
-        
+       
         <div class="glass-card p-6 text-center cursor-pointer hover:scale-105 transition-all duration-300 category-card" data-category="подкаст">
           <div class="text-4xl mb-4 text-yellow-400">
             <i class="fa-solid fa-microphone"></i>
@@ -851,7 +876,6 @@
           <p class="text-gray-300 text-sm">Аудио и видео подкасты</p>
           <div class="mt-4 text-xs text-yellow-300">3 видео</div>
         </div>
-
         <!-- Добавлена категория Shorts -->
         <div class="glass-card p-6 text-center cursor-pointer hover:scale-105 transition-all duration-300 category-card" data-category="shorts">
           <div class="text-4xl mb-4 text-pink-400">
@@ -862,18 +886,18 @@
           <div class="mt-4 text-xs text-pink-300">10 видео</div>
         </div>
       </div>
-      
+     
       <!-- Список видео -->
       <div id="videoList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Видео будут загружаться динамически -->
       </div>
-      
+     
       <!-- Сообщение, если видео не найдены -->
       <div id="noVideosMessage" class="hidden text-center py-8">
         <i class="fa-solid fa-video-slash text-4xl text-gray-500 mb-4"></i>
         <p class="text-lg text-gray-400">Видео не найдены. Попробуйте изменить параметры поиска.</p>
       </div>
-      
+     
       <!-- Кнопка "Загрузить ещё" -->
       <div id="loadMoreVideosContainer" class="mt-8 text-center hidden">
         <button id="loadMoreVideos" class="neon-btn">
@@ -883,7 +907,6 @@
     </div>
   </div>
 </section>
-
       <section id="profile" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Твой профиль</h2>
@@ -931,7 +954,6 @@
           </div>
         </div>
       </section>
-
       <section id="news" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Новости</h2>
@@ -945,7 +967,6 @@
           </div>
         </div>
       </section>
-
       <section id="settings" class="py-12 fade-in compact-settings">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-6">Компактные настройки</h2>
@@ -955,17 +976,17 @@
             <h3 class="text-2xl font-bold text-purple-300 flex items-center gap-3 mb-3">
               <i class="fa-solid fa-bell text-purple-400"></i> Уведомления
             </h3>
-            
+           
             <label class="mt-2 flex items-center gap-2">
               <input type="checkbox" id="newsNotificationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Уведомления о новостях">
               <span class="text-sm text-gray-300">Новости</span>
             </label>
-            
+           
             <label class="mt-2 flex items-center gap-2">
               <input type="checkbox" id="badgeNotificationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить уведомления о бейджах">
               <span class="text-sm text-gray-300">Новые бейджи</span>
             </label>
-            
+           
             <!-- Производительность -->
             <h3 class="mt-4 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-3">
               <i class="fa-solid fa-rocket text-purple-400"></i> Производительность
@@ -974,17 +995,17 @@
               <input type="checkbox" id="lowPerformanceToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить лёгкий режим">
               <span class="text-sm text-gray-300">Лёгкий режим</span>
             </label>
-            
+           
             <label class="mt-2 flex items-center gap-2">
               <input type="checkbox" id="disableAnimationsToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить анимации">
               <span class="text-sm text-gray-300">Без анимаций</span>
             </label>
-            
+           
             <label class="mt-2 flex items-center gap-2">
               <input type="checkbox" id="disableParticlesToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Отключить фоновые частицы">
               <span class="text-sm text-gray-300">Без частиц</span>
             </label>
-            
+           
             <!-- Доступность -->
             <h3 class="mt-4 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-3">
               <i class="fa-solid fa-universal-access text-purple-400"></i> Доступность
@@ -993,12 +1014,12 @@
               <input type="checkbox" id="highContrastToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Включить высокую контрастность">
               <span class="text-sm text-gray-300">Высокий контраст</span>
             </label>
-            
+           
             <label class="mt-2 flex items-center gap-2">
               <input type="checkbox" id="largeTextToggle" class="rounded text-indigo-600 focus:ring-indigo-500" aria-label="Увеличить размер текста">
               <span class="text-sm text-gray-300">Крупный текст</span>
             </label>
-            
+           
             <!-- Внешний вид -->
             <h3 class="mt-4 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-3">
               <i class="fa-solid fa-palette text-purple-400"></i> Внешний вид
@@ -1011,12 +1032,12 @@
                 <option value="dark">Тёмная</option>
               </select>
             </label>
-            
+           
             <div class="mt-3">
               <label class="text-sm text-gray-300 mb-1 block">Размер шрифта: <span id="fontSizeValue">100%</span></label>
               <input type="range" id="fontSizeSlider" min="50" max="200" value="100" class="w-full" aria-label="Регулировка размера шрифта">
             </div>
-            
+           
             <div class="mt-4 flex flex-col sm:flex-row gap-2">
               <button id="resetFontSize" class="neon-btn text-sm">
                 <i class="fa-solid fa-rotate-left"></i> Сбросить шрифт
@@ -1028,7 +1049,7 @@
                 <i class="fa-solid fa-user-slash"></i> Сбросить профиль
               </button>
             </div>
-            
+           
             <div id="appearanceNotification" class="notification" role="alert" aria-live="assertive">
               <span></span>
               <button aria-label="Закрыть уведомление"><i class="fa-solid fa-xmark"></i></button>
@@ -1036,7 +1057,6 @@
           </div>
         </div>
       </section>
-
       <section id="contact" class="py-16 fade-in">
         <div class="mx-auto max-w-5xl px-4">
           <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Связь со мной</h2>
@@ -1065,7 +1085,49 @@
           </div>
         </div>
       </section>
-
+      <section id="feedback" class="py-16 fade-in">
+        <div class="mx-auto max-w-5xl px-4">
+          <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Обратная связь</h2>
+          <p class="mt-2 text-center text-gray-300 text-lg">Есть идеи, предложения или хочешь просто написать? Заполни форму ниже!</p>
+           
+          <!-- Форма обратной связи (перемещена в самый конец) -->
+          <div class="mt-12 glass-card p-6">
+            <h3 class="text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
+              <i class="fa-solid fa-comment-dots text-purple-400"></i> Форма обратной связи
+            </h3>
+            <p class="text-gray-300 mb-6">
+              Результаты придут прямо мне на почту или в Яндекс.
+            </p>
+           
+            <!-- Яндекс.Формы iframe -->
+            <div class="bg-slate-800/30 rounded-xl overflow-hidden border border-slate-700/50">
+              <iframe
+                src="https://forms.yandex.ru/u/694266846d2d731d20dc47d6/"
+                frameborder="0"
+                style="width: 100%; height: 500px; border: none;"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+              </iframe>
+            </div>
+           
+            <div class="mt-6 p-4 bg-slate-800/20 rounded-lg">
+              <p class="text-sm text-gray-300">
+                <i class="fa-solid fa-shield-alt text-green-400 mr-2"></i>
+                Форма защищена Яндекс.Формы. Твои данные в безопасности и не передаются третьим лицам.
+              </p>
+            </div>
+           
+            <div class="mt-6 flex flex-wrap gap-3">
+              <a href="https://t.me/dimap7221" class="neon-btn flex items-center gap-2" target="_blank" rel="noopener">
+                <i class="fa-brands fa-telegram"></i> Написать в Telegram
+              </a>
+              <a href="mailto:mortisplay@mail.ru" class="neon-btn flex items-center gap-2">
+                <i class="fa-solid fa-envelope"></i> Написать на почту
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
       <footer class="border-t border-slate-200/60 dark:border-slate-700/60 py-8">
         <div class="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p class="text-sm text-gray-300">© 2025 Mortis Play. Все права защищены.</p>
@@ -2252,41 +2314,10 @@
         { name: 'Стример', icon: 'fa-solid fa-video', description: 'Загрузите аватар и установите имя пользователя', earned: () => {
           return !!localStorage.getItem('userAvatar') && !!localStorage.getItem('username');
         }, rarity: 'common' },
-        {
-          name: 'Игровой Эксперт',
-          icon: 'fa-solid fa-gamepad',
-          description: 'Сыграй в 3 игры на сайте',
-          earned: () => localStorage.getItem('games_played') >= '3',
-          rarity: 'rare'
-        },
-        {
-          name: '2048 Мастер',
-          icon: 'fa-solid fa-trophy',
-          description: 'Собери плитку 2048 в игре!',
-          earned: () => localStorage.getItem('badge_2048_master') === 'true',
-          rarity: 'legendary'
-        },
-        {
-        name: 'Мега Фанат',
-        icon: 'fa-solid fa-heart',
-        description: 'Посети все разделы сайта 5 раз',
-        earned: () => localStorage.getItem('sections_visited') >= '25',
-        rarity: 'legendary'
-      },
-        {
-          name: 'Легенда',
-          icon: 'fa-solid fa-crown',
-          description: 'Получи все остальные бейджи',
-          earned: () => {
-            const saved = JSON.parse(localStorage.getItem('userBadges') || '[]');
-            return ['Фанат', 'Ночной Сталкер', 'Стример', 'Игровой Эксперт', '2048 Мастер', 'Мега Фанат', 'Скоростной Читатель', 'Мобильный Воин', 'Тёмный ПРИНЦ', 'Видео Маньяк', 'Rutube Fan'].every(b => saved.includes(b));
-          },
-          rarity: 'legendary'
-        },
         { name: 'Секретный Агент', icon: 'fa-solid fa-user-secret', description: 'Секретный бейдж! Как вы его нашли?', earned: () => {
           return parseInt(localStorage.getItem('secretClicks') || '0') >= 5;
         }, rarity: 'secret' },
-        { name: 'Кодовый Взломщик', icon: 'fa-solid fa-terminal', description: 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈', earned: () => {
+        { name: 'Кодовый Взломщик', icon: 'fa-solid fa-terminal', description: 'Это есть только на нашем сайтe, а может это есть в консоли сайта... 😈', earned: () => {
           return localStorage.getItem('mortis_hacker') === 'true';
         }, rarity: 'code-breaker' },
         {
@@ -2334,6 +2365,16 @@
           description: 'Посмотреть все видео с Rutube',
           earned: () => localStorage.getItem('rutube_views') >= '3',
           rarity: 'common'
+        },
+        {
+          name: 'Легенда',
+          icon: 'fa-solid fa-crown',
+          description: 'Получи все остальные бейджи',
+          earned: () => {
+            const saved = JSON.parse(localStorage.getItem('userBadges') || '[]');
+            return ['Фанат', 'Ночной Сталкер', 'Стример', 'Секретный Агент', 'Кодовый Взломщик', 'Призрачный Зритель', 'Скоростной Читатель', 'Мобильный Воин', 'Тёмный ПРИНЦ', 'Видео Маньяк', 'Rutube Fan'].every(b => saved.includes(b));
+          },
+          rarity: 'legendary'
         }
       ];
 
@@ -2994,6 +3035,145 @@
         });
       };
 
+      // === НОВАЯ ФУНКЦИЯ: Система опроса ===
+      const setupPollSystem = () => {
+        const pollOptions = document.querySelectorAll('.poll-option');
+        const pollResults = document.getElementById('pollResults');
+        const pollMessage = document.getElementById('pollMessage');
+        const resetPollBtn = document.getElementById('resetPollBtn');
+        
+        // Загружаем результаты из localStorage
+        let pollData = JSON.parse(localStorage.getItem('mortisPoll') || '{"votes": {"1":0,"2":0,"3":0,"4":0}, "userVote": null}');
+        
+        // Функция обновления отображения голосов
+        const updatePollDisplay = () => {
+          // Обновляем счетчики в опциях
+          document.querySelectorAll('.poll-count').forEach(span => {
+            const option = span.getAttribute('data-option');
+            span.textContent = pollData.votes[option] || 0;
+          });
+          
+          // Проверяем, голосовал ли пользователь
+          if (pollData.userVote) {
+            // Показываем результаты
+            pollResults.classList.remove('hidden');
+            
+            // Рассчитываем проценты
+            const totalVotes = Object.values(pollData.votes).reduce((a, b) => a + b, 0);
+            document.getElementById('totalVotes').textContent = totalVotes;
+            
+            for (let i = 1; i <= 4; i++) {
+              const votes = pollData.votes[i] || 0;
+              const percent = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
+              
+              document.getElementById(`resultCount${i}`).textContent = votes;
+              document.getElementById(`resultPercent${i}`).textContent = percent;
+              
+              // Анимируем полосы
+              setTimeout(() => {
+                const bar = document.getElementById(`resultBar${i}`);
+                if (bar) {
+                  bar.style.width = `${percent}%`;
+                }
+              }, 100 * i);
+            }
+            
+            // Показываем сообщение
+            const optionText = {
+              '1': 'Игровые стримы и летсплеи',
+              '2': 'Подкасты и обсуждения',
+              '3': 'Мемы и угарные моменты',
+              '4': 'Турниры и соревнования'
+            }[pollData.userVote];
+            
+            pollMessage.textContent = `Ты проголосовал за "${optionText}". Спасибо за участие! 🎮`;
+            pollMessage.className = 'mt-4 text-sm text-green-400 text-center';
+          } else {
+            // Скрываем результаты, если не голосовал
+            pollResults.classList.add('hidden');
+            pollMessage.textContent = 'Выбери вариант и нажми на него, чтобы проголосовать!';
+            pollMessage.className = 'mt-4 text-sm text-gray-400 text-center';
+          }
+        };
+        
+        // Обработчик клика на вариант опроса
+        pollOptions.forEach(option => {
+          option.addEventListener('click', () => {
+            if (pollData.userVote) {
+              showNotification('Ты уже голосовал! Можешь сбросить голос кнопкой ниже.', document.getElementById('appearanceNotification'));
+              return;
+            }
+            
+            const selectedOption = option.getAttribute('data-option');
+            pollData.userVote = selectedOption;
+            pollData.votes[selectedOption] = (pollData.votes[selectedOption] || 0) + 1;
+            
+            // Сохраняем в localStorage
+            localStorage.setItem('mortisPoll', JSON.stringify(pollData));
+            
+            // Визуальный фидбэк
+            option.style.background = 'rgba(167, 139, 250, 0.2)';
+            option.style.borderColor = '#c084fc';
+            
+            // Обновляем отображение
+            updatePollDisplay();
+            
+            // Показываем уведомление
+            showNotification('Спасибо за голос! Твой выбор учтен. 👍', document.getElementById('appearanceNotification'));
+            
+            // Отправляем событие в аналитику
+            gtag('event', 'poll_vote', {
+              event_category: 'feedback',
+              event_label: `option_${selectedOption}`
+            });
+            
+            logAction(`Пользователь проголосовал за вариант ${selectedOption}`);
+          });
+        });
+        
+        // Обработчик сброса голоса
+        if (resetPollBtn) {
+          resetPollBtn.addEventListener('click', () => {
+            if (!pollData.userVote) {
+              showNotification('Ты еще не голосовал!', document.getElementById('appearanceNotification'));
+              return;
+            }
+            
+            const confirmReset = confirm('Точно хочешь сбросить свой голос?');
+            if (!confirmReset) return;
+            
+            // Убираем голос пользователя
+            const oldVote = pollData.userVote;
+            pollData.votes[oldVote] = Math.max(0, (pollData.votes[oldVote] || 0) - 1);
+            pollData.userVote = null;
+            
+            // Сохраняем изменения
+            localStorage.setItem('mortisPoll', JSON.stringify(pollData));
+            
+            // Обновляем отображение
+            updatePollDisplay();
+            
+            // Сбрасываем визуальное выделение
+            pollOptions.forEach(opt => {
+              opt.style.background = '';
+              opt.style.borderColor = '';
+            });
+            
+            showNotification('Твой голос сброшен. Можешь проголосовать снова!', document.getElementById('appearanceNotification'));
+            
+            gtag('event', 'poll_reset', {
+              event_category: 'feedback',
+              event_label: 'user_reset_vote'
+            });
+            
+            logAction('Пользователь сбросил свой голос в опросе');
+          });
+        }
+        
+        // Инициализация при загрузке
+        updatePollDisplay();
+      };
+
       const setupNavigation = () => {
         const menuToggle = document.getElementById('menuToggle');
         const sidebarMenu = document.getElementById('sidebarMenu');
@@ -3115,6 +3295,7 @@
         setupSecretBadgeTrigger();
         setupGhostGesture();
         setupVideoSearchAndFilter();
+        setupPollSystem(); // <-- ДОБАВЛЕНА НОВАЯ ФУНКЦИЯ
         initializeBadgesOnLoad(); // <-- ВЫЗЫВАЕМ ПРИНУДИТЕЛЬНУЮ ИНИЦИАЛИЗАЦИЮ БЕЙДЖЕЙ
       });
     </script>
