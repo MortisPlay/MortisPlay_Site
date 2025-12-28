@@ -739,73 +739,143 @@
       </div>
     </header>
     <main>
-      <section id="welcome" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <!-- === ГЛАВНЫЙ БАННЕР С ТАЙМЕРОМ === -->
+<section id="welcome" class="relative min-h-screen flex flex-col overflow-hidden">
   <!-- Фоновые эффекты -->
   <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-900/30 via-indigo-900/20 to-transparent"></div>
     <div class="absolute top-10 left-10 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse"></div>
     <div class="absolute bottom-20 right-10 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-radial from-purple-900/30 to-transparent blur-3xl"></div>
   </div>
-  <div class="mx-auto max-w-4xl px-4 py-20 relative z-10">
-    <div class="glass-card p-8 fade-in">
-      <h1 class="neon-title text-5xl md:text-7xl font-extrabold text-center mb-16 drop-shadow-2xl">
-        Йоу, это Mortis Play!
-      </h1>
-      <p class="text-lg leading-relaxed text-gray-200 mb-6">
-        Эпичные видео, новости и обновления от Mortis Play. Присоединяйся к вайбу! 😎
-      </p>
-      <!-- Кнопки -->
-      <div class="flex flex-wrap justify-center gap-3 mb-6">
-        <a href="#contact" class="neon-btn flex items-center gap-2">
-          <i class="fa-solid fa-envelope"></i> Контакты
-        </a>
-        <a href="biography.html" class="neon-btn flex items-center gap-2">
-          <i class="fa-solid fa-user"></i> Биография
-        </a>
-        <a href="qa.html" class="neon-btn flex items-center gap-2">
-          <i class="fa-solid fa-question-circle"></i> Задать вопрос
-        </a>
-        <a href="faq.html" class="neon-btn flex items-center gap-2">
-          <i class="fa-solid fa-circle-question"></i> FAQ
-        </a>
-        <a href="/games/" class="neon-btn flex items-center gap-2">
-          <i class="fa-solid fa-gamepad"></i> Игры
-        </a>
-        <!-- АКТИВНАЯ КНОПКА "ИТОГИ ГОДА" -->
-        <a href="year-review.html" class="neon-btn flex items-center gap-2">
-          <i class="fa-solid fa-calendar-days"></i> Итоги ГОДА
-        </a>
-      </div>
-      
-      <!-- Статистика - ОБНОВЛЕНА для красивого отображения -->
-      <div class="flex flex-col sm:flex-row justify-center items-center gap-6 text-lg mt-8">
-        <div class="flex flex-col items-center">
-          <div class="flex items-center gap-2 text-gray-300">
-            <i class="fa-solid fa-users text-purple-400 text-xl"></i>
-            <span class="text-sm">Подписчиков:</span>
+
+  <!-- Большой баннер с таймером -->
+  <div class="relative z-10 w-full bg-gradient-to-r from-purple-900/80 via-indigo-900/80 to-purple-900/80 backdrop-blur-xl border-b border-purple-500/30">
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:py-8">
+      <div class="glass-card p-6 md:p-8 relative overflow-hidden">
+        <!-- Декоративные элементы -->
+        <div class="absolute -top-20 -right-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl"></div>
+
+        <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+          <!-- Фото/картинка -->
+          <div class="w-full lg:w-1/2">
+            <img 
+              src="/images/christmas.jpg" 
+              alt="Новогодний вайб Mortis Play" 
+              class="w-full h-64 md:h-80 object-cover rounded-2xl shadow-2xl border border-purple-400/30"
+              loading="lazy"
+            >
           </div>
-          <div class="stat-number text-3xl font-bold">422<span class="text-purple-300 text-lg ml-1"></span></div>
-        </div>
-        <div class="h-8 w-px bg-gradient-to-b from-transparent via-purple-400 to-transparent hidden sm:block"></div>
-        <div class="flex flex-col items-center">
-          <div class="flex items-center gap-2 text-gray-300">
-            <i class="fa-solid fa-eye text-indigo-400 text-xl"></i>
-            <span class="text-sm">Просмотров:</span>
+
+          <!-- Текст и таймер -->
+          <div class="w-full lg:w-1/2 text-center lg:text-left">
+            <h2 class="neon-title text-4xl md:text-5xl font-extrabold mb-4">
+              НОВОГОДНИЙ РОЗЫГРЫШ NFT!
+            </h2>
+            <p class="text-xl md:text-2xl text-purple-200 mb-6">
+              Успей принять участие до <strong>8 января 10:00 МСК</strong>!
+            </p>
+
+            <!-- Таймер -->
+            <div id="countdown" class="grid grid-cols-4 gap-3 md:gap-4 max-w-md mx-auto lg:mx-0">
+              <div class="glass-card p-4 text-center">
+                <div class="text-3xl md:text-4xl font-bold text-white" id="days">00</div>
+                <div class="text-sm text-purple-200">дней</div>
+              </div>
+              <div class="glass-card p-4 text-center">
+                <div class="text-3xl md:text-4xl font-bold text-white" id="hours">00</div>
+                <div class="text-sm text-purple-200">часов</div>
+              </div>
+              <div class="glass-card p-4 text-center">
+                <div class="text-3xl md:text-4xl font-bold text-white" id="minutes">00</div>
+                <div class="text-sm text-purple-200">минут</div>
+              </div>
+              <div class="glass-card p-4 text-center">
+                <div class="text-3xl md:text-4xl font-bold text-white" id="seconds">00</div>
+                <div class="text-sm text-purple-200">секунд</div>
+              </div>
+            </div>
+
+            <p class="mt-6 text-lg text-gray-200">
+              Подробности и участие — в нашем Telegram-канале 👇
+            </p>
+            <a 
+              href="https://t.me/MortisPlayTG/2202" 
+              target="_blank" 
+              rel="noopener"
+              class="mt-4 inline-flex items-center gap-3 neon-btn px-8 py-4 text-lg font-bold"
+            >
+              <i class="fa-brands fa-telegram text-2xl"></i>
+              Перейти в Telegram
+            </a>
           </div>
-          <div class="stat-number text-3xl font-bold">154<span class="text-indigo-300 text-lg ml-1">К</span></div>
         </div>
       </div>
     </div>
-    
-    <!-- Видео + цитата -->
-    <div class="relative mt-8 fade-in flex flex-col items-center">
-      <video class="banner-video w-full max-w-md rounded-3xl shadow-2xl" loading="lazy" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала Mortis Play">
-        <source src="/assets/photo.mp4" type="video/mp4" />
-        <img src="/assets/fallback.jpg" alt="Видео недоступно" />
-      </video>
-      <img class="banner-fallback w-full max-w-md rounded-3xl shadow-2xl" src="/assets/photo.jpg" alt="Аватар канала Mortis Play" />
-      <div class="banner-quote mt-6 lg:mt-8 lg:absolute lg:-bottom-6 lg:-right-6 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-5 py-3 shadow card-hover w-full max-w-xs mx-auto lg:mx-0">
-        <p class="text-sm text-slate-600 dark:text-slate-300 text-center lg:text-left">У самурая нет цели, у него есть только путь. 🥷</p>
+  </div>
+
+  <!-- Основной контент главной страницы (как было раньше) -->
+  <div class="flex-1 flex items-center justify-center py-12 md:py-20">
+    <div class="mx-auto max-w-4xl px-4 relative z-10">
+      <div class="glass-card p-8 fade-in">
+        <h1 class="neon-title text-5xl md:text-7xl font-extrabold text-center mb-16 drop-shadow-2xl">
+          Йоу, это Mortis Play!
+        </h1>
+        <p class="text-lg leading-relaxed text-gray-200 mb-6">
+          Эпичные видео, новости и обновления от Mortis Play. Присоединяйся к вайбу! 😎
+        </p>
+        <!-- Кнопки -->
+        <div class="flex flex-wrap justify-center gap-3 mb-6">
+          <a href="#contact" class="neon-btn flex items-center gap-2">
+            <i class="fa-solid fa-envelope"></i> Контакты
+          </a>
+          <a href="biography.html" class="neon-btn flex items-center gap-2">
+            <i class="fa-solid fa-user"></i> Биография
+          </a>
+          <a href="qa.html" class="neon-btn flex items-center gap-2">
+            <i class="fa-solid fa-question-circle"></i> Задать вопрос
+          </a>
+          <a href="faq.html" class="neon-btn flex items-center gap-2">
+            <i class="fa-solid fa-circle-question"></i> FAQ
+          </a>
+          <a href="/games/" class="neon-btn flex items-center gap-2">
+            <i class="fa-solid fa-gamepad"></i> Игры
+          </a>
+          <a href="year-review.html" class="neon-btn flex items-center gap-2">
+            <i class="fa-solid fa-calendar-days"></i> Итоги ГОДА
+          </a>
+        </div>
+
+        <!-- Статистика -->
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-6 text-lg mt-8">
+          <div class="flex flex-col items-center">
+            <div class="flex items-center gap-2 text-gray-300">
+              <i class="fa-solid fa-users text-purple-400 text-xl"></i>
+              <span class="text-sm">Подписчиков:</span>
+            </div>
+            <div class="stat-number text-3xl font-bold">423</div>
+          </div>
+          <div class="h-8 w-px bg-gradient-to-b from-transparent via-purple-400 to-transparent hidden sm:block"></div>
+          <div class="flex flex-col items-center">
+            <div class="flex items-center gap-2 text-gray-300">
+              <i class="fa-solid fa-eye text-indigo-400 text-xl"></i>
+              <span class="text-sm">Просмотров:</span>
+            </div>
+            <div class="stat-number text-3xl font-bold">154<span class="text-indigo-300 text-lg ml-1">К</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Видео + цитата -->
+      <div class="relative mt-8 fade-in flex flex-col items-center">
+        <video class="banner-video w-full max-w-md rounded-3xl shadow-2xl" loading="lazy" autoplay muted loop playsinline preload="metadata" aria-label="Аватар канала Mortis Play">
+          <source src="/assets/photo.mp4" type="video/mp4" />
+          <img src="/assets/fallback.jpg" alt="Видео недоступно" />
+        </video>
+        <img class="banner-fallback w-full max-w-md rounded-3xl shadow-2xl" src="/assets/photo.jpg" alt="Аватар канала Mortis Play" />
+        <div class="banner-quote mt-6 lg:mt-8 lg:absolute lg:-bottom-6 lg:-right-6 bg-white/80 dark:bg-slate-900/80 glass rounded-2xl px-5 py-3 shadow card-hover w-full max-w-xs mx-auto lg:mx-0">
+          <p class="text-sm text-slate-600 dark:text-slate-300 text-center lg:text-left">У самурая нет цели, у него есть только путь. 🥷</p>
+        </div>
       </div>
     </div>
   </div>
@@ -854,7 +924,7 @@
           </div>
           <h3 class="text-xl font-bold text-white mb-2">Угар</h3>
           <p class="text-gray-300 text-sm">Смешные моменты и мемы</p>
-          <div class="mt-4 text-xs text-green-300">8 видео</div>
+          <div class="mt-4 text-xs text-green-300">9 видео</div>
         </div>
        
         <div class="glass-card p-6 text-center cursor-pointer hover:scale-105 transition-all duration-300 category-card" data-category="стримы">
@@ -1143,6 +1213,32 @@
           setTimeout(hideLoader, 10000);
         }
       };
+      // Таймер до 8 января 2026 10:00 МСК
+  const countDownDate = new Date("2026-01-08T10:00:00+03:00").getTime();
+
+  function updateTimer() {
+    const now = new Date().getTime();
+    const distance = countDownDate - now;
+
+    if (distance < 0) {
+      document.getElementById("countdown").innerHTML = "<p class='text-2xl font-bold text-green-400'>Розыгрыш завершён!</p>";
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById("days").textContent = days.toString().padStart(2, '0');
+    document.getElementById("hours").textContent = hours.toString().padStart(2, '0');
+    document.getElementById("minutes").textContent = minutes.toString().padStart(2, '0');
+    document.getElementById("seconds").textContent = seconds.toString().padStart(2, '0');
+  }
+
+  // Запуск таймера
+  updateTimer();
+  setInterval(updateTimer, 1000);
 
       // === ИСПРАВЛЕННАЯ СИСТЕМА УВЕДОМЛЕНИЙ ===
       const logAction = (message) => console.log(message);
@@ -2290,17 +2386,6 @@
           rarity: 'rare'
         },
         {
-          name: 'Мобильный Воин',
-          icon: 'fa-solid fa-mobile-screen-button',
-          description: 'Просмотр с мобильного 10 раз',
-          earned: () => {
-            // Показываем бейдж только на мобильных устройствах
-            if (window.innerWidth > 768) return false; // Скрываем на ПК
-            return localStorage.getItem('mobile_views') >= '10';
-          },
-          rarity: 'common'
-        },
-        {
           name: 'Тёмный ПРИНЦ',
           icon: 'fa-solid fa-crown',
           description: 'Альтернатива Тёмный Мастер',
@@ -2820,10 +2905,21 @@
             url: "https://rutube.ru/video/fa9a360caf2a168a3920dc73e4d82399/",
             embedUrl: "https://rutube.ru/play/embed/fa9a360caf2a168a3920dc73e4d82399/"
           },
+          { 
+            id: 32, 
+            title: "ЭТО УГАР А НЕ ИГРА XD | mortis32 лучшее", 
+            category: "угар", 
+            views: "20", 
+            duration: "42:23", 
+            thumbnail: "/preview/preview22.jpg", 
+            platform: "rutube", 
+            url: "https://rutube.ru/video/67b4e49684e33ce1f5441c2c7906c914/",
+            embedUrl: "https://rutube.ru/play/embed/67b4e49684e33ce1f5441c2c7906c914/"
+          },
         ];
         
         let currentPage = 1;
-        const videosPerPage = 6;
+        const videosPerPage = 3;
         let currentFilteredVideos = [];
         
         // Функция отрисовки видео (БЕЗ КНОПКИ "На Rutube")
