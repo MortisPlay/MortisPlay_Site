@@ -6,7 +6,7 @@
   <title>Игры — Mortis Play</title>
   <meta name="description" content="Мини-игры от Mortis Play: 2048, Змейка, Тетрис и другие!" />
   <meta property="og:title" content="Игры — Mortis Play" />
-  <meta property="og:description" content="Сыграй в Змейку и стань легендой — бейдж «Змеиный Король» за 1000+ очков!" />
+  <meta property="og:description" content="Сыграй в классические мини-игры: 2048, Змейка и другие!" />
   <meta property="og:image" content="https://mortis-play.ru/images/og-games.jpg" />
   <link rel="icon" href="/images/favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
@@ -79,25 +79,6 @@
       transform: scale(1.15);
       box-shadow: 0 0 30px currentColor;
     }
-
-    /* Эпичный бейджик Змейки */
-    .badge-snake {
-      background: linear-gradient(135deg, #064e3b, #10b981);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 900;
-      letter-spacing: 0.5px;
-      border: 2px solid #34d399;
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
-      animation: pulseGlow 3s infinite;
-    }
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.6); }
-      50% { box-shadow: 0 0 35px rgba(16, 185, 129, 1); }
-    }
-
     .coming-soon { opacity: 0.5; pointer-events: none; position: relative; }
     .coming-soon::after {
       content: 'Скоро';
@@ -155,9 +136,7 @@
         <i class="fa-solid fa-sun"></i>
       </button>
     </div>
-
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
       <!-- 2048 -->
       <a href="/games/2048.html" class="game-card fade-in">
         <div class="game-icon bg-gradient-to-br from-orange-500 to-red-600">
@@ -165,34 +144,15 @@
         </div>
         <h3 class="text-xl font-bold text-purple-300">2048</h3>
         <p class="text-sm text-gray-300 mt-1">Собери 2048!</p>
-        <p class="text-xs text-fuchsia-400 font-medium mt-2">Бейдж: "2048 Мастер"</p>
       </a>
-
-      <!-- ЗМЕЙКА — ЛЕГЕНДАРНЫЙ БЕЙДЖИК -->
+      <!-- ЗМЕЙКА -->
       <a href="/games/snake.html" class="game-card fade-in relative">
         <div class="game-icon bg-gradient-to-br from-green-500 to-emerald-700">
           <i class="fa-solid fa-worm"></i>
         </div>
         <h3 class="text-xl font-bold text-green-300">Змейка</h3>
         <p class="text-sm text-gray-300 mt-1">Классика на новый лад</p>
-        
-        <div class="mt-3 flex flex-col items-center gap-2">
-          <div class="text-xs text-emerald-300 font-medium">Легендарный бейдж:</div>
-          <div class="badge-snake flex items-center gap-2">
-            <i class="fa-solid fa-crown"></i>
-            ЗМЕИНЫЙ КОРОЛЬ
-            <span class="text-yellow-300 ml-1">1000+</span>
-          </div>
-        </div>
-
-        <!-- Индикатор полученного бейджика -->
-        <div id="snakeBadgeUnlocked" class="absolute -top-2 -right-2 opacity-0 transition-opacity">
-          <div class="bg-emerald-500 text-black text-xs font-bold px-3 py-1 rounded-full animate-bounce">
-            Получено!
-          </div>
-        </div>
       </a>
-
       <!-- Крестики-нолики -->
       <div class="game-card coming-soon fade-in">
         <div class="game-icon bg-gradient-to-br from-blue-500 to-cyan-600">
@@ -201,7 +161,6 @@
         <h3 class="text-xl font-bold text-blue-300">Крестики-нолики</h3>
         <p class="text-sm text-gray-300 mt-1">С друзьями или ИИ</p>
       </div>
-
       <!-- Тетрис -->
       <div class="game-card coming-soon fade-in">
         <div class="game-icon bg-gradient-to-br from-purple-500 to-pink-600">
@@ -210,7 +169,6 @@
         <h3 class="text-xl font-bold text-pink-300">Тетрис</h3>
         <p class="text-sm text-gray-300 mt-1">Собери линии</p>
       </div>
-
       <!-- Предложить игру -->
       <a href="https://t.me/MortisPlay_YT" target="_blank" class="game-card border-2 border-dashed border-fuchsia-500 fade-in">
         <div class="game-icon bg-gradient-to-br from-indigo-500 to-fuchsia-600">
@@ -220,18 +178,7 @@
         <p class="text-sm text-gray-300 mt-1">Напиши в Telegram</p>
       </a>
     </div>
-
-    <div class="mt-12 text-center fade-in">
-      <p class="text-lg">
-        Разблокировано бейджей:
-        <span id="badgeCount" class="text-2xl font-bold text-fuchsia-400 neon-glow">0</span>
-        <span class="text-sm text-yellow-300 ml-3" id="legendaryHint" style="display:none">
-          — включая легендарный!
-        </span>
-      </p>
-    </div>
   </div>
-
   <script>
     // Переключение темы
     document.getElementById('themeToggle').addEventListener('click', () => {
@@ -239,31 +186,6 @@
       const icon = document.querySelector('#themeToggle i');
       icon.className = document.body.classList.contains('light-mode') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
     });
-
-    // === СИНХРОНИЗАЦИЯ БЕЙДЖЕЙ ===
-    const badgeCount = document.getElementById('badgeCount');
-    const legendaryHint = document.getElementById('legendaryHint');
-    const snakeBadgeIndicator = document.getElementById('snakeBadgeUnlocked');
-
-    const badges = [
-      'badge_2048_master',
-      'badge_snake_king'  // ← теперь за 1000+ очков!
-    ];
-
-    let count = 0;
-    badges.forEach(key => {
-      if (localStorage.getItem(key) === 'unlocked') {
-        count++;
-        if (key === 'badge_snake_king') {
-          snakeBadgeIndicator.style.opacity = '1';
-          legendaryHint.style.display = 'inline';
-        }
-      }
-    });
-
-    badgeCount.textContent = count;
-    if (count > 0) badgeCount.classList.add('animate-pulse');
-
     // Анимация появления
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
