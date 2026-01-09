@@ -196,9 +196,11 @@
       font-size: 1.25rem !important;
     }
     .compact-settings .notification {
-      max-width: 280px;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.875rem;
+      position: fixed !important;
+      bottom: 1rem !important;
+      right: 1rem !important;
+      z-index: 1000 !important;
+      max-width: 320px !important;
     }
     .compact-settings .neon-btn {
       padding: 0.5rem 1rem;
@@ -219,7 +221,6 @@
    
     /* Адаптация существующих стилей главной под новый дизайн */
     @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
-    @keyframes badgePop { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
     @keyframes modalFadeIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
     @keyframes modalFadeOut { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(0.95); } }
     .card-hover { transition: transform .25s ease, box-shadow .25s ease; }
@@ -424,26 +425,6 @@
     .dark .notification button:hover {
       color: #a5b4fc;
     }
-    #settings .notification {
-      position: fixed;
-      bottom: 1rem;
-      right: 1rem;
-      margin-top: 0;
-      z-index: 1000;
-      max-width: 320px;
-    }
-    #settings .notification.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .top-notification {
-      position: fixed;
-      top: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1000;
-      max-width: 320px;
-    }
     .bg-gradient-to-br {
       background-image: linear-gradient(to bottom right, #fef3c7, #f5f3ff, #dbeafe);
     }
@@ -486,35 +467,19 @@
       box-shadow: none;
       border: 2px solid var(--text-color);
     }
-    #settings, #news, #contact, #profile {
+    #settings, #news, #contact {
       position: relative;
       background: rgba(255, 255, 255, 0.2);
       color: #1f2937;
     }
-    .dark #settings, .dark #news, .dark #contact, .dark #profile {
+    .dark #settings, .dark #news, .dark #contact {
       background: rgba(17, 24, 39, 0.4);
       color: #e5e7eb;
     }
-    .high-contrast #settings, .high-contrast #news, .high-contrast #contact, .high-contrast #profile {
+    .high-contrast #settings, .high-contrast #news, .high-contrast #contact {
       background: var(--bg-color);
       color: var(--text-color);
     }
-    .badge { animation: badgePop 0.5s ease forwards; border: 1px solid rgba(255, 255, 255, 0.3); font-size: 0.875rem; padding: 0.4rem 0.8rem; position: relative; }
-    .badge.common { background: linear-gradient(to right, #4f46e5, #9333ea); }
-    .badge.rare { background: linear-gradient(to right, #0ea5e9, #3b82f6); box-shadow: 0 0 8px rgba(59, 130, 246, 0.5); }
-    .badge.legendary { background: linear-gradient(to right, #f59e0b, #eab308); box-shadow: 0 0 12px rgba(234, 179, 8, 0.7); animation: badgePop 0.5s ease forwards; }
-    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-    .badge.epic { background: linear-gradient(to right, #7c3aed, #a855f7); box-shadow: 0 0 12px rgba(124, 58, 237, 0.6); animation: badgePop 0.5s ease forwards; }
-    .badge.secret { background: linear-gradient(to right, #a855f7, #d946ef); box-shadow: 0 0 16px rgba(168, 85, 247, 0.8); }
-    .badge.secret canvas { position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height = calc(100% + 20px); pointer-events: none; }
-    .badge.code-breaker { background: linear-gradient(to right, #22c55e, #15803d); box-shadow: 0 0 12px rgba(34, 197, 94, 0.7); font-family: monospace; text-shadow: 0 0 5px #22c55e; position: relative; overflow: hidden; }
-    @keyframes glitch { 0% { left: -100%; } 100% { left: 100%; } }
-    .badge.night-stalker { background: linear-gradient(to right, #1f2937, #374151); box-shadow: 0 0 12px rgba(31, 41, 55, 0.7); font-family: monospace; text-shadow: 0 0 5px #4b5563; position: relative; overflow: hidden; }
-    .badge.ghost { background: linear-gradient(to right, #6b7280, #4b5563); opacity: 0.7; box-shadow: 0 0 12px rgba(107, 114, 128, 0.5); }
-    .badge.ghost canvas { position: absolute; top: -10px; left: -10px; width = calc(100% + 20px); height: calc(100% + 20px); pointer-events: none; }
-    .badge.dark-prince { background: linear-gradient(to right, #1e293b, #334155); box-shadow: 0 0 16px rgba(30, 41, 59, 0.8); position: relative; overflow: hidden; }
-    .encrypted-text { filter: blur(3px); transition: filter 0.3s ease; }
-    .encrypted-text:hover { filter: blur(0); }
     @media (max-width: 640px) {
   .banner-video-container {
     align-items: center;
@@ -525,55 +490,6 @@
     width: 100% !important;
     max-width: none !important;
   }
-}
-    /* Свечение при наведении на бейджик */
-.badge {
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden !important;
-  will-change: transform, box-shadow;
-  border-radius: 9999px;
-}
-.badge::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: 9999px;
-  padding: 2px;
-  background: conic-gradient(from 0deg, #a855f7, #ec4899, #3b82f6, #22d3ee, #a855f7);
-  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  z-index: -1;
-  pointer-events: none;
-}
-.badge:hover::before {
-  opacity: 1;
-}
-.badge:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 8px 20px rgba(147, 51, 234, 0.4), 0 0 20px rgba(147, 51, 234, 0.3);
-  z-index: 10;
-}
-    .badge:hover canvas {
-  filter: drop-shadow(0 0 8px currentColor);
-}
-/* Пульсация при получении нового бейджа */
-@keyframes badgePulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7); }
-  50% { box-shadow: 0 0 0 12px rgba(147, 51, 234, 0); }
-}
-.badge.new-badge {
-  animation: badgePulseGlow 1.5s ease-out 3;
-}
-/* Вращение короны для легендарных при получении */
-@keyframes crownRotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-.badge.legendary.new-badge i.fa-crown {
-  animation: crownRotate 2s linear infinite;
 }
     @media (max-width: 640px) {
       .glass-button {
@@ -596,7 +512,6 @@
       .card-hover:hover { transform: none; }
       .animate-[floaty_5s_ease-in-out_infinite] { animation: none; }
       iframe, video, img { max-width: 100%; height: auto; }
-      #settings .notification { max-width: 80%; right: 0.5rem; bottom: 0.5rem; }
     }
     @media (min-width: 1024px) {
       header { position: sticky; top: 0; z-index: 50; background: white/80 dark:bg-slate-900/80; }
@@ -616,16 +531,6 @@
     .no-particles .bg-particles {
       display: none;
     }
-    .badge {
-  overflow: hidden !important; /* Гарантированная обрезка */
-  position: relative;
-  will-change: transform; /* GPU */
-  border-radius: 9999px;
-}
-.badge canvas {
-  border-radius: 9999px;
-  will-change: contents;
-}
     body {
       color: #1f2937;
       background: linear-gradient(to bottom right, #fef3c7, #f5f3ff, #dbeafe);
@@ -706,7 +611,6 @@
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#video">Видео</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#profile">Профиль</a>
           <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#settings">Настройки</a>
         </div>
         <div class="flex items-center gap-2">
@@ -732,14 +636,13 @@
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#video">Видео</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#news">Новости</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Контакты</a>
-            <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#profile">Профиль</a>
             <a class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#settings">Настройки</a>
           </nav>
         </div>
       </div>
     </header>
     <main>
-      <!-- === ГЛАВНЫЙ БАННЕР С ТАЙМЕРОМ === -->
+      <!-- === ГЛАВНАЯ СТРАНИЦА БЕЗ БАННЕРА С РОЗЫГРЫШЕМ === -->
 <section id="welcome" class="relative min-h-screen flex flex-col overflow-hidden">
   <!-- Фоновые эффекты -->
   <div class="absolute inset-0 overflow-hidden pointer-events-none">
@@ -748,73 +651,7 @@
     <div class="absolute bottom-20 right-10 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
   </div>
 
-  <!-- Большой баннер с таймером -->
-  <div class="relative z-10 w-full bg-gradient-to-r from-purple-900/80 via-indigo-900/80 to-purple-900/80 backdrop-blur-xl border-b border-purple-500/30">
-    <div class="mx-auto max-w-7xl px-4 py-6 sm:py-8">
-      <div class="glass-card p-6 md:p-8 relative overflow-hidden">
-        <!-- Декоративные элементы -->
-        <div class="absolute -top-20 -right-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl"></div>
-
-        <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-          <!-- Фото/картинка -->
-          <div class="w-full lg:w-1/2">
-            <img 
-              src="/images/christmas.jpg" 
-              alt="Новогодний вайб Mortis Play" 
-              class="w-full h-64 md:h-80 object-cover rounded-2xl shadow-2xl border border-purple-400/30"
-              loading="lazy"
-            >
-          </div>
-
-          <!-- Текст и таймер -->
-          <div class="w-full lg:w-1/2 text-center lg:text-left">
-            <h2 class="neon-title text-4xl md:text-5xl font-extrabold mb-4">
-              НОВОГОДНИЙ РОЗЫГРЫШ NFT!
-            </h2>
-            <p class="text-xl md:text-2xl text-purple-200 mb-6">
-              Успей принять участие до <strong>8 января 10:00 МСК</strong>!
-            </p>
-
-            <!-- Таймер -->
-            <div id="countdown" class="grid grid-cols-4 gap-3 md:gap-4 max-w-md mx-auto lg:mx-0">
-              <div class="glass-card p-4 text-center">
-                <div class="text-3xl md:text-4xl font-bold text-white" id="days">00</div>
-                <div class="text-sm text-purple-200">дней</div>
-              </div>
-              <div class="glass-card p-4 text-center">
-                <div class="text-3xl md:text-4xl font-bold text-white" id="hours">00</div>
-                <div class="text-sm text-purple-200">часов</div>
-              </div>
-              <div class="glass-card p-4 text-center">
-                <div class="text-3xl md:text-4xl font-bold text-white" id="minutes">00</div>
-                <div class="text-sm text-purple-200">минут</div>
-              </div>
-              <div class="glass-card p-4 text-center">
-                <div class="text-3xl md:text-4xl font-bold text-white" id="seconds">00</div>
-                <div class="text-sm text-purple-200">секунд</div>
-              </div>
-            </div>
-
-            <p class="mt-6 text-lg text-gray-200">
-              Подробности и участие — в нашем Telegram-канале 👇
-            </p>
-            <a 
-              href="https://t.me/MortisPlayTG/2202" 
-              target="_blank" 
-              rel="noopener"
-              class="mt-4 inline-flex items-center gap-3 neon-btn px-8 py-4 text-lg font-bold"
-            >
-              <i class="fa-brands fa-telegram text-2xl"></i>
-              Перейти в Telegram
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Основной контент главной страницы (как было раньше) -->
+  <!-- Основной контент главной страницы -->
   <div class="flex-1 flex items-center justify-center py-12 md:py-20">
     <div class="mx-auto max-w-4xl px-4 relative z-10">
       <div class="glass-card p-8 fade-in">
@@ -861,7 +698,7 @@
               <i class="fa-solid fa-eye text-indigo-400 text-xl"></i>
               <span class="text-sm">Просмотров:</span>
             </div>
-            <div class="stat-number text-3xl font-bold">154<span class="text-indigo-300 text-lg ml-1">К</span></div>
+            <div class="stat-number text-3xl font-bold">155<span class="text-indigo-300 text-lg ml-1">К</span></div>
           </div>
         </div>
       </div>
@@ -975,53 +812,6 @@
     </div>
   </div>
 </section>
-      <section id="profile" class="py-16 fade-in">
-        <div class="mx-auto max-w-7xl px-4">
-          <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Твой профиль</h2>
-          <p class="mt-2 text-center text-gray-300 text-lg">Кастомизируй свой вайб и зарабатывай бейджи! 😎</p>
-          <div class="mt-4 max-w-md mx-auto">
-            <div class="notification" id="profileBetaNotice">
-              <span>⚠️ Это бета-версия профиля! Иногда может багаться — пиши в Telegram, если что!</span>
-              <button aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-          </div>
-          <div class="mt-8 max-w-md mx-auto glass-card p-8">
-            <h3 class="text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
-              <i class="fa-solid fa-user text-purple-400"></i> Аватар
-            </h3>
-            <img id="userAvatar" src="/assets/fallback.jpg" alt="Аватар пользователя" class="w-24 h-24 rounded-full mx-auto">
-            <input type="file" id="avatarUpload" accept="image/*" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2">
-            <p class="mt-2 text-xs text-gray-300">Загрузи свой аватар (до 1МБ).</p>
-            <h3 class="mt-4 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
-              <i class="fa-solid fa-id-card text-purple-400"></i> Имя пользователя
-            </h3>
-            <input type="text" id="usernameInput" maxlength="20" placeholder="Введи своё имя" class="mt-3 w-full rounded border border-slate-200 dark:border-slate-700 p-2 text-sm text-gray-200">
-            <p class="mt-2 text-xs text-gray-300">Максимум 20 символов.</p>
-            <h3 class="mt-4 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
-              <i class="fa-solid fa-award text-purple-400"></i> Бейджи
-            </h3>
-            <div id="badges" class="flex flex-wrap gap-2"></div>
-            <h3 class="mt-4 text-2xl font-bold text-purple-300 flex items-center gap-3 mb-4">
-              <i class="fa-solid fa-list text-purple-400"></i> Доступные бейджи
-            </h3>
-            <div id="badgeList" class="mt-2 space-y-2"></div>
-          </div>
-          <!-- Модальное окно для бейджиков -->
-          <div id="badgeModal" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-50 p-4" aria-modal="true" role="dialog">
-            <div class="glass-card p-6 max-w-sm w-full shadow-2xl ring-1 ring-indigo-500/50 dark:ring-indigo-400/50 transform transition-all duration-300 max-h-[90vh] overflow-y-auto">
-              <div class="flex justify-between items-center mb-4">
-                <h3 id="modalTitle" class="font-semibold text-indigo-600 dark:text-indigo-400 text-xl"></h3>
-                <button id="closeModal" class="absolute top-4 right-4 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
-              </div>
-              <div id="modalIcon" class="text-center mb-4"></div>
-              <p id="modalDesc" class="mt-2 text-sm text-gray-300"></p>
-              <p id="modalProgress" class="mt-2 text-xs text-gray-400"></p>
-              <p id="modalRarity" class="mt-2 text-xs font-bold text-indigo-600 dark:text-indigo-400"></p>
-              <button id="closeModalBtn" class="mt-4 neon-btn w-full">Закрыть</button>
-            </div>
-          </div>
-        </div>
-      </section>
       <section id="news" class="py-16 fade-in">
         <div class="mx-auto max-w-7xl px-4">
           <h2 class="neon-title text-3xl md:text-5xl font-bold text-center mb-8">Новости</h2>
@@ -1112,9 +902,6 @@
               </button>
               <button id="resetSettings" class="neon-btn text-sm" aria-label="Сбросить настройки">
                 <i class="fa-solid fa-rotate-left"></i> Сбросить всё
-              </button>
-              <button id="resetProfile" class="neon-btn text-sm bg-red-500 hover:bg-red-600" aria-label="Сбросить профиль">
-                <i class="fa-solid fa-user-slash"></i> Сбросить профиль
               </button>
             </div>
            
@@ -1213,32 +1000,6 @@
           setTimeout(hideLoader, 10000);
         }
       };
-      // Таймер до 8 января 2026 10:00 МСК
-  const countDownDate = new Date("2026-01-08T10:00:00+03:00").getTime();
-
-  function updateTimer() {
-    const now = new Date().getTime();
-    const distance = countDownDate - now;
-
-    if (distance < 0) {
-      document.getElementById("countdown").innerHTML = "<p class='text-2xl font-bold text-green-400'>Розыгрыш завершён!</p>";
-      return;
-    }
-
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    document.getElementById("days").textContent = days.toString().padStart(2, '0');
-    document.getElementById("hours").textContent = hours.toString().padStart(2, '0');
-    document.getElementById("minutes").textContent = minutes.toString().padStart(2, '0');
-    document.getElementById("seconds").textContent = seconds.toString().padStart(2, '0');
-  }
-
-  // Запуск таймера
-  updateTimer();
-  setInterval(updateTimer, 1000);
 
       // === ИСПРАВЛЕННАЯ СИСТЕМА УВЕДОМЛЕНИЙ ===
       const logAction = (message) => console.log(message);
@@ -1729,10 +1490,6 @@
             const fontSizeSlider = document.getElementById('fontSizeSlider');
             const fontSizeValue = document.getElementById('fontSizeValue');
             const highContrastToggle = document.getElementById('highContrastToggle');
-            const userAvatar = document.getElementById('userAvatar');
-            const usernameInput = document.getElementById('usernameInput');
-            const badges = document.getElementById('badges');
-            const badgeList = document.getElementById('badgeList');
             const badgeNotificationsToggle = document.getElementById('badgeNotificationsToggle');
             const newsNotificationsToggle = document.getElementById('newsNotificationsToggle');
             if (themeSelect) themeSelect.value = 'auto';
@@ -1746,12 +1503,7 @@
             if (highContrastToggle) highContrastToggle.checked = false;
             if (badgeNotificationsToggle) badgeNotificationsToggle.checked = true;
             if (newsNotificationsToggle) newsNotificationsToggle.checked = true;
-            if (userAvatar) userAvatar.src = '/assets/fallback.jpg';
-            if (usernameInput) usernameInput.value = '';
-            if (badges) badges.innerHTML = '';
-            if (badgeList) badgeList.innerHTML = '';
             setTheme('auto');
-            setupBadges();
             showNotification('Настройки и профиль сброшены', notification);
             gtag('event', 'reset_settings', { event_category: 'settings', event_label: 'confirmed_reset' });
             logAction('Настройки сброшены (подтверждено)');
@@ -1759,684 +1511,8 @@
         }
       };
 
-      // === ИСПРАВЛЕННАЯ ФУНКЦИЯ createBadgeParticles ===
-      const createBadgeParticles = (badgeEl, badgeName) => {
-        // Убедимся, что элемент видим и имеет размеры
-        if (!badgeEl.offsetParent) return () => {};
-        
-        // Проверяем, нет ли уже canvas в этом элементе
-        if (badgeEl.querySelector('canvas')) {
-          return () => {};
-        }
-        
-        const canvas = document.createElement('canvas');
-        canvas.style.cssText = `
-          position: absolute; 
-          top: 0; 
-          left: 0; 
-          width: 100%; 
-          height: 100%;
-          pointer-events: none; 
-          border-radius: inherit;
-          z-index: 1;
-        `;
-        
-        badgeEl.style.position = 'relative';
-        badgeEl.style.overflow = 'hidden';
-        badgeEl.appendChild(canvas);
-        
-        const ctx = canvas.getContext('2d');
-        let animationId;
-        
-        // Функция для установки правильного размера canvas
-        const resizeCanvas = () => {
-          const rect = badgeEl.getBoundingClientRect();
-          if (rect.width === 0 || rect.height === 0) {
-            // Если элемент еще не отрисован, пробуем позже
-            setTimeout(resizeCanvas, 100);
-            return;
-          }
-          
-          const dpr = window.devicePixelRatio || 1;
-          canvas.width = rect.width * dpr;
-          canvas.height = rect.height * dpr;
-          canvas.style.width = rect.width + 'px';
-          canvas.style.height = rect.height + 'px';
-          ctx.scale(dpr, dpr);
-          
-          // Немедленно запускаем анимацию после ресайза
-          if (animationId) {
-            cancelAnimationFrame(animationId);
-          }
-          animate();
-        };
-        
-        // Используем ResizeObserver для отслеживания изменений размера
-        const ro = new ResizeObserver(() => {
-          resizeCanvas();
-        });
-        
-        ro.observe(badgeEl);
-        
-        // Инициализируем частицы
-        const particles = [];
-        const centerX = () => canvas.width / 2 / (window.devicePixelRatio || 1);
-        const centerY = () => canvas.height / 2 / (window.devicePixelRatio || 1);
-        const radius = () => Math.min(centerX(), centerY()) * 0.8;
-        
-        // Инициализация частиц в зависимости от типа бейджа
-        if (badgeName.includes('Секретный Агент')) {
-          for (let i = 0; i < 8; i++) {
-            particles.push({
-              angle: (i / 8) * Math.PI * 2,
-              speed: 0.015 + Math.random() * 0.01,
-              size: 1.8 + Math.random() * 1.2,
-              color: Math.random() > 0.5 ? '#a855f7' : '#d946ef'
-            });
-          }
-        } else if (badgeName.includes('Кодовый Взломщик')) {
-          for (let i = 0; i < 12; i++) {
-            particles.push({
-              x: Math.random() * 100,
-              y: Math.random() * 100 - 100,
-              speed: 1.8 + Math.random() * 1,
-              color: '#22c55e'
-            });
-          }
-        } else if (badgeName.includes('Призрачный Зритель')) {
-          for (let i = 0; i < 6; i++) {
-            particles.push({
-              x: Math.random() * 100,
-              y: Math.random() * 100,
-              size: 3 + Math.random() * 3,
-              speedX: (Math.random() - 0.5) * 1.2,
-              speedY: (Math.random() - 0.5) * 1.2
-            });
-          }
-        } else if (badgeName.includes('Ночной Сталкер')) {
-          for (let i = 0; i < 10; i++) {
-            particles.push({
-              x: Math.random() * 100,
-              y: Math.random() * 100 - 100,
-              speed: 1.2 + Math.random() * 0.8,
-              color: '#4b5563'
-            });
-          }
-        } else if (badgeName.includes('Тёмный ПРИНЦ')) {
-          // Статичный тёмный меч на камне (простая SVG-подобная отрисовка с лёгкой анимацией свечения)
-          particles.push({
-            x: centerX() - 10,
-            y: centerY() + 5,
-            glow: 0
-          });
-        }
-        
-        const animate = () => {
-          if (document.documentElement.classList.contains('low-performance') || 
-              document.documentElement.classList.contains('no-animations')) {
-            return;
-          }
-          
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          
-          // Анимация частиц в зависимости от типа бейджа
-          if (badgeName.includes('Секретный Агент')) {
-            particles.forEach(p => {
-              p.angle += p.speed;
-              const x = centerX() + Math.cos(p.angle) * radius();
-              const y = centerY() + Math.sin(p.angle) * radius();
-              ctx.globalAlpha = 0.6 + 0.4 * Math.sin(p.angle * 3);
-              ctx.fillStyle = p.color;
-              ctx.beginPath();
-              ctx.arc(x, y, p.size, 0, Math.PI * 2);
-              ctx.fill();
-            });
-          }
-          
-          // Кодовый Взломщик
-          if (badgeName.includes('Кодовый Взломщик')) {
-            particles.forEach(p => {
-              p.y += p.speed;
-              if (p.y > 100) {
-                p.y = -15;
-                p.x = Math.random() * 100;
-              }
-              ctx.strokeStyle = p.color;
-              ctx.globalAlpha = 0.7;
-              ctx.lineWidth = 1.5;
-              ctx.beginPath();
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(p.x, p.y + 15);
-              ctx.stroke();
-              if (Math.random() < 0.05) {
-                ctx.fillStyle = '#22c55e';
-                ctx.globalAlpha = 1;
-                ctx.font = '10px monospace';
-                ctx.fillText(Math.random() < 0.5 ? '0' : '1', p.x - 5, p.y + 10);
-              }
-            });
-          }
-          
-          // Призрачный Зритель
-          if (badgeName.includes('Призрачный Зритель')) {
-            particles.forEach(p => {
-              p.x += p.speedX;
-              p.y += p.speedY;
-              if (p.x < 0 || p.x > 100) p.speedX *= -1;
-              if (p.y < 0 || p.y > 100) p.speedY *= -1;
-              ctx.globalAlpha = 0.4;
-              ctx.fillStyle = '#e5e7eb';
-              ctx.beginPath();
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(p.x + p.size * 2, p.y);
-              ctx.lineTo(p.x + p.size, p.y - p.size);
-              ctx.closePath();
-              ctx.fill();
-            });
-          }
-          
-          // Ночной Сталкер (похоже на кодовый, но с "тенями" - горизонтальные линии)
-          if (badgeName.includes('Ночной Сталкер')) {
-            particles.forEach(p => {
-              p.y += p.speed;
-              if (p.y > 100) {
-                p.y = -10;
-                p.x = Math.random() * 100;
-              }
-              ctx.strokeStyle = p.color;
-              ctx.globalAlpha = 0.5;
-              ctx.lineWidth = 2;
-              ctx.beginPath();
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(p.x + 20, p.y);
-              ctx.stroke();
-              if (Math.random() < 0.03) {
-                ctx.fillStyle = '#4b5563';
-                ctx.globalAlpha = 0.8;
-                ctx.font = '8px monospace';
-                ctx.fillText('...', p.x + 5, p.y + 8);
-              }
-            });
-          }
-          
-          // Тёмный ПРИНЦ (тёмный меч на камне)
-          if (badgeName.includes('Тёмный ПРИНЦ')) {
-            const p = particles[0];
-            p.glow += 0.05;
-            if (p.glow > Math.PI * 2) p.glow = 0;
-            // Камень
-            ctx.fillStyle = '#1e293b';
-            ctx.globalAlpha = 0.8;
-            ctx.beginPath();
-            ctx.ellipse(centerX(), centerY() + 15, 15, 8, 0, 0, Math.PI * 2);
-            ctx.fill();
-            // Меч (линия с рукояткой)
-            ctx.strokeStyle = '#475569';
-            ctx.lineWidth = 3;
-            ctx.globalAlpha = 1;
-            ctx.beginPath();
-            ctx.moveTo(centerX(), centerY() - 10);
-            ctx.lineTo(centerX(), centerY() + 10);
-            ctx.stroke();
-            // Свечение меча
-            ctx.globalAlpha = 0.6 + 0.4 * Math.sin(p.glow);
-            ctx.strokeStyle = '#a855f7';
-            ctx.lineWidth = 5;
-            ctx.beginPath();
-            ctx.moveTo(centerX(), centerY() - 10);
-            ctx.lineTo(centerX(), centerY() + 5);
-            ctx.stroke();
-          }
-          
-          animationId = requestAnimationFrame(animate);
-        };
-        
-        // Запускаем инициализацию с небольшой задержкой для гарантии
-        setTimeout(resizeCanvas, 50);
-        
-        return () => {
-          cancelAnimationFrame(animationId);
-          ro.disconnect();
-        };
-      };
-
-      // === ФУНКЦИЯ ДЛЯ ПРИНУДИТЕЛЬНОЙ ИНИЦИАЛИЗАЦИИ БЕЙДЖЕЙ ПРИ ЗАГРУЗКЕ ===
-      const initializeBadgesOnLoad = () => {
-        // Ждем полной загрузки DOM
-        document.addEventListener('DOMContentLoaded', () => {
-          // Даем время для рендеринга
-          setTimeout(() => {
-            const badges = document.querySelectorAll('.badge');
-            badges.forEach(badge => {
-              const badgeName = badge.textContent || badge.innerText;
-              // Для определенных типов бейджей создаем частицы
-              if (badgeName.includes('Секретный Агент') || 
-                  badgeName.includes('Кодовый Взломщик') ||
-                  badgeName.includes('Призрачный Зритель') ||
-                  badgeName.includes('Ночной Сталкер') ||
-                  badgeName.includes('Тёмный ПРИНЦ')) {
-                createBadgeParticles(badge, badgeName);
-              }
-            });
-          }, 500); // Даем 500ms на полную загрузку и рендеринг
-        });
-      };
-
-      // === ИСПРАВЛЕННАЯ ФУНКЦИЯ setupBadges ===
-      const setupBadges = () => {
-        const badges = document.getElementById('badges');
-        const badgeList = document.getElementById('badgeList');
-        const notification = document.getElementById('appearanceNotification');
-        if (!badges || !badgeList || !notification) return;
-        
-        let savedBadges = JSON.parse(localStorage.getItem('userBadges') || '[]');
-        
-        // Авто-выдача "Фанат" при первом входе
-        if (!savedBadges.includes('Фанат')) {
-          savedBadges.push('Фанат');
-          localStorage.setItem('userBadges', JSON.stringify(savedBadges));
-          showNotification('Получен бейдж: Фанат! 🎉', notification);
-        }
-        
-        badges.innerHTML = '';
-        
-        badgeDefinitions.forEach(badge => {
-          // Пропускаем бейдж "Мобильный Воин" на ПК версии
-          if (badge.name === 'Мобильный Воин' && window.innerWidth > 768) {
-            return;
-          }
-          
-          const isEarned = savedBadges.includes(badge.name) || badge.earned();
-          
-          if (isEarned) {
-            if (!savedBadges.includes(badge.name)) {
-              savedBadges.push(badge.name);
-              localStorage.setItem('userBadges', JSON.stringify(savedBadges));
-              showNotification(`Новый бейдж: ${badge.name}! 🎉`, notification);
-              gtag('event', 'badge_earned', { event_category: 'profile', event_label: badge.name });
-              logAction(`Получен новый бейдж: ${badge.name}`);
-              // Добавляем класс new-badge для анимации
-              const badgeEl = document.createElement('span');
-              badgeEl.className = `badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${badge.rarity} ${badge.name.toLowerCase().replace(/ /g, '-').replace('ё', 'e').replace('принц', 'prince')} new-badge`;
-              badgeEl.innerHTML = `<i class="${badge.icon}"></i>${badge.name}`;
-              
-              // Добавляем частицы только если их еще нет
-              if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost' || badge.rarity === 'night-stalker' || badge.rarity === 'epic') && !badgeEl.querySelector('canvas')) {
-                createBadgeParticles(badgeEl, badge.name);
-              }
-              
-              badges.appendChild(badgeEl);
-              setTimeout(() => badgeEl.classList.remove('new-badge'), 5000);
-            } else {
-              const badgeEl = document.createElement('span');
-              badgeEl.className = `badge inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${badge.rarity} ${badge.name.toLowerCase().replace(/ /g, '-').replace('ё', 'e').replace('принц', 'prince')}`;
-              badgeEl.innerHTML = `<i class="${badge.icon}"></i>${badge.name}`;
-              
-              // Добавляем частицы только если их еще нет
-              if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost' || badge.rarity === 'night-stalker' || badge.rarity === 'epic') && !badgeEl.querySelector('canvas')) {
-                createBadgeParticles(badgeEl, badge.name);
-              }
-              
-              badges.appendChild(badgeEl);
-            }
-          }
-        });
-        
-        // Остальной код функции setupBadges остается без изменений...
-        badgeList.innerHTML = '';
-        badgeDefinitions.forEach((badge, index) => {
-          // Пропускаем бейдж "Мобильный Воин" на ПК версии в списке доступных бейджей
-          if (badge.name === 'Мобильный Воин' && window.innerWidth > 768) {
-            return;
-          }
-          
-          const badgeItem = document.createElement('div');
-          badgeItem.className = 'flex items-center gap-2 text-sm cursor-pointer';
-          const earned = savedBadges.includes(badge.name) || badge.earned();
-          let iconClass = badge.icon;
-          let nameText = badge.name;
-          let descText = badge.description;
-          let rarityText = { common: 'Обычный', rare: 'Редкий', legendary: 'Легендарный', secret: 'Секретный', 'code-breaker': 'Секретный', ghost: 'Секретный', 'night-stalker': 'Редкий', epic: 'Эпический' }[badge.rarity] || badge.rarity;
-          let textClass = earned ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600';
-          let iconColor = earned ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-600';
-          const status = earned ? '✅' : '🔒';
-          const progress = badge.progress ? `(${badge.progress()}/${badge.name === 'Мемолог' ? '4' : badge.name === 'Эпик Мемолог' ? '20' : '20'})` : '';
-          if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost' || badge.rarity === 'night-stalker' || badge.rarity === 'epic') && !earned) {
-            iconClass = 'fa-solid fa-question-circle';
-            nameText = badge.name === 'Кодовый Взломщик' ? '?' : badge.name === 'Ночной Сталкер' ? '?' : badge.name === 'Тёмный ПРИНЦ' ? '???' : '???';
-            descText = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈';
-            rarityText = 'Секретный';
-          }
-          badgeItem.innerHTML = `
-            <i class="${iconClass} ${iconColor}"></i>
-            <span class="${textClass}">${nameText} (${rarityText}): ${descText} ${progress}</span>
-            <span>${status}</span>
-          `;
-   
-          badgeList.appendChild(badgeItem);
-          badgeItem.addEventListener('click', () => {
-            const modal = document.getElementById('badgeModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalDesc = document.getElementById('modalDesc');
-            const modalIcon = document.getElementById('modalIcon');
-            const modalProgress = document.getElementById('modalProgress');
-            const modalRarity = document.getElementById('modalRarity');
-            if (modal && modalTitle && modalDesc && modalIcon && modalProgress && modalRarity) {
-              let mTitle = badge.name;
-              let mDesc = badge.description;
-              let mIcon = badge.icon;
-              let mProgress = badge.progress ? `Прогресс: ${badge.progress()}/${badge.name === 'Мемолог' ? '4' : '50'}` : '';
-              let mRarity = `Редкость: ${rarityText}`;
-              if ((badge.rarity === 'secret' || badge.rarity === 'code-breaker' || badge.rarity === 'ghost' || badge.rarity === 'night-stalker' || badge.rarity === 'epic') && !earned) {
-                mTitle = badge.name === 'Кодовый Взломщик' ? '?' : badge.name === 'Ночной Сталкер' ? '?' : badge.name === 'Тёмный ПРИНЦ' ? '???' : '???';
-                mDesc = 'Это есть только на нашем сайте, а может это есть в консоли сайта... 😈';
-                mIcon = 'fa-solid fa-question-circle';
-                mProgress = '';
-                mRarity = 'Редкость: Секретный';
-              }
-              modalTitle.textContent = mTitle;
-              modalDesc.innerHTML = mDesc;
-              modalIcon.innerHTML = `<i class="${mIcon} text-4xl text-indigo-600 dark:text-indigo-400"></i>`;
-              modalProgress.textContent = mProgress;
-              modalRarity.textContent = mRarity;
-              modal.style.display = 'flex';
-              modal.style.animation = 'modalFadeIn 0.3s ease forwards';
-              
-              // Функция закрытия модального окна
-              const closeModal = () => {
-                modal.style.animation = 'modalFadeOut 0.3s ease forwards';
-                setTimeout(() => {
-                  modal.style.display = 'none';
-                }, 300);
-              };
-              
-              // Убираем старые обработчики и добавляем новые
-              document.getElementById('closeModal').onclick = closeModal;
-              document.getElementById('closeModalBtn').onclick = closeModal;
-              
-              // Закрытие по клику вне модального окна
-              modal.onclick = (e) => {
-                if (e.target === modal) {
-                  closeModal();
-                }
-              };
-            }
-          });
-        });
-      };
-
-      // Остальной код остается без изменений...
-      const triggerBadgeEffect = (badgeName) => {
-        // Убрали эффект для 'Кодовый Взломщик'
-      };
-
-      const setupGhostGesture = () => {
-        let path = [];
-        const tolerance = 50;
-        const minPoints = 10;
-        const recognizeM = (points) => {
-        if (points.length < minPoints) return false;
-        const xs = points.map(p => p.x);
-        const ys = points.map(p => p.y);
-        const minX = Math.min(...xs), maxX = Math.max(...xs);
-        const minY = Math.min(...ys), maxY = Math.max(...ys);
-        const w = maxX - minX;
-        const h = maxY - minY;
-        if (w < 50 || h < 50) return false;
-        const thirdsX = [minX + w/3, minX + 2*w/3];
-        const halfY = minY + h/2;
-        const leftUp = points.some(p => p.x < thirdsX[0] && p.y < halfY);
-        const leftDown = points.some(p => p.x < thirdsX[0] && p.y > halfY);
-        const midDown = points.some(p => p.x > thirdsX[0] && p.x < thirdsX[1] && p.y > halfY);
-        const rightUp = points.some(p => p.x > thirdsX[1] && p.y < halfY);
-        const rightDown = points.some(p => p.x > thirdsX[1] && p.y > halfY);
-        return leftUp && leftDown && midDown && rightUp && rightDown;
-      };
-        const handleStart = (e) => {
-          path = [];
-          const addPoint = (clientX, clientY) => {
-            path.push({ x: clientX, y: clientY });
-          };
-          const handleMove = (e) => {
-            const touch = e.touches ? e.touches[0] : e;
-            addPoint(touch.clientX, touch.clientY);
-          };
-          const handleEnd = () => {
-            if (recognizeM(path)) {
-              localStorage.setItem('ghostScrolls', '3');
-              localStorage.setItem('ghostScrollsEarned', 'true');
-              checkBadgeConditions();
-              showNotification('Призрачный режим активирован! Бейдж получен! 👻', document.getElementById('appearanceNotification'));
-            }
-            document.removeEventListener('mousemove', handleMove);
-            document.removeEventListener('touchmove', handleMove);
-            document.removeEventListener('mouseup', handleEnd);
-            document.removeEventListener('touchend', handleEnd);
-          };
-          document.addEventListener('mousemove', handleMove);
-          document.addEventListener('touchmove', handleMove, { passive: true });
-          document.addEventListener('mouseup', handleEnd);
-          document.addEventListener('touchend', handleEnd);
-        };
-        document.addEventListener('mousedown', handleStart);
-        document.addEventListener('touchstart', handleStart, { passive: true });
-      };
-
-      const setupResetProfile = () => {
-        const resetProfileButton = document.getElementById('resetProfile');
-        const notification = document.getElementById('appearanceNotification');
-        if (resetProfileButton && notification) {
-          resetProfileButton.addEventListener('click', () => {
-            const confirmReset = confirm(
-              '⚠️ Точно сбросить профиль?\n\n' +
-              '• Аватар и имя пользователя\n' +
-              '• Все бейджи\n' +
-              '• История просмотров (для бейджей)\n\n' +
-              'Это действие НЕЛЬЗЯ отменить! Настройки сайта останутся нетронутыми.'
-            );
-            if (!confirmReset) {
-              showNotification('Сброс профиля отменён', notification);
-              return;
-            }
-            localStorage.removeItem('userAvatar');
-            localStorage.removeItem('userBadges');
-            localStorage.removeItem('username');
-            localStorage.removeItem('secretClicks');
-            localStorage.removeItem('mortis_hacker');
-            localStorage.removeItem('ghostScrolls');
-            localStorage.removeItem('ghostScrollsEarned');
-            localStorage.removeItem('speed_reader');
-            localStorage.removeItem('mobile_views');
-            localStorage.removeItem('dark_prince');
-            const userAvatar = document.getElementById('userAvatar');
-            const usernameInput = document.getElementById('usernameInput');
-            const badges = document.getElementById('badges');
-            const badgeList = document.getElementById('badgeList');
-            if (userAvatar) userAvatar.src = '/assets/fallback.jpg';
-            if (usernameInput) usernameInput.value = '';
-            if (badges) badges.innerHTML = '';
-            if (badgeList) badgeList.innerHTML = '';
-            setupBadges();
-            showNotification('Профиль сброшен — начинай заново! 😎', notification);
-            gtag('event', 'reset_profile', { event_category: 'profile', event_label: 'confirmed_reset' });
-            logAction('Профиль сброшен (подтверждено)');
-          });
-        }
-      };
-
-      const setupProfileBetaNotice = () => {
-        const notice = document.getElementById('profileBetaNotice');
-        if (!notice) return;
-        const hidden = localStorage.getItem('profileBetaNoticeHidden');
-        if (!hidden) {
-          notice.classList.add('show');
-          notice.querySelector('button').addEventListener('click', () => {
-            notice.classList.remove('show');
-            localStorage.setItem('profileBetaNoticeHidden', 'true');
-          });
-        }
-      };
-
-      const setupProfile = () => {
-        const avatarUpload = document.getElementById('avatarUpload');
-        const userAvatar = document.getElementById('userAvatar');
-        const usernameInput = document.getElementById('usernameInput');
-        const badges = document.getElementById('badges');
-        const badgeList = document.getElementById('badgeList');
-        const notification = document.getElementById('appearanceNotification');
-        if (avatarUpload && userAvatar && notification) {
-          const savedAvatar = localStorage.getItem('userAvatar');
-          if (savedAvatar) userAvatar.src = savedAvatar;
-          avatarUpload.addEventListener('change', () => {
-            const file = avatarUpload.files[0];
-            if (file && file.size <= 1024 * 1024 && /^image\/(jpeg|png|gif|webp)$/.test(file.type)) {
-              const reader = new FileReader();
-              reader.onload = () => {
-                const img = new Image();
-                img.src = reader.result;
-                img.onload = () => {
-                  const canvas = document.createElement('canvas');
-                  const ctx = canvas.getContext('2d');
-                  const maxSize = 100;
-                  let width = img.width;
-                  let height = img.height;
-                  if (width > height && width > maxSize) {
-                    height *= maxSize / width;
-                    width = maxSize;
-                  } else if (height > maxSize) {
-                    width *= maxSize / height;
-                    height = maxSize;
-                  }
-                  canvas.width = width;
-                  canvas.height = height;
-                  ctx.drawImage(img, 0, 0, width, height);
-                  const compressed = canvas.toDataURL('image/jpeg', 0.8);
-                  userAvatar.src = compressed;
-                  localStorage.setItem('userAvatar', compressed);
-                  showNotification('Аватар обновлён', notification);
-                  gtag('event', 'avatar_upload', { event_category: 'profile', event_label: 'avatar_updated' });
-                  logAction('Аватар обновлён');
-                  checkBadgeConditions();
-                };
-              };
-              reader.readAsDataURL(file);
-            } else {
-              showNotification('Выберите изображение (JPEG, PNG, GIF, WebP, до 1МБ)', notification);
-              logAction('Ошибка загрузки аватара: неверный формат или размер');
-            }
-          });
-        }
-        if (usernameInput && notification) {
-          const savedUsername = localStorage.getItem('username');
-          if (savedUsername) usernameInput.value = savedUsername;
-          usernameInput.addEventListener('input', debounce(() => {
-            const username = usernameInput.value.trim();
-            if (username.length <= 20) {
-              localStorage.setItem('username', username);
-              showNotification('Имя пользователя обновлено', notification);
-              gtag('event', 'username_update', { event_category: 'profile', event_label: 'username_updated' });
-              logAction(`Имя пользователя обновлено: ${username}`);
-              checkBadgeConditions();
-            } else {
-              showNotification('Имя не должно превышать 20 символов', notification);
-              logAction('Ошибка обновления имени: превышена длина');
-            }
-          }, 500));
-        }
-        if (badges && badgeList) {
-          setupBadges();
-        }
-        window.resetBadges = () => {
-          localStorage.removeItem('userBadges');
-          setupBadges();
-          logAction('Бейджи сброшены через консоль');
-        };
-      };
-
-      const badgeDefinitions = [
-        { name: 'Фанат', icon: 'fa-solid fa-star', description: 'Выдаётся за посещение сайта!', earned: () => true, rarity: 'common' },
-        {
-          name: 'Ночной Сталкер',
-          icon: 'fa-solid fa-users',
-          description: 'Подпишись на Telegram-канал и напиши в личку ночью',
-          earned: () => localStorage.getItem('social_subscribed') === 'true',
-          rarity: 'night-stalker'
-        },
-        { name: 'Стример', icon: 'fa-solid fa-video', description: 'Загрузите аватар и установите имя пользователя', earned: () => {
-          return !!localStorage.getItem('userAvatar') && !!localStorage.getItem('username');
-        }, rarity: 'common' },
-        { name: 'Секретный Агент', icon: 'fa-solid fa-user-secret', description: 'Секретный бейдж! Как вы его нашли?', earned: () => {
-          return parseInt(localStorage.getItem('secretClicks') || '0') >= 5;
-        }, rarity: 'secret' },
-        { name: 'Кодовый Взломщик', icon: 'fa-solid fa-terminal', description: 'Это есть только на нашем сайтe, а может это есть в консоли сайта... 😈', earned: () => {
-          return localStorage.getItem('mortis_hacker') === 'true';
-        }, rarity: 'code-breaker' },
-        {
-          name: 'Призрачный Зритель',
-          icon: 'fa-solid fa-ghost',
-          description: 'Нарисуй букву "M" на экране пальцем или мышью',
-          earned: () => localStorage.getItem('ghostScrollsEarned') === 'true',
-          rarity: 'secret'
-        },
-        {
-          name: 'Скоростной Читатель',
-          icon: 'fa-solid fa-book-open-reader',
-          description: 'Прочитай все новости за минуту',
-          earned: () => localStorage.getItem('speed_reader') === 'true',
-          rarity: 'rare'
-        },
-        {
-          name: 'Тёмный ПРИНЦ',
-          icon: 'fa-solid fa-crown',
-          description: 'Альтернатива Тёмный Мастер',
-          earned: () => localStorage.getItem('dark_prince') === 'true',
-          rarity: 'epic'
-        },
-        {
-          name: 'Видео Маньяк',
-          icon: 'fa-solid fa-video',
-          description: 'Посмотреть 10 видео в разделе "Видео"',
-          earned: () => localStorage.getItem('video_views') >= '10',
-          rarity: 'rare'
-        },
-        {
-          name: 'Rutube Fan',
-          icon: 'fa-solid fa-play-circle',
-          description: 'Посмотреть все видео с Rutube',
-          earned: () => localStorage.getItem('rutube_views') >= '3',
-          rarity: 'common'
-        },
-        {
-          name: 'Легенда',
-          icon: 'fa-solid fa-crown',
-          description: 'Получи все остальные бейджи',
-          earned: () => {
-            const saved = JSON.parse(localStorage.getItem('userBadges') || '[]');
-            return ['Фанат', 'Ночной Сталкер', 'Стример', 'Секретный Агент', 'Кодовый Взломщик', 'Призрачный Зритель', 'Скоростной Читатель', 'Мобильный Воин', 'Тёмный ПРИНЦ', 'Видео Маньяк', 'Rutube Fan'].every(b => saved.includes(b));
-          },
-          rarity: 'legendary'
-        }
-      ];
-
-      const setupSecretBadgeTrigger = () => {
-        const logo = document.querySelector('a[href="#welcome"] img');
-        if (logo) {
-          let clicks = parseInt(localStorage.getItem('secretClicks') || '0');
-          logo.addEventListener('click', () => {
-            clicks++;
-            localStorage.setItem('secretClicks', clicks);
-            if (clicks >= 5) {
-              checkBadgeConditions();
-            }
-          });
-        }
-      };
-
-      const checkBadgeConditions = () => {
-        setupBadges();
-      };
-
       const newsData = [
+        { title: "С новым годом!", date: "8 января", content: "Ну что друзья, вот и наступил 2026 год вместе с сайтом. Мы взяли перерыв над сайтом, поэтому с такими новостями мы и пришли. Как вы могли заметить, раздел Профиль исчез из за того что бета тестирование прошло успешно и мы приняли решение что мы временно удалим его и на его замену придет кое что другое. На данный момент пока что всё, ну и не забудьте конечно же посмотреть моё 3 <a href=\"https://youtu.be/TVgbipfwgEY\" class=\"underline text-indigo-600 dark:text-indigo-400\" rel=\"noopener\">Новогоднее поздравление)</a>." },
         { title: "ИТОГИ ГОДА - Открыто!", date: "5 декабря", content: "Кнопка Итоги года - активирована! Можете смотреть итоги года канала (Лично мною отредактировано). А также потихоньку заливаем новые и старые видосы из канала, ожидаем)..." },
         { title: "ЗИМА УЖЕ РЯДОМ.", date: "28 ноября", content: "Зимняя обнова на месте! А значит и новые фишки: Новый раздел, новые функции но самое главное НОВОГОДНЯЯ ТРАДИЦИЯ, это ИТОГИ ГОДА! Как будет работать эта кнопка: Переходя по ней, вы увидите уникальные карточки через что мы прошли) Эта кнопка останется долго. Теперь к разделу: Мы выкатываем новую версию раздела Видео! Но скоро будет видосов много, пока что добавим 12 видосов которые будут поделены на категории. Если вы столкнётесь с проблемой напишите мне в Telegram и мы разберемся с этой проблемой. Ну и на этом всё, скоро в новом году завезем ещё несколько сюрпризов)" },
         { title: "Раздел 'Видео' в процессе!", date: "18 ноября", content: "Раньше нам пришлось удалить этот раздел, теперь мы его обновили благодаря новому стилю сайта! В разделе вы можете посмотреть, на каком сейчас этапе находится раздел ?_? Также мы сменили обычный фон на зимний вайб! В декабре фон сменится и в целом атмосфера. Пока что на этом всё, скоро в декабре мы ещё с вами встретимся!" },
@@ -2566,7 +1642,7 @@
             id: 1, 
             title: "CS2 НО ЭТО УГАР С ТИМЕЙТАМИ! | mortis32 лучшее", 
             category: "угар", 
-            views: "33", 
+            views: "67", 
             duration: "7:23", 
             thumbnail: "/preview/preview1.jpg", 
             platform: "rutube", 
@@ -2577,7 +1653,7 @@
             id: 2, 
             title: "НОВАЯ ВЕБКА, НОВЫЕ ГОРИЗОНТЫ!", 
             category: "угар", 
-            views: "15", 
+            views: "18", 
             duration: "16:07", 
             thumbnail: "/preview/preview2.jpg", 
             platform: "rutube", 
@@ -2599,7 +1675,7 @@
             id: 4, 
             title: "ГЕНИЙ, РОМАН, НОВИЧОК, БЫВАЛЫЙ. mortis32 лучшее", 
             category: "угар", 
-            views: "27", 
+            views: "30", 
             duration: "7:38", 
             thumbnail: "/preview/preview4.jpg", 
             platform: "rutube", 
@@ -2610,7 +1686,7 @@
             id: 5, 
             title: "ВСЕ? ВСЕ. #3", 
             category: "подкаст", 
-            views: "24", 
+            views: "30", 
             duration: "11:08", 
             thumbnail: "/preview/preview5.jpg", 
             platform: "rutube", 
@@ -2621,7 +1697,7 @@
             id: 6, 
             title: "РАСПАКОВКА НОВОГО МИКРО!!!", 
             category: "другое", 
-            views: "25", 
+            views: "26", 
             duration: "6:45", 
             thumbnail: "/preview/preview6.jpg", 
             platform: "rutube", 
@@ -2698,7 +1774,7 @@
             id: 13, 
             title: "Mortisplay32 ИГРАЕТ В COUNTER STRIKE 2 В РЕЖИМЕ НАПАРНИКИ #1 (ft. rol1j) | mortis32 лучшее", 
             category: "стримы", 
-            views: "13", 
+            views: "17", 
             duration: "28:40", 
             thumbnail: "/preview/preview13.jpg", 
             platform: "rutube", 
@@ -2709,7 +1785,7 @@
             id: 14, 
             title: "Mortisplay32 ИГРАЕТ В PEAK С ПОДПИСЧИКОМ (ft. Johnny_Drill, rol1j)", 
             category: "стримы", 
-            views: "17", 
+            views: "21", 
             duration: "01:11:10", 
             thumbnail: "/preview/preview14.jpg", 
             platform: "rutube", 
@@ -2720,7 +1796,7 @@
             id: 15, 
             title: "Mortisplay32 ОФОРМЛЯЕТ ЗАВОЗ НА СТРИМЕ (ft. rol1j) | mortis32 лучшее", 
             category: "стримы", 
-            views: "8", 
+            views: "10", 
             duration: "28:55", 
             thumbnail: "/preview/preview15.jpg", 
             platform: "rutube", 
@@ -2909,7 +1985,7 @@
             id: 32, 
             title: "ЭТО УГАР А НЕ ИГРА XD | mortis32 лучшее", 
             category: "угар", 
-            views: "20", 
+            views: "26", 
             duration: "42:23", 
             thumbnail: "/preview/preview22.jpg", 
             platform: "rutube", 
@@ -3076,153 +2152,11 @@
         rutubeViews++;
         localStorage.setItem('rutube_views', rutubeViews.toString());
         
-        // Проверяем условия для бейджей
-        checkBadgeConditions();
-        
         // Отправляем событие в аналитику
         gtag('event', 'video_play', {
           event_category: 'video',
           event_label: `${category}_rutube`
         });
-      };
-
-      // === НОВАЯ ФУНКЦИЯ: Система опроса ===
-      const setupPollSystem = () => {
-        const pollOptions = document.querySelectorAll('.poll-option');
-        const pollResults = document.getElementById('pollResults');
-        const pollMessage = document.getElementById('pollMessage');
-        const resetPollBtn = document.getElementById('resetPollBtn');
-        
-        // Загружаем результаты из localStorage
-        let pollData = JSON.parse(localStorage.getItem('mortisPoll') || '{"votes": {"1":0,"2":0,"3":0,"4":0}, "userVote": null}');
-        
-        // Функция обновления отображения голосов
-        const updatePollDisplay = () => {
-          // Обновляем счетчики в опциях
-          document.querySelectorAll('.poll-count').forEach(span => {
-            const option = span.getAttribute('data-option');
-            span.textContent = pollData.votes[option] || 0;
-          });
-          
-          // Проверяем, голосовал ли пользователь
-          if (pollData.userVote) {
-            // Показываем результаты
-            pollResults.classList.remove('hidden');
-            
-            // Рассчитываем проценты
-            const totalVotes = Object.values(pollData.votes).reduce((a, b) => a + b, 0);
-            document.getElementById('totalVotes').textContent = totalVotes;
-            
-            for (let i = 1; i <= 4; i++) {
-              const votes = pollData.votes[i] || 0;
-              const percent = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
-              
-              document.getElementById(`resultCount${i}`).textContent = votes;
-              document.getElementById(`resultPercent${i}`).textContent = percent;
-              
-              // Анимируем полосы
-              setTimeout(() => {
-                const bar = document.getElementById(`resultBar${i}`);
-                if (bar) {
-                  bar.style.width = `${percent}%`;
-                }
-              }, 100 * i);
-            }
-            
-            // Показываем сообщение
-            const optionText = {
-              '1': 'Игровые стримы и летсплеи',
-              '2': 'Подкасты и обсуждения',
-              '3': 'Мемы и угарные моменты',
-              '4': 'Турниры и соревнования'
-            }[pollData.userVote];
-            
-            pollMessage.textContent = `Ты проголосовал за "${optionText}". Спасибо за участие! 🎮`;
-            pollMessage.className = 'mt-4 text-sm text-green-400 text-center';
-          } else {
-            // Скрываем результаты, если не голосовал
-            pollResults.classList.add('hidden');
-            pollMessage.textContent = 'Выбери вариант и нажми на него, чтобы проголосовать!';
-            pollMessage.className = 'mt-4 text-sm text-gray-400 text-center';
-          }
-        };
-        
-        // Обработчик клика на вариант опроса
-        pollOptions.forEach(option => {
-          option.addEventListener('click', () => {
-            if (pollData.userVote) {
-              showNotification('Ты уже голосовал! Можешь сбросить голос кнопкой ниже.', document.getElementById('appearanceNotification'));
-              return;
-            }
-            
-            const selectedOption = option.getAttribute('data-option');
-            pollData.userVote = selectedOption;
-            pollData.votes[selectedOption] = (pollData.votes[selectedOption] || 0) + 1;
-            
-            // Сохраняем в localStorage
-            localStorage.setItem('mortisPoll', JSON.stringify(pollData));
-            
-            // Визуальный фидбэк
-            option.style.background = 'rgba(167, 139, 250, 0.2)';
-            option.style.borderColor = '#c084fc';
-            
-            // Обновляем отображение
-            updatePollDisplay();
-            
-            // Показываем уведомление
-            showNotification('Спасибо за голос! Твой выбор учтен. 👍', document.getElementById('appearanceNotification'));
-            
-            // Отправляем событие в аналитику
-            gtag('event', 'poll_vote', {
-              event_category: 'feedback',
-              event_label: `option_${selectedOption}`
-            });
-            
-            logAction(`Пользователь проголосовал за вариант ${selectedOption}`);
-          });
-        });
-        
-        // Обработчик сброса голоса
-        if (resetPollBtn) {
-          resetPollBtn.addEventListener('click', () => {
-            if (!pollData.userVote) {
-              showNotification('Ты еще не голосовал!', document.getElementById('appearanceNotification'));
-              return;
-            }
-            
-            const confirmReset = confirm('Точно хочешь сбросить свой голос?');
-            if (!confirmReset) return;
-            
-            // Убираем голос пользователя
-            const oldVote = pollData.userVote;
-            pollData.votes[oldVote] = Math.max(0, (pollData.votes[oldVote] || 0) - 1);
-            pollData.userVote = null;
-            
-            // Сохраняем изменения
-            localStorage.setItem('mortisPoll', JSON.stringify(pollData));
-            
-            // Обновляем отображение
-            updatePollDisplay();
-            
-            // Сбрасываем визуальное выделение
-            pollOptions.forEach(opt => {
-              opt.style.background = '';
-              opt.style.borderColor = '';
-            });
-            
-            showNotification('Твой голос сброшен. Можешь проголосовать снова!', document.getElementById('appearanceNotification'));
-            
-            gtag('event', 'poll_reset', {
-              event_category: 'feedback',
-              event_label: 'user_reset_vote'
-            });
-            
-            logAction('Пользователь сбросил свой голос в опросе');
-          });
-        }
-        
-        // Инициализация при загрузке
-        updatePollDisplay();
       };
 
       const setupNavigation = () => {
@@ -3329,25 +2263,17 @@
       // === ОБНОВЛЕННАЯ ИНИЦИАЛИЗАЦИЯ ===
       document.addEventListener('DOMContentLoaded', () => {
         setupLoader(); // Первым делом настраиваем загрузчик
-        setupProfileBetaNotice();
         setupThemeToggle();
         setupThemeSelect();
         initializeSettings(); // <-- ДОБАВЛЕН ВЫЗОВ ИСПРАВЛЕННОЙ ФУНКЦИИ
         setupFontSize();
         setupResetSettings();
-        setupResetProfile();
-        setupProfile();
         setupNews();
         setupNavigation();
         setupParticles();
         setupFadeIn();
         setupVideoErrorHandling();
-        setupBadges();
-        setupSecretBadgeTrigger();
-        setupGhostGesture();
         setupVideoSearchAndFilter();
-        setupPollSystem(); // <-- ДОБАВЛЕНА НОВАЯ ФУНКЦИЯ
-        initializeBadgesOnLoad(); // <-- ВЫЗЫВАЕМ ПРИНУДИТЕЛЬНУЮ ИНИЦИАЛИЗАЦИЮ БЕЙДЖЕЙ
       });
     </script>
   </div>
