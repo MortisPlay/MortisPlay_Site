@@ -18,8 +18,41 @@
   <meta name="twitter:image" content="https://mortisplay.ru/assets/twitter-image-faq.jpg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'float': 'float 8s ease-in-out infinite',
+            'float-slow': 'float 12s ease-in-out infinite',
+            'pulse-soft': 'pulse-soft 4s ease-in-out infinite',
+            'gradient': 'gradient 8s ease infinite',
+            'shimmer': 'shimmer 2.5s linear infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0) translateX(0)' },
+              '50%': { transform: 'translateY(-30px) translateX(10px)' },
+            },
+            'pulse-soft': {
+              '0%, 100%': { opacity: '0.3', transform: 'scale(1)' },
+              '50%': { opacity: '0.5', transform: 'scale(1.05)' },
+            },
+            gradient: {
+              '0%, 100%': { 'background-position': '0% 50%' },
+              '50%': { 'background-position': '100% 50%' },
+            },
+            shimmer: {
+              '0%': { 'background-position': '-500px 0' },
+              '100%': { 'background-position': '500px 0' },
+            },
+          },
+        },
+      },
+    }
+  </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
-  <script nonce="${crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '')}">
+  <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
@@ -27,309 +60,712 @@
     gtag('event', 'page_view', { page_title: 'FAQ', page_location: '/faq.html' });
   </script>
   <style>
-    :root { --font-scale: 1; }
-    body { font-size: calc(1rem * var(--font-scale)); }
-    .text-4xl { font-size: calc(2.25rem * var(--font-scale)); }
-    .text-2xl { font-size: calc(1.5rem * var(--font-scale)); }
-    .text-lg { font-size: calc(1.125rem * var(--font-scale)); }
-    .text-sm { font-size: calc(0.875rem * var(--font-scale)); }
-    @keyframes floaty { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-20px) translateX(10px); } }
-    @keyframes breathing { 0%,100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.05); } }
-    .animate-floaty { animation: floaty 8s ease-in-out infinite; }
-    .animate-floaty-slow { animation: floaty 10s ease-in-out infinite; }
-    .animate-breathing { animation: breathing 10s ease-in-out infinite; }
-    .neon-title { transition: all 0.5s ease; color: #e5e7eb; background: linear-gradient(to right, #a5b4fc, #f9a8d4, #a5b4fc); }
-    .neon-title:hover { filter: brightness(1.3); }
-    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .fade-in.is-visible { opacity: 1; transform: translateY(0); }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    
+    :root {
+      --primary: #8b5cf6;
+      --secondary: #ec4899;
+      --accent: #10b981;
+      --dark: #0f0a1e;
+      --darker: #090615;
+    }
+    
     body {
-      background: linear-gradient(to bottom right, #0d0d0d, #1a1a1a, #2d2d2d);
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #1e1b4b 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated gradient background */
+    .gradient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+      animation: gradientShift 15s ease infinite alternate;
+    }
+
+    @keyframes gradientShift {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1.1) rotate(5deg); }
+    }
+
+    /* Floating particles */
+    .particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-1000px) rotate(720deg); }
+    }
+
+    /* Glass morphism card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: visible; /* ИЗМЕНЕНО: было hidden */
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0) 100%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 0;
+    }
+
+    .glass-card:hover::before {
+      opacity: 1;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(139, 92, 246, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      border-color: rgba(139, 92, 246, 0.4);
+    }
+
+    /* Animated gradient text */
+    .gradient-text {
+      background: linear-gradient(90deg, 
+        #8b5cf6, 
+        #ec4899, 
+        #10b981, 
+        #ec4899, 
+        #8b5cf6);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: gradient 4s ease-in-out infinite;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    /* FAQ Item - УБРАН overflow: hidden */
+    .faq-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      margin-bottom: 1rem; /* Добавлен отступ между вопросами */
+    }
+
+    .faq-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .faq-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+      padding: 1.5rem;
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
+      list-style: none;
+      position: relative;
+    }
+
+    /* Убираем стандартный маркер для Firefox */
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-item summary::marker {
+      display: none;
+    }
+
+    .faq-item summary:hover {
+      color: #a78bfa;
+    }
+
+    .faq-item[open] summary {
+      color: #8b5cf6;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .faq-item summary::after {
+      content: '+';
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: #8b5cf6;
+      transition: transform 0.3s ease;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .faq-item[open] summary::after {
+      content: '−';
+      transform: rotate(180deg);
+    }
+
+    .faq-item .answer {
+      padding: 0 1.5rem 1.5rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+      animation: slideDown 0.3s ease-out;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Modern button */
+    .modern-btn {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      border: none;
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .modern-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+      transition: 0.5s;
+    }
+
+    .modern-btn:hover::before {
+      left: 100%;
+    }
+
+    .modern-btn:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 
+        0 20px 40px rgba(139, 92, 246, 0.4),
+        0 0 0 2px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Section divider */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(139, 92, 246, 0.5), 
+        transparent);
+    }
+
+    /* Category badge */
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+      border: 1px solid rgba(139, 92, 246, 0.3);
       color: #e5e7eb;
     }
-    .card {
-      background: rgba(30, 30, 30, 0.8);
-      border-color: rgba(120, 120, 120, 0.3);
+
+    /* Fade in animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    h1, h2, h3 { color: #e5e7eb; }
-    p, li, span { color: #d1d5db; }
-    .high-contrast {
-      --text-color: #ffffff;
-      --bg-color: #000000;
-      --link-color: #00ff00;
-    }
-    .high-contrast body { background: var(--bg-color); color: var(--text-color); }
-    .high-contrast a { color: var(--link-color); }
-    .high-contrast .card { background: var(--bg-color); border-color: var(--text-color); }
-    .high-contrast .neon-title { color: #ffffff; background: none; }
-    .low-performance .animate-floaty, .low-performance .animate-floaty-slow, .low-performance .animate-breathing { animation: none; }
-    .low-performance .fade-in { transition: none; opacity: 1; transform: none; }
-    .no-animations .fade-in, .no-animations .animate-floaty, .no-animations .animate-floaty-slow, .no-animations .animate-breathing {
-      transition: none;
-      transform: none;
+
+    .fade-in.visible {
       opacity: 1;
-      animation: none;
+      transform: translateY(0);
     }
-    @media (max-width: 640px) {
-      .text-4xl { font-size: calc(2rem * var(--font-scale)); }
-      .text-2xl { font-size: calc(1.5rem * var(--font-scale)); }
-      .px-4 { padding-left: 1rem; padding-right: 1rem; }
-      .py-24 { padding-top: 4rem; padding-bottom: 4rem; }
-      .w-80, .w-72, .w-[50rem] { width: 100%; }
-      .rounded-2xl { border-radius: 1rem; }
-      .backdrop-blur-lg { backdrop-filter: none; background: rgba(30, 30, 30, 0.8); }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
     }
-    details > summary { list-style: none; }
-    details > summary::-webkit-details-marker { display: none; }
-    .group-open .fa-plus { transform: rotate(45deg); }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .glass-card {
+        border-radius: 20px;
+        padding: 1.5rem !important;
+      }
+      
+      .gradient-text {
+        font-size: 3rem !important;
+      }
+      
+      .faq-item summary {
+        padding: 1.25rem;
+        font-size: 1rem;
+      }
+      
+      .faq-item .answer {
+        padding: 0 1.25rem 1.25rem;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen">
-  <main class="relative min-h-screen overflow-hidden">
-    <div class="absolute -top-20 -left-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-floaty"></div>
-    <div class="absolute top-60 -right-20 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-floaty-slow"></div>
-    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[50rem] bg-indigo-500/10 rounded-full blur-[200px] animate-breathing"></div>
-    <div class="mx-auto max-w-5xl px-4 py-24 relative z-10">
-      <h1 class="neon-title text-4xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 drop-shadow-[0_0_20px_rgba(200,100,255,0.6)] text-center">
-        FAQ
-      </h1>
-      <p class="mt-4 text-lg text-slate-200 text-center">
-        Ответы на часто задаваемые вопросы о Mortis Play и стримах!
-      </p>
-      <!-- === ОБЩИЕ ВОПРОСЫ === -->
-      <div class="mt-16 grid gap-10">
-        <div class="backdrop-blur-lg card border rounded-3xl p-8 shadow-lg fade-in">
-          <h2 class="text-2xl font-semibold text-indigo-300 flex items-center gap-2">
-            <i class="fa-solid fa-question-circle"></i> Общие вопросы
-          </h2>
-          <div class="mt-8 divide-y divide-slate-700 rounded-2xl ring-1 ring-slate-700 overflow-hidden">
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-purple-300">
-                Как связаться с тобой?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                Пиши в Telegram: <a href="https://t.me/Mortisplay_YT" class="underline text-indigo-400 hover:text-indigo-200" rel="noopener">MortisPlay</a>, или на email: <a href="mailto:mortisplay@mail.ru" class="underline text-indigo-400 hover:text-indigo-200" rel="noopener">mortisplay@mail.ru</a>.
+  <!-- Animated background -->
+  <div class="gradient-bg"></div>
+  
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
+
+  <main class="relative z-10">
+    <div class="mx-auto max-w-4xl px-4 py-12 md:py-20">
+      <!-- Header -->
+      <header class="text-center mb-16 md:mb-24 fade-in">
+        <div class="inline-block mb-6">
+          <div class="category-badge mb-4">
+            <i class="fas fa-question-circle"></i>
+            ЧАСТО ЗАДАВАЕМЫЕ ВОПРОСЫ
+          </div>
+        </div>
+        <h1 class="gradient-text text-5xl md:text-7xl lg:text-8xl font-black mb-6">
+          FAQ
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-medium">
+          Все ответы о Mortis Play, стримах, видео и сайте
+        </p>
+      </header>
+
+      <!-- FAQ Sections -->
+      <div class="space-y-8">
+        <!-- General Questions -->
+        <div class="glass-card p-6 md:p-8 fade-in">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-3 h-8 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full"></div>
+            <h2 class="text-3xl md:text-4xl font-bold flex items-center gap-3">
+              <i class="fas fa-question-circle text-purple-400"></i>
+              Общие вопросы
+            </h2>
+          </div>
+          
+          <div class="space-y-4">
+            <details class="faq-item">
+              <summary>Как связаться с тобой?</summary>
+              <div class="answer">
+                <p>Пиши в Telegram: <a href="https://t.me/Mortisplay_YT" class="text-purple-400 hover:text-purple-300 underline" target="_blank">@Mortisplay_YT</a></p>
+                <p>Или на email: <a href="mailto:mortisplay@mail.ru" class="text-purple-400 hover:text-purple-300 underline">mortisplay@mail.ru</a></p>
+                <p class="mt-2 text-sm text-gray-400"><i class="fas fa-clock mr-1"></i> Отвечаю в течение 24 часов</p>
               </div>
             </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-purple-300">
-                Где найти эксклюзивы?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                Эксклюзивы — на этом сайте и в частном Telegram-канале после подписки.
+
+            <details class="faq-item">
+              <summary>Когда новые видео?</summary>
+              <div class="answer">
+                <div class="p-4 bg-gradient-to-r from-purple-900/20 to-pink-900/20 rounded-xl mb-3">
+                  <p class="font-semibold">📅 Регулярный график:</p>
+                  <p>• Основные видео: <span class="text-purple-300">Каждую неделю</span></p>
+                  <p>• Shorts: <span class="text-purple-300">2-3 раза в неделю</span></p>
+                  <p>• Стримы: <span class="text-purple-300">?</span></p>
+                </div>
+                <p class="text-sm text-gray-400"><i class="fas fa-bell mr-1"></i> Следи за анонсами в Telegram!</p>
               </div>
             </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-purple-300">
-                Когда новые видео?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                Каждую неделю. Следи за новостями!
+
+            <details class="faq-item">
+              <summary>Как обновить сайт вручную?</summary>
+              <div class="answer">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                  <div class="p-3 bg-gray-900/50 rounded-lg">
+                    <p class="font-semibold mb-2">🔄 Windows/Linux:</p>
+                    <code class="text-sm bg-black/50 p-2 rounded block">Ctrl + F5</code>
+                    <p class="text-xs text-gray-400 mt-1">или Ctrl + Shift + R</p>
+                  </div>
+                  <div class="p-3 bg-gray-900/50 rounded-lg">
+                    <p class="font-semibold mb-2">🍎 macOS:</p>
+                    <code class="text-sm bg-black/50 p-2 rounded block">Cmd + Shift + R</code>
+                    <p class="text-xs text-gray-400 mt-1">или Cmd + Option + E</p>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-400">Если не помогло — очисти кэш браузера в настройках</p>
               </div>
             </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-purple-300">
-                Как обновить сайт вручную?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                Нажми <kbd class="px-2 py-1 text-xs bg-slate-700 rounded">Ctrl+F5</kbd> или очисти кэш браузера.
-              </div>
-            </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-purple-300">
-                Почему убрали разделы "Мемы" и "Клипы"?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                Оптимизация: меньше нагрузки, быстрее сайт. Мемы ушли навсегда — теперь только топ-контент.
-              </div>
-            </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-purple-300">
-                Что с разделом Q&A?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                Q&A снова открыт! Вопросы задавай в Telegram бота: <a href="https://t.me/mortisplay32_bot" class="underline text-indigo-400 hover:text-indigo-300" rel="noopener">MortisPlay_bot</a>
-              </div>
-            </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-purple-300">
-                Как включить лёгкий режим?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                На главной → «Настройки» → «Лёгкий режим». Отключает анимации, частицы, видео.
-              </div>
-            </details>
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-purple-300">
-                Как отключить фоновые частицы?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                Настройки → «Отключить фоновые частицы». Ускорит сайт на слабых устройствах.
+
+            <details class="faq-item">
+              <summary>Что с разделом Q&A?</summary>
+              <div class="answer">
+                <p>Q&A снова открыт и лучше чем когда-либо! 🎉</p>
+                <div class="mt-3 p-4 bg-gradient-to-r from-green-900/20 to-emerald-900/20 rounded-xl">
+                  <p class="font-semibold">Как задать вопрос:</p>
+                  <p>1. Зайди в Telegram бота: <a href="https://t.me/mortisplay32_bot" class="text-green-300 underline" target="_blank">@mortisplay32_bot</a></p>
+                  <p>2. Напиши свой вопрос</p>
+                  <p>3. Получи ответ в следующих роликах</p>
+                </div>
+                <p class="mt-3 text-sm text-gray-400"><i class="fas fa-bolt mr-1"></i> Самые интересные вопросы попадают в видео!</p>
               </div>
             </details>
           </div>
         </div>
 
-        <!-- === НОВЫЙ РАЗДЕЛ: ВИДЕО === -->
-        <div class="backdrop-blur-lg card border rounded-3xl p-8 shadow-lg fade-in">
-          <h2 class="text-2xl font-semibold text-red-400 flex items-center gap-2">
-            <i class="fa-solid fa-video"></i> Раздел "Видео"
-          </h2>
-          <div class="mt-8 divide-y divide-slate-700 rounded-2xl ring-1 ring-slate-700 overflow-hidden">
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-red-300">
-                Как пользоваться новым разделом "Видео"?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                <strong>Поиск:</strong> Введи название видео в поисковую строку<br>
-                <strong>Фильтрация:</strong> Выбери категорию из выпадающего списка<br>
-                <strong>Просмотр:</strong> Нажми "Смотреть на сайте" для встроенного плеера или "На Rutube" для просмотра на платформе<br>
-                <strong>Сброс:</strong> Кнопка "Сбросить" вернёт все фильтры к исходным настройкам
+        <!-- Video Section -->
+        <div class="glass-card p-6 md:p-8 fade-in">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-3 h-8 bg-gradient-to-b from-red-500 to-orange-500 rounded-full"></div>
+            <h2 class="text-3xl md:text-4xl font-bold flex items-center gap-3">
+              <i class="fas fa-video text-red-400"></i>
+              Раздел "Видео"
+            </h2>
+          </div>
+          
+          <div class="space-y-4">
+            <details class="faq-item">
+              <summary>Как пользоваться разделом "Видео"?</summary>
+              <div class="answer">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div class="p-4 bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl">
+                    <p class="font-semibold mb-2 flex items-center gap-2">
+                      <i class="fas fa-search"></i> Поиск
+                    </p>
+                    <p>Введи название видео в поисковую строку</p>
+                  </div>
+                  <div class="p-4 bg-gradient-to-br from-blue-900/30 to-cyan-900/30 rounded-xl">
+                    <p class="font-semibold mb-2 flex items-center gap-2">
+                      <i class="fas fa-filter"></i> Фильтрация
+                    </p>
+                    <p>Выбери категорию из выпадающего списка</p>
+                  </div>
+                  <div class="p-4 bg-gradient-to-br from-green-900/30 to-emerald-900/30 rounded-xl">
+                    <p class="font-semibold mb-2 flex items-center gap-2">
+                      <i class="fas fa-play"></i> Просмотр
+                    </p>
+                    <p>Нажми "Смотреть на сайте" или "На Rutube"</p>
+                  </div>
+                  <div class="p-4 bg-gradient-to-br from-orange-900/30 to-red-900/30 rounded-xl">
+                    <p class="font-semibold mb-2 flex items-center gap-2">
+                      <i class="fas fa-redo"></i> Сброс
+                    </p>
+                    <p>Кнопка "Сбросить" вернёт все фильтры</p>
+                  </div>
+                </div>
               </div>
             </details>
 
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-red-300">
-                Почему просмотры на сайте отличаются от Rutube?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                Просмотры в разделе "Видео" на сайте берутся напрямую с основного YouTube-канала Mortis Play.<br><br>
-                Обновление статистики может занимать <strong>от нескольких часов до пары дней</strong> — это зависит от скорости синхронизации данных YouTube.<br><br>
-                Иногда задержки возникают из-за технических проблем на стороне YouTube, но в большинстве случаев мы вручную обновляем просмотры в разделе, как только видим изменения на оригинальном канале.<br><br>
-                <em>Если разница большая и давно не обновлялось — напиши в ТГ, ускорим!</em>
+            <details class="faq-item">
+              <summary>Почему просмотры отличаются от Rutube?</summary>
+              <div class="answer">
+                <div class="p-4 bg-gradient-to-r from-yellow-900/20 to-orange-900/20 rounded-xl mb-3">
+                  <p class="font-semibold mb-2">📊 Особенности синхронизации:</p>
+                  <p>• Просмотры берутся с YouTube-канала</p>
+                  <p>• Синхронизация: <span class="text-yellow-300">от 2 часов до 2 дней</span></p>
+                  <p>• Иногда задержки из-за YouTube API</p>
+                </div>
+                <p class="text-sm text-gray-400">
+                  <i class="fas fa-exclamation-triangle mr-1"></i>
+                  Если разница большая — напиши в ТГ, ускорим обновление!
+                </p>
               </div>
             </details>
 
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-red-300">
-                Какие есть категории видео?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                <strong>🎭 Угар</strong> — смешные моменты и мемы<br>
-                <strong>🎥 Стримы</strong> — записи прямых трансляций<br>
-                <strong>🎙️ Подкаст</strong> — аудио и видео подкасты<br>
-                <strong>📁 Другое</strong> — бэкстейдж и эксклюзивный контент<br>
-                <strong>▶️ Shorts</strong> — короткие вертикальные видео (YouTube Shorts): быстрые угарные моменты, мини-ролики, тиктоки и всё, что длится до 60 секунд
+            <details class="faq-item">
+              <summary>Какие есть категории видео?</summary>
+              <div class="answer">
+                <div class="space-y-3">
+                  <div class="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-900/10 to-transparent rounded-lg">
+                    <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                      <i class="fas fa-theater-masks text-purple-400"></i>
+                    </div>
+                    <div>
+                      <p class="font-semibold">🎭 Угар</p>
+                      <p class="text-sm text-gray-400">Смешные моменты и мемы</p>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-900/10 to-transparent rounded-lg">
+                    <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                      <i class="fas fa-stream text-blue-400"></i>
+                    </div>
+                    <div>
+                      <p class="font-semibold">🎥 Стримы</p>
+                      <p class="text-sm text-gray-400">Записи прямых трансляций</p>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-center gap-3 p-3 bg-gradient-to-r from-green-900/10 to-transparent rounded-lg">
+                    <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                      <i class="fas fa-podcast text-green-400"></i>
+                    </div>
+                    <div>
+                      <p class="font-semibold">🎙️ Подкаст</p>
+                      <p class="text-sm text-gray-400">Аудио и видео подкасты</p>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-center gap-3 p-3 bg-gradient-to-r from-red-900/10 to-transparent rounded-lg">
+                    <div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center">
+                      <i class="fas fa-mobile-alt text-red-400"></i>
+                    </div>
+                    <div>
+                      <p class="font-semibold">▶️ Shorts</p>
+                      <p class="text-sm text-gray-400">Короткие видео до 60 секунд</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </details>
 
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-red-300">
-                Почему видео открывается на Rutube, а не на сайте?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                Не все видео можно встроить напрямую на сайт из-за ограничений платформ (YouTube/Rutube).<br><br>
-                Если под видео есть кнопка <strong>"Смотреть на сайте"</strong> — значит, оно откроется во встроенном плеере прямо здесь (с поддержкой полноэкранного режима, качества и субтитров).<br><br>
-                Если кнопки нет или видео открывается на Rutube — это значит, что встроить его технически невозможно, поэтому перенаправляем на оригинальную платформу для лучшего качества и стабильности.<br><br>
-                <em>Мы стараемся делать встроенный плеер для максимального количества видео!</em>
+            <details class="faq-item">
+              <summary>Почему видео открывается на Rutube?</summary>
+              <div class="answer">
+                <div class="p-4 bg-gradient-to-r from-indigo-900/20 to-purple-900/20 rounded-xl mb-3">
+                  <p class="font-semibold mb-2">🔧 Технические ограничения:</p>
+                  <p>• Не все видео можно встроить напрямую</p>
+                  <p>• Ограничения платформ (YouTube/Rutube)</p>
+                  <p>• Перенаправление для лучшего качества</p>
+                </div>
+                <p class="text-purple-300">
+                  <i class="fas fa-check-circle mr-1"></i>
+                  Если есть кнопка "Смотреть на сайте" — можно смотреть прямо здесь!
+                </p>
               </div>
             </details>
 
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-red-300">
-                Видео не загружается — что делать?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                <strong>Решение проблем:</strong><br>
-                • Проверь интернет-соединение<br>
-                • Обнови страницу (F5)<br>
-                • Попробуй открыть видео напрямую на Rutube<br>
-                • Очисти кэш браузера<br>
-                • Отключи блокировщик рекламы (иногда мешает)<br>
-                • Попробуй другой браузер
-              </div>
-            </details>
-
-            <details class="group p-5">
-              <summary class="flex cursor-pointer items-center justify-between text-left font-medium text-red-300">
-                Как найти конкретное видео?
-                <span class="ml-4 transition group-open:rotate-45"><i class="fa-solid fa-plus"></i></span>
-              </summary>
-              <div class="mt-2 text-sm text-slate-300">
-                <strong>Способы поиска:</strong><br>
-                1. Введи ключевые слова в поисковую строку<br>
-                2. Используй фильтр по категориям<br>
-                3. Просматривай все видео постранично<br>
-                4. Ищи по названию или описанию<br><br>
-                <em>Система ищет по всем полям видео — названию, категории, описанию!</em>
+            <details class="faq-item">
+              <summary>Видео не загружается — что делать?</summary>
+              <div class="answer">
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                  <div class="p-3 bg-gradient-to-br from-red-900/20 to-orange-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🌐 Интернет</p>
+                    <p class="text-xs">Проверь соединение</p>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🔄 Обновить</p>
+                    <p class="text-xs">Нажми F5 или Ctrl+R</p>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🧹 Кэш</p>
+                    <p class="text-xs">Очисти кэш браузера</p>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🚫 Блокировщик</p>
+                    <p class="text-xs">Отключи на время</p>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-400">Если ничего не помогает — попробуй другой браузер</p>
               </div>
             </details>
           </div>
         </div>
+
+
+      <!-- Navigation buttons -->
+      <div class="mt-16 fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <a href="/" class="modern-btn flex items-center justify-center gap-3 py-4">
+            <i class="fas fa-home text-xl"></i>
+            <span class="font-semibold text-lg">На главную</span>
+          </a>
+          
+          <a href="/qa.html" class="modern-btn flex items-center justify-center gap-3 py-4"
+             style="background: linear-gradient(135deg, #10b981, #059669);">
+            <i class="fas fa-comments text-xl"></i>
+            <span class="font-semibold text-lg">К Q&A разделу</span>
+          </a>
+        </div>
       </div>
-      <!-- Кнопки -->
-      <div class="mt-12 text-center">
-        <a href="/" class="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg inline-flex items-center gap-2" aria-label="Вернуться на главную">
-          <i class="fa-solid fa-arrow-left"></i> На главную
-        </a>
-        <a href="/qa.html" class="ml-4 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-500 shadow-lg inline-flex items-center gap-2" aria-label="Перейти к Q&A">
-          <i class="fa-solid fa-comments"></i> К Q&A
-        </a>
-      </div>
+
+      <!-- Footer -->
+      <footer class="mt-16 pt-8 border-t border-gray-800 text-center fade-in">
+        <p class="text-gray-400 mb-4">
+          <i class="fas fa-lightbulb mr-2 text-yellow-400"></i>
+          Не нашел ответ? Пиши в Telegram!
+        </p>
+        <div class="flex justify-center gap-4">
+          <a href="https://t.me/Mortisplay_YT" target="_blank" 
+             class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full hover:scale-105 transition-transform">
+            <i class="fab fa-telegram-plane mr-2"></i>Telegram
+          </a>
+          <a href="mailto:mortisplay@mail.ru" 
+             class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full hover:scale-105 transition-transform">
+            <i class="fas fa-envelope mr-2"></i>Email
+          </a>
+        </div>
+        <p class="mt-6 text-sm text-gray-500">
+          Mortis Play FAQ © 2026
+        </p>
+      </footer>
     </div>
   </main>
-  <script nonce="${crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '')}">
-    const logAction = (message) => console.log(`[FAQ] ${message}`);
-    const setupFadeIn = () => {
-      const io = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && !document.documentElement.classList.contains('low-performance') && !document.documentElement.classList.contains('no-animations')) {
-              entry.target.classList.add('is-visible');
-              io.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-      document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
-    };
-    const setupButtonTracking = () => {
-      const buttons = document.querySelectorAll('a[class*="bg-gradient-to-r"]');
-      buttons.forEach(button => {
-        button.addEventListener('click', (e) => {
-          const label = e.target.textContent.trim();
-          gtag('event', 'button_click', { event_category: 'faq', event_label: label });
-          logAction(`Клик по кнопке: ${label}`);
+
+  <script>
+    // Create floating particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const particleCount = 20;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // Random properties
+        const size = Math.random() * 15 + 5;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 20;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.top = `${posY}%`;
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.animationDelay = `${delay}s`;
+        particle.style.opacity = Math.random() * 0.2 + 0.1;
+        
+        container.appendChild(particle);
+      }
+    }
+    
+    // Intersection observer for fade-in animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    // Track FAQ item opens
+    function trackFAQInteraction(question) {
+      gtag('event', 'faq_open', {
+        event_category: 'engagement',
+        event_label: question
+      });
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+      
+      // Observe fade-in elements
+      document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+      });
+      
+      // Add tracking to FAQ items
+      document.querySelectorAll('.faq-item').forEach(item => {
+        item.addEventListener('toggle', () => {
+          if (item.open) {
+            const question = item.querySelector('summary').textContent.trim();
+            trackFAQInteraction(question);
+          }
         });
       });
-    };
-    const setupFontSize = () => {
-      const saved = localStorage.getItem('fontSize') || '100';
-      document.documentElement.style.setProperty('--font-scale', saved / 100);
-    };
-    const setupHighContrast = () => {
-      const saved = localStorage.getItem('highContrast') === 'true';
-      document.documentElement.classList.toggle('high-contrast', saved);
-    };
-    const setupPerformance = () => {
-      const saved = localStorage.getItem('lowPerformance') === 'true';
-      document.documentElement.classList.toggle('low-performance', saved);
-    };
-    const setupAnimations = () => {
-      const saved = localStorage.getItem('disableAnimations') === 'true';
-      document.documentElement.classList.toggle('no-animations', saved);
-    };
-    document.addEventListener('DOMContentLoaded', () => {
-      setupFadeIn();
-      setupButtonTracking();
-      setupFontSize();
-      setupHighContrast();
-      setupPerformance();
-      setupAnimations();
-      logAction('FAQ загружен');
+      
+      // Add click tracking for buttons
+      document.querySelectorAll('a[class*="modern-btn"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          const label = link.textContent.trim() || link.href;
+          gtag('event', 'navigation_click', {
+            event_category: 'engagement',
+            event_label: label
+          });
+        });
+      });
+
+      // Исправление для Firefox - явно устанавливаем display для summary
+      document.querySelectorAll('.faq-item summary').forEach(summary => {
+        // Убедимся, что у summary правильный display
+        summary.style.display = 'flex';
+      });
+
+      // Открываем первый FAQ по умолчанию для демонстрации
+      const firstFaq = document.querySelector('.faq-item');
+      if (firstFaq) {
+        firstFaq.open = true;
+      }
     });
   </script>
 </body>
