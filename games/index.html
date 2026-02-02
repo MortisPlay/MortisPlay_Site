@@ -4,198 +4,587 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Игры — Mortis Play</title>
-  <meta name="description" content="Мини-игры от Mortis Play: 2048, Змейка, Тетрис и другие!" />
+  <meta name="description" content="Мини-игры от Mortis Play: 2048, Змейка, Тетрис, Pac-Man и другие!" />
   <meta property="og:title" content="Игры — Mortis Play" />
-  <meta property="og:description" content="Сыграй в классические мини-игры: 2048, Змейка и другие!" />
+  <meta property="og:description" content="Сыграй в классические мини-игры: 2048, Змейка, Pac-Man и другие!" />
   <meta property="og:image" content="https://mortis-play.ru/images/og-games.jpg" />
   <link rel="icon" href="/images/favicon.ico" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com" defer></script>
   <script src="https://kit.fontawesome.com/b48beda69e.js" crossorigin="anonymous" defer></script>
   <style>
     :root {
-      --neon-purple: #a78bfa;
-      --neon-pink: #f0abfc;
-      --neon-blue: #60a5fa;
-      --neon-green: #10b981;
-      --bg-dark: #0f0020;
+      --primary: #8b5cf6;
+      --secondary: #ec4899;
+      --accent: #10b981;
+      --dark: #0f0a1e;
+      --darker: #090615;
     }
+    
     body {
-      background: linear-gradient(135deg, #1a0033 0%, #2a0066 50%, #4a00b3 100%);
-      color: #e0d6ff;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #1e1b4b 100%);
+      color: #f8fafc;
       min-height: 100vh;
-      position: relative;
       overflow-x: hidden;
     }
-    body::before {
-      content: '';
+
+    /* Animated gradient background */
+    .gradient-bg {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100" height="100" filter="url(%23n)" opacity="0.08"/></svg>') repeat;
-      pointer-events: none;
-      z-index: -1;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+      animation: gradientShift 15s ease infinite alternate;
     }
-    .game-card {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(167, 139, 250, 0.3);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 1.5rem;
-      padding: 1.5rem;
-      text-align: center;
-      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+    @keyframes gradientShift {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1.1) rotate(5deg); }
+    }
+
+    /* Floating particles */
+    .particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      opacity: 0.2;
+      animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-1000px) rotate(720deg); }
+    }
+
+    /* Glass morphism card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
-      cursor: pointer;
+      text-decoration: none;
+      display: block;
     }
-    .game-card::before {
+
+    .glass-card::before {
       content: '';
       position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.2), transparent);
-      transition: 0.7s;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0) 100%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 0;
     }
-    .game-card:hover::before { left: 100%; }
-    .game-card:hover {
-      transform: translateY(-8px) scale(1.03);
-      box-shadow: 0 20px 40px rgba(167, 139, 250, 0.3);
-      border-color: #c084fc;
+
+    .glass-card:hover::before {
+      opacity: 1;
     }
+
+    .glass-card:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(139, 92, 246, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      border-color: rgba(139, 92, 246, 0.4);
+    }
+
+    /* Game icon styles */
     .game-icon {
-      width: 4.5rem; height: 4.5rem;
-      margin: 0 auto 1rem;
-      border-radius: 1.5rem;
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
+      font-size: 2.5rem;
       color: white;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
+      margin: 0 auto 1.5rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .game-card:hover .game-icon {
-      transform: scale(1.15);
-      box-shadow: 0 0 30px currentColor;
-    }
-    .coming-soon { opacity: 0.5; pointer-events: none; position: relative; }
-    .coming-soon::after {
-      content: 'Скоро';
+
+    .game-icon::before {
+      content: '';
       position: absolute;
-      top: 0.5rem; right: 0.5rem;
-      font-size: 0.75rem;
-      background: rgba(0,0,0,0.5);
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.5rem;
-      animation: pulse 2s infinite;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.2) 0%, 
+        rgba(255, 255, 255, 0) 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
     }
-    .neon-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(167, 139, 250, 0.4);
-      color: #e0d6ff;
-      padding: 0.75rem 1.5rem;
-      border-radius: 9999px;
-      font-weight: 600;
-      transition: all 0.4s ease;
+
+    .glass-card:hover .game-icon {
+      transform: scale(1.15) rotate(5deg);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
-    .neon-btn:hover {
-      background: rgba(167, 139, 250, 0.2);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(167, 139, 250, 0.3);
+
+    .glass-card:hover .game-icon::before {
+      opacity: 1;
     }
-    .neon-title {
-      font-weight: 900;
-      background: linear-gradient(90deg, #c084fc, #a78bfa, #ddd6fe, #a78bfa, #c084fc);
-      background-size: 200%;
+
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(90deg, 
+        #8b5cf6, 
+        #ec4899, 
+        #10b981, 
+        #ec4899, 
+        #8b5cf6);
+      background-size: 300% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: neonFlow 3s ease-in-out infinite;
+      animation: gradientFlow 6s ease-in-out infinite;
+      font-weight: 900;
+      letter-spacing: -0.5px;
     }
-    @keyframes neonFlow { 0%,100%{background-position:0%} 50%{background-position:100%} }
-    .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
-    .fade-in.visible { opacity: 1; transform: translateY(0); }
-    @keyframes pulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
-    @media (max-width: 640px) {
-      .game-card { padding: 1.25rem; }
-      .game-icon { width: 3.5rem; height: 3.5rem; font-size: 1.5rem; }
-      .neon-title { font-size: 2.5rem !important; }
+
+    @keyframes gradientFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* Modern button */
+    .modern-btn {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      border: none;
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .modern-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+      transition: 0.5s;
+    }
+
+    .modern-btn:hover::before {
+      left: 100%;
+    }
+
+    .modern-btn:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 
+        0 20px 40px rgba(139, 92, 246, 0.4),
+        0 0 0 2px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Telegram button special */
+    .telegram-btn {
+      background: linear-gradient(135deg, #0088cc, #00a8ff);
+      box-shadow: 0 10px 30px rgba(0, 136, 204, 0.3);
+    }
+
+    .telegram-btn:hover {
+      box-shadow: 
+        0 20px 40px rgba(0, 136, 204, 0.4),
+        0 0 0 2px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Coming soon badge */
+    .coming-soon-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #e5e7eb;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      z-index: 10;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    /* Suggest game card special */
+    .suggest-card {
+      border: 2px dashed rgba(139, 92, 246, 0.5);
+      background: rgba(139, 92, 246, 0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 250px;
+    }
+
+    .suggest-card:hover {
+      border-color: rgba(139, 92, 246, 0.8);
+      background: rgba(139, 92, 246, 0.1);
+    }
+
+    /* Category badge */
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #e5e7eb;
+    }
+
+    /* Fade in animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .glass-card {
+        border-radius: 20px;
+        padding: 1.5rem !important;
+      }
+      
+      .gradient-text {
+        font-size: 3rem !important;
+      }
+      
+      .game-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+      }
     }
   </style>
 </head>
 <body class="text-white">
-  <div class="mx-auto max-w-7xl px-4 py-8">
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-12">
-      <a href="/" class="neon-btn flex items-center gap-2 text-sm sm:text-base">
-        <i class="fa-solid fa-arrow-left"></i> На главную
-      </a>
-      <h1 class="neon-title text-4xl sm:text-5xl font-extrabold text-center">Игры</h1>
-      <button id="themeToggle" class="neon-btn p-3 rounded-full">
-        <i class="fa-solid fa-sun"></i>
-      </button>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <!-- 2048 -->
-      <a href="/games/2048.html" class="game-card fade-in">
-        <div class="game-icon bg-gradient-to-br from-orange-500 to-red-600">
-          <i class="fa-solid fa-cubes"></i>
+  <!-- Animated background -->
+  <div class="gradient-bg"></div>
+  
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
+
+  <main class="relative z-10">
+    <div class="mx-auto max-w-6xl px-4 py-12 md:py-20">
+      <!-- Header -->
+      <header class="text-center mb-16 md:mb-24 fade-in">
+        <div class="inline-block mb-6">
+          <div class="category-badge mb-4">
+            <i class="fas fa-gamepad"></i>
+            КЛАССИЧЕСКИЕ ИГРЫ
+          </div>
         </div>
-        <h3 class="text-xl font-bold text-purple-300">2048</h3>
-        <p class="text-sm text-gray-300 mt-1">Собери 2048!</p>
-      </a>
-      <!-- ЗМЕЙКА -->
-      <a href="/games/snake.html" class="game-card fade-in relative">
-        <div class="game-icon bg-gradient-to-br from-green-500 to-emerald-700">
-          <i class="fa-solid fa-worm"></i>
-        </div>
-        <h3 class="text-xl font-bold text-green-300">Змейка</h3>
-        <p class="text-sm text-gray-300 mt-1">Классика на новый лад</p>
-      </a>
-      <!-- Крестики-нолики -->
-      <div class="game-card coming-soon fade-in">
-        <div class="game-icon bg-gradient-to-br from-blue-500 to-cyan-600">
-          <i class="fa-solid fa-xmark"></i>
-        </div>
-        <h3 class="text-xl font-bold text-blue-300">Крестики-нолики</h3>
-        <p class="text-sm text-gray-300 mt-1">С друзьями или ИИ</p>
+        <h1 class="gradient-text text-5xl md:text-7xl lg:text-8xl font-black mb-6">
+          Игры
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-medium">
+          Коллекция классических мини-игр для отдыха и развлечения
+        </p>
+      </header>
+
+      <!-- Games Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- 2048 -->
+        <a href="/games/2048.html" class="glass-card p-6 fade-in">
+          <div class="game-icon bg-gradient-to-br from-orange-500 to-red-600">
+            <i class="fas fa-cubes"></i>
+          </div>
+          <h3 class="text-xl font-bold text-center text-orange-300 mb-2">2048</h3>
+          <p class="text-sm text-gray-300 text-center mb-4">Собери плитку 2048!</p>
+          <div class="flex justify-center items-center gap-2">
+            <span class="text-xs px-2 py-1 bg-orange-900/30 text-orange-300 rounded-full">
+              <i class="fas fa-brain mr-1"></i>Головоломка
+            </span>
+            <span class="text-xs px-2 py-1 bg-purple-900/30 text-purple-300 rounded-full">
+              <i class="fas fa-mobile-alt mr-1"></i>Адаптивная
+            </span>
+          </div>
+        </a>
+
+        <!-- Змейка -->
+        <a href="/games/snake.html" class="glass-card p-6 fade-in">
+          <div class="game-icon bg-gradient-to-br from-green-500 to-emerald-600">
+            <i class="fas fa-worm"></i>
+          </div>
+          <h3 class="text-xl font-bold text-center text-green-300 mb-2">Змейка</h3>
+          <p class="text-sm text-gray-300 text-center mb-4">Классика на новый лад</p>
+          <div class="flex justify-center items-center gap-2">
+            <span class="text-xs px-2 py-1 bg-green-900/30 text-green-300 rounded-full">
+              <i class="fas fa-history mr-1"></i>Классика
+            </span>
+            <span class="text-xs px-2 py-1 bg-blue-900/30 text-blue-300 rounded-full">
+              <i class="fas fa-keyboard mr-1"></i>Управление
+            </span>
+          </div>
+        </a>
+
+        <!-- Тетрис -->
+        <a href="/games/tetris.html" class="glass-card p-6 fade-in">
+          <div class="game-icon bg-gradient-to-br from-purple-500 to-pink-600">
+            <i class="fas fa-cubes-stacked"></i>
+          </div>
+          <h3 class="text-xl font-bold text-center text-pink-300 mb-2">Тетрис</h3>
+          <p class="text-sm text-gray-300 text-center mb-4">Собери линии фигур</p>
+          <div class="flex justify-center items-center gap-2">
+            <span class="text-xs px-2 py-1 bg-purple-900/30 text-purple-300 rounded-full">
+              <i class="fas fa-puzzle-piece mr-1"></i>Пазлы
+            </span>
+            <span class="text-xs px-2 py-1 bg-red-900/30 text-red-300 rounded-full">
+              <i class="fas fa-clock mr-1"></i>На время
+            </span>
+          </div>
+        </a>
+
+        <!-- Сапёр -->
+        <a href="/games/minesweeper.html" class="glass-card p-6 fade-in">
+          <div class="game-icon bg-gradient-to-br from-yellow-500 to-orange-600">
+            <i class="fas fa-bomb"></i>
+          </div>
+          <h3 class="text-xl font-bold text-center text-yellow-300 mb-2">Сапёр</h3>
+          <p class="text-sm text-gray-300 text-center mb-4">Найди все мины</p>
+          <div class="flex justify-center items-center gap-2">
+            <span class="text-xs px-2 py-1 bg-yellow-900/30 text-yellow-300 rounded-full">
+              <i class="fas fa-search mr-1"></i>Логика
+            </span>
+            <span class="text-xs px-2 py-1 bg-gray-900/30 text-gray-300 rounded-full">
+              <i class="fas fa-dice mr-1"></i>Удача
+            </span>
+          </div>
+        </a>
+
+        <!-- Понг -->
+        <a href="/games/pong.html" class="glass-card p-6 fade-in">
+          <div class="game-icon bg-gradient-to-br from-indigo-500 to-purple-600">
+            <i class="fas fa-table-tennis-paddle-ball"></i>
+          </div>
+          <h3 class="text-xl font-bold text-center text-indigo-300 mb-2">Понг</h3>
+          <p class="text-sm text-gray-300 text-center mb-4">Классическая аркадная игра</p>
+          <div class="flex justify-center items-center gap-2">
+            <span class="text-xs px-2 py-1 bg-indigo-900/30 text-indigo-300 rounded-full">
+              <i class="fas fa-trophy mr-1"></i>Аркада
+            </span>
+            <span class="text-xs px-2 py-1 bg-green-900/30 text-green-300 rounded-full">
+              <i class="fas fa-hand-pointer mr-1"></i>Реакция
+            </span>
+          </div>
+        </a>
+
+
+        <!-- Предложить игру -->
+        <a href="https://t.me/MortisPlay_YT" target="_blank" class="glass-card p-6 fade-in suggest-card">
+          <div class="game-icon bg-gradient-to-br from-fuchsia-500 to-purple-600 mb-4">
+            <i class="fas fa-plus"></i>
+          </div>
+          <h3 class="text-xl font-bold text-center text-fuchsia-300 mb-2">Предложить игру</h3>
+          <p class="text-sm text-gray-300 text-center mb-4">Хочешь увидеть свою любимую игру здесь?</p>
+          <div class="flex items-center gap-2 mt-4">
+            <i class="fab fa-telegram text-blue-400"></i>
+            <span class="text-sm text-blue-300 font-medium">Напиши в Telegram</span>
+          </div>
+        </a>
       </div>
-      <!-- Тетрис -->
-      <div class="game-card coming-soon fade-in">
-        <div class="game-icon bg-gradient-to-br from-purple-500 to-pink-600">
-          <i class="fa-solid fa-cubes-stacked"></i>
+
+      <!-- Navigation buttons -->
+      <div class="mt-16 fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <a href="/" class="modern-btn flex items-center justify-center gap-3 py-4">
+            <i class="fas fa-home text-xl"></i>
+            <span class="font-semibold text-lg">На главную</span>
+          </a>
+          
+          <a href="https://t.me/MortisPlay_YT" target="_blank" 
+             class="modern-btn telegram-btn flex items-center justify-center gap-3 py-4">
+            <i class="fab fa-telegram text-xl"></i>
+            <span class="font-semibold text-lg">Предложить игру</span>
+          </a>
         </div>
-        <h3 class="text-xl font-bold text-pink-300">Тетрис</h3>
-        <p class="text-sm text-gray-300 mt-1">Собери линии</p>
       </div>
-      <!-- Предложить игру -->
-      <a href="https://t.me/MortisPlay_YT" target="_blank" class="game-card border-2 border-dashed border-fuchsia-500 fade-in">
-        <div class="game-icon bg-gradient-to-br from-indigo-500 to-fuchsia-600">
-          <i class="fa-solid fa-plus"></i>
+
+      <!-- Stats Section -->
+      <div class="mt-20 fade-in">
+        <div class="glass-card p-6 md:p-8">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-center">
+              <div class="text-3xl md:text-4xl font-bold text-purple-400 mb-2">5</div>
+              <div class="text-lg text-gray-300">Игры доступны</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl md:text-4xl font-bold text-green-400 mb-2">0</div>
+              <div class="text-lg text-gray-300">В разработке</div>
+            </div>
+          </div>
         </div>
-        <h3 class="text-xl font-bold text-fuchsia-300">Предложи игру!</h3>
-        <p class="text-sm text-gray-300 mt-1">Напиши в Telegram</p>
-      </a>
+      </div>
+
+      <!-- Footer -->
+      <footer class="mt-16 pt-8 border-t border-gray-800 text-center fade-in">
+        <p class="text-gray-400 mb-4">
+          <i class="fas fa-gamepad mr-2 text-purple-400"></i>
+          Больше игр — больше веселья!
+        </p>
+        <div class="flex justify-center gap-4">
+          <a href="https://t.me/MortisPlay_YT" target="_blank" 
+             class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full hover:scale-105 transition-transform">
+            <i class="fab fa-telegram-plane mr-2"></i>Telegram
+          </a>
+          <a href="https://www.youtube.com/@MortisPlay" target="_blank" 
+             class="px-4 py-2 bg-gradient-to-r from-red-600 to-orange-500 rounded-full hover:scale-105 transition-transform">
+            <i class="fab fa-youtube mr-2"></i>YouTube
+          </a>
+        </div>
+        <p class="mt-6 text-sm text-gray-500">
+          Mortis Play Games © 2026
+        </p>
+      </footer>
     </div>
-  </div>
+  </main>
+
   <script>
-    // Переключение темы
-    document.getElementById('themeToggle').addEventListener('click', () => {
-      document.body.classList.toggle('light-mode');
-      const icon = document.querySelector('#themeToggle i');
-      icon.className = document.body.classList.contains('light-mode') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-    });
-    // Анимация появления
+    // Create floating particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const particleCount = 20;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // Random properties
+        const size = Math.random() * 15 + 5;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 20;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.top = `${posY}%`;
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.animationDelay = `${delay}s`;
+        particle.style.opacity = Math.random() * 0.2 + 0.1;
+        
+        container.appendChild(particle);
+      }
+    }
+    
+    // Intersection observer for fade-in animations
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
         }
       });
     }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+      
+      // Observe fade-in elements
+      document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+      });
+      
+      // Add click tracking for game cards
+      document.querySelectorAll('a.glass-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          const gameName = card.querySelector('h3').textContent.trim();
+          gtag('event', 'game_click', {
+            event_category: 'games',
+            event_label: gameName
+          });
+        });
+      });
+      
+      // Add hover effects for game icons
+      document.querySelectorAll('.game-icon').forEach(icon => {
+        icon.addEventListener('mouseenter', () => {
+          icon.style.transform = 'scale(1.1) rotate(5deg)';
+        });
+        
+        icon.addEventListener('mouseleave', () => {
+          icon.style.transform = 'scale(1) rotate(0deg)';
+        });
+      });
+    });
   </script>
 </body>
 </html>

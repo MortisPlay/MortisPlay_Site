@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Сапёр — Mortis Play</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #e0e0ff;
+            overflow: hidden;
+        }
+
+        #game-container {
+            text-align: center;
+            background: rgba(20, 20, 60, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px 35px;
+            border: 1px solid rgba(100, 100, 255, 0.18);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+        }
+
+        h1 {
+            margin: 0 0 18px 0;
+            font-size: 2.6rem;
+            background: linear-gradient(90deg, #a78bfa, #7dd3fc, #a3e635);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        #info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        #timer, #bombs {
+            min-width: 80px;
+            background: rgba(0,0,0,0.4);
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 2px solid #444;
+        }
+
+        #field {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 3px;
+            background: #111;
+            padding: 12px;
+            border-radius: 12px;
+            border: 3px solid #333;
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.8);
+        }
+
+        .cell {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(145deg, #444, #222);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.12s ease;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+        }
+
+        .cell:hover {
+            background: linear-gradient(145deg, #555, #333);
+            transform: scale(1.06);
+        }
+
+        .revealed {
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            cursor: default;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.8);
+            transform: none;
+        }
+
+        .revealed:hover {
+            transform: none;
+        }
+
+        .flag::before {
+            content: "🚩";
+            font-size: 1.8rem;
+        }
+
+        .bomb {
+            background: #ff4444 !important;
+            color: #fff;
+            animation: explode 0.6s forwards;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.6); }
+            100% { transform: scale(1); }
+        }
+
+        .number-1 { color: #6390f0; }
+        .number-2 { color: #4caf50; }
+        .number-3 { color: #f44336; }
+        .number-4 { color: #9c27b0; }
+        .number-5 { color: #ff9800; }
+        .number-6 { color: #00bcd4; }
+        .number-7 { color: #e91e63; }
+        .number-8 { color: #ffeb3b; }
+
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 28px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-weight: bold;
+        }
+
+        #restart {
+            background: #4caf50;
+            color: white;
+        }
+
+        #restart:hover { background: #43a047; transform: translateY(-2px); }
+
+        #back {
+            background: #e53935;
+            color: white;
+        }
+
+        #back:hover { background: #c62828; transform: translateY(-2px); }
+
+        #message {
+            margin-top: 18px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-height: 1.8rem;
+        }
+
+        .win  { color: #76ff03; text-shadow: 0 0 15px #76ff03; }
+        .lose { color: #ff5252; text-shadow: 0 0 15px #ff5252; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <h1>САПЁР</h1>
+
+    <div id="info">
+        <div id="bombs">💣 10</div>
+        <div id="timer">00:00</div>
+    </div>
+
+    <div id="field"></div>
+
+    <div id="message"></div>
+
+    <div class="buttons">
+        <button id="restart">Новая игра</button>
+        <button id="back">Назад</button>
+    </div>
+</div>
+
+<script>
+const ROWS = 10;
+const COLS = 10;
+const BOMBS = 10;
+
+let board = [];
+let revealed = [];
+let flags = [];
+let gameOver = false;
+let win = false;
+let timerInterval;
+let seconds = 0;
+
+const field = document.getElementById('field');
+const bombsLeft = document.getElementById('bombs');
+const timerEl = document.getElementById('timer');
+const message = document.getElementById('message');
+
+function createBoard() {
+    board = Array(ROWS).fill().map(() => Array(COLS).fill(0));
+    revealed = Array(ROWS).fill().map(() => Array(COLS).fill(false));
+    flags = Array(ROWS).fill().map(() => Array(COLS).fill(false));
+
+    // размещаем бомбы
+    let bombsPlaced = 0;
+    while (bombsPlaced < BOMBS) {
+        const r = Math.floor(Math.random() * ROWS);
+        const c = Math.floor(Math.random() * COLS);
+        if (board[r][c] !== -1) {
+            board[r][c] = -1;
+            bombsPlaced++;
+        }
+    }
+
+    // считаем цифры
+    for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+            if (board[r][c] === -1) continue;
+            board[r][c] = countBombsAround(r, c);
+        }
+    }
+}
+
+function countBombsAround(r, c) {
+    let count = 0;
+    for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+            if (dr === 0 && dc === 0) continue;
+            const nr = r + dr;
+            const nc = c + dc;
+            if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && board[nr][nc] === -1) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
+function render() {
+    field.innerHTML = '';
+    field.style.gridTemplateColumns = `repeat(${COLS}, 1fr)`;
+
+    for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+
+            if (revealed[r][c]) {
+                cell.classList.add('revealed');
+
+                if (board[r][c] === -1) {
+                    cell.textContent = '💣';
+                    cell.classList.add('bomb');
+                } else if (board[r][c] > 0) {
+                    cell.textContent = board[r][c];
+                    cell.classList.add(`number-${board[r][c]}`);
+                }
+            } else if (flags[r][c]) {
+                cell.classList.add('flag');
+            }
+
+            cell.addEventListener('click', (e) => {
+                if (gameOver) return;
+                if (e.button === 0) { // левая
+                    if (!flags[r][c]) reveal(r, c);
+                }
+            });
+
+            cell.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                if (gameOver) return;
+                if (!revealed[r][c]) {
+                    flags[r][c] = !flags[r][c];
+                    render();
+                    updateBombsLeft();
+                }
+            });
+
+            field.appendChild(cell);
+        }
+    }
+}
+
+function reveal(r, c) {
+    if (revealed[r][c] || flags[r][c]) return;
+
+    revealed[r][c] = true;
+
+    if (board[r][c] === -1) {
+        // проигрыш
+        gameOver = true;
+        message.textContent = "БУМ! Ты взорвался 💥";
+        message.className = 'lose';
+        showAllBombs();
+        clearInterval(timerInterval);
+        return;
+    }
+
+    if (board[r][c] === 0) {
+        // открываем соседей
+        for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+                if (dr === 0 && dc === 0) continue;
+                const nr = r + dr;
+                const nc = c + dc;
+                if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
+                    reveal(nr, nc);
+                }
+            }
+        }
+    }
+
+    render();
+    checkWin();
+}
+
+function showAllBombs() {
+    for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+            if (board[r][c] === -1) {
+                revealed[r][c] = true;
+            }
+        }
+    }
+    render();
+}
+
+function checkWin() {
+    let unrevealed = 0;
+    for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+            if (!revealed[r][c] && board[r][c] !== -1) {
+                unrevealed++;
+            }
+        }
+    }
+
+    if (unrevealed === 0) {
+        gameOver = true;
+        win = true;
+        message.textContent = "ПОБЕДА! Ты разминировал всё 🎉";
+        message.className = 'win';
+        clearInterval(timerInterval);
+    }
+}
+
+function updateBombsLeft() {
+    let count = BOMBS;
+    for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+            if (flags[r][c]) count--;
+        }
+    }
+    bombsLeft.textContent = `💣 ${count}`;
+}
+
+function startTimer() {
+    seconds = 0;
+    timerEl.textContent = '00:00';
+    clearInterval(timerInterval);
+
+    timerInterval = setInterval(() => {
+        seconds++;
+        const min = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const sec = (seconds % 60).toString().padStart(2, '0');
+        timerEl.textContent = `${min}:${sec}`;
+    }, 1000);
+}
+
+function newGame() {
+    gameOver = false;
+    win = false;
+    message.textContent = '';
+    message.className = '';
+    createBoard();
+    render();
+    updateBombsLeft();
+    startTimer();
+}
+
+// ---------------------- События ----------------------
+
+document.getElementById('restart').addEventListener('click', newGame);
+
+document.getElementById('back').addEventListener('click', () => {
+    history.back();
+});
+
+// запуск
+newGame();
+</script>
+
+</body>
+</html>

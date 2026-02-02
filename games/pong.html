@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Понг</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #0d001a, #1a0033, #22004d);
+      font-family: Arial, Helvetica, sans-serif;
+      color: #e0d0ff;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #container {
+      position: relative;
+      width: 720px;
+      height: 480px;
+      background: rgba(10, 5, 30, 0.75);
+      border: 2px solid #6644ff;
+      border-radius: 16px;
+      box-shadow: 0 0 60px rgba(100, 80, 255, 0.4),
+                  inset 0 0 40px rgba(40, 20, 100, 0.6);
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    #ui {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 28px;
+      font-weight: bold;
+      pointer-events: none;
+      z-index: 10;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+    }
+
+    #score-left  { color: #a78bfa; }
+    #score-right { color: #7dd3fc; }
+    #difficulty { color: #ffd700; font-size: 20px; }
+
+    #title {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 72px;
+      font-weight: bold;
+      color: rgba(180, 140, 255, 0.15);
+      pointer-events: none;
+      z-index: 5;
+      text-shadow: 0 0 40px rgba(140, 100, 255, 0.4);
+    }
+
+    .btn {
+      position: absolute;
+      bottom: 20px;
+      padding: 12px 28px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+      transition: all 0.2s;
+      z-index: 20;
+    }
+
+    #restart {
+      left: 50%;
+      transform: translateX(-50%);
+      background: #6b46c1;
+    }
+
+    #restart:hover { background: #7c3aed; transform: translateX(-50%) scale(1.05); }
+
+    #back {
+      left: 30px;
+      background: #e53e3e;
+    }
+
+    #back:hover { background: #c53030; transform: scale(1.05); }
+
+    #pause {
+      right: 30px;
+      background: #f6ad55;
+    }
+
+    #pause:hover { background: #ed8936; transform: scale(1.05); }
+
+    #pause.paused {
+      background: #48bb78;
+    }
+
+    #pause.paused:hover {
+      background: #38a169;
+    }
+
+    /* Меню сложности */
+    #difficulty-menu {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.9);
+      padding: 40px;
+      border-radius: 20px;
+      border: 3px solid #6644ff;
+      text-align: center;
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    #difficulty-menu h2 {
+      font-size: 36px;
+      margin: 0;
+      background: linear-gradient(45deg, #a78bfa, #7dd3fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .difficulty-btn {
+      padding: 15px 30px;
+      font-size: 22px;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+      color: white;
+    }
+
+    .easy { background: linear-gradient(45deg, #4CAF50, #81C784); }
+    .easy:hover { background: linear-gradient(45deg, #43A047, #66BB6A); transform: scale(1.05); }
+
+    .medium { background: linear-gradient(45deg, #FF9800, #FFB74D); }
+    .medium:hover { background: linear-gradient(45deg, #F57C00, #FFA726); transform: scale(1.05); }
+
+    .hard { background: linear-gradient(45deg, #F44336, #E57373); }
+    .hard:hover { background: linear-gradient(45deg, #D32F2F, #EF5350); transform: scale(1.05); }
+
+    #controls {
+      position: absolute;
+      bottom: 90px;
+      right: 30px;
+      font-size: 14px;
+      color: #aaa;
+      background: rgba(0,0,0,0.4);
+      padding: 12px 16px;
+      border-radius: 10px;
+      pointer-events: none;
+      text-align: center;
+    }
+
+    .paused-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-size: 48px;
+      font-weight: bold;
+      z-index: 15;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .paused-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .paused-overlay::before {
+      content: '⏸️';
+      font-size: 120px;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 20px #f6ad55);
+    }
+  </style>
+</head>
+<body>
+
+<div id="container">
+  <div id="ui">
+    <span id="score-left">0</span>
+    <span id="difficulty">Лёгкий</span>
+    <span id="score-right">0</span>
+  </div>
+
+  <div id="title">PONG</div>
+
+  <canvas id="game" width="720" height="480"></canvas>
+
+  <div id="paused-overlay" class="paused-overlay"></div>
+
+  <button id="restart" class="btn">Новая игра</button>
+  <button id="back" class="btn">Назад</button>
+  <button id="pause" class="btn">Пауза</button>
+
+  <div id="controls">
+    ↑ / ↓ — управление<br>
+    P или кнопка — пауза
+  </div>
+
+  <!-- Меню выбора сложности -->
+  <div id="difficulty-menu">
+    <h2>🎮 Выбери сложность</h2>
+    <button class="difficulty-btn easy" data-difficulty="easy">🐣 Лёгкий</button>
+    <button class="difficulty-btn medium" data-difficulty="medium">⚡ Средний</button>
+    <button class="difficulty-btn hard" data-difficulty="hard">🔥 Сложный</button>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+const WIDTH = canvas.width;
+const HEIGHT = canvas.height;
+
+// Настройки
+const PADDLE_WIDTH = 18;
+const PADDLE_HEIGHT = 100;
+const BALL_SIZE = 14;
+const PADDLE_SPEED = 7;
+
+// РЕЖИМЫ СЛОЖНОСТИ
+const difficulties = {
+  easy: {
+    ballSpeed: 4.0,
+    aiSpeed: 0.4,    // СЛАБЫЙ ИИ
+    aiPrediction: 0.3 // Плохо предсказывает
+  },
+  medium: {
+    ballSpeed: 5.5,
+    aiSpeed: 0.75,   // НОРМАЛЬНЫЙ ИИ
+    aiPrediction: 0.7
+  },
+  hard: {
+    ballSpeed: 7.5,
+    aiSpeed: 1.1,    // СИЛЬНЫЙ ИИ
+    aiPrediction: 1.0
+  }
+};
+
+let currentDifficulty = 'easy'; // По умолчанию
+
+let leftPaddle = { x: 30, y: HEIGHT/2 - PADDLE_HEIGHT/2, dy: 0 };
+let rightPaddle = { x: WIDTH - 30 - PADDLE_WIDTH, y: HEIGHT/2 - PADDLE_HEIGHT/2, dy: 0 };
+
+let ball = { x: WIDTH/2, y: HEIGHT/2, dx: 0, dy: 0 };
+
+let scoreLeft = 0;
+let scoreRight = 0;
+
+let keys = {};
+let paused = false;
+let gameStarted = false;
+
+// Звуки
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(frequency, duration, type = 'sine') {
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  oscillator.frequency.value = frequency;
+  oscillator.type = type;
+  
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+  
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + duration);
+}
+
+const sounds = {
+  paddle: () => playSound(600 + Math.random() * 200, 0.08, 'square'),
+  wall: () => playSound(300 + Math.random() * 100, 0.06, 'sawtooth'),
+  score: () => playSound(200, 0.3, 'triangle')
+};
+
+function drawRect(x, y, w, h, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, w, h);
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 12;
+  ctx.fillRect(x, y, w, h);
+  ctx.shadowBlur = 0;
+}
+
+function drawCircle(x, y, r, color) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI*2);
+  ctx.fillStyle = color;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 20;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+}
+
+function drawDashedLine() {
+  ctx.setLineDash([10, 15]);
+  ctx.beginPath();
+  ctx.moveTo(WIDTH/2, 0);
+  ctx.lineTo(WIDTH/2, HEIGHT);
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = 'rgba(180, 140, 255, 0.4)';
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function draw() {
+  // фон
+  drawRect(0, 0, WIDTH, HEIGHT, 'rgba(15,10,40,0.92)');
+
+  drawDashedLine();
+
+  // ракетки
+  drawRect(leftPaddle.x, leftPaddle.y, PADDLE_WIDTH, PADDLE_HEIGHT, '#a78bfa');
+  drawRect(rightPaddle.x, rightPaddle.y, PADDLE_WIDTH, PADDLE_HEIGHT, '#7dd3fc');
+
+  // мяч
+  drawCircle(ball.x, ball.y, BALL_SIZE, '#f0efff');
+
+  // счёт
+  document.getElementById('score-left').textContent = scoreLeft;
+  document.getElementById('score-right').textContent = scoreRight;
+  document.getElementById('difficulty').textContent = 
+    currentDifficulty === 'easy' ? '🐣 Лёгкий' :
+    currentDifficulty === 'medium' ? '⚡ Средний' : '🔥 Сложный';
+}
+
+function updateAI() {
+  const config = difficulties[currentDifficulty];
+  
+  // Цель - предсказанная позиция мяча
+  let targetY = ball.y - PADDLE_HEIGHT / 2;
+  
+  // УМНЫЙ ИИ с предсказанием (зависит от сложности)
+  if (ball.dx > 0) {
+    const timeToPaddle = (rightPaddle.x - ball.x) / ball.dx;
+    const predictedY = ball.y + ball.dy * timeToPaddle;
+    targetY = predictedY - PADDLE_HEIGHT / 2;
+    
+    // В ЛЕГКОМ режиме ИИ иногда "промахивается"
+    if (currentDifficulty === 'easy' && Math.random() < 0.3) {
+      targetY += (Math.random() - 0.5) * 100; // случайная ошибка
+    }
+  }
+  
+  // Ограничиваем цель границами
+  targetY = Math.max(0, Math.min(HEIGHT - PADDLE_HEIGHT, targetY));
+  
+  // Движение ИИ с разной скоростью
+  rightPaddle.dy = (targetY - rightPaddle.y) * config.aiSpeed;
+}
+
+function update() {
+  if (paused || !gameStarted) return;
+
+  // движение левой ракетки (игрок)
+  if (keys['ArrowUp']) leftPaddle.dy = -PADDLE_SPEED;
+  else if (keys['ArrowDown']) leftPaddle.dy = PADDLE_SPEED;
+  else leftPaddle.dy *= 0.85; // инерция
+
+  // ИИ для правой ракетки
+  updateAI();
+
+  // обновляем позиции
+  leftPaddle.y += leftPaddle.dy;
+  rightPaddle.y += rightPaddle.dy;
+
+  // границы ракеток
+  leftPaddle.y = Math.max(0, Math.min(HEIGHT - PADDLE_HEIGHT, leftPaddle.y));
+  rightPaddle.y = Math.max(0, Math.min(HEIGHT - PADDLE_HEIGHT, rightPaddle.y));
+
+  // движение мяча
+  ball.x += ball.dx;
+  ball.y += ball.dy;
+
+  // отскок от верха/низа
+  if (ball.y <= BALL_SIZE || ball.y >= HEIGHT - BALL_SIZE) {
+    ball.dy = -ball.dy;
+    sounds.wall();
+  }
+
+  // отскок от левой ракетки
+  if (ball.x <= leftPaddle.x + PADDLE_WIDTH + BALL_SIZE &&
+      ball.x >= leftPaddle.x &&
+      ball.y + BALL_SIZE >= leftPaddle.y &&
+      ball.y - BALL_SIZE <= leftPaddle.y + PADDLE_HEIGHT) {
+    ball.dx = -ball.dx * 1.04;
+    ball.dy += (ball.y - (leftPaddle.y + PADDLE_HEIGHT/2)) * 0.12;
+    sounds.paddle();
+  }
+
+  // отскок от правой ракетки
+  if (ball.x >= rightPaddle.x - BALL_SIZE &&
+      ball.x <= rightPaddle.x + PADDLE_WIDTH &&
+      ball.y + BALL_SIZE >= rightPaddle.y &&
+      ball.y - BALL_SIZE <= rightPaddle.y + PADDLE_HEIGHT) {
+    ball.dx = -ball.dx * 1.04;
+    ball.dy += (ball.y - (rightPaddle.y + PADDLE_HEIGHT/2)) * 0.12;
+    sounds.paddle();
+  }
+
+  // гол
+  if (ball.x < 0) {
+    scoreRight++;
+    sounds.score();
+    resetBall();
+  }
+  if (ball.x > WIDTH) {
+    scoreLeft++;
+    sounds.score();
+    resetBall();
+  }
+}
+
+function resetBall() {
+  const config = difficulties[currentDifficulty];
+  ball.x = WIDTH / 2;
+  ball.y = HEIGHT / 2;
+  ball.dx = config.ballSpeed * (Math.random() > 0.5 ? 1 : -1);
+  ball.dy = config.ballSpeed * (Math.random() * 2 - 1) * 0.5;
+}
+
+function setDifficulty(diff) {
+  currentDifficulty = diff;
+  gameStarted = true;
+  scoreLeft = 0;
+  scoreRight = 0;
+  resetBall();
+  paused = false;
+  togglePause(); // обновить UI
+  
+  // Скрываем меню сложности
+  document.getElementById('difficulty-menu').style.display = 'none';
+}
+
+function togglePause() {
+  paused = !paused;
+  const pauseBtn = document.getElementById('pause');
+  const overlay = document.getElementById('paused-overlay');
+  
+  pauseBtn.textContent = paused ? 'Играть' : 'Пауза';
+  pauseBtn.classList.toggle('paused', paused);
+  overlay.classList.toggle('active', paused);
+}
+
+function gameLoop() {
+  update();
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+// Выбор сложности
+document.querySelectorAll('.difficulty-btn').forEach(btn => {
+  btn.onclick = () => setDifficulty(btn.dataset.difficulty);
+});
+
+// Управление
+window.addEventListener('keydown', e => {
+  keys[e.key] = true;
+  if (e.key.toLowerCase() === 'p') {
+    e.preventDefault();
+    togglePause();
+  }
+});
+
+window.addEventListener('keyup', e => {
+  keys[e.key] = false;
+});
+
+// Кнопки
+document.getElementById('restart').onclick = () => {
+  scoreLeft = 0;
+  scoreRight = 0;
+  resetBall();
+  paused = false;
+  togglePause();
+};
+
+document.getElementById('pause').onclick = togglePause;
+
+document.getElementById('back').onclick = () => {
+  history.back();
+};
+
+// Инициализация аудио
+document.addEventListener('click', () => {
+  if (audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
+}, { once: true });
+
+// Старт
+gameLoop();
+</script>
+</body>
+</html>
