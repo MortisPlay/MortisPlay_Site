@@ -17,347 +17,631 @@
   <meta name="twitter:image" content="https://mortisplay.ru/assets/twitter-image-qa.jpg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'float': 'float 8s ease-in-out infinite',
+            'float-slow': 'float 12s ease-in-out infinite',
+            'gradient': 'gradient 8s ease infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0) translateX(0)' },
+              '50%': { transform: 'translateY(-20px) translateX(10px)' },
+            },
+            gradient: {
+              '0%, 100%': { 'background-position': '0% 50%' },
+              '50%': { 'background-position': '100% 50%' },
+            },
+          },
+        },
+      },
+    }
+  </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
-  <script nonce="${crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '')}">
+  <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });
   </script>
   <style>
-    :root { --font-scale: 1; }
-    body { 
-      font-size: calc(1rem * var(--font-scale)); 
-      background: linear-gradient(to bottom right, #0d0d0d, #1a1a1a, #2d2d2d); 
-      color: #e5e7eb; 
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    
+    :root {
+      --primary: #8b5cf6;
+      --secondary: #ec4899;
+      --accent: #10b981;
+      --dark: #0f0a1e;
+      --darker: #090615;
     }
-    .text-4xl { font-size: calc(2.25rem * var(--font-scale)); }
-    .text-2xl { font-size: calc(1.5rem * var(--font-scale)); }
-    .text-lg { font-size: calc(1.125rem * var(--font-scale)); }
-    .text-sm { font-size: calc(0.875rem * var(--font-scale)); }
-    @keyframes floaty { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-15px) translateX(5px); } }
-    .animate-floaty { animation: floaty 6s ease-in-out infinite; }
-    .animate-floaty-slow { animation: floaty 8s ease-in-out infinite; }
-    .fade-in { 
-      opacity: 0; 
-      transform: translateY(15px); 
-      transition: opacity 0.5s ease, transform 0.5s ease; 
+    
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #1e1b4b 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
-    .fade-in.is-visible { opacity: 1; transform: translateY(0); }
-    .card {
-      background: rgba(30, 30, 30, 0.85);
-      border: 1px solid rgba(120, 120, 120, 0.3);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    /* Animated gradient background */
+    .gradient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+      animation: gradientShift 15s ease infinite alternate;
     }
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+    @keyframes gradientShift {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1.1) rotate(5deg); }
     }
-    .title-gradient { 
-      color: #ffffff; 
-      background: linear-gradient(to right, #a5b4fc, #f9a8d4); 
-      -webkit-background-clip: text; 
-      background-clip: text; 
-      -webkit-text-fill-color: transparent; 
-      transition: filter 0.3s ease;
-    }
-    .title-gradient:hover { filter: brightness(1.2); }
-    .disabled-button {
-      background: rgba(100, 100, 100, 0.5);
-      color: #9ca3af;
-      cursor: not-allowed;
+
+    /* Floating particles */
+    .particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
       pointer-events: none;
     }
-    h1, h2, h3 { color: #e5e7eb; }
-    p, li, span { color: #d1d5db; }
-    .high-contrast { 
-      --text-color: #ffffff; 
-      --bg-color: #000000; 
-      --link-color: #00ff00; 
+
+    .particle {
+      position: absolute;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      opacity: 0.2;
+      animation: float 20s infinite linear;
     }
-    .high-contrast body { background: var(--bg-color); color: var(--text-color); }
-    .high-contrast a { color: var(--link-color); text-decoration: underline; }
-    .high-contrast .card { background: var(--bg-color); border: 2px solid var(--text-color); }
-    .high-contrast .title-gradient { color: var(--text-color); background: none; -webkit-text-fill-color: var(--text-color); }
-    .high-contrast .bg-gradient-to-r { 
-      background: var(--bg-color); 
-      color: var(--text-color); 
-      border: 2px solid var(--text-color);
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-1000px) rotate(720deg); }
     }
-    .high-contrast .disabled-button {
-      background: var(--bg-color);
-      color: var(--text-color);
-      border: 2px solid var(--text-color);
+
+    /* Glass morphism card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: visible;
     }
-    .low-performance .animate-floaty, 
-    .low-performance .animate-floaty-slow { animation: none; }
-    .low-performance .fade-in, 
-    .no-animations .fade-in { 
-      transition: none; 
-      opacity: 1; 
-      transform: none; 
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0) 100%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 0;
     }
-    .no-animations .animate-floaty, 
-    .no-animations .animate-floaty-slow { 
-      animation: none; 
+
+    .glass-card:hover::before {
+      opacity: 1;
     }
+
+    .glass-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(139, 92, 246, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      border-color: rgba(139, 92, 246, 0.4);
+    }
+
+    /* Animated gradient text */
+    .gradient-text {
+      background: linear-gradient(90deg, 
+        #8b5cf6, 
+        #ec4899, 
+        #10b981, 
+        #ec4899, 
+        #8b5cf6);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: gradient 4s ease-in-out infinite;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    /* Q&A Item */
+    .qa-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .qa-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(139, 92, 246, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .qa-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--primary), var(--secondary));
+      opacity: 0.7;
+    }
+
+    /* Modern button */
+    .modern-btn {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      border: none;
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .modern-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+      transition: 0.5s;
+    }
+
+    .modern-btn:hover::before {
+      left: 100%;
+    }
+
+    .modern-btn:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 
+        0 20px 40px rgba(139, 92, 246, 0.4),
+        0 0 0 2px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Telegram button special */
+    .telegram-btn {
+      background: linear-gradient(135deg, #0088cc, #00a8ff);
+      box-shadow: 0 10px 30px rgba(0, 136, 204, 0.3);
+    }
+
+    .telegram-btn:hover {
+      box-shadow: 
+        0 20px 40px rgba(0, 136, 204, 0.4),
+        0 0 0 2px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Category badge */
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #e5e7eb;
+    }
+
+    /* Fade in animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+    }
+
+    /* Loading animation */
     .loader {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 80px;
+      padding: 2rem;
     }
+
     .loader::before {
       content: '';
-      width: 20px;
-      height: 20px;
-      border: 3px solid #a5b4fc;
-      border-top-color: transparent;
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(139, 92, 246, 0.3);
+      border-top-color: var(--primary);
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
+
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-    @media (max-width: 640px) {
-      .md\:grid-cols-4 { grid-template-columns: 1fr; }
-      .text-4xl { font-size: calc(1.75rem * var(--font-scale)); }
-      .text-2xl { font-size: calc(1.25rem * var(--font-scale)); }
-      .px-4 { padding-left: 0.75rem; padding-right: 0.75rem; }
-      .py-24 { padding-top: 3rem; padding-bottom: 3rem; }
-      .w-80, .w-72, .w-[50rem] { width: 100%; }
-      .rounded-3xl { border-radius: 0.75rem; }
-      .backdrop-blur-lg { backdrop-filter: none; background: rgba(30, 30, 30, 0.85); }
-      .card:hover { transform: none; }
+
+    /* User avatar styles */
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .glass-card {
+        border-radius: 20px;
+        padding: 1.5rem !important;
+      }
+      
+      .gradient-text {
+        font-size: 3rem !important;
+      }
+      
+      .qa-item {
+        padding: 1.25rem;
+      }
     }
   </style>
 </head>
 <body class="min-h-screen">
-  <main class="relative min-h-screen overflow-hidden">
-    <div class="absolute -top-10 -left-10 w-80 h-80 bg-purple-500/15 rounded-full blur-2xl animate-floaty"></div>
-    <div class="absolute top-40 -right-10 w-72 h-72 bg-pink-500/15 rounded-full blur-2xl animate-floaty-slow"></div>
-    <div class="mx-auto max-w-5xl px-4 py-16 relative z-10">
-      <h1 id="qaTitle" class="title-gradient text-4xl md:text-5xl font-bold tracking-tight text-center">
-        Q&A с Mortis Play
-      </h1>
-      <p class="mt-4 text-lg text-center text-slate-300">Архив вопросов и ответов. Наш бот всегда открыт к новым задачам и вопросам! 🚀</p>
-      <div class="mt-12 grid gap-8">
-        <div class="backdrop-blur-lg card border rounded-2xl p-6 shadow-md fade-in">
-          <h2 class="text-2xl font-semibold text-purple-300 flex items-center gap-2">
-            <i class="fa-solid fa-question-circle"></i> Задать вопрос
+  <!-- Animated background -->
+  <div class="gradient-bg"></div>
+  
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
+
+  <main class="relative z-10">
+    <div class="mx-auto max-w-4xl px-4 py-12 md:py-20">
+      <!-- Header -->
+      <header class="text-center mb-16 md:mb-24 fade-in">
+        <div class="inline-block mb-6">
+          <div class="category-badge mb-4">
+            <i class="fas fa-comments"></i>
+            ВОПРОСЫ И ОТВЕТЫ
+          </div>
+        </div>
+        <h1 class="gradient-text text-5xl md:text-7xl lg:text-8xl font-black mb-6">
+          Q&A
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-medium">
+          Архив вопросов и ответов от сообщества Mortis Play
+        </p>
+      </header>
+
+      <!-- Ask Question Section -->
+      <div class="glass-card p-6 md:p-8 mb-8 fade-in">
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-3 h-8 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full"></div>
+          <h2 class="text-3xl md:text-4xl font-bold flex items-center gap-3">
+            <i class="fab fa-telegram text-blue-400"></i>
+            Задать вопрос
           </h2>
-          <p id="qaStatus" class="mt-4 text-lg text-slate-300 leading-relaxed">
-            Хочешь задать вопрос или предложить задачу для бота? Наш бот открыт к любым задачам и идеям! Пиши прямо сейчас в Telegram — ответим в ближайшее время и рассмотрим любые предложения. 🎯
+        </div>
+        
+        <div class="space-y-6">
+          <div class="p-4 bg-gradient-to-r from-blue-900/20 to-cyan-900/20 rounded-xl">
+            <p class="text-lg text-gray-200 leading-relaxed">
+              Хочешь задать вопрос или предложить задачу для бота? Наш бот открыт к любым задачам и идеям! 
+              Пиши прямо сейчас в Telegram — ответим в ближайшее время и рассмотрим любые предложения. 🎯
+            </p>
+          </div>
+          
+          <div class="flex flex-col sm:flex-row gap-4 items-center">
+            <a href="https://t.me/MortisPlayBot" target="_blank" rel="noopener noreferrer" 
+               class="modern-btn telegram-btn flex items-center justify-center gap-3 py-4 w-full sm:w-auto">
+              <i class="fab fa-telegram text-2xl"></i>
+              <span class="font-semibold text-lg">Задать вопрос в Telegram</span>
+            </a>
+            
+            <div class="text-center sm:text-left">
+              <p class="text-sm text-gray-400">
+                <i class="fas fa-clock mr-1"></i>
+                Обычно отвечаем в течение 24 часов
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Questions & Answers Section -->
+      <div class="glass-card p-6 md:p-8 fade-in">
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-3 h-8 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full"></div>
+          <h2 class="text-3xl md:text-4xl font-bold flex items-center gap-3">
+            <i class="fas fa-question-circle text-purple-400"></i>
+            Вопросы и ответы
+          </h2>
+        </div>
+        
+        <div id="qa-list" class="space-y-4">
+          <div class="loader"></div>
+        </div>
+      </div>
+
+      <!-- Navigation buttons -->
+      <div class="mt-16 fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <a href="/" class="modern-btn flex items-center justify-center gap-3 py-4">
+            <i class="fas fa-home text-xl"></i>
+            <span class="font-semibold text-lg">На главную</span>
+          </a>
+          
+          <a href="/faq.html" class="modern-btn flex items-center justify-center gap-3 py-4"
+             style="background: linear-gradient(135deg, #ec4899, #be185d);">
+            <i class="fas fa-question-circle text-xl"></i>
+            <span class="font-semibold text-lg">К FAQ разделу</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="mt-16 pt-8 border-t border-gray-800 text-center fade-in">
+        <div class="space-y-4">
+          <p class="text-gray-400">
+            <i class="fas fa-lightbulb mr-2 text-yellow-400"></i>
+            Самые интересные вопросы попадают в видео!
           </p>
-          <div class="mt-6 flex justify-center">
-            <a href="https://t.me/mortisplay32_bot" target="_blank" rel="noopener noreferrer" 
-               class="px-6 py-3 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 hover:from-teal-500 hover:to-blue-500 transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2 transform hover:-translate-y-1"
-               aria-label="Задать вопрос в Telegram">
-              <i class="fa-brands fa-telegram text-xl"></i> Задать вопрос в Telegram
+          
+          <div class="flex justify-center gap-4">
+            <a href="https://t.me/MortisPlayBot" target="_blank" 
+               class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full hover:scale-105 transition-transform">
+              <i class="fab fa-telegram-plane mr-2"></i>Telegram Бот
+            </a>
+            <a href="https://t.me/Mortisplay_YT" target="_blank" 
+               class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full hover:scale-105 transition-transform">
+              <i class="fab fa-telegram mr-2"></i>Основной канал
             </a>
           </div>
+          
+          <p class="mt-6 text-sm text-gray-500">
+            Mortis Play Q&A © 2026
+          </p>
         </div>
-        <div class="backdrop-blur-lg card border rounded-2xl p-6 shadow-md fade-in">
-          <h2 class="text-2xl font-semibold text-indigo-300 flex items-center gap-2">
-            <i class="fa-solid fa-comments"></i> Вопросы и ответы
-          </h2>
-          <div id="qa-list" class="mt-4 space-y-4">
-            <div class="loader" aria-label="Загрузка вопросов"></div>
-          </div>
-        </div>
-      </div>
-      <div class="mt-10 text-center">
-        <a href="/" class="px-6 py-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 shadow-md inline-flex items-center gap-2" aria-label="Вернуться на главную">
-          <i class="fa-solid fa-arrow-left"></i> На главную
-        </a>
-      </div>
+      </footer>
     </div>
   </main>
-  <script nonce="${crypto.getRandomValues(new Uint8Array(16)).reduce((s, b) => s + b.toString(16).padStart(2, '0'), '')}">
-    const logAction = (message) => console.log(`[Q&A] ${message}`);
 
-    const debounce = (func, wait) => {
-      let timeout;
-      return (...args) => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-      };
-    };
-
-    const escapeHTML = (str) => {
+  <script>
+    // Create floating particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const particleCount = 15;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // Random properties
+        const size = Math.random() * 12 + 3;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 20;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.top = `${posY}%`;
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.animationDelay = `${delay}s`;
+        particle.style.opacity = Math.random() * 0.15 + 0.1;
+        
+        container.appendChild(particle);
+      }
+    }
+    
+    // Intersection observer for fade-in animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    // Load Q&A items
+    function loadQAItems() {
+      const qaList = document.getElementById('qa-list');
+      if (!qaList) return;
+      
+      // Simulate loading delay
+      setTimeout(() => {
+        const approvedQuestions = [
+          { 
+            username: 'Shartkku', 
+            initial: 'S',
+            question: 'Когда новая серия Standoff пряток? уже 2 года ждём', 
+            answer: 'Серии пряток по Standoff 2 больше не будет из-за того, что канал заброшен.' 
+          },
+          { 
+            username: 'Johnny_Drill', 
+            initial: 'J',
+            question: 'Когда стрим по PEAK?', 
+            answer: 'Сейчас времени на стрим нет, но скоро будет СЕКРЕТНОЕ ДОСЬЕ, которое перевернёт контору канала!!! >:D' 
+          },
+          { 
+            username: 'sakhaboom_b00m', 
+            initial: 'S',
+            question: 'Функционирует ли бот с Discord сервером?', 
+            answer: 'Если ты про связь бота с Discord, то, к сожалению, нет. Но на нашем новом Discord-сервере есть свой бот!' 
+          },
+          { 
+            username: 'vakiliner', 
+            initial: 'V',
+            question: 'Где можно предложить идею или улучшение для твоего сайта или бота?', 
+            answer: 'Предложения можно отправлять в основном Telegram-канале: подпишись, нажми на три точки, выбери "Сообщение каналу" и отправь с иконкой $. Бот всегда открыт к новым задачам!' 
+          },
+          { 
+            username: 'Shartkku', 
+            initial: 'S',
+            question: 'В каком году ты начал играть в КС?', 
+            answer: 'В 2020–2021 году.' 
+          },
+          { 
+            username: 'vakiliner', 
+            initial: 'V',
+            question: 'Какая твоя любимая игра?', 
+            answer: 'Сейчас это CS2, а за последний месяц понравились: PEAK, REPO и другие.' 
+          }
+        ];
+        
+        qaList.innerHTML = '';
+        
+        approvedQuestions.forEach((q, index) => {
+          const qaItem = document.createElement('div');
+          qaItem.className = 'qa-item p-5 fade-in';
+          qaItem.style.animationDelay = `${index * 0.1}s`;
+          
+          qaItem.innerHTML = `
+            <div class="flex items-start gap-4">
+              <div class="user-avatar flex-shrink-0">
+                ${q.initial}
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between mb-3">
+                  <div>
+                    <span class="font-bold text-lg text-white">${escapeHTML(q.username)}</span>
+                    <span class="ml-2 text-sm text-gray-400">#${index + 1}</span>
+                  </div>
+                  <span class="text-xs text-purple-300 bg-purple-900/30 px-2 py-1 rounded-full">
+                    <i class="fas fa-question-circle mr-1"></i>Вопрос
+                  </span>
+                </div>
+                
+                <div class="mb-4 p-4 bg-gradient-to-r from-purple-900/10 to-transparent rounded-lg">
+                  <p class="text-gray-200 font-medium">${escapeHTML(q.question)}</p>
+                </div>
+                
+                <div class="p-4 bg-gradient-to-r from-blue-900/10 to-transparent rounded-lg border-l-4 border-blue-500">
+                  <div class="flex items-center gap-2 mb-2">
+                    <i class="fas fa-reply text-blue-400"></i>
+                    <span class="font-bold text-blue-300">Ответ Mortis Play:</span>
+                  </div>
+                  <p class="text-gray-200">${escapeHTML(q.answer)}</p>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          qaList.appendChild(qaItem);
+          
+          // Observe each item for fade-in
+          observer.observe(qaItem);
+        });
+        
+        // Track Q&A view
+        gtag('event', 'qa_list_view', {
+          event_category: 'engagement',
+          event_label: `questions_loaded_${approvedQuestions.length}`
+        });
+        
+      }, 800); // Simulated loading delay
+    }
+    
+    // Helper function to escape HTML
+    function escapeHTML(str) {
       const div = document.createElement('div');
       div.textContent = str;
       return div.innerHTML;
-    };
-
-    const setupFadeIn = () => {
-      try {
-        const io = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting && !document.documentElement.classList.contains('low-performance') && !document.documentElement.classList.contains('no-animations')) {
-                entry.target.classList.add('is-visible');
-                io.unobserve(entry.target);
-              }
-            });
-          },
-          { threshold: 0.1 }
-        );
-        document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
-        logAction('IntersectionObserver для fade-in настроен');
-      } catch (e) {
-        logAction('Ошибка в setupFadeIn: ' + e.message);
-      }
-    };
-
-    const setupButtonTracking = () => {
-      try {
-        const buttons = document.querySelectorAll('a[class*="bg-gradient-to-r"]');
-        buttons.forEach(button => {
-          button.addEventListener('click', (e) => {
-            const label = e.target.textContent.trim();
-            gtag('event', 'button_click', { event_category: 'qa', event_label: label });
-            logAction(`Клик по кнопке: ${label}`);
-          });
-        });
-        
-        // Трекинг для кнопки Telegram
-        const telegramButton = document.querySelector('a[href*="t.me/MortisPlayBot"]');
-        if (telegramButton) {
-          telegramButton.addEventListener('click', () => {
-            gtag('event', 'telegram_button_click', { 
-              event_category: 'qa', 
-              event_label: 'Задать вопрос в Telegram' 
-            });
-            logAction('Клик по кнопке Telegram для вопроса');
-          });
-        }
-        
-        logAction('Трекинг кнопок настроен');
-      } catch (e) {
-        logAction('Ошибка в setupButtonTracking: ' + e.message);
-      }
-    };
-
-    const setupFontSize = () => {
-      try {
-        const savedFontSize = localStorage.getItem('fontSize') || '100';
-        document.documentElement.style.setProperty('--font-scale', savedFontSize / 100);
-        logAction(`Размер шрифта установлен: ${savedFontSize}%`);
-      } catch (e) {
-        logAction('Ошибка в setupFontSize: ' + e.message);
-      }
-    };
-
-    const setupHighContrast = () => {
-      try {
-        const savedContrast = localStorage.getItem('highContrast') === 'true';
-        document.documentElement.classList.toggle('high-contrast', savedContrast);
-        logAction(`Высокая контрастность: ${savedContrast ? 'включена' : 'выключена'}`);
-      } catch (e) {
-        logAction('Ошибка в setupHighContrast: ' + e.message);
-      }
-    };
-
-    const setupPerformance = () => {
-      try {
-        const savedMode = localStorage.getItem('lowPerformance') === 'true';
-        document.documentElement.classList.toggle('low-performance', savedMode);
-        logAction(`Режим производительности: ${savedMode ? 'лёгкий' : 'нормальный'}`);
-      } catch (e) {
-        logAction('Ошибка в setupPerformance: ' + e.message);
-      }
-    };
-
-    const setupAnimations = () => {
-      try {
-        const savedAnimations = localStorage.getItem('disableAnimations') === 'true';
-        document.documentElement.classList.toggle('no-animations', savedAnimations);
-        logAction(`Анимации: ${savedAnimations ? 'отключены' : 'включены'}`);
-      } catch (e) {
-        logAction('Ошибка в setupAnimations: ' + e.message);
-      }
-    };
-
-    const setupQAList = () => {
-      try {
-        logAction('Запуск setupQAList');
-        const qaList = document.getElementById('qa-list');
-        if (!qaList) {
-          logAction('Ошибка: qaList не найден');
-          return;
-        }
-
-        qaList.innerHTML = '';
-        const approvedQuestions = [
-          { username: 'Shartkku', question: 'Когда новая серия Standoff пряток? уже 2 года ждём', answer: 'Серии пряток по Standoff 2 больше не будет из-за того, что канал заброшен.' },
-          { username: 'Johnny_Drill', question: 'Когда стрим по PEAK?', answer: 'Сейчас времени на стрим нет, но скоро будет СЕКРЕТНОЕ ДОСЬЕ, которое перевернёт контору канала!!! >:D' },
-          { username: 'sakhaboom_b00m', question: 'Функционирует ли бот с Discord сервером?', answer: 'Если ты про связь бота с Discord, то, к сожалению, нет. Но на нашем новом Discord-сервере есть свой бот!' },
-          { username: 'vakiliner', question: 'Где можно предложить идею или улучшение для твоего сайта или бота?', answer: 'Предложения можно отправлять в основном Telegram-канале: подпишись, нажми на три точки, выбери "Сообщение каналу" и отправь с иконкой $. Бот всегда открыт к новым задачам!' },
-          { username: 'Shartkku', question: 'В каком году ты начал играть в КС?', answer: 'В 2020–2021 году.' },
-          { username: 'vakiliner', question: 'Какая твоя любимая игра?', answer: 'Сейчас это CS2, а за последний месяц понравились: PEAK, REPO и другие.' }
-        ];
-
-        if (approvedQuestions.length === 0) {
-          qaList.innerHTML = '<p class="text-sm text-slate-300">Пока нет одобренных вопросов.</p>';
-          logAction('Нет одобренных вопросов для отображения');
-          return;
-        }
-
-        approvedQuestions.forEach(q => {
-          const qaItem = document.createElement('div');
-          qaItem.className = 'border-l-2 border-purple-400 pl-4 py-2 hover:bg-indigo-500/10 rounded-lg transition-all';
-          qaItem.innerHTML = `
-            <p class="text-lg font-medium text-purple-200 flex items-center gap-2">
-              <i class="fa-solid fa-user text-sm"></i> ${escapeHTML(q.username || 'Аноним')}
-            </p>
-            <p class="text-sm text-slate-200 mt-1"><strong>Вопрос:</strong> ${escapeHTML(q.question)}</p>
-            <p class="text-sm text-indigo-200 mt-2"><strong>Ответ:</strong> ${escapeHTML(q.answer)}</p>
-          `;
-          qaList.appendChild(qaItem);
-        });
-
-        gtag('event', 'qa_list_view', { event_category: 'qa', event_label: `questions_displayed_${approvedQuestions.length}` });
-        logAction(`Список вопросов отображён: ${approvedQuestions.length} вопросов`);
-      } catch (e) {
-        logAction('Ошибка в setupQAList: ' + e.message);
-      }
-    };
-
-    // Синхронизация настроек между вкладками
-    window.addEventListener('storage', (e) => {
-      try {
-        if (e.key === 'fontSize') {
-          document.documentElement.style.setProperty('--font-scale', e.newValue / 100);
-          logAction(`Синхронизация размера шрифта: ${e.newValue}%`);
-        } else if (e.key === 'highContrast') {
-          document.documentElement.classList.toggle('high-contrast', e.newValue === 'true');
-          logAction(`Синхронизация высокой контрастности: ${e.newValue}`);
-        } else if (e.key === 'lowPerformance') {
-          document.documentElement.classList.toggle('low-performance', e.newValue === 'true');
-          logAction(`Синхронизация режима производительности: ${e.newValue}`);
-        } else if (e.key === 'disableAnimations') {
-          document.documentElement.classList.toggle('no-animations', e.newValue === 'true');
-          logAction(`Синхронизация анимаций: ${e.newValue}`);
-        }
-      } catch (err) {
-        logAction('Ошибка в обработчике storage: ' + err.message);
-      }
-    });
-
+    }
+    
+    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-      try {
-        logAction('DOMContentLoaded сработал');
-        setupFadeIn();
-        setupButtonTracking();
-        setupFontSize();
-        setupHighContrast();
-        setupPerformance();
-        setupAnimations();
-        setupQAList();
-      } catch (e) {
-        logAction('Ошибка при инициализации: ' + e.message);
+      createParticles();
+      
+      // Observe fade-in elements
+      document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+      });
+      
+      // Load Q&A items
+      loadQAItems();
+      
+      // Add click tracking for buttons
+      document.querySelectorAll('a[class*="modern-btn"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          const label = link.textContent.trim() || link.href;
+          gtag('event', 'navigation_click', {
+            event_category: 'engagement',
+            event_label: label
+          });
+        });
+      });
+      
+      // Track Telegram button clicks
+      const telegramBtn = document.querySelector('.telegram-btn');
+      if (telegramBtn) {
+        telegramBtn.addEventListener('click', () => {
+          gtag('event', 'telegram_click', {
+            event_category: 'engagement',
+            event_label: 'Q&A Telegram Button'
+          });
+        });
       }
     });
   </script>
