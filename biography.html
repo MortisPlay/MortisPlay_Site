@@ -22,306 +22,709 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', { send_page_view: true });
+    gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });
   </script>
   <style>
+    :root {
+      --primary: #8b5cf6;
+      --secondary: #ec4899;
+      --accent: #10b981;
+      --dark: #0f0a1e;
+      --darker: #090615;
+    }
+    
     body {
-      background: linear-gradient(135deg, #1a0033 0%, #2a0066 50%, #4a00b3 100%);
-      color: #e0d6ff;
+      background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #1e1b4b 100%);
+      color: #f8fafc;
       font-family: 'Inter', 'Segoe UI', sans-serif;
-      overflow-y: auto;
-      position: relative;
       min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
     }
-    body::before {
-      content: '';
+
+    /* Animated gradient background */
+    .gradient-bg {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100" height="100" filter="url(%23n)" opacity="0.08"/></svg>') repeat;
-      pointer-events: none;
-      z-index: -1;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+      animation: gradientShift 15s ease infinite alternate;
     }
+
+    @keyframes gradientShift {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1.1) rotate(5deg); }
+    }
+
+    /* Floating particles */
+    .particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-1000px) rotate(720deg); }
+    }
+
+    /* Glass morphism card */
     .glass-card {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 1.5rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-      transition: all 0.4s ease;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
     }
+
     .glass-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0) 100%);
       opacity: 0;
-      transition: opacity 0.4s ease;
-      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 0;
     }
-    .glass-card:hover::before { opacity: 1; }
+
+    .glass-card:hover::before {
+      opacity: 1;
+    }
+
     .glass-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      border-color: rgba(167, 139, 250, 0.4);
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(139, 92, 246, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      border-color: rgba(139, 92, 246, 0.4);
     }
-    .neon-title {
-      font-weight: 900;
-      background: linear-gradient(90deg, #c084fc, #a78bfa, #ddd6fe, #a78bfa, #c084fc);
-      background-size: 200% 100%;
+
+    /* Animated gradient text */
+    .gradient-text {
+      background: linear-gradient(90deg, 
+        #8b5cf6, 
+        #ec4899, 
+        #10b981, 
+        #ec4899, 
+        #8b5cf6);
+      background-size: 300% 100%;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      animation: neonFlow 4s ease-in-out infinite;
-      letter-spacing: -1px;
+      animation: gradientFlow 4s ease-in-out infinite;
+      font-weight: 900;
+      letter-spacing: -0.5px;
     }
-    @keyframes neonFlow {
+
+    @keyframes gradientFlow {
       0%, 100% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
     }
-    .timeline-container {
-      position: relative;
-      padding-left: 2rem;
+
+    /* Glow effect */
+    .glow {
+      text-shadow: 
+        0 0 20px rgba(139, 92, 246, 0.5),
+        0 0 40px rgba(139, 92, 246, 0.3),
+        0 0 60px rgba(139, 92, 246, 0.1);
     }
-    .timeline-container::before {
+
+    /* Modern timeline */
+    .modern-timeline {
+      position: relative;
+      padding-left: 2.5rem;
+    }
+
+    .modern-timeline::before {
       content: '';
       position: absolute;
-      left: 0.75rem;
+      left: 1rem;
       top: 0;
       bottom: 0;
       width: 2px;
-      background: linear-gradient(to bottom, #a78bfa, #c084fc);
-      border-radius: 1px;
+      background: linear-gradient(to bottom, 
+        transparent, 
+        var(--primary), 
+        var(--secondary), 
+        transparent);
+      border-radius: 2px;
     }
+
     .timeline-item {
       position: relative;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
       padding-left: 1.5rem;
+      transition: transform 0.3s ease;
     }
-    .timeline-item::before {
+
+    .timeline-item:hover {
+      transform: translateX(10px);
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -1.85rem;
+      top: 0.5rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 
+        0 0 20px var(--primary),
+        inset 0 0 10px rgba(255, 255, 255, 0.2);
+      animation: pulse 2s infinite;
+      z-index: 2;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 20px var(--primary), inset 0 0 10px rgba(255, 255, 255, 0.2); }
+      50% { box-shadow: 0 0 30px var(--primary), inset 0 0 15px rgba(255, 255, 255, 0.3); }
+    }
+
+    /* Modern button */
+    .modern-btn {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      border: none;
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+    }
+
+    .modern-btn::before {
       content: '';
       position: absolute;
-      left: -0.75rem;
-      top: 0.5rem;
-      width: 16px;
-      height: 16px;
-      background: #a78bfa;
-      border: 3px solid #1a0033;
-      border-radius: 50%;
-      box-shadow: 0 0 15px rgba(167, 139, 250, 0.6);
-      transition: all 0.3s ease;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+      transition: 0.5s;
     }
-    .timeline-item:hover::before {
-      transform: scale(1.3);
-      box-shadow: 0 0 25px rgba(167, 139, 250, 0.8);
+
+    .modern-btn:hover::before {
+      left: 100%;
     }
-    .neon-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(167, 139, 250, 0.4);
-      color: #e0d6ff;
-      padding: 0.75rem 1.5rem;
-      border-radius: 9999px;
-      font-weight: 600;
+
+    .modern-btn:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 
+        0 20px 40px rgba(139, 92, 246, 0.4),
+        0 0 0 2px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Special Yandex Music button */
+    .yandex-btn {
+      background: linear-gradient(135deg, #000000, #2d3748);
+      color: #fcd34d;
+      border: 2px solid #fcd34d;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-weight: 700;
       transition: all 0.4s ease;
       position: relative;
       overflow: hidden;
-      backdrop-filter: blur(8px);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
+      box-shadow: 0 10px 30px rgba(252, 211, 77, 0.2);
     }
-    .neon-btn::before {
+
+    .yandex-btn::before {
       content: '';
       position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.3), transparent);
-      transition: 0.6s;
-    }
-    .neon-btn:hover::before { left: 100%; }
-    .neon-btn:hover {
-      background: rgba(167, 139, 250, 0.2);
-      border-color: #c084fc;
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(167, 139, 250, 0.3);
-    }
-
-    /* ЧЁРНО-ЖЁЛТАЯ КНОПКА Я.МУЗЫКА */
-    .yandex-music-btn {
-      background: #000000;
-      color: #fcd34d !important;
-      border: 2px solid #fcd34d;
-      font-weight: 900;
-      letter-spacing: 0.5px;
-      box-shadow: 0 0 20px rgba(252, 211, 77, 0.4);
-      transition: all 0.3s ease;
-    }
-    .yandex-music-btn:hover {
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
       background: #fcd34d;
-      color: #000000 !important;
-      transform: translateY(-3px);
-      box-shadow: 0 0 30px rgba(252, 211, 77, 0.8);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
     }
-    .yandex-music-btn i { color: #fcd34d; }
-    .yandex-music-btn:hover i { color: #000000; }
 
-    @media (max-width: 640px) {
-      .glass-card { padding: 1.5rem; border-radius: 1rem; }
-      .neon-title { font-size: 2.5rem !important; }
-      .timeline-container { padding-left: 1.5rem; }
-      .timeline-item::before { left: -0.6rem; }
+    .yandex-btn:hover::before {
+      width: 300px;
+      height: 300px;
     }
-    .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1); }
-    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    .yandex-btn:hover {
+      color: #000000;
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(252, 211, 77, 0.4);
+    }
+
+    .yandex-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Stats cards */
+    .stat-card {
+      background: linear-gradient(135deg, 
+        rgba(139, 92, 246, 0.1), 
+        rgba(236, 72, 153, 0.1));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 1.5rem;
+      transition: all 0.4s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      background: linear-gradient(135deg, 
+        rgba(139, 92, 246, 0.2), 
+        rgba(236, 72, 153, 0.2));
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    /* Floating animation */
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .float-animation {
+      animation: floatUp 6s ease-in-out infinite;
+    }
+
+    /* Fade in animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .glass-card {
+        border-radius: 20px;
+        padding: 1.5rem !important;
+      }
+      
+      .gradient-text {
+        font-size: 3rem !important;
+      }
+      
+      .modern-timeline {
+        padding-left: 2rem;
+      }
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+    }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
-<body class="text-white">
-  <main class="relative min-h-screen">
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute top-10 left-10 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse"></div>
-      <div class="absolute bottom-20 right-10 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-radial from-purple-900/30 to-transparent blur-3xl"></div>
-    </div>
+<body>
+  <!-- Animated background -->
+  <div class="gradient-bg"></div>
+  
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
 
-    <div class="mx-auto max-w-4xl px-4 py-20 relative z-10">
-      <h1 class="neon-title text-5xl md:text-7xl font-extrabold text-center mb-16 drop-shadow-2xl">
-        Биография
-      </h1>
+  <main class="relative z-10">
+    <div class="mx-auto max-w-6xl px-4 py-12 md:py-20">
+      <!-- Header with animated title -->
+      <header class="text-center mb-16 md:mb-24">
+        <div class="inline-block mb-6">
+          <div class="text-sm font-semibold tracking-wider text-purple-300 bg-purple-900/30 px-4 py-2 rounded-full mb-4">
+            ПУТЬ К СОЗДАНИЮ КОНТЕНТА
+          </div>
+        </div>
+        <h1 class="gradient-text text-5xl md:text-7xl lg:text-8xl font-black mb-6 glow">
+          Mortis Play
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-medium">
+          История создания контента, невероятных идей и творческого роста
+        </p>
+      </header>
 
       <div class="space-y-8">
+        <!-- Hero section -->
+        <div class="glass-card p-8 md:p-12 fade-in">
+          <div class="flex flex-col lg:flex-row items-center gap-8">
+            <div class="lg:w-2/3">
+              <h2 class="text-3xl md:text-4xl font-bold mb-6">
+                Привет, я <span class="text-purple-400">Mortis Play</span> 👋
+              </h2>
+              <div class="space-y-4 text-lg text-gray-200">
+                <p>
+                  Мой путь начался в <span class="text-purple-300 font-semibold">2020 году</span> с простых видео без монтажа, но с безграничным энтузиазмом. Тогда я даже не представлял, что мои ролики будут собирать тысячи просмотров.
+                </p>
+                <p>
+                  Я живу играми, монтажом и креативом. В каждом видео — уникальный юмор, неожиданные повороты и особая атмосфера. Со временем я освоил спецэффекты, улучшил звук, запустил сайт и начал экспериментировать: от мемов до прямых трансляций.
+                </p>
+                <p class="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 pt-4">
+                  Главное — эмоции зрителей, а не цифры.
+                </p>
+              </div>
+            </div>
+            <div class="lg:w-1/3">
+              <div class="stat-card text-center">
+                <div class="text-5xl font-black text-purple-400 mb-2">5+</div>
+                <div class="text-lg font-semibold text-gray-300">Лет в контенте</div>
+                <div class="w-16 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mt-4 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <!-- ОБО МНЕ -->
-        <div class="glass-card p-8 fade-in">
-          <h2 class="text-3xl font-bold text-purple-300 flex items-center gap-3 mb-4">
-            Обо мне
-          </h2>
-          <p class="text-lg leading-relaxed text-gray-200">
-            Привет! Я — <strong>Mortis Play</strong>. Мой путь начался в 2020 году с простых видео без монтажа, но с огромным энтузиазмом. Тогда я и не думал, что мои ролики будут собирать тысячи просмотров.<br><br>
-            Я живу играми, монтажом и креативом. В каждом видео — юмор, странности и особая атмосфера. Со временем добавил спецэффекты, улучшил звук, запустил сайт и начал экспериментировать: от мемов до стримов.<br><br>
-            <span class="text-purple-300 font-semibold">Главное — эмоции зрителей, а не цифры.</span>
+        <!-- Journey timeline -->
+        <div class="glass-card p-8 md:p-12 fade-in">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-3 h-8 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full"></div>
+            <h2 class="text-3xl md:text-4xl font-bold">
+              Мой творческий путь
+            </h2>
+          </div>
+          
+          <div class="modern-timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-6 rounded-2xl border border-purple-500/20">
+                <div class="flex items-center gap-4 mb-2">
+                  <span class="text-2xl font-black text-purple-400">2020</span>
+                  <span class="text-sm font-semibold bg-purple-900/50 px-3 py-1 rounded-full">Старт</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Первый запуск</h3>
+                <p class="text-gray-300">Видеообзоры на консоли, без монтажа — но с душой и энтузиазмом</p>
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-6 rounded-2xl border border-purple-500/20">
+                <div class="flex items-center gap-4 mb-2">
+                  <span class="text-2xl font-black text-purple-400">2021</span>
+                  <span class="text-sm font-semibold bg-pink-900/50 px-3 py-1 rounded-full">Рост</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Новый уровень</h3>
+                <p class="text-gray-300">Первый ролик с профессиональным монтажом — и понеслась!</p>
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-6 rounded-2xl border border-purple-500/20">
+                <div class="flex items-center gap-4 mb-2">
+                  <span class="text-2xl font-black text-purple-400">2022</span>
+                  <span class="text-sm font-semibold bg-blue-900/50 px-3 py-1 rounded-full">Команда</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Начало положено</h3>
+                <p class="text-gray-300">Создан первый ТГК и продолжение карьеры ютубера</p>
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-6 rounded-2xl border border-purple-500/20">
+                <div class="flex items-center gap-4 mb-2">
+                  <span class="text-2xl font-black text-purple-400">2023</span>
+                  <span class="text-sm font-semibold bg-green-900/50 px-3 py-1 rounded-full">Эксперименты</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Пробую что-то новое</h3>
+                <p class="text-gray-300">Начинаю красиво, карьера уверенно поднимается вверх!</p>
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-6 rounded-2xl border border-purple-500/20">
+                <div class="flex items-center gap-4 mb-2">
+                  <span class="text-2xl font-black text-purple-400">2024</span>
+                  <span class="text-sm font-semibold bg-yellow-900/50 px-3 py-1 rounded-full">Прорыв</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Фан контент</h3>
+                <p class="text-gray-300">Опубликовываю контент вне основной тематики и взлетаю!</p>
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-6 rounded-2xl border border-purple-500/20">
+                <div class="flex items-center gap-4 mb-2">
+                  <span class="text-2xl font-black text-purple-400">2025</span>
+                  <span class="text-sm font-semibold bg-red-900/50 px-3 py-1 rounded-full">Легенда</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Запуск Сайта mortisplay.ru</h3>
+                <p class="text-gray-300">Всё в одном месте — мой вайб, контент, бейджи и сообщество!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick facts -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="glass-card p-8 fade-in">
+            <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">
+              <i class="fas fa-star text-yellow-400"></i>
+              <span>Факты обо мне</span>
+            </h2>
+            <div class="space-y-6">
+              <div class="flex items-center gap-4 p-4 bg-gradient-to-r from-purple-900/20 to-transparent rounded-xl">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                  <i class="fas fa-user text-white"></i>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-400">Имя</div>
+                  <div class="text-lg font-semibold">? (в народе — Мортис)</div>
+                </div>
+              </div>
+              
+              <div class="flex items-center gap-4 p-4 bg-gradient-to-r from-purple-900/20 to-transparent rounded-xl">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                  <i class="fas fa-birthday-cake text-white"></i>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-400">День рождения</div>
+                  <div class="text-lg font-semibold">5 августа 2009</div>
+                </div>
+              </div>
+              
+              <div class="flex items-center gap-4 p-4 bg-gradient-to-r from-purple-900/20 to-transparent rounded-xl">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                  <i class="fas fa-gamepad text-white"></i>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-400">Формат контента</div>
+                  <div class="text-lg font-semibold">Динамичные мемы с неожиданными переходами</div>
+                </div>
+              </div>
+              
+              <div class="flex items-center gap-4 p-4 bg-gradient-to-r from-purple-900/20 to-transparent rounded-xl">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                  <i class="fas fa-heart text-white"></i>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-400">Хобби</div>
+                  <div class="text-lg font-semibold">Карьера и личные дела :)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Music playlist -->
+          <div class="glass-card p-8 fade-in">
+            <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">
+              <i class="fas fa-music text-pink-400"></i>
+              <span>Мой вайб-плейлист</span>
+            </h2>
+            <p class="text-gray-300 mb-8 text-lg">
+              Музыка, которая качает монтаж и настроение. Слушай и вдохновляйся на творчество!
+            </p>
+            
+            <div class="space-y-4">
+              <a href="https://open.spotify.com/playlist/3UEMLQdDi830YOoOvEF1RB?si=-yT6Kq4fQ_6STsIgQiGHrw" 
+                 target="_blank"
+                 class="modern-btn w-full flex items-center justify-center gap-3 text-center">
+                <i class="fab fa-spotify text-xl"></i>
+                <span class="text-lg">Слушать в Spotify</span>
+              </a>
+              
+              <a href="https://music.yandex.ru/playlists/ps.6db9a630-27c5-4a23-8652-2fed534e2de5?utm_source=desktop&utm_medium=copy_link" 
+                 target="_blank"
+                 class="yandex-btn w-full flex items-center justify-center gap-3 text-center">
+                <span class="text-lg font-bold">Яндекс.Музыка</span>
+                <i class="fas fa-play text-xl"></i>
+              </a>
+            </div>
+            
+            <div class="mt-8 p-4 bg-gradient-to-r from-purple-900/30 to-pink-900/30 rounded-xl border border-purple-500/20">
+              <div class="flex items-center gap-3">
+                <i class="fas fa-headphones-alt text-purple-400 text-xl"></i>
+                <div>
+                  <div class="font-semibold">Сейчас в эфире</div>
+                  <div class="text-sm text-gray-300">Lo-fi beats for coding/editing</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social links -->
+        <div class="glass-card p-8 md:p-12 fade-in">
+          <h2 class="text-3xl font-bold text-center mb-8">Подключайся к движению</h2>
+          <p class="text-gray-300 text-center mb-8 max-w-2xl mx-auto text-lg">
+            Присоединяйся к сообществу, следи за обновлениями и будь в курсе всех новинок
           </p>
-          <div class="mt-6 flex flex-wrap justify-center gap-3">
-            <a href="https://t.me/dimap7221" target="_blank" class="neon-btn">
-              <i class="fa-brands fa-telegram"></i> Telegram
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="https://t.me/dimap7221" 
+               target="_blank"
+               class="modern-btn flex items-center justify-center gap-3 py-4">
+              <i class="fab fa-telegram-plane text-2xl"></i>
+              <span class="font-semibold">Telegram</span>
             </a>
-            <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="neon-btn">
-              <i class="fa-brands fa-youtube"></i> YouTube
+            
+            <a href="https://www.youtube.com/@MortisPlay" 
+               target="_blank"
+               class="modern-btn flex items-center justify-center gap-3 py-4"
+               style="background: linear-gradient(135deg, #ff0000, #cc0000);">
+              <i class="fab fa-youtube text-2xl"></i>
+              <span class="font-semibold">YouTube</span>
             </a>
-            <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="neon-btn">
-              <i class="fa-solid fa-heart text-red-400"></i> Поддержать
+            
+            <a href="https://www.donationalerts.com/r/mortis32" 
+               target="_blank"
+               class="modern-btn flex items-center justify-center gap-3 py-4"
+               style="background: linear-gradient(135deg, #10b981, #059669);">
+              <i class="fas fa-heart text-2xl"></i>
+              <span class="font-semibold">Поддержать</span>
             </a>
-          </div>
-        </div>
-
-        <!-- МОЙ ПУТЬ -->
-        <div class="glass-card p-8 fade-in">
-          <h2 class="text-3xl font-bold text-indigo-300 flex items-center gap-3 mb-6">
-            Мой путь
-          </h2>
-          <div class="timeline-container">
-            <div class="timeline-item">
-              <h3 class="text-xl font-bold text-purple-300">2020: Первый запуск</h3>
-              <p class="text-gray-300 mt-1">Видеообзоры на консоли, без монтажа — но с душой</p>
-            </div>
-            <div class="timeline-item">
-              <h3 class="text-xl font-bold text-purple-300">2021: Новый уровень</h3>
-              <p class="text-gray-300 mt-1">Первый ролик с монтажом — и понеслась!</p>
-            </div>
-            <div class="timeline-item">
-              <h3 class="text-xl font-bold text-purple-300">2022: Начало положено</h3>
-              <p class="text-gray-300 mt-1">Создан первый ТГК и продолжение карьеры ютубера</p>
-            </div>
-            <div class="timeline-item">
-              <h3 class="text-xl font-bold text-purple-300">2023: Пробую что-то новое</h3>
-              <p class="text-gray-300 mt-1">Начинаю красиво, но карьера чутка поднимается вверх!</p>
-            </div>
-            <div class="timeline-item">
-              <h3 class="text-xl font-bold text-purple-300">2024: Фан контент</h3>
-              <p class="text-gray-300 mt-1">Опубликовываю контент не по каналу и я взлетел!</p>
-            </div>
-            <div class="timeline-item">
-              <h3 class="text-xl font-bold text-purple-300">2025: Запуск Сайта mortisplay.ru</h3>
-              <p class="text-gray-300 mt-1">Всё в одном месте — мой вайб, контент, бейджи!</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- ФАКТЫ -->
-        <div class="glass-card p-8 fade-in">
-          <h2 class="text-3xl font-bold text-pink-300 flex items-center gap-3 mb-6">
-            Факты обо мне
-          </h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
-            <div class="flex items-center gap-3 text-gray-200">
-              <i class="fa-solid fa-id-card text-purple-400"></i>
-              <span><strong>Имя:</strong> ? (в народе — Мортис)</span>
-            </div>
-            <div class="flex items-center gap-3 text-gray-200">
-              <i class="fa-solid fa-cake-candles text-pink-400"></i>
-              <span><strong>ДР:</strong> 5 августа 2009</span>
-            </div>
-            <div class="flex items-center gap-3 text-gray-200">
-              <i class="fa-solid fa-hourglass-half text-yellow-400"></i>
-              <span><strong>Возраст:</strong> 16 лет</span>
-            </div>
-            <div class="flex items-center gap-3 text-gray-200">
-              <i class="fa-solid fa-gamepad text-green-400"></i>
-              <span><strong>Хобби:</strong> Карьера и личные дела :)</span>
-            </div>
-            <div class="flex items-center gap-3 text-gray-200 md:col-span-2">
-              <i class="fa-solid fa-camera-movie text-red-400"></i>
-              <span><strong>Формат:</strong> Динамичные мемы с неожиданными переходами</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- ПЛЕЙЛИСТ -->
-        <div class="glass-card p-8 fade-in">
-          <h2 class="text-3xl font-bold text-green-300 flex items-center gap-3 mb-4">
-            Мой вайб-плейлист
-          </h2>
-          <p class="text-lg text-gray-200 mb-4">
-            Музыка, которая качает монтаж и настроение. Слушай и вдохновляйся!
-          </p>
-          <div class="flex flex-wrap justify-center gap-3">
-            <a href="https://open.spotify.com/playlist/3UEMLQdDi830YOoOvEF1RB?si=-yT6Kq4fQ_6STsIgQiGHrw" target="_blank" class="neon-btn">
-              <i class="fa-brands fa-spotify"></i> Spotify
-            </a>
-            <a href="https://music.yandex.ru/playlists/ps.6db9a630-27c5-4a23-8652-2fed534e2de5?utm_source=desktop&utm_medium=copy_link" target="_blank" class="neon-btn yandex-music-btn">
-              <i class="fa-solid fa-music"></i> Я.Музыка
+            
+            <a href="/"
+               class="modern-btn flex items-center justify-center gap-3 py-4"
+               style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+              <i class="fas fa-home text-2xl"></i>
+              <span class="font-semibold">На главную</span>
             </a>
           </div>
         </div>
       </div>
 
-      <!-- НА ГЛАВНУЮ -->
-      <div class="mt-12 text-center">
-        <a href="/" class="neon-btn text-lg px-8 py-3 inline-flex items-center gap-2">
-          <i class="fa-solid fa-house"></i> На главную
-        </a>
+      <!-- Footer quote -->
+      <div class="text-center mt-16 fade-in">
+        <div class="text-2xl md:text-3xl font-bold mb-4">
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+            "Создавай то, во что веришь"
+          </span>
+        </div>
+        <p class="text-gray-400">Mortis Play © 2026</p>
       </div>
     </div>
   </main>
 
   <script>
+    // Create floating particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const particleCount = 30;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // Random properties
+        const size = Math.random() * 20 + 5;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 20;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.top = `${posY}%`;
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.animationDelay = `${delay}s`;
+        particle.style.opacity = Math.random() * 0.3 + 0.1;
+        
+        container.appendChild(particle);
+      }
+    }
+    
+    // Intersection observer for fade-in animations
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
         }
       });
     }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-    document.querySelectorAll('.neon-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const label = btn.textContent.trim();
-        gtag('event', 'button_click', { event_category: 'engagement', event_label: label });
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+      
+      // Observe fade-in elements
+      document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+      });
+      
+      // Add click tracking for buttons
+      document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', (e) => {
+          const label = link.textContent.trim() || link.href;
+          gtag('event', 'link_click', {
+            event_category: 'engagement',
+            event_label: label,
+            transport_type: 'beacon'
+          });
+        });
+      });
+    });
+    
+    // Add hover effect to timeline items
+    document.querySelectorAll('.timeline-item').forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        const dot = item.querySelector('.timeline-dot');
+        if (dot) {
+          dot.style.transform = 'scale(1.3)';
+          dot.style.boxShadow = '0 0 30px var(--primary), inset 0 0 20px rgba(255, 255, 255, 0.3)';
+        }
+      });
+      
+      item.addEventListener('mouseleave', () => {
+        const dot = item.querySelector('.timeline-dot');
+        if (dot) {
+          dot.style.transform = 'scale(1)';
+          dot.style.boxShadow = '0 0 20px var(--primary), inset 0 0 10px rgba(255, 255, 255, 0.2)';
+        }
       });
     });
   </script>
