@@ -2160,9 +2160,9 @@ function initTwitchClipsSystem() {
       <div class="relative">
         <div class="relative rounded-lg overflow-hidden mb-3">
           <img src="${clip.thumbnail}" 
-               alt="${clip.title}" 
+               alt="${clip.title.replace(/"/g, '&quot;')}" 
                class="w-full aspect-video object-cover"
-               onerror="this.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 16 9\'><rect width=\'16\' height=\'9\' fill=\'%236441A4\'/><text x=\'8\' y=\'5\' font-size=\'2\' text-anchor=\'middle\' fill=\'white\'>Twitch Clip</text></svg>'">
+               onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016%209%22%3E%3Crect%20width%3D%2216%22%20height%3D%229%22%20fill%3D%22%236441A4%22%2F%3E%3Ctext%20x%3D%228%22%20y%3D%225%22%20font-size%3D%222%22%20text-anchor%3D%22middle%22%20fill%3D%22white%22%3ETwitch%20Clip%3C%2Ftext%3E%3C%2Fsvg%3E'">
           <div class="absolute top-2 right-2">
             <span class="twitch-views">
               <i class="fas fa-eye"></i> ${clip.views}
@@ -2179,7 +2179,7 @@ function initTwitchClipsSystem() {
             </span>
           </div>
         </div>
-        <h3 class="font-semibold mb-2 line-clamp-2">${clip.title}</h3>
+        <h3 class="font-semibold mb-2 line-clamp-2">${clip.title.replace(/"/g, '&quot;')}</h3>
         <div class="flex items-center justify-between">
           <span class="text-sm text-gray-500">
             <i class="fab fa-twitch text-purple-500 mr-1"></i>
