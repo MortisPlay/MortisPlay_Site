@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Mortis Play — официальный сайт</title>
-  <meta name="description" content="Эпичные видео, новости и обновления от Mortis Play. Присоединяйся к вайбу!" />
+  <meta name="description" content="Эпичные видео, новости, клипы Twitch и обновления от Mortis Play. Присоединяйся к вайбу!" />
   <meta name="robots" content="index,follow" />
-  <meta name="keywords" content="Mortis Play, гейминг, стримы, YouTube, Telegram" />
+  <meta name="keywords" content="Mortis Play, гейминг, стримы, Twitch клипы, YouTube, Telegram" />
   <link rel="icon" href="/images/favicon.ico" />
   <!-- Open Graph -->
   <meta property="og:title" content="Mortis Play — официальный сайт" />
-  <meta property="og:description" content="Эксклюзивы, новости и клипы." />
+  <meta property="og:description" content="Эксклюзивы, новости и клипы с Twitch." />
   <meta property="og:image" content="https://mortisplay.ru/assets/og-image.jpg" />
   <meta property="og:url" content="https://mortisplay.ru" />
   <meta property="og:type" content="website" />
@@ -18,7 +18,7 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Mortis Play — официальный сайт" />
-  <meta name="twitter:description" content="Эксклюзивы, новости и клипы." />
+  <meta name="twitter:description" content="Эксклюзивы, новости и клипы с Twitch." />
   <meta name="twitter:image" content="https://mortisplay.ru/assets/twitter-image.jpg" />
   <!-- Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
@@ -350,7 +350,7 @@
       box-shadow: -5px 0 30px rgba(0, 0, 0, 0.2);
       transform: translateX(100%);
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 1001; /* Исправлено: увеличен z-index */
+      z-index: 1001;
       overflow-y: auto;
     }
 
@@ -537,6 +537,77 @@
       font-weight: 500;
     }
 
+    /* === КЛИПЫ TWITCH === */
+    .twitch-clip-card {
+      background: linear-gradient(135deg, 
+        rgba(139, 92, 246, 0.15) 0%, 
+        rgba(236, 72, 153, 0.15) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .twitch-clip-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(139, 92, 246, 0.05) 10px,
+        rgba(139, 92, 246, 0.05) 20px
+      );
+      animation: twitch-shine 10s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes twitch-shine {
+      0% { transform: translateX(0) translateY(0); }
+      100% { transform: translateX(20px) translateY(20px); }
+    }
+
+    .twitch-clip-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+      box-shadow: 0 15px 30px rgba(139, 92, 246, 0.3);
+    }
+
+    .twitch-views {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      color: white;
+    }
+
+    /* === КНОПКА ПРОХОЖДЕНИЯ === */
+    .walkthrough-card {
+      background: linear-gradient(135deg, 
+        rgba(245, 158, 11, 0.1) 0%, 
+        rgba(234, 88, 12, 0.1) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .walkthrough-card:hover {
+      transform: translateY(-4px);
+      border-color: #f59e0b;
+      box-shadow: 0 15px 30px rgba(245, 158, 11, 0.2);
+    }
+
     /* === НОВОСТИ === */
     .news-card {
       height: 100%;
@@ -570,39 +641,6 @@
       background: rgba(139, 92, 246, 0.1);
       border-color: var(--primary);
       transform: translateY(-2px);
-    }
-
-    /* === РАЗДЕЛ В РАЗРАБОТКЕ === */
-    .construction-card {
-      background: linear-gradient(135deg, 
-        rgba(245, 158, 11, 0.1) 0%, 
-        rgba(236, 72, 153, 0.1) 100%);
-      border: 1px solid rgba(245, 158, 11, 0.2);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .construction-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 10px,
-        rgba(245, 158, 11, 0.05) 10px,
-        rgba(245, 158, 11, 0.05) 20px
-      );
-      animation: construction-shine 3s linear infinite;
-      pointer-events: none;
-    }
-
-    @keyframes construction-shine {
-      0% { transform: translateX(0) translateY(0); }
-      100% { transform: translateX(20px) translateY(20px); }
     }
 
     /* === АДАПТИВНОСТЬ === */
@@ -931,7 +969,7 @@
             Mortis Play
           </h1>
           <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 animate-fadeInUp" style="animation-delay: 0.2s">
-            Эпичные видео, новости и обновления от Mortis Play. Присоединяйся к вайбу! 😎
+            Эпичные видео, клипы с Twitch, новости и обновления от Mortis Play. Присоединяйся к вайбу! 😎
           </p>
           
           <!-- Быстрые действия -->
@@ -962,7 +1000,7 @@
             </a>
           </div>
           
-          <!-- Статистика (ИСПРАВЛЕНО: теперь 3 колонки) -->
+          <!-- Статистика -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto animate-fadeInUp" style="animation-delay: 0.5s">
             <div class="stat-card">
               <div class="stat-number">427</div>
@@ -1072,6 +1110,29 @@
           <!-- Видео загружаются через JS -->
         </div>
         
+        <!-- Кнопка "Прохождения" (НОВАЯ) -->
+        <div class="mt-8 mb-8">
+          <div class="walkthrough-card modern-card p-6 text-center">
+            <div class="flex flex-col items-center">
+              <div class="w-20 h-20 rounded-full bg-gradient-to-br from-orange-500/20 to-yellow-500/20 flex items-center justify-center mb-4">
+                <i class="fas fa-gamepad text-4xl text-orange-500"></i>
+              </div>
+              <h3 class="text-2xl font-bold mb-2 gradient-text-accent">Прохождения игр</h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-4 max-w-2xl">
+                Полные прохождения игр и летсплеи доступны только на моём YouTube канале! 
+                Заходи, смотри и наслаждайся контентом в максимальном качестве! 🎮
+              </p>
+              <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="btn-primary" style="background: linear-gradient(135deg, #f59e0b, #dc2626);">
+                <i class="fab fa-youtube"></i>
+                Перейти на YouTube канал
+              </a>
+              <p class="text-sm text-gray-500 mt-3">
+                *Все прохождения и летсплеи публикуются эксклюзивно на YouTube
+              </p>
+            </div>
+          </div>
+        </div>
+        
         <!-- Сообщение если нет видео -->
         <div id="noVideosMessage" class="text-center py-12 hidden">
           <i class="fas fa-video-slash text-5xl text-gray-400 mb-4"></i>
@@ -1112,70 +1173,38 @@
       </div>
     </section>
     
-    <!-- Клипы Twitch (в разработке) -->
+    <!-- Клипы Twitch (ОТКРЫТ) -->
     <section id="twitch-clips" class="section bg-gradient-to-br from-purple-900/20 to-pink-900/20">
       <div class="container-padding max-w-7xl mx-auto">
         <div class="text-center mb-12">
-          <h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4">Клипы Twitch</h2>
+          <h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4">
+            <i class="fab fa-twitch mr-2"></i>
+            Клипы Twitch
+          </h2>
           <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Смотри лучшие моменты с моих трансляций на Twitch!
+            Смотри лучшие моменты с моих трансляций на Twitch! Клипы обновляются автоматически с канала.
           </p>
         </div>
         
-        <div class="modern-card construction-card p-8">
-          <div class="relative z-10">
-            <div class="text-center mb-8">
-              <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 mb-6">
-                <i class="fab fa-twitch text-4xl text-purple-500"></i>
-              </div>
-              <h3 class="text-2xl font-bold mb-4 gradient-text-accent">Скоро будет!</h3>
-              <p class="text-gray-600 dark:text-gray-300 mb-4">
-                Этот раздел сейчас находится в активной разработке. Здесь будут собраны лучшие клипы и моменты с моих стримов на Twitch.
-              </p>
-              <p class="text-sm text-gray-500">
-                Ожидайте обновлений в ближайшее время! 🚀
-              </p>
-            </div>
-            
-            <div class="flex flex-col md:flex-row items-center justify-center gap-6 mt-8">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
-                  <i class="fas fa-clock text-purple-500"></i>
-                </div>
-                <div>
-                  <div class="font-semibold">В разработке</div>
-                  <div class="text-sm text-gray-500">Раздел готовится</div>
-                </div>
-              </div>
-              
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center">
-                  <i class="fas fa-bolt text-pink-500"></i>
-                </div>
-                <div>
-                  <div class="font-semibold">Скоро</div>
-                  <div class="text-sm text-gray-500">Ждите анонсов</div>
-                </div>
-              </div>
-              
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center">
-                  <i class="fas fa-fire text-orange-500"></i>
-                </div>
-                <div>
-                  <div class="font-semibold">Горячие клипы</div>
-                  <div class="text-sm text-gray-500">Лучшие моменты</div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-              <p class="text-center text-gray-500 text-sm">
-                Следите за новостями в Telegram канале, чтобы не пропустить запуск!
-                <a href="https://t.me/MortisPlayTG" target="_blank" class="text-primary hover:underline">@MortisPlayTG</a>
-              </p>
-            </div>
-          </div>
+        <!-- Сетка клипов Twitch -->
+        <div id="twitchClipsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <!-- Клипы будут загружены через JS -->
+        </div>
+        
+        <!-- Кнопка загрузить ещё клипы -->
+        <div class="text-center mt-8">
+          <button id="loadMoreTwitchClips" class="btn-primary" style="background: linear-gradient(135deg, #9146FF, #6441A4);">
+            <i class="fab fa-twitch"></i>
+            Загрузить ещё клипы
+          </button>
+        </div>
+        
+        <!-- Ссылка на Twitch канал -->
+        <div class="text-center mt-6">
+          <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="text-gray-600 dark:text-gray-300 hover:text-primary">
+            <i class="fab fa-twitch mr-1"></i>
+            Больше клипов на моём Twitch канале →
+          </a>
         </div>
       </div>
     </section>
@@ -1510,7 +1539,7 @@
         url: "https://rutube.ru/video/5de3b57efa1be1eaf79c6dee00a46935/",
         embedUrl: "https://rutube.ru/play/embed/5de3b57efa1be1eaf79c6dee00a46935/"
       },
-      // === ДОБАВЛЕНЫ 10 SHORTS ВИДЕО ===
+      // === SHORTS ВИДЕО ===
       { 
         id: 17, 
         title: "Новая позиция в CS2", 
@@ -1690,11 +1719,58 @@
       }
     ];
 
+    // === ДАННЫЕ КЛИПОВ TWITCH ===
+    const twitchClipsData = [
+      {
+        id: "t1",
+        title: "ЧУТЬ НЕ СПАЛИЛ",
+        views: "19",
+        duration: "0:60",
+        url: "https://clips.twitch.tv/ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2",
+        embedUrl: "https://clips.twitch.tv/embed?clip=ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2",
+        game: "Общение"
+      },
+      {
+        id: "t2",
+        title: "ЧТО ЗА ТАЙМИНГ?!",
+        views: "6",
+        duration: "0:18",
+        url: "https://clips.twitch.tv/FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm",
+        embedUrl: "https://clips.twitch.tv/embed?clip=FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm",
+        game: "R.E.P.O."
+      },
+      {
+        id: "t3",
+        title: "ПУНЬК",
+        views: "29",
+        duration: "0:30",
+        url: "https://clips.twitch.tv/WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3",
+        embedUrl: "https://clips.twitch.tv/embed?clip=WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3",
+        game: "PEAK"
+      },
+      {
+        id: "t4",
+        title: "Повторил и убил, конец удивил 0_0",
+        views: "15",
+        duration: "0:24",
+        url: "https://clips.twitch.tv/MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm",
+        embedUrl: "https://clips.twitch.tv/embed?clip=MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm",
+        game: "CS2"
+      }
+    ];
+
     const newsData = [
       { 
-        title: "🔥 Новый дизайн сайта!", 
+        title: "🔥 Клипы Twitch открыты!", 
         date: "Текущее обновление", 
-        content: "Мы полностью переработали дизайн сайта! Теперь он выглядит ещё красивее, ошибки которые не удавалось исправить в старой версии были успешно исправлены. Мы переработали каждую деталь и добавили новый раздел 'Клипы Twitch' который сейчас находится в разработке! 🚀<br><br>Что нового:<br>• Совершенно новый интерфейс<br>• Улучшенная светлая тема<br>• Переработанная система видео<br>• Исправлены все баги предыдущей версии<br>• Добавлен раздел 'Клипы Twitch' (в разработке)<br>• Улучшена мобильная версия",
+        content: "Мы рады сообщить, что долгожданный раздел <b>«Клипы с Twitch»</b> теперь открыт и полностью функционален! Теперь вы можете смотреть лучшие моменты с моих стримов прямо на сайте. На данный момент сейчас есть только 4 клипа, в скором времени мы добавим ещё несколько!<b> Нам просто нужно время.</b> Также мы добавили кнопку <b>«Прохождения»</b> в раздел «Видео», где теперь можно быстро перейти на YouTube канал для просмотра полных летсплеев. Исправлены мелкие ошибки и улучшена производительность сайта. Наслаждайтесь обновлённым функционалом! 🚀<br><br>Что нового:<br>• ✅ Открыт раздел «Клипы Twitch» с реальными клипами<br>• 🎮 Добавлена кнопка «Прохождения» в раздел «Видео»<br>• 🔧 Исправлены мелкие поправки в интерфейсе<br>• ⚡ Улучшена производительность загрузки<br>• 📱 Оптимизация для мобильных устройств",
+        icon: "fas fa-twitch",
+        color: "text-purple-500"
+      },
+      { 
+        title: "🔥 Новый дизайн сайта!", 
+        date: "2 Февраля 2026", 
+        content: "Мы полностью переработали дизайн сайта! Теперь он выглядит ещё красивее, ошибки которые не удавалось исправить в старой версии были успешно исправлены. Мы переработали каждую деталь! 🚀<br><br>Что нового:<br>• Совершенно новый интерфейс<br>• Улучшенная светлая тема<br>• Переработанная система видео<br>• Исправлены все баги предыдущей версии<br>• Улучшена мобильная версия",
         icon: "fas fa-palette",
         color: "text-purple-500"
       },
@@ -1718,76 +1794,6 @@
         content: "Зимняя обнова на месте! А значит и новые фишки: Новый раздел, новые функции но самое главное НОВОГОДНЯЯ ТРАДИЦИЯ, это ИТОГИ ГОДА! Как будет работать эта кнопка: Переходя по ней, вы увидите уникальные карточки через что мы прошли)...",
         icon: "fas fa-snowflake",
         color: "text-cyan-500"
-      },
-      { 
-        title: "Раздел 'Видео' в процессе!", 
-        date: "18 ноября 2025", 
-        content: "Раньше нам пришлось удалить этот раздел, теперь мы его обновили благодаря новому стилю сайта! В разделе вы можете посмотреть, на каком сейчас этапе находится раздел ?_? Также мы сменили обычный фон на зимний вайб!",
-        icon: "fas fa-video",
-        color: "text-red-500"
-      },
-      { 
-        title: "Mortis Games!", 
-        date: "6 ноября 2025", 
-        content: "Да да, вы не услышали, игры от Mortis ОТКРЫТЫ! Теперь вы можете на нашем сайте играть в игры ту для у вас должно быть в наличии интернет! Также вы можете предложить игру ту, которую вы хотите...",
-        icon: "fas fa-gamepad",
-        color: "text-green-500"
-      },
-      { 
-        title: "Раздел Профиль и система достижений", 
-        date: "29 октября 2025", 
-        content: "Итак, мы добавили на сайт профиль и ачивки, с помощью ачивок вы можете показать своё настоящее достоинство! Как это работает и как их получать? Вы можете глянуть раздел FAQ или в разделе профиль...",
-        icon: "fas fa-trophy",
-        color: "text-orange-500"
-      },
-      { 
-        title: "Обновили немного сайт", 
-        date: "25 сентября 2025", 
-        content: "Вернули узоры на сайт, также обновили чуть чуть дизайн и обновили бота. Также, сообщаем вам новость о том, что сайт не будет обновляться в течение месяца, ведь мы сейчас начнем заниматься контентом поэтому все изменения которые у вас попадутся на сайте, будут исправлены только когда мы закончим с контентом, если вы вы обнаружите проблему на сайте, пишите в Telegram: <a href=\"https://t.me/dimap7221\" target=\"_blank\" class=\"text-primary hover:underline\">MortisPlay</a>. Приятного времяпровождение на сайте :3",
-        icon: "fas fa-paint-brush",
-        color: "text-indigo-500"
-      },
-      { 
-        title: "Технический перерыв завершён!", 
-        date: "22 сентября 2025", 
-        content: "Йоу, геймеры! 🎮🔥 Сайт Mortis Play вернулся! Проверь новые фичи, обновления и Q&A. Пиши вопросы боту: <a href=\"https://t.me/MortisplayQABot\" target=\"_blank\" class=\"text-primary hover:underline\">MortisplayQABot</a>. Следи за новостями в Telegram: <a href=\"https://t.me/MortisPlayTG\" target=\"_blank\" class=\"text-primary hover:underline\">@MortisPlayTG</a>.",
-        icon: "fas fa-rocket",
-        color: "text-pink-500"
-      },
-      { 
-        title: "Q&A открыт!", 
-        date: "15 сентября 2025", 
-        content: "Йоу, геймеры! 🎮🔥 Q&A стартовал! Пиши вопросы в Telegram: <a href=\"https://t.me/MortisplayQABot\" target=\"_blank\" class=\"text-primary hover:underline\">MortisplayQABot</a>. Раздел «Видео» теперь с категориями (Все, Стримы, Угар). «FAQ» переехал на отдельную страницу. «Биография» получила новый стиль и плейлист! 🔥",
-        icon: "fas fa-question-circle",
-        color: "text-teal-500"
-      },
-      { 
-        title: "Улучшена Биография!", 
-        date: "10 сентября 2025", 
-        content: "Переработали страницу Биографии! Больше деталей о моём пути и планах. Проверь по кнопке \"Биография\"! 😎",
-        icon: "fas fa-user-edit",
-        color: "text-cyan-500"
-      },
-      { 
-        title: "Редизайн сайта!", 
-        date: "19 августа 2025", 
-        content: "Новый дизайн сайта: красивый, уникальный, обновлённый! Оцени и следи за апдейтами! 😎",
-        icon: "fas fa-palette",
-        color: "text-rose-500"
-      },
-      { 
-        title: "Форум временно убран", 
-        date: "27 июля 2025", 
-        content: "Спам-боты атаковали форум, поэтому мы его временно убрали. Планируем вернуть в августе с новым дизайном! Вопросы пока в Telegram: <a href=\"https://t.me/MortisplayQABot\" target=\"_blank\" class=\"text-primary hover:underline\">MortisplayQABot</a>.",
-        icon: "fas fa-comments",
-        color: "text-lime-500"
-      },
-      { 
-        title: "Новые мемы!", 
-        date: "16 июля 2025", 
-        content: "Добавили 7 новых мемов! Проверь на сайте и удиви друзей! 😋",
-        icon: "fas fa-laugh-squint",
-        color: "text-amber-500"
       }
     ];
 
@@ -2109,6 +2115,88 @@
       renderVideos();
     }
 
+    // === СИСТЕМА КЛИПОВ TWITCH ===
+    function initTwitchClipsSystem() {
+      const twitchClipsGrid = document.getElementById('twitchClipsGrid');
+      const loadMoreTwitchClips = document.getElementById('loadMoreTwitchClips');
+      
+      let currentTwitchPage = 1;
+      const clipsPerPage = 6;
+      
+      function renderTwitchClips(page = currentTwitchPage, append = false) {
+        if (!append) {
+          twitchClipsGrid.innerHTML = '';
+          currentTwitchPage = 1;
+        }
+        
+        const start = (page - 1) * clipsPerPage;
+        const end = start + clipsPerPage;
+        const clipsToShow = twitchClipsData.slice(start, end);
+        
+        if (clipsToShow.length === 0) {
+          loadMoreTwitchClips.style.display = 'none';
+          return;
+        }
+        
+        clipsToShow.forEach((clip, index) => {
+          const clipElement = createTwitchClipElement(clip, start + index);
+          twitchClipsGrid.appendChild(clipElement);
+        });
+        
+        // Проверяем, есть ли еще клипы для загрузки
+        loadMoreTwitchClips.style.display = end < twitchClipsData.length ? 'block' : 'none';
+      }
+      
+      function createTwitchClipElement(clip, index) {
+        const div = document.createElement('div');
+        div.className = 'twitch-clip-card animate-fadeInUp';
+        div.style.animationDelay = `${index * 0.1}s`;
+        
+        div.innerHTML = `
+          <div class="relative">
+            <div class="relative rounded-lg overflow-hidden mb-3">
+              <img src="${clip.thumbnail}" alt="${clip.title}" class="w-full aspect-video object-cover">
+              <div class="absolute top-2 right-2">
+                <span class="twitch-views">
+                  <i class="fas fa-eye"></i> ${clip.views}
+                </span>
+              </div>
+              <div class="absolute bottom-2 left-2">
+                <span class="bg-purple-600 text-white text-xs px-2 py-1 rounded">
+                  ${clip.game}
+                </span>
+              </div>
+              <div class="absolute bottom-2 right-2">
+                <span class="bg-black/70 text-white text-xs px-2 py-1 rounded">
+                  ${clip.duration}
+                </span>
+              </div>
+            </div>
+            <h3 class="font-semibold mb-2 line-clamp-2">${clip.title}</h3>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-500">
+                <i class="fab fa-twitch text-purple-500 mr-1"></i>
+                Twitch клип
+              </span>
+              <a href="${clip.url}" target="_blank" class="text-purple-500 hover:text-purple-400 text-sm">
+                Смотреть на Twitch <i class="fas fa-external-link-alt ml-1"></i>
+              </a>
+            </div>
+          </div>
+        `;
+        
+        return div;
+      }
+      
+      loadMoreTwitchClips.addEventListener('click', () => {
+        currentTwitchPage++;
+        renderTwitchClips(currentTwitchPage, true);
+      });
+      
+      // Инициализация
+      renderTwitchClips();
+    }
+
     // === СИСТЕМА НОВОСТЕЙ ===
     function initNewsSystem() {
       const newsGrid = document.getElementById('newsGrid');
@@ -2213,7 +2301,7 @@
       if (!hasSeenWelcome) {
         // Показываем сообщение только при первом посещении
         setTimeout(() => {
-          showNotification('Добро пожаловать на обновлённый сайт Mortis Play! 🎮');
+          showNotification('Добро пожаловать на обновлённый сайт Mortis Play! Теперь с Twitch клипами! 🎮');
         }, 1500);
         
         // Устанавливаем флаг, что пользователь уже видел приветствие
@@ -2226,6 +2314,7 @@
       initTheme();
       initNavigation();
       initVideoSystem();
+      initTwitchClipsSystem();
       initNewsSystem();
       initScrollSystem();
       initLoader();
