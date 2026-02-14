@@ -2120,89 +2120,89 @@ const twitchClipsData = [
     }
 
     // === СИСТЕМА КЛИПОВ TWITCH ===
-    function initTwitchClipsSystem() {
-      const twitchClipsGrid = document.getElementById('twitchClipsGrid');
-      const loadMoreTwitchClips = document.getElementById('loadMoreTwitchClips');
-      
-      let currentTwitchPage = 1;
-      const clipsPerPage = 6;
-      
-      function renderTwitchClips(page = currentTwitchPage, append = false) {
-        if (!append) {
-          twitchClipsGrid.innerHTML = '';
-          currentTwitchPage = 1;
-        }
-        
-        const start = (page - 1) * clipsPerPage;
-        const end = start + clipsPerPage;
-        const clipsToShow = twitchClipsData.slice(start, end);
-        
-        if (clipsToShow.length === 0) {
-          loadMoreTwitchClips.style.display = 'none';
-          return;
-        }
-        
-        clipsToShow.forEach((clip, index) => {
-          const clipElement = createTwitchClipElement(clip, start + index);
-          twitchClipsGrid.appendChild(clipElement);
-        });
-        
-        // Проверяем, есть ли еще клипы для загрузки
-        loadMoreTwitchClips.style.display = end < twitchClipsData.length ? 'block' : 'none';
-      }
-      
-      function createTwitchClipElement(clip, index) {
-  const div = document.createElement('div');
-  div.className = 'twitch-clip-card animate-fadeInUp';
-  div.style.animationDelay = `${index * 0.1}s`;
+function initTwitchClipsSystem() {
+  const twitchClipsGrid = document.getElementById('twitchClipsGrid');
+  const loadMoreTwitchClips = document.getElementById('loadMoreTwitchClips');
   
-  div.innerHTML = `
-    <div class="relative">
-      <div class="relative rounded-lg overflow-hidden mb-3">
-        <img src="${clip.thumbnail}" 
-             alt="${clip.title}" 
-             class="w-full aspect-video object-cover"
-             onerror="this.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 16 9\'><rect width=\'16\' height=\'9\' fill=\'%236441A4\'/><text x=\'8\' y=\'5\' font-size=\'2\' text-anchor=\'middle\' fill=\'white\'>Twitch Clip</text></svg>'">
-        <div class="absolute top-2 right-2">
-          <span class="twitch-views">
-            <i class="fas fa-eye"></i> ${clip.views}
-          </span>
-        </div>
-        <div class="absolute bottom-2 left-2">
-          <span class="bg-purple-600 text-white text-xs px-2 py-1 rounded">
-            ${clip.game}
-          </span>
-        </div>
-        <div class="absolute bottom-2 right-2">
-          <span class="bg-black/70 text-white text-xs px-2 py-1 rounded">
-            ${clip.duration}
-          </span>
-        </div>
-      </div>
-      <h3 class="font-semibold mb-2 line-clamp-2">${clip.title}</h3>
-      <div class="flex items-center justify-between">
-        <span class="text-sm text-gray-500">
-          <i class="fab fa-twitch text-purple-500 mr-1"></i>
-          Twitch клип
-        </span>
-        <a href="${clip.url}" target="_blank" class="text-purple-500 hover:text-purple-400 text-sm">
-          Смотреть на Twitch <i class="fas fa-external-link-alt ml-1"></i>
-        </a>
-      </div>
-    </div>
-  `;
+  let currentTwitchPage = 1;
+  const clipsPerPage = 6;
   
-  return div;
-}
-      
-      loadMoreTwitchClips.addEventListener('click', () => {
-        currentTwitchPage++;
-        renderTwitchClips(currentTwitchPage, true);
-      });
-      
-      // Инициализация
-      renderTwitchClips();
+  function renderTwitchClips(page = currentTwitchPage, append = false) {
+    if (!append) {
+      twitchClipsGrid.innerHTML = '';
+      currentTwitchPage = 1;
     }
+    
+    const start = (page - 1) * clipsPerPage;
+    const end = start + clipsPerPage;
+    const clipsToShow = twitchClipsData.slice(start, end);
+    
+    if (clipsToShow.length === 0) {
+      loadMoreTwitchClips.style.display = 'none';
+      return;
+    }
+    
+    clipsToShow.forEach((clip, index) => {
+      const clipElement = createTwitchClipElement(clip, start + index);
+      twitchClipsGrid.appendChild(clipElement);
+    });
+    
+    // Проверяем, есть ли еще клипы для загрузки
+    loadMoreTwitchClips.style.display = end < twitchClipsData.length ? 'block' : 'none';
+  }
+  
+  function createTwitchClipElement(clip, index) {
+    const div = document.createElement('div');
+    div.className = 'twitch-clip-card animate-fadeInUp';
+    div.style.animationDelay = `${index * 0.1}s`;
+    
+    div.innerHTML = `
+      <div class="relative">
+        <div class="relative rounded-lg overflow-hidden mb-3">
+          <img src="${clip.thumbnail}" 
+               alt="${clip.title}" 
+               class="w-full aspect-video object-cover"
+               onerror="this.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 16 9\'><rect width=\'16\' height=\'9\' fill=\'%236441A4\'/><text x=\'8\' y=\'5\' font-size=\'2\' text-anchor=\'middle\' fill=\'white\'>Twitch Clip</text></svg>'">
+          <div class="absolute top-2 right-2">
+            <span class="twitch-views">
+              <i class="fas fa-eye"></i> ${clip.views}
+            </span>
+          </div>
+          <div class="absolute bottom-2 left-2">
+            <span class="bg-purple-600 text-white text-xs px-2 py-1 rounded">
+              ${clip.game}
+            </span>
+          </div>
+          <div class="absolute bottom-2 right-2">
+            <span class="bg-black/70 text-white text-xs px-2 py-1 rounded">
+              ${clip.duration}
+            </span>
+          </div>
+        </div>
+        <h3 class="font-semibold mb-2 line-clamp-2">${clip.title}</h3>
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-gray-500">
+            <i class="fab fa-twitch text-purple-500 mr-1"></i>
+            Twitch клип
+          </span>
+          <a href="${clip.url}" target="_blank" class="text-purple-500 hover:text-purple-400 text-sm">
+            Смотреть на Twitch <i class="fas fa-external-link-alt ml-1"></i>
+          </a>
+        </div>
+      </div>
+    `;
+    
+    return div;
+  }
+  
+  loadMoreTwitchClips.addEventListener('click', () => {
+    currentTwitchPage++;
+    renderTwitchClips(currentTwitchPage, true);
+  });
+  
+  // Инициализация
+  renderTwitchClips();
+}
 
     // === СИСТЕМА НОВОСТЕЙ ===
     function initNewsSystem() {
