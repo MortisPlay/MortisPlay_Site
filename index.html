@@ -206,29 +206,12 @@
     }
 
     /* === КНОПКИ БЫСТРЫХ ДЕЙСТВИЙ === */
-    .btn-action-contact {
-      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    }
-    
-    .btn-action-bio {
-      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-    }
-    
-    .btn-action-qa {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    }
-    
-    .btn-action-faq {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    }
-    
-    .btn-action-games {
-      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-    }
-    
-    .btn-action-year {
-      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-    }
+    .btn-action-contact { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+    .btn-action-bio { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+    .btn-action-qa { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+    .btn-action-faq { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+    .btn-action-games { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
+    .btn-action-year { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
 
     /* === НАВИГАЦИЯ === */
     .nav-link {
@@ -239,18 +222,12 @@
       position: relative;
       font-weight: 500;
     }
-
-    .nav-link:hover {
-      color: var(--text-primary);
-      background: rgba(139, 92, 246, 0.1);
-    }
-
+    .nav-link:hover { color: var(--text-primary); background: rgba(139, 92, 246, 0.1); }
     .nav-link.active {
       color: var(--text-primary);
       background: rgba(139, 92, 246, 0.15);
       font-weight: 600;
     }
-
     .nav-link.active::after {
       content: '';
       position: absolute;
@@ -271,22 +248,18 @@
       z-index: 1000;
       background: rgba(15, 23, 42, 0.9);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--glass-border);
       transition: all 0.3s ease;
     }
-
     .light-theme header {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(15px);
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
-      border-bottom: 1px solid rgba(139, 92, 246, 0.1);
     }
 
     /* === ТОГГЛЕР ТЕМЫ === */
     #themeToggle {
-      width: 44px;
-      height: 44px;
+      width: 44px; height: 44px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
@@ -295,38 +268,14 @@
       justify-content: center;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
       border: none;
       box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
     }
-
-    .light-theme #themeToggle {
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
-    }
-
-    #themeToggle:hover {
-      transform: scale(1.1) rotate(15deg);
-      box-shadow: 0 6px 25px rgba(139, 92, 246, 0.4);
-    }
-
-    .light-theme #themeToggle:hover {
-      box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
-    }
-
-    #themeToggle i {
-      font-size: 1.25rem;
-      transition: transform 0.3s ease;
-    }
-
-    #themeToggle:hover i {
-      transform: scale(1.1);
-    }
+    #themeToggle:hover { transform: scale(1.1) rotate(15deg); }
 
     /* === МОБИЛЬНОЕ МЕНЮ === */
     .mobile-menu-backdrop {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(8px);
       z-index: 40;
@@ -334,76 +283,39 @@
       visibility: hidden;
       transition: all 0.3s ease;
     }
-
-    .mobile-menu-backdrop.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
+    .mobile-menu-backdrop.active { opacity: 1; visibility: visible; }
     .mobile-menu-container {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 100vh;
-      width: 320px;
+      position: fixed; top: 0; right: 0; height: 100vh; width: 320px;
       background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(30, 41, 59, 0.95) 100%);
-      box-shadow: -5px 0 30px rgba(0, 0, 0, 0.2);
       transform: translateX(100%);
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 1001;
       overflow-y: auto;
     }
-
-    .light-theme .mobile-menu-container {
-      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-      box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .mobile-menu-container.active {
-      transform: translateX(0);
-    }
+    .mobile-menu-container.active { transform: translateX(0); }
 
     /* === ЗАГРУЗЧИК === */
     #loader {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
       background: var(--bg-primary);
       transition: opacity 0.5s ease;
     }
-
     .loader-spinner {
-      width: 60px;
-      height: 60px;
+      width: 60px; height: 60px;
       border: 4px solid var(--glass-border);
       border-top-color: var(--primary);
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
-
-    @keyframes spin {
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
 
     /* === АНИМАЦИИ === */
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-
-    .animate-fadeInUp {
-      animation: fadeInUp 0.6s ease forwards;
-    }
-
+    .animate-fadeInUp { animation: fadeInUp 0.6s ease forwards; }
     .stagger-delay > *:nth-child(1) { animation-delay: 0.1s; }
     .stagger-delay > *:nth-child(2) { animation-delay: 0.2s; }
     .stagger-delay > *:nth-child(3) { animation-delay: 0.3s; }
@@ -412,33 +324,18 @@
 
     /* === СТАТИСТИКА === */
     .stat-card {
-      background: linear-gradient(135deg, 
-        rgba(139, 92, 246, 0.1) 0%, 
-        rgba(6, 182, 212, 0.1) 100%);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
       border: 1px solid rgba(139, 92, 246, 0.2);
       border-radius: 1rem;
       padding: 1.5rem;
       text-align: center;
       transition: all 0.3s ease;
     }
-
     .light-theme .stat-card {
-      background: linear-gradient(135deg, 
-        rgba(139, 92, 246, 0.08) 0%, 
-        rgba(6, 182, 212, 0.08) 100%);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
       border: 1px solid rgba(139, 92, 246, 0.15);
     }
-
-    .stat-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--primary);
-      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2);
-    }
-
-    .light-theme .stat-card:hover {
-      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
-    }
-
+    .stat-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2); }
     .stat-number {
       font-size: 2.5rem;
       font-weight: 800;
@@ -449,28 +346,7 @@
       line-height: 1;
     }
 
-    /* === КАТЕГОРИИ ВИДЕО === */
-    .category-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.375rem;
-      padding: 0.375rem 0.875rem;
-      border-radius: 9999px;
-      font-size: 0.875rem;
-      font-weight: 500;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      transition: all 0.2s ease;
-      backdrop-filter: blur(8px);
-    }
-
-    .category-badge:hover {
-      background: rgba(139, 92, 246, 0.1);
-      border-color: var(--primary);
-      transform: scale(1.05);
-    }
-
-    /* === ПОИСК И ФИЛЬТРЫ === */
+    /* === ПОИСК === */
     .search-input {
       background: var(--card-bg);
       border: 1px solid var(--glass-border);
@@ -481,25 +357,7 @@
       transition: all 0.3s ease;
       backdrop-filter: blur(8px);
     }
-
     .search-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
-    }
-
-    .filter-select {
-      background: var(--card-bg);
-      border: 1px solid var(--glass-border);
-      color: var(--text-primary);
-      padding: 0.75rem 1.25rem;
-      border-radius: 9999px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(8px);
-    }
-
-    .filter-select:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
@@ -507,49 +365,27 @@
 
     /* === ВИДЕО ПЛЕЙЕР === */
     .video-thumbnail {
-      position: relative;
-      border-radius: 0.75rem;
-      overflow: hidden;
-      aspect-ratio: 16/9;
-      background: var(--bg-secondary);
+      position: relative; border-radius: 0.75rem; overflow: hidden;
+      aspect-ratio: 16/9; background: var(--bg-secondary);
+      cursor: pointer;
     }
-
-    .video-thumbnail img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-
-    .video-thumbnail:hover img {
-      transform: scale(1.05);
-    }
-
+    .video-thumbnail img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .video-thumbnail:hover img { transform: scale(1.05); }
     .video-duration {
-      position: absolute;
-      bottom: 0.5rem;
-      right: 0.5rem;
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
-      font-size: 0.75rem;
-      font-weight: 500;
+      position: absolute; bottom: 0.5rem; right: 0.5rem;
+      background: rgba(0, 0, 0, 0.8); color: white;
+      padding: 0.25rem 0.5rem; border-radius: 0.25rem;
+      font-size: 0.75rem; font-weight: 500;
     }
 
     /* === КЛИПЫ TWITCH === */
     .twitch-clip-card {
-      background: linear-gradient(135deg, 
-        rgba(139, 92, 246, 0.15) 0%, 
-        rgba(236, 72, 153, 0.15) 100%);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
       border: 1px solid rgba(139, 92, 246, 0.3);
-      border-radius: 1rem;
-      padding: 1.5rem;
+      border-radius: 1rem; padding: 1.5rem;
       transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
     }
-
     .twitch-clip-card::before {
       content: '';
       position: absolute;
@@ -557,296 +393,111 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 10px,
-        rgba(139, 92, 246, 0.05) 10px,
-        rgba(139, 92, 246, 0.05) 20px
-      );
+      background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(139, 92, 246, 0.05) 10px, rgba(139, 92, 246, 0.05) 20px);
       animation: twitch-shine 10s linear infinite;
       pointer-events: none;
     }
-
     @keyframes twitch-shine {
       0% { transform: translateX(0) translateY(0); }
       100% { transform: translateX(20px) translateY(20px); }
     }
-
-    .twitch-clip-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--primary);
-      box-shadow: 0 15px 30px rgba(139, 92, 246, 0.3);
-    }
-
+    .twitch-clip-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 15px 30px rgba(139, 92, 246, 0.3); }
     .twitch-views {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 0.25rem 0.5rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      color: white;
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      background: rgba(0, 0, 0, 0.5); padding: 0.25rem 0.5rem;
+      border-radius: 9999px; font-size: 0.75rem; color: white;
     }
 
     /* === КНОПКА ПРОХОЖДЕНИЯ === */
     .walkthrough-card {
-      background: linear-gradient(135deg, 
-        rgba(245, 158, 11, 0.1) 0%, 
-        rgba(234, 88, 12, 0.1) 100%);
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(234, 88, 12, 0.1) 100%);
       border: 1px solid rgba(245, 158, 11, 0.3);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      text-align: center;
+      border-radius: 1rem; padding: 1.5rem; text-align: center;
       transition: all 0.3s ease;
     }
-
-    .walkthrough-card:hover {
-      transform: translateY(-4px);
-      border-color: #f59e0b;
-      box-shadow: 0 15px 30px rgba(245, 158, 11, 0.2);
-    }
+    .walkthrough-card:hover { transform: translateY(-4px); border-color: #f59e0b; box-shadow: 0 15px 30px rgba(245, 158, 11, 0.2); }
 
     /* === НОВОСТИ === */
-    .news-card {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .news-date {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      margin-top: auto;
-      padding-top: 1rem;
-    }
+    .news-card { height: 100%; display: flex; flex-direction: column; }
+    .news-date { color: var(--text-secondary); font-size: 0.875rem; margin-top: auto; padding-top: 1rem; }
 
     /* === СОЦИАЛЬНЫЕ КНОПКИ === */
     .social-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.75rem;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      color: var(--text-primary);
-      transition: all 0.3s ease;
-      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.5rem; border-radius: 0.75rem;
+      background: var(--glass-bg); border: 1px solid var(--glass-border);
+      color: var(--text-primary); transition: all 0.3s ease;
       backdrop-filter: blur(8px);
     }
-
-    .social-btn:hover {
-      background: rgba(139, 92, 246, 0.1);
-      border-color: var(--primary);
-      transform: translateY(-2px);
-    }
+    .social-btn:hover { background: rgba(139, 92, 246, 0.1); border-color: var(--primary); transform: translateY(-2px); }
 
     /* === АДАПТИВНОСТЬ === */
     @media (max-width: 768px) {
-      .modern-card {
-        border-radius: 1rem;
-      }
-      
-      .gradient-text {
-        font-size: 2.5rem !important;
-      }
-      
-      .stat-number {
-        font-size: 2rem;
-      }
-      
-      .btn-primary, .btn-secondary {
-        padding: 0.75rem 1.5rem;
-        font-size: 0.95rem;
-      }
-      
-      .nav-link {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.875rem;
-      }
-      
-      .mobile-menu-container {
-        width: 280px;
-      }
+      .modern-card { border-radius: 1rem; }
+      .gradient-text { font-size: 2.5rem !important; }
+      .stat-number { font-size: 2rem; }
+      .btn-primary, .btn-secondary { padding: 0.75rem 1.5rem; font-size: 0.95rem; }
+      .nav-link { padding: 0.5rem 0.75rem; font-size: 0.875rem; }
+      .mobile-menu-container { width: 280px; }
     }
-
     @media (max-width: 480px) {
-      .gradient-text {
-        font-size: 2rem !important;
-      }
-      
-      .btn-primary, .btn-secondary {
-        padding: 0.625rem 1.25rem;
-        font-size: 0.875rem;
-      }
-      
-      .search-input, .filter-select {
-        padding: 0.625rem 1rem;
-        font-size: 0.9rem;
-      }
-      
-      .stat-card {
-        padding: 1rem;
-      }
-      
-      .stat-number {
-        font-size: 1.75rem;
-      }
+      .gradient-text { font-size: 2rem !important; }
+      .btn-primary, .btn-secondary { padding: 0.625rem 1.25rem; font-size: 0.875rem; }
+      .search-input { padding: 0.625rem 1rem; font-size: 0.9rem; }
+      .stat-card { padding: 1rem; }
+      .stat-number { font-size: 1.75rem; }
     }
 
     /* === СКРОЛЛБАР === */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--bg-secondary);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border-radius: 5px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
-    }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 5px; }
 
     /* === СЕКЦИИ === */
-    .section {
-      padding: 6rem 0;
-    }
-
-    @media (max-width: 768px) {
-      .section {
-        padding: 4rem 0;
-      }
-    }
+    .section { padding: 6rem 0; }
+    @media (max-width: 768px) { .section { padding: 4rem 0; } }
 
     /* === ФУТЕР === */
-    footer {
-      background: var(--bg-secondary);
-      border-top: 1px solid var(--glass-border);
-    }
+    footer { background: var(--bg-secondary); border-top: 1px solid var(--glass-border); }
 
     /* === ИНДИКАТОР ПРОКРУТКИ === */
     .scroll-progress {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 0%;
-      height: 3px;
+      position: fixed; top: 0; left: 0; width: 0%; height: 3px;
       background: linear-gradient(90deg, var(--primary), var(--secondary));
-      z-index: 1001;
-      transition: width 0.1s ease;
+      z-index: 1001; transition: width 0.1s ease;
     }
 
     /* === ПОДСВЕТКА ССЫЛОК === */
-    a {
-      color: var(--primary);
-      transition: color 0.2s ease;
-      text-decoration: none;
-    }
-
-    a:hover {
-      color: var(--secondary);
-    }
+    a { color: var(--primary); transition: color 0.2s ease; text-decoration: none; }
+    a:hover { color: var(--secondary); }
 
     /* === ПЛЕЙЕР ВИДЕО === */
     .video-player-container {
-      position: relative;
-      border-radius: 1rem;
-      overflow: hidden;
-      background: var(--bg-secondary);
-      margin-bottom: 1rem;
+      position: relative; border-radius: 1rem; overflow: hidden;
+      background: var(--bg-secondary); margin-bottom: 1rem;
     }
-
-    .video-player-container iframe {
-      width: 100%;
-      aspect-ratio: 16/9;
-      border: none;
-    }
+    .video-player-container iframe { width: 100%; aspect-ratio: 16/9; border: none; }
 
     /* === УВЕДОМЛЕНИЯ === */
     .notification {
-      position: fixed;
-      bottom: 1rem;
-      right: 1rem;
-      background: var(--card-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 0.75rem;
-      padding: 1rem;
-      max-width: 320px;
-      transform: translateX(100%);
-      opacity: 0;
+      position: fixed; bottom: 1rem; right: 1rem;
+      background: var(--card-bg); border: 1px solid var(--glass-border);
+      border-radius: 0.75rem; padding: 1rem; max-width: 320px;
+      transform: translateX(100%); opacity: 0;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 1002;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      backdrop-filter: blur(12px);
+      z-index: 1002; backdrop-filter: blur(12px);
     }
+    .notification.show { transform: translateX(0); opacity: 1; }
 
-    .notification.show {
-      transform: translateX(0);
-      opacity: 1;
-    }
-
-    /* === ПУЛЬСИРУЮЩАЯ АНИМАЦИЯ === */
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    .animate-pulse {
-      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-
-    /* === ПЛАВНЫЙ СКРОЛЛ === */
-    html {
-      scroll-behavior: smooth;
-    }
-
-    /* === ВЫДЕЛЕНИЕ ТЕКСТА === */
-    ::selection {
-      background: rgba(139, 92, 246, 0.3);
-      color: var(--text-primary);
-    }
-
-    /* === ПАДИНГИ ДЛЯ КОНТЕЙНЕРА === */
-    .container-padding {
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
-
-    @media (min-width: 640px) {
-      .container-padding {
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .container-padding {
-        padding-left: 2rem;
-        padding-right: 2rem;
-      }
-    }
+    .container-padding { padding-left: 1rem; padding-right: 1rem; }
+    @media (min-width: 640px) { .container-padding { padding-left: 1.5rem; padding-right: 1.5rem; } }
+    @media (min-width: 1024px) { .container-padding { padding-left: 2rem; padding-right: 2rem; } }
   </style>
 </head>
 <body class="light-theme">
-  <!-- Индикатор прокрутки -->
   <div class="scroll-progress"></div>
-  
-  <!-- Загрузчик -->
-  <div id="loader">
-    <div class="loader-spinner"></div>
-  </div>
-  
-  <!-- Мобильное меню (фоновый блюр) -->
+  <div id="loader"><div class="loader-spinner"></div></div>
   <div id="mobileMenuBackdrop" class="mobile-menu-backdrop"></div>
-  
-  <!-- Мобильное меню (само меню) -->
   <div id="mobileMenuContainer" class="mobile-menu-container">
     <div class="p-6 h-full flex flex-col">
       <div class="flex items-center justify-between mb-8">
@@ -860,81 +511,40 @@
           <i class="fas fa-times text-xl"></i>
         </button>
       </div>
-      
       <nav class="space-y-2 flex-grow">
-        <a href="#welcome" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg font-medium">
-          <i class="fas fa-home w-5"></i>
-          <span>Главная</span>
-        </a>
-        <a href="#video" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg font-medium">
-          <i class="fas fa-play-circle w-5"></i>
-          <span>Видео</span>
-        </a>
-        <a href="#news" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg font-medium">
-          <i class="fas fa-newspaper w-5"></i>
-          <span>Новости</span>
-        </a>
-        <a href="#twitch-clips" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg font-medium">
-          <i class="fab fa-twitch w-5"></i>
-          <span>Клипы Twitch</span>
-        </a>
-        <a href="#contact" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg font-medium">
-          <i class="fas fa-envelope w-5"></i>
-          <span>Контакты</span>
-        </a>
+        <a href="#welcome" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg font-medium"><i class="fas fa-home w-5"></i><span>Главная</span></a>
+        <a href="#video" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg font-medium"><i class="fas fa-play-circle w-5"></i><span>Видео</span></a>
+        <a href="#news" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg font-medium"><i class="fas fa-newspaper w-5"></i><span>Новости</span></a>
+        <a href="#twitch-clips" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg font-medium"><i class="fab fa-twitch w-5"></i><span>Клипы Twitch</span></a>
+        <a href="#contact" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg font-medium"><i class="fas fa-envelope w-5"></i><span>Контакты</span></a>
       </nav>
-      
       <div class="pt-8 border-t border-gray-200 dark:border-gray-700">
         <div class="text-sm text-gray-500 mb-4 font-medium">Быстрые ссылки:</div>
         <div class="grid grid-cols-2 gap-2">
-          <a href="biography.html" target="_blank" class="text-sm p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-center transition-colors">
-            Биография
-          </a>
-          <a href="qa.html" target="_blank" class="text-sm p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-center transition-colors">
-            Q&A
-          </a>
-          <a href="faq.html" target="_blank" class="text-sm p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-center transition-colors">
-            FAQ
-          </a>
-          <a href="/games/" target="_blank" class="text-sm p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-center transition-colors">
-            Игры
-          </a>
-          <a href="year-review.html" target="_blank" class="text-sm p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-center transition-colors">
-            Итоги года
-          </a>
+          <a href="biography.html" target="_blank" class="text-sm p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-center transition-colors">Биография</a>
+          <a href="qa.html" target="_blank" class="text-sm p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-center transition-colors">Q&A</a>
+          <a href="faq.html" target="_blank" class="text-sm p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-center transition-colors">FAQ</a>
+          <a href="/games/" target="_blank" class="text-sm p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-center transition-colors">Игры</a>
+          <a href="year-review.html" target="_blank" class="text-sm p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-center transition-colors">Итоги года</a>
         </div>
       </div>
     </div>
   </div>
-  
-  <!-- Уведомление -->
   <div id="notification" class="notification">
     <div class="flex items-center justify-between">
       <span id="notificationText"></span>
-      <button onclick="hideNotification()" class="ml-4 text-gray-400 hover:text-gray-600">
-        <i class="fas fa-times"></i>
-      </button>
+      <button onclick="hideNotification()" class="ml-4 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
     </div>
   </div>
-  
-  <!-- Шапка сайта -->
   <header>
     <nav class="container-padding max-w-7xl mx-auto">
       <div class="flex items-center justify-between h-16">
-        <!-- Логотип -->
         <a href="#welcome" class="flex items-center gap-3 group">
           <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary">
-            <img src="/assets/photo.jpg" alt="Mortis Play" 
-                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                 onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%238b5cf6\"/><text x=\"50\" y=\"60\" font-size=\"40\" text-anchor=\"middle\" fill=\"white\">M</text></svg>'">
+            <img src="/assets/photo.jpg" alt="Mortis Play" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%238b5cf6\"/><text x=\"50\" y=\"60\" font-size=\"40\" text-anchor=\"middle\" fill=\"white\">M</text></svg>'">
           </div>
-          <div>
-            <div class="font-bold text-lg gradient-text">Mortis Play</div>
-            <div class="text-xs text-gray-400">Официальный сайт</div>
-          </div>
+          <div><div class="font-bold text-lg gradient-text">Mortis Play</div><div class="text-xs text-gray-400">Официальный сайт</div></div>
         </a>
-        
-        <!-- Навигация для десктопа -->
         <div class="hidden md:flex items-center gap-2">
           <a href="#welcome" class="nav-link active">Главная</a>
           <a href="#video" class="nav-link">Видео</a>
@@ -942,96 +552,43 @@
           <a href="#twitch-clips" class="nav-link">Клипы Twitch</a>
           <a href="#contact" class="nav-link">Контакты</a>
         </div>
-        
-        <!-- Правая часть -->
         <div class="flex items-center gap-3">
-          <!-- Кнопка смены темы -->
-          <button id="themeToggle" aria-label="Сменить тему">
-            <i class="fas fa-sun"></i>
-          </button>
-          
-          <!-- Бургер-меню для мобилок -->
-          <button id="menuToggle" class="md:hidden w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-            <i class="fas fa-bars text-xl"></i>
-          </button>
+          <button id="themeToggle" aria-label="Сменить тему"><i class="fas fa-sun"></i></button>
+          <button id="menuToggle" class="md:hidden w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"><i class="fas fa-bars text-xl"></i></button>
         </div>
       </div>
     </nav>
   </header>
-  
   <main id="siteContent" class="hidden">
-    <!-- Главная секция -->
     <section id="welcome" class="section pt-24">
       <div class="container-padding max-w-7xl mx-auto">
-        <!-- Герой-секция -->
         <div class="text-center mb-16">
-          <h1 class="gradient-text text-5xl md:text-7xl font-bold mb-6 animate-fadeInUp">
-            Mortis Play
-          </h1>
-          <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 animate-fadeInUp" style="animation-delay: 0.2s">
-            Эпичные видео, клипы с Twitch, новости и обновления от Mortis Play. Присоединяйся к вайбу! 😎
-          </p>
-          
-          <!-- Быстрые действия -->
+          <h1 class="gradient-text text-5xl md:text-7xl font-bold mb-6 animate-fadeInUp">Mortis Play</h1>
+          <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 animate-fadeInUp" style="animation-delay: 0.2s">Эпичные видео, клипы с Twitch, новости и обновления от Mortis Play. Присоединяйся к вайбу! 😎</p>
           <div class="flex flex-wrap justify-center gap-4 mb-12 stagger-delay">
-            <a href="#contact" class="btn-primary btn-action-contact animate-fadeInUp">
-              <i class="fas fa-envelope"></i>
-              Связаться
-            </a>
-            <a href="biography.html" target="_blank" class="btn-primary btn-action-bio animate-fadeInUp">
-              <i class="fas fa-user"></i>
-              Биография
-            </a>
-            <a href="qa.html" target="_blank" class="btn-primary btn-action-qa animate-fadeInUp">
-              <i class="fas fa-question-circle"></i>
-              Q&A
-            </a>
-            <a href="faq.html" target="_blank" class="btn-primary btn-action-faq animate-fadeInUp">
-              <i class="fas fa-circle-question"></i>
-              FAQ
-            </a>
-            <a href="/games/" target="_blank" class="btn-primary btn-action-games animate-fadeInUp">
-              <i class="fas fa-gamepad"></i>
-              Игры
-            </a>
-            <a href="year-review.html" target="_blank" class="btn-primary btn-action-year animate-fadeInUp">
-              <i class="fas fa-calendar-days"></i>
-              Итоги года
-            </a>
+            <a href="#contact" class="btn-primary btn-action-contact animate-fadeInUp"><i class="fas fa-envelope"></i> Связаться</a>
+            <a href="biography.html" target="_blank" class="btn-primary btn-action-bio animate-fadeInUp"><i class="fas fa-user"></i> Биография</a>
+            <a href="qa.html" target="_blank" class="btn-primary btn-action-qa animate-fadeInUp"><i class="fas fa-question-circle"></i> Q&A</a>
+            <a href="faq.html" target="_blank" class="btn-primary btn-action-faq animate-fadeInUp"><i class="fas fa-circle-question"></i> FAQ</a>
+            <a href="/games/" target="_blank" class="btn-primary btn-action-games animate-fadeInUp"><i class="fas fa-gamepad"></i> Игры</a>
+            <a href="year-review.html" target="_blank" class="btn-primary btn-action-year animate-fadeInUp"><i class="fas fa-calendar-days"></i> Итоги года</a>
           </div>
-          
-          <!-- Статистика -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto animate-fadeInUp" style="animation-delay: 0.5s">
-            <div class="stat-card">
-              <div class="stat-number">432</div>
-              <div class="text-sm text-gray-500 mt-2">Подписчиков</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-number">168K</div>
-              <div class="text-sm text-gray-500 mt-2">Просмотров</div>
-            </div>
+            <div class="stat-card"><div class="stat-number">432</div><div class="text-sm text-gray-500 mt-2">Подписчиков</div></div>
+            <div class="stat-card"><div class="stat-number">168K</div><div class="text-sm text-gray-500 mt-2">Просмотров</div></div>
           </div>
         </div>
-        
-        <!-- Видео и цитата -->
         <div class="max-w-4xl mx-auto animate-fadeInUp" style="animation-delay: 0.7s">
           <div class="modern-card p-2">
             <div class="relative rounded-xl overflow-hidden">
-              <video class="w-full h-auto" 
-                     autoplay muted loop playsinline 
-                     poster="/assets/photo.jpg"
-                     aria-label="Приветствие от Mortis Play">
+              <video class="w-full h-auto" autoplay muted loop playsinline poster="/assets/photo.jpg" aria-label="Приветствие от Mortis Play">
                 <source src="/assets/photo.mp4" type="video/mp4">
                 <img src="/assets/photo.jpg" alt="Mortis Play" class="w-full h-auto">
               </video>
               <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-              
-              <!-- Цитата -->
               <div class="absolute bottom-6 left-6 right-6">
                 <div class="modern-card p-4 bg-white/10 backdrop-blur-sm">
-                  <p class="text-white text-center italic">
-                    "У самурая нет цели, у него есть только путь. 🥷"
-                  </p>
+                  <p class="text-white text-center italic">"У самурая нет цели, у него есть только путь. 🥷"</p>
                 </div>
               </div>
             </div>
@@ -1040,1394 +597,464 @@
       </div>
     </section>
     
-    <!-- Видео -->
     <section id="video" class="section bg-gray-50 dark:bg-gray-900/50">
       <div class="container-padding max-w-7xl mx-auto">
         <div class="text-center mb-12">
           <h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4">Видео</h2>
-          <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Смотри лучшие моменты, стримы и подкасты. Всё видео организовано по категориям для твоего удобства!
-          </p>
+          <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Смотри лучшие моменты, стримы и подкасты. Всё видео автоматически загружается с YouTube!</p>
         </div>
-        
-        <!-- Поиск и фильтры -->
         <div class="modern-card p-6 mb-8">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="relative">
-              <input type="text" 
-                     id="videoSearch" 
-                     placeholder="Поиск видео..." 
-                     class="search-input pl-12">
+              <input type="text" id="videoSearch" placeholder="Поиск видео..." class="search-input pl-12">
               <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
             </div>
-            
-            <select id="categoryFilter" class="filter-select">
-              <option value="all">Все категории</option>
-              <option value="угар">Угар</option>
-              <option value="стримы">Стримы</option>
-              <option value="подкаст">Подкаст</option>
-              <option value="shorts">Shorts</option>
-              <option value="другое">Другое</option>
-            </select>
-            
-            <button id="resetFilters" class="btn-secondary">
-              <i class="fas fa-redo"></i>
-              Сбросить фильтры
-            </button>
+            <button id="resetFilters" class="btn-secondary"><i class="fas fa-redo"></i> Сбросить поиск</button>
           </div>
         </div>
-        
-        <!-- Категории -->
-        <div class="flex flex-wrap gap-3 mb-8 justify-center">
-          <button class="category-badge" data-category="all">
-            <i class="fas fa-star"></i>
-            Все
-          </button>
-          <button class="category-badge" data-category="угар">
-            <i class="fas fa-laugh"></i>
-            Угар
-          </button>
-          <button class="category-badge" data-category="стримы">
-            <i class="fas fa-broadcast-tower"></i>
-            Стримы
-          </button>
-          <button class="category-badge" data-category="подкаст">
-            <i class="fas fa-microphone"></i>
-            Подкаст
-          </button>
-          <button class="category-badge" data-category="shorts">
-            <i class="fas fa-mobile-alt"></i>
-            Shorts
-          </button>
-          <button class="category-badge" data-category="другое">
-            <i class="fas fa-ellipsis-h"></i>
-            Другое
-          </button>
-        </div>
-        
-        <!-- Список видео -->
-        <div id="videoList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Видео загружаются через JS -->
-        </div>
-        
-        <!-- Кнопка "Прохождения" (НОВАЯ) -->
-        <div class="mt-8 mb-8">
-          <div class="walkthrough-card modern-card p-6 text-center">
-            <div class="flex flex-col items-center">
-              <div class="w-20 h-20 rounded-full bg-gradient-to-br from-orange-500/20 to-yellow-500/20 flex items-center justify-center mb-4">
-                <i class="fas fa-gamepad text-4xl text-orange-500"></i>
-              </div>
-              <h3 class="text-2xl font-bold mb-2 gradient-text-accent">Прохождения игр</h3>
-              <p class="text-gray-600 dark:text-gray-300 mb-4 max-w-2xl">
-                Полные прохождения игр и летсплеи доступны только на моём YouTube канале! 
-                Заходи, смотри и наслаждайся контентом в максимальном качестве! 🎮
-              </p>
-              <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="btn-primary" style="background: linear-gradient(135deg, #f59e0b, #dc2626);">
-                <i class="fab fa-youtube"></i>
-                Перейти на YouTube канал
-              </a>
-              <p class="text-sm text-gray-500 mt-3">
-                *Все прохождения и летсплеи публикуются эксклюзивно на YouTube
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Сообщение если нет видео -->
-        <div id="noVideosMessage" class="text-center py-12 hidden">
-          <i class="fas fa-video-slash text-5xl text-gray-400 mb-4"></i>
-          <h3 class="text-xl font-semibold mb-2">Видео не найдены</h3>
-          <p class="text-gray-500">Попробуйте изменить параметры поиска</p>
-        </div>
-        
-        <!-- Кнопка загрузить ещё -->
-        <div class="text-center mt-8">
-          <button id="loadMoreVideos" class="btn-primary">
-            <i class="fas fa-plus"></i>
-            Загрузить ещё видео
-          </button>
-        </div>
+        <div id="videoList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <div id="noVideosMessage" class="text-center py-12 hidden"><i class="fas fa-video-slash text-5xl text-gray-400 mb-4"></i><h3 class="text-xl font-semibold mb-2">Видео не найдены</h3><p class="text-gray-500">Попробуйте изменить параметры поиска</p></div>
+        <div class="text-center mt-8"><button id="loadMoreVideos" class="btn-primary"><i class="fas fa-plus"></i> Загрузить ещё видео</button></div>
       </div>
     </section>
     
-    <!-- Новости -->
     <section id="news" class="section">
       <div class="container-padding max-w-7xl mx-auto">
-        <div class="text-center mb-12">
-          <h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4">Новости</h2>
-          <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Будь в курсе всех обновлений, анонсов и важных событий
-          </p>
-        </div>
-        
-        <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Новости загружаются через JS -->
-        </div>
-        
-        <div class="text-center mt-8">
-          <button id="loadMoreNews" class="btn-secondary">
-            <i class="fas fa-plus"></i>
-            Показать больше новостей
-          </button>
-        </div>
+        <div class="text-center mb-12"><h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4">Новости</h2><p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Будь в курсе всех обновлений, анонсов и важных событий</p></div>
+        <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <div class="text-center mt-8"><button id="loadMoreNews" class="btn-secondary"><i class="fas fa-plus"></i> Показать больше новостей</button></div>
       </div>
     </section>
     
-    <!-- Клипы Twitch (ОТКРЫТ) -->
     <section id="twitch-clips" class="section bg-gradient-to-br from-purple-900/20 to-pink-900/20">
       <div class="container-padding max-w-7xl mx-auto">
-        <div class="text-center mb-12">
-          <h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4">
-            <i class="fab fa-twitch mr-2"></i>
-            Клипы Twitch
-          </h2>
-          <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Смотри лучшие моменты с моих трансляций на Twitch! Клипы обновляются автоматически с канала.
-          </p>
-        </div>
-        
-        <!-- Сетка клипов Twitch -->
-        <div id="twitchClipsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <!-- Клипы будут загружены через JS -->
-        </div>
-        
-        <!-- Кнопка загрузить ещё клипы -->
-        <div class="text-center mt-8">
-          <button id="loadMoreTwitchClips" class="btn-primary" style="background: linear-gradient(135deg, #9146FF, #6441A4);">
-            <i class="fab fa-twitch"></i>
-            Загрузить ещё клипы
-          </button>
-        </div>
-        
-        <!-- Ссылка на Twitch канал -->
-        <div class="text-center mt-6">
-          <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="text-gray-600 dark:text-gray-300 hover:text-primary">
-            <i class="fab fa-twitch mr-1"></i>
-            Больше клипов на моём Twitch канале →
-          </a>
-        </div>
+        <div class="text-center mb-12"><h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4"><i class="fab fa-twitch mr-2"></i> Клипы Twitch</h2><p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Смотри лучшие моменты с моих трансляций на Twitch! Клипы обновляются автоматически с канала.</p></div>
+        <div id="twitchClipsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"></div>
+        <div class="text-center mt-8"><button id="loadMoreTwitchClips" class="btn-primary" style="background: linear-gradient(135deg, #9146FF, #6441A4);"><i class="fab fa-twitch"></i> Загрузить ещё клипы</button></div>
+        <div class="text-center mt-6"><a href="https://www.twitch.tv/mortisplay32" target="_blank" class="text-gray-600 dark:text-gray-300 hover:text-primary"><i class="fab fa-twitch mr-1"></i> Больше клипов на моём Twitch канале →</a></div>
       </div>
     </section>
     
-    <!-- Контакты -->
     <section id="contact" class="section bg-gray-50 dark:bg-gray-900/50">
       <div class="container-padding max-w-7xl mx-auto">
-        <div class="text-center mb-12">
-          <h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4">Контакты</h2>
-          <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Хочешь коллаб или просто поболтать? Пиши в любой из соцсетей!
-          </p>
-        </div>
-        
+        <div class="text-center mb-12"><h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4">Контакты</h2><p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Хочешь коллаб или просто поболтать? Пиши в любой из соцсетей!</p></div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <!-- Контактная информация -->
           <div class="modern-card p-8">
             <h3 class="text-2xl font-bold mb-6 gradient-text">Связь со мной</h3>
-            
             <div class="space-y-4">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center">
-                  <i class="fas fa-envelope text-purple-500"></i>
-                </div>
-                <div>
-                  <div class="font-semibold">Email</div>
-                  <a href="mailto:mortisplay@mail.ru" target="_blank" class="text-gray-600 dark:text-gray-300 hover:text-primary">
-                    mortisplay@mail.ru
-                  </a>
-                </div>
-              </div>
-              
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center">
-                  <i class="fab fa-telegram text-blue-500"></i>
-                </div>
-                <div>
-                  <div class="font-semibold">Telegram</div>
-                  <a href="https://t.me/dimap7221" target="_blank" class="text-gray-600 dark:text-gray-300 hover:text-primary">
-                    @dimap7221
-                  </a>
-                </div>
-              </div>
-              
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center">
-                  <i class="fab fa-youtube text-red-500"></i>
-                </div>
-                <div>
-                  <div class="font-semibold">YouTube</div>
-                  <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="text-gray-600 dark:text-gray-300 hover:text-primary">
-                    @MortisPlay
-                  </a>
-                </div>
-              </div>
+              <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center"><i class="fas fa-envelope text-purple-500"></i></div><div><div class="font-semibold">Email</div><a href="mailto:mortisplay@mail.ru" target="_blank" class="text-gray-600 dark:text-gray-300 hover:text-primary">mortisplay@mail.ru</a></div></div>
+              <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center"><i class="fab fa-telegram text-blue-500"></i></div><div><div class="font-semibold">Telegram</div><a href="https://t.me/dimap7221" target="_blank" class="text-gray-600 dark:text-gray-300 hover:text-primary">@dimap7221</a></div></div>
+              <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center"><i class="fab fa-youtube text-red-500"></i></div><div><div class="font-semibold">YouTube</div><a href="https://www.youtube.com/@MortisPlay" target="_blank" class="text-gray-600 dark:text-gray-300 hover:text-primary">@MortisPlay</a></div></div>
             </div>
-            
-            <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-              <h4 class="font-semibold mb-4">Telegram каналы:</h4>
-              <ul class="space-y-2">
-                <li>
-                  <a href="https://t.me/MortisPlayTG" target="_blank" class="text-gray-600 dark:text-gray-300 hover:text-primary">
-                    <i class="fab fa-telegram mr-2"></i>
-                    Основной канал
-                  </a>
-                </li>
-                <li>
-                  <a href="https://t.me/+GqoVoVYJR185ZmYy" target="_blank" class="text-gray-600 dark:text-gray-300 hover:text-primary">
-                    <i class="fab fa-telegram mr-2"></i>
-                    Частный канал
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700"><h4 class="font-semibold mb-4">Telegram каналы:</h4><ul class="space-y-2"><li><a href="https://t.me/MortisPlayTG" target="_blank" class="text-gray-600 dark:text-gray-300 hover:text-primary"><i class="fab fa-telegram mr-2"></i> Основной канал</a></li><li><a href="https://t.me/+GqoVoVYJR185ZmYy" target="_blank" class="text-gray-600 dark:text-gray-300 hover:text-primary"><i class="fab fa-telegram mr-2"></i> Частный канал</a></li></ul></div>
           </div>
-          
-          <!-- Социальные сети -->
           <div class="modern-card p-8">
             <h3 class="text-2xl font-bold mb-6 gradient-text">Социальные сети</h3>
-            <p class="text-gray-600 dark:text-gray-300 mb-6">
-              Подписывайся на все мои соцсети, чтобы не пропустить новые видео и трансляции!
-            </p>
-            
+            <p class="text-gray-600 dark:text-gray-300 mb-6">Подписывайся на все мои соцсети, чтобы не пропустить новые видео и трансляции!</p>
             <div class="grid grid-cols-2 gap-4">
-              <a href="https://t.me/Mortisplay_YT" target="_blank" class="social-btn">
-                <i class="fab fa-telegram"></i>
-                Telegram
-              </a>
-              <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="social-btn">
-                <i class="fab fa-youtube"></i>
-                YouTube
-              </a>
-              <a href="https://rutube.ru/channel/24189155/" target="_blank" class="social-btn">
-                <i class="fas fa-play-circle"></i>
-                Rutube
-              </a>
-              <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="social-btn">
-                <i class="fab fa-twitch"></i>
-                Twitch
-              </a>
-              <a href="https://www.tiktok.com/@mortisplay32" target="_blank" class="social-btn">
-                <i class="fab fa-tiktok"></i>
-                TikTok
-              </a>
-              <a href="https://discord.gg/PHPzAfUJqA" target="_blank" class="social-btn">
-                <i class="fab fa-discord"></i>
-                Discord
-              </a>
+              <a href="https://t.me/Mortisplay_YT" target="_blank" class="social-btn"><i class="fab fa-telegram"></i> Telegram</a>
+              <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="social-btn"><i class="fab fa-youtube"></i> YouTube</a>
+              <a href="https://rutube.ru/channel/24189155/" target="_blank" class="social-btn"><i class="fas fa-play-circle"></i> Rutube</a>
+              <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="social-btn"><i class="fab fa-twitch"></i> Twitch</a>
+              <a href="https://www.tiktok.com/@mortisplay32" target="_blank" class="social-btn"><i class="fab fa-tiktok"></i> TikTok</a>
+              <a href="https://discord.gg/PHPzAfUJqA" target="_blank" class="social-btn"><i class="fab fa-discord"></i> Discord</a>
             </div>
-            
-            <!-- Поддержка -->
-            <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-              <h4 class="font-semibold mb-4">Поддержать проект</h4>
-              <a href="https://www.donationalerts.com/r/mortis32" 
-                 target="_blank"
-                 class="btn-primary w-full">
-                <i class="fas fa-heart"></i>
-                Поддержать на DonationAlerts
-              </a>
-              <p class="text-sm text-gray-500 mt-3">
-                Ваша поддержка помогает создавать ещё больше крутого контента!
-              </p>
-            </div>
+            <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700"><h4 class="font-semibold mb-4">Поддержать проект</h4><a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="btn-primary w-full"><i class="fas fa-heart"></i> Поддержать на DonationAlerts</a><p class="text-sm text-gray-500 mt-3">Ваша поддержка помогает создавать ещё больше крутого контента!</p></div>
           </div>
         </div>
       </div>
     </section>
-    
-    <!-- Футер -->
     <footer class="py-8 border-t border-gray-200 dark:border-gray-800">
       <div class="container-padding max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full overflow-hidden">
-              <img src="/assets/photo.jpg" alt="Mortis Play" class="w-full h-full object-cover">
-            </div>
-            <div>
-              <div class="font-bold gradient-text">Mortis Play</div>
-              <div class="text-sm text-gray-500">Официальный сайт</div>
-            </div>
-          </div>
-          
-          <div class="text-center md:text-right">
-            <p class="text-gray-600 dark:text-gray-400">
-              © 2026 Mortis Play. Все права защищены.
-            </p>
-            <p class="text-sm text-gray-500 mt-1">
-              Сделано с ❤️ для сообщества
-            </p>
-          </div>
+          <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full overflow-hidden"><img src="/assets/photo.jpg" alt="Mortis Play" class="w-full h-full object-cover"></div><div><div class="font-bold gradient-text">Mortis Play</div><div class="text-sm text-gray-500">Официальный сайт</div></div></div>
+          <div class="text-center md:text-right"><p class="text-gray-600 dark:text-gray-400">© 2026 Mortis Play. Все права защищены.</p><p class="text-sm text-gray-500 mt-1">Сделано с ❤️ для сообщества</p></div>
         </div>
       </div>
     </footer>
   </main>
-  
   <script nonce="${nonce}">
-    // === ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ===
-    const videoData = [
-      { 
-        id: 1, 
-        title: "CS2 НО ЭТО УГАР С ТИМЕЙТАМИ! | mortis32 лучшее", 
-        category: "угар", 
-        views: "69", 
-        duration: "7:23", 
-        thumbnail: "/preview/preview1.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/b292141cd870aaec3a38f350f3a0114e/",
-        embedUrl: "https://rutube.ru/play/embed/b292141cd870aaec3a38f350f3a0114e"
-      },
-      { 
-        id: 2, 
-        title: "НОВАЯ ВЕБКА, НОВЫЕ ГОРИЗОНТЫ!", 
-        category: "угар", 
-        views: "20", 
-        duration: "16:07", 
-        thumbnail: "/preview/preview2.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/36faf3fd0b2c5dac09f907297925db41/",
-        embedUrl: "https://rutube.ru/play/embed/36faf3fd0b2c5dac09f907297925db41/"
-      },
-      { 
-        id: 3, 
-        title: "Mortisplay32 ИГРАЕТ В COUNTER STRIKE 2 #1 (ft. Johnny_Drill) mortis32 лучшее", 
-        category: "стримы", 
-        views: "27", 
-        duration: "23:43", 
-        thumbnail: "/preview/preview3.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/46b92548cd13429c14348feb10dbd35d/",
-        embedUrl: "https://rutube.ru/play/embed/46b92548cd13429c14348feb10dbd35d/"
-      },
-      { 
-        id: 4, 
-        title: "ГЕНИЙ, РОМАН, НОВИЧОК, БЫВАЛЫЙ. mortis32 лучшее", 
-        category: "угар", 
-        views: "32", 
-        duration: "7:38", 
-        thumbnail: "/preview/preview4.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/ea7fa319476924cad6ae44e7972f7f7e/",
-        embedUrl: "https://rutube.ru/play/embed/ea7fa319476924cad6ae44e7972f7f7e/"
-      },
-      { 
-        id: 5, 
-        title: "ВСЕ? ВСЕ. #3", 
-        category: "подкаст", 
-        views: "30", 
-        duration: "11:08", 
-        thumbnail: "/preview/preview5.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/baa4dc7a858f2925571dfd0791715414/",
-        embedUrl: "https://rutube.ru/play/embed/baa4dc7a858f2925571dfd0791715414/"
-      },
-      { 
-        id: 6, 
-        title: "РАСПАКОВКА НОВОГО МИКРО!!!", 
-        category: "другое", 
-        views: "26", 
-        duration: "6:45", 
-        thumbnail: "/preview/preview6.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/72b98560f8378225efc62bb68b82cb8c/",
-        embedUrl: "https://rutube.ru/play/embed/72b98560f8378225efc62bb68b82cb8c/"
-      },
-      { 
-        id: 7, 
-        title: "ПОСЛЕЖНИЙ РУБЕЖ!", 
-        category: "подкаст", 
-        views: "6", 
-        duration: "7:08", 
-        thumbnail: "/preview/preview7.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/171e2dae98076c82e5c49f3dfda7bb33/",
-        embedUrl: "https://rutube.ru/play/embed/171e2dae98076c82e5c49f3dfda7bb33/"
-      },
-      { 
-        id: 8, 
-        title: "КОНЕЦ ГОДА, ЧТО ДАЛЬШЕ", 
-        category: "подкаст", 
-        views: "30", 
-        duration: "12:32", 
-        thumbnail: "/preview/preview8.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/5b51c9a3e15b4d75bfb08783c90bcc85/",
-        embedUrl: "https://rutube.ru/play/embed/5b51c9a3e15b4d75bfb08783c90bcc85/"
-      },
-      { 
-        id: 9, 
-        title: "НОВЫЕ ВРЕМЕНА НАЧИНАЮТСЯ С РЕЛАКСА", 
-        category: "угар", 
-        views: "27", 
-        duration: "24:20", 
-        thumbnail: "/preview/preview9.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/f50e8d94d8228d9a8ffce5e37773a8e2/",
-        embedUrl: "https://rutube.ru/play/embed/f50e8d94d8228d9a8ffce5e37773a8e2/"
-      },
-      { 
-        id: 10, 
-        title: "Mortisplay32 ИГРАЕТ В PEAK И ДОХОДЯТ ДО ВЕРШИНЫ (ft. Johnny_Drill, sayheyalldayman)", 
-        category: "стримы", 
-        views: "17", 
-        duration: "1:38:14", 
-        thumbnail: "/preview/preview10.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/4e88d1d8cacec555ddb17bff2720394a/",
-        embedUrl: "https://rutube.ru/play/embed/4e88d1d8cacec555ddb17bff2720394a/"
-      },
-      { 
-        id: 11, 
-        title: "Mortisplay32 ПРОХОДИТ ХОРРОР GARRY'S MOD #1 (ft. Johnny_Drill) | mortis32 лучшее", 
-        category: "стримы", 
-        views: "12", 
-        duration: "19:22", 
-        thumbnail: "/preview/preview11.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/f81b9ced0e2d196c7024e3f4fb6b0fab/",
-        embedUrl: "https://rutube.ru/play/embed/f81b9ced0e2d196c7024e3f4fb6b0fab/"
-      },
-      { 
-        id: 12, 
-        title: "Mortisplay32 ПРОХОДИТ ХОРРОР GARRY'S MOD #2 (ft. Johnny_Drill) | mortis32 лучшее", 
-        category: "стримы", 
-        views: "12", 
-        duration: "18:35", 
-        thumbnail: "/preview/preview12.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/3a968fb9c4bd5cf4dc7b3ab93174fe8e/",
-        embedUrl: "https://rutube.ru/play/embed/3a968fb9c4bd5cf4dc7b3ab93174fe8e/"
-      },
-      { 
-        id: 13, 
-        title: "Mortisplay32 ИГРАЕТ В COUNTER STRIKE 2 В РЕЖИМЕ НАПАРНИКИ #1 (ft. rol1j) | mortis32 лучшее", 
-        category: "стримы", 
-        views: "17", 
-        duration: "28:40", 
-        thumbnail: "/preview/preview13.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/81be91207498c68ec74b0a231f6c695c/",
-        embedUrl: "https://rutube.ru/play/embed/81be91207498c68ec74b0a231f6c695c/"
-      },
-      { 
-        id: 14, 
-        title: "Mortisplay32 ИГРАЕТ В PEAK С ПОДПИСЧИКОМ (ft. Johnny_Drill, rol1j)", 
-        category: "стримы", 
-        views: "21", 
-        duration: "01:11:10", 
-        thumbnail: "/preview/preview14.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/b7f54874fc2ad757d3f0f7ab6214f64e/",
-        embedUrl: "https://rutube.ru/play/embed/b7f54874fc2ad757d3f0f7ab6214f64e/"
-      },
-      { 
-        id: 15, 
-        title: "Mortisplay32 ОФОРМЛЯЕТ ЗАВОЗ НА СТРИМЕ (ft. rol1j) | mortis32 лучшее", 
-        category: "стримы", 
-        views: "10", 
-        duration: "28:55", 
-        thumbnail: "/preview/preview15.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/bb0184dffe43ea7d3fd59e47a71b55ef/",
-        embedUrl: "https://rutube.ru/play/embed/bb0184dffe43ea7d3fd59e47a71b55ef/"
-      },
-      { 
-        id: 16, 
-        title: "Mortisplay32 ИГРАЕТ В R.E.P.O И ОН ЖЁСТКО ГОРИТ НА НЕГО (ft. Johnny_drill) | mortis32 лучшее", 
-        category: "стримы", 
-        views: "4", 
-        duration: "51:04", 
-        thumbnail: "/preview/preview16.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/5de3b57efa1be1eaf79c6dee00a46935/",
-        embedUrl: "https://rutube.ru/play/embed/5de3b57efa1be1eaf79c6dee00a46935/"
-      },
-      // === SHORTS ВИДЕО ===
-      { 
-        id: 17, 
-        title: "Новая позиция в CS2", 
-        category: "shorts", 
-        views: "991", 
-        duration: "2:11", 
-        thumbnail: "/preview/short1.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/1b5188c6194f927865feb95850ccd8d6/",
-        embedUrl: "https://rutube.ru/play/embed/1b5188c6194f927865feb95850ccd8d6/"
-      },
-      { 
-        id: 18, 
-        title: "А ниче тот факт что... ", 
-        category: "shorts", 
-        views: "840", 
-        duration: "0:16", 
-        thumbnail: "/preview/short2.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/81057b17dfe1206ca7d60d4d9136a060/",
-        embedUrl: "https://rutube.ru/play/embed/81057b17dfe1206ca7d60d4d9136a060/"
-      },
-      { 
-        id: 19, 
-        title: "Кто он?", 
-        category: "shorts", 
-        views: "16", 
-        duration: "0:35", 
-        thumbnail: "/preview/short3.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/d23e833873190bcb0d4d253f45143cbd/",
-        embedUrl: "https://rutube.ru/play/embed/d23e833873190bcb0d4d253f45143cbd/"
-      },
-      { 
-        id: 20, 
-        title: "Дал отпор называется.", 
-        category: "shorts", 
-        views: "30", 
-        duration: "2:12", 
-        thumbnail: "/preview/short4.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/1b6d609c5fb9c1e361aa6f0f2a21d9a3/",
-        embedUrl: "https://rutube.ru/play/embed/1b6d609c5fb9c1e361aa6f0f2a21d9a3/"
-      },
-      { 
-        id: 21, 
-        title: "Руина в команде", 
-        category: "shorts", 
-        views: "975", 
-        duration: "1:46", 
-        thumbnail: "/preview/short5.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/621da3218d3fe91ffdca0e2f5facddfc/",
-        embedUrl: "https://rutube.ru/play/embed/621da3218d3fe91ffdca0e2f5facddfc/"
-      },
-      { 
-        id: 22, 
-        title: "Mortis Play покинул чат.", 
-        category: "shorts", 
-        views: "39", 
-        duration: "1:31", 
-        thumbnail: "/preview/short6.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/78cdb0ffd8b086fd5f575cad99fbe67d/",
-        embedUrl: "https://rutube.ru/play/embed/78cdb0ffd8b086fd5f575cad99fbe67d/"
-      },
-      { 
-        id: 23, 
-        title: "WHAT THE SIGMA?", 
-        category: "shorts", 
-        views: "1.1K", 
-        duration: "0:53", 
-        thumbnail: "/preview/short7.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/77728dacc48030405a680864cf22b398/",
-        embedUrl: "https://rutube.ru/play/embed/77728dacc48030405a680864cf22b398/"
-      },
-      { 
-        id: 24, 
-        title: "ASMR", 
-        category: "shorts", 
-        views: "22", 
-        duration: "0:28", 
-        thumbnail: "/preview/short8.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/81c365fccd79dae81f591b24b9851508/",
-        embedUrl: "https://rutube.ru/play/embed/81c365fccd79dae81f591b24b9851508/"
-      },
-      { 
-        id: 25, 
-        title: "Принимай подачу!", 
-        category: "shorts", 
-        views: "1.9K", 
-        duration: "0:22", 
-        thumbnail: "/preview/short9.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/8f2f9f2b3f8c6ac252f1ff07f9651af4/",
-        embedUrl: "https://rutube.ru/play/embed/8f2f9f2b3f8c6ac252f1ff07f9651af4/"
-      },
-      { 
-        id: 26, 
-        title: "упс X_X", 
-        category: "shorts", 
-        views: "34", 
-        duration: "0:16", 
-        thumbnail: "/preview/short10.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/41663abe6c914c1ccaa941749626302f/",
-        embedUrl: "https://rutube.ru/play/embed/41663abe6c914c1ccaa941749626302f/"
-      },
-      // ВИДЕО НЕКСТ
-      { 
-        id: 27, 
-        title: "SLAY 2025 (OST)", 
-        category: "другое", 
-        views: "8", 
-        duration: "2:52", 
-        thumbnail: "/preview/preview17.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/8d9403c9ff3662450050b551dc8dddb8/",
-        embedUrl: "https://rutube.ru/play/embed/8d9403c9ff3662450050b551dc8dddb8/"
-      },
-      { 
-        id: 28, 
-        title: "ВРЕМЯ БЕЗУМИЙ В РАБОТЕ!!! | mortis32 лучшее", 
-        category: "угар", 
-        views: "18", 
-        duration: "22:11", 
-        thumbnail: "/preview/preview18.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/3de912692f3520aad3ccf648b30f0247/",
-        embedUrl: "https://rutube.ru/play/embed/3de912692f3520aad3ccf648b30f0247/"
-      },
-      { 
-        id: 29, 
-        title: "СПЕЦ ВЫПУСК! ЧАС РАБОТЫ В ЛЕТАЛ КОМПАНИ! | mortis32 лучшее", 
-        category: "угар", 
-        views: "29", 
-        duration: "55:19", 
-        thumbnail: "/preview/preview19.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/06a6b97ccd99162052c14b60418c97f0/",
-        embedUrl: "https://rutube.ru/play/embed/06a6b97ccd99162052c14b60418c97f0/"
-      },
-      { 
-        id: 30, 
-        title: "КОМАНДА Л***ТРОНОВ ВОЗВРАЩАЮТСЯ В ИГРУ! | mortis32 лучшее", 
-        category: "угар", 
-        views: "19", 
-        duration: "18:45", 
-        thumbnail: "/preview/preview20.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/26b723e83d8775c75ad2afb856626ecf/",
-        embedUrl: "https://rutube.ru/play/embed/26b723e83d8775c75ad2afb856626ecf/"
-      },
-      { 
-        id: 31, 
-        title: "ЛЕГЕНДЫ НИКОГДА НЕ УМИРАЮТ... | mortis32 лучшее", 
-        category: "угар", 
-        views: "47", 
-        duration: "23:27", 
-        thumbnail: "/preview/preview21.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/fa9a360caf2a168a3920dc73e4d82399/",
-        embedUrl: "https://rutube.ru/play/embed/fa9a360caf2a168a3920dc73e4d82399/"
-      },
-      { 
-        id: 32, 
-        title: "ЭТО УГАР А НЕ ИГРА XD | mortis32 лучшее", 
-        category: "угар", 
-        views: "26", 
-        duration: "42:23", 
-        thumbnail: "/preview/preview22.jpg", 
-        platform: "rutube", 
-        url: "https://rutube.ru/video/67b4e49684e33ce1f5441c2c7906c914/",
-        embedUrl: "https://rutube.ru/play/embed/67b4e49684e33ce1f5441c2c7906c914/"
-      }
-    ];
-
-    // === ДАННЫЕ КЛИПОВ TWITCH ===
-const twitchClipsData = [
-  {
-    id: "t1",
-    title: "ЧУТЬ НЕ СПАЛИЛ",
-    views: "19",
-    duration: "0:60",
-    thumbnail: "https://clips-media-assets2.twitch.tv/ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2-preview-480x272.jpg",
-    url: "https://clips.twitch.tv/ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2",
-    embedUrl: "https://clips.twitch.tv/embed?clip=ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2",
-    game: "Общение"
-  },
-  {
-    id: "t2",
-    title: "ЧТО ЗА ТАЙМИНГ?!",
-    views: "6",
-    duration: "0:18",
-    thumbnail: "https://clips-media-assets2.twitch.tv/FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm-preview-480x272.jpg",
-    url: "https://clips.twitch.tv/FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm",
-    embedUrl: "https://clips.twitch.tv/embed?clip=FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm",
-    game: "R.E.P.O."
-  },
-  {
-    id: "t3",
-    title: "ПУНЬК",
-    views: "29",
-    duration: "0:30",
-    thumbnail: "https://clips-media-assets2.twitch.tv/WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3-preview-480x272.jpg",
-    url: "https://clips.twitch.tv/WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3",
-    embedUrl: "https://clips.twitch.tv/embed?clip=WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3",
-    game: "PEAK"
-  },
-  {
-    id: "t4",
-    title: "Повторил и убил, конец удивил 0_0",
-    views: "15",
-    duration: "0:24",
-    thumbnail: "https://clips-media-assets2.twitch.tv/MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm-preview-480x272.jpg",
-    url: "https://clips.twitch.tv/MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm",
-    embedUrl: "https://clips.twitch.tv/embed?clip=MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm",
-    game: "CS2"
-  }
-];
-
-    const newsData = [
-      { 
-        title: "🔥 Клипы Twitch открыты!", 
-        date: "Текущее обновление", 
-        content: "Мы рады сообщить, что долгожданный раздел <b>«Клипы с Twitch»</b> теперь открыт и полностью функционален! Теперь вы можете смотреть лучшие моменты с моих стримов прямо на сайте. На данный момент сейчас есть только 4 клипа, в скором времени мы добавим ещё несколько!<b> Нам просто нужно время.</b> Также мы добавили кнопку <b>«Прохождения»</b> в раздел «Видео», где теперь можно быстро перейти на YouTube канал для просмотра полных летсплеев. Исправлены мелкие ошибки и улучшена производительность сайта. Наслаждайтесь обновлённым функционалом! 🚀<br><br>Что нового:<br>• ✅ Открыт раздел «Клипы Twitch» с реальными клипами<br>• 🎮 Добавлена кнопка «Прохождения» в раздел «Видео»<br>• 🔧 Исправлены мелкие поправки в интерфейсе<br>• ⚡ Улучшена производительность загрузки<br>• 📱 Оптимизация для мобильных устройств",
-        icon: "fas fa-twitch",
-        color: "text-purple-500"
-      },
-      { 
-        title: "🔥 Новый дизайн сайта!", 
-        date: "2 Февраля 2026", 
-        content: "Мы полностью переработали дизайн сайта! Теперь он выглядит ещё красивее, ошибки которые не удавалось исправить в старой версии были успешно исправлены. Мы переработали каждую деталь! 🚀<br><br>Что нового:<br>• Совершенно новый интерфейс<br>• Улучшенная светлая тема<br>• Переработанная система видео<br>• Исправлены все баги предыдущей версии<br>• Улучшена мобильная версия",
-        icon: "fas fa-palette",
-        color: "text-purple-500"
-      },
-      { 
-        title: "С новым годом!", 
-        date: "8 января 2026", 
-        content: "Ну что друзья, вот и наступил 2026 год вместе с сайтом. Мы взяли перерыв над сайтом, поэтому с такими новостями мы и пришли. Как вы могли заметить, раздел Профиль исчез из за того что бета тестирование прошло успешно и мы приняли решение что мы временно удалим его и на его замену придет кое что другое. На данный момент пока что всё, ну и не забудьте конечно же посмотреть моё 3 <a href=\"https://youtu.be/TVgbipfwgEY\" target=\"_blank\" class=\"text-primary hover:underline\">Новогоднее поздравление)</a>.",
-        icon: "fas fa-gift",
-        color: "text-yellow-500"
-      },
-      { 
-        title: "ИТОГИ ГОДА - Открыто!", 
-        date: "5 декабря 2025", 
-        content: "Кнопка Итоги года - активирована! Можете смотреть итоги года канала (Лично мною отредактировано). А также потихоньку заливаем новые и старые видосы из канала, ожидаем)...",
-        icon: "fas fa-calendar-star",
-        color: "text-blue-500"
-      },
-      { 
-        title: "ЗИМА УЖЕ РЯДОМ.", 
-        date: "28 ноября 2025", 
-        content: "Зимняя обнова на месте! А значит и новые фишки: Новый раздел, новые функции но самое главное НОВОГОДНЯЯ ТРАДИЦИЯ, это ИТОГИ ГОДА! Как будет работать эта кнопка: Переходя по ней, вы увидите уникальные карточки через что мы прошли)...",
-        icon: "fas fa-snowflake",
-        color: "text-cyan-500"
-      }
-    ];
-
-    // === ОСНОВНЫЕ ФУНКЦИИ ===
-    function showNotification(message, type = 'info') {
-      const notification = document.getElementById('notification');
-      const notificationText = document.getElementById('notificationText');
-      
-      notificationText.textContent = message;
-      notification.classList.add('show');
-      
-      setTimeout(() => {
-        notification.classList.remove('show');
-      }, 5000);
-    }
-
-    function hideNotification() {
-      document.getElementById('notification').classList.remove('show');
-    }
-
-    function debounce(func, wait) {
-      let timeout;
-      return function executedFunction(...args) {
-        const later = () => {
-          clearTimeout(timeout);
-          func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-      };
-    }
-
-    // === УПРАВЛЕНИЕ ТЕМОЙ ===
-    function initTheme() {
-      const themeToggle = document.getElementById('themeToggle');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      
-      let currentTheme = localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light');
-      if (currentTheme === 'dark') {
-        document.body.classList.remove('light-theme');
-      } else {
-        document.body.classList.add('light-theme');
-      }
-      updateThemeIcon(currentTheme);
-      
-      themeToggle.addEventListener('click', () => {
-        const isLight = document.body.classList.contains('light-theme');
-        const newTheme = isLight ? 'dark' : 'light';
-        
-        if (newTheme === 'light') {
-          document.body.classList.add('light-theme');
-        } else {
-          document.body.classList.remove('light-theme');
-        }
-        
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
-        showNotification(`Тема изменена на ${newTheme === 'light' ? 'светлую 🌞' : 'тёмную 🌙'}`);
-        
-        gtag('event', 'theme_toggle', {
-          event_category: 'engagement',
-          event_label: newTheme
-        });
-      });
-    }
-
-    function updateThemeIcon(theme) {
-      const icon = document.querySelector('#themeToggle i');
-      if (theme === 'light') {
-        icon.className = 'fas fa-moon';
-        icon.title = 'Переключить на тёмную тему';
-      } else {
-        icon.className = 'fas fa-sun';
-        icon.title = 'Переключить на светлую тему';
-      }
-    }
-
-    // === НАВИГАЦИЯ И МЕНЮ ===
-    function initNavigation() {
-      const menuToggle = document.getElementById('menuToggle');
-      const closeMenu = document.getElementById('closeMenu');
-      const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
-      const mobileMenuContainer = document.getElementById('mobileMenuContainer');
-      const navLinks = document.querySelectorAll('a[href^="#"]');
-      
-      // Открытие мобильного меню
-      menuToggle.addEventListener('click', () => {
-        mobileMenuBackdrop.classList.add('active');
-        mobileMenuContainer.classList.add('active');
-        document.body.style.overflow = 'hidden';
-      });
-      
-      // Закрытие мобильного меню
-      function closeMobileMenu() {
-        mobileMenuBackdrop.classList.remove('active');
-        mobileMenuContainer.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-      
-      closeMenu.addEventListener('click', closeMobileMenu);
-      mobileMenuBackdrop.addEventListener('click', closeMobileMenu);
-      
-      // Закрытие меню при клике на ссылку
-      navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-          closeMobileMenu();
-        });
-      });
-      
-      // Активная ссылка при прокрутке
-      function updateActiveLink() {
-        const sections = document.querySelectorAll('section[id]');
-        const scrollPos = window.scrollY + 100;
-        
-        sections.forEach(section => {
-          const sectionTop = section.offsetTop;
-          const sectionHeight = section.clientHeight;
-          const sectionId = section.getAttribute('id');
-          
-          if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-            document.querySelectorAll('.nav-link').forEach(link => {
-              link.classList.remove('active');
-              if (link.getAttribute('href') === `#${sectionId}`) {
-                link.classList.add('active');
-              }
-            });
-          }
-        });
-      }
-      
-      window.addEventListener('scroll', debounce(updateActiveLink, 100));
-      updateActiveLink();
-    }
-
-    // === ВИДЕО СИСТЕМА ===
-    function initVideoSystem() {
-      const videoList = document.getElementById('videoList');
-      const videoSearch = document.getElementById('videoSearch');
-      const categoryFilter = document.getElementById('categoryFilter');
-      const resetFilters = document.getElementById('resetFilters');
-      const loadMoreVideos = document.getElementById('loadMoreVideos');
-      const categoryButtons = document.querySelectorAll('.category-badge');
-      const noVideosMessage = document.getElementById('noVideosMessage');
-      
-      let currentPage = 1;
-      const videosPerPage = 6;
-      let filteredVideos = [...videoData];
-      let activeCategory = 'all';
-      
-      // Рендер видео
-      function renderVideos(videos = filteredVideos, page = currentPage, append = false) {
-        if (!append) {
-          videoList.innerHTML = '';
-          currentPage = 1;
-        }
-        
-        const start = (page - 1) * videosPerPage;
-        const end = start + videosPerPage;
-        const videosToShow = videos.slice(start, end);
-        
-        if (videosToShow.length === 0) {
-          noVideosMessage.classList.remove('hidden');
-          loadMoreVideos.style.display = 'none';
-          return;
-        }
-        
-        noVideosMessage.classList.add('hidden');
-        
-        videosToShow.forEach(video => {
-          const videoElement = createVideoElement(video);
-          videoList.appendChild(videoElement);
-        });
-        
-        // Проверяем, есть ли еще видео для загрузки
-        loadMoreVideos.style.display = end < videos.length ? 'block' : 'none';
-        
-        // Инициализируем плееры для новых видео
-        initVideoPlayers();
-      }
-      
-      function createVideoElement(video) {
-        const div = document.createElement('div');
-        div.className = 'modern-card overflow-hidden animate-fadeInUp';
-        
-        div.innerHTML = `
-          <div class="video-thumbnail cursor-pointer" data-video-id="${video.id}">
-            <img src="${video.thumbnail}" alt="${video.title}" 
-                 onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 9\"><rect width=\"16\" height=\"9\" fill=\"%231e293b\"/><text x=\"8\" y=\"5\" font-size=\"2\" text-anchor=\"middle\" fill=\"%23cbd5e1\">No preview</text></svg>'">
-            <div class="video-duration">${video.duration}</div>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="w-16 h-16 rounded-full bg-black/50 flex items-center justify-center">
-                <i class="fas fa-play text-white text-2xl"></i>
-              </div>
-            </div>
-          </div>
-          <div class="p-4">
-            <h3 class="font-semibold mb-2 line-clamp-2">${video.title}</h3>
-            <div class="flex justify-between items-center text-sm text-gray-500">
-              <span><i class="fas fa-eye mr-1"></i>${video.views} просмотров</span>
-              <span class="category-badge" data-category="${video.category}">
-                ${getCategoryName(video.category)}
-              </span>
-            </div>
-            <div class="mt-4" id="player-${video.id}"></div>
-          </div>
-        `;
-        
-        return div;
-      }
-      
-      function getCategoryName(category) {
-        const names = {
-          'угар': 'Угар',
-          'стримы': 'Стримы',
-          'подкаст': 'Подкаст',
-          'shorts': 'Shorts',
-          'другое': 'Другое'
-        };
-        return names[category] || category;
-      }
-      
-      function filterVideos() {
-        const searchTerm = videoSearch.value.toLowerCase();
-        const category = categoryFilter.value;
-        activeCategory = category;
-        
-        filteredVideos = videoData.filter(video => {
-          const matchesSearch = video.title.toLowerCase().includes(searchTerm);
-          const matchesCategory = category === 'all' || video.category === category;
-          return matchesSearch && matchesCategory;
-        });
-        
-        renderVideos(filteredVideos);
-      }
-      
-      function initVideoPlayers() {
-        document.querySelectorAll('.video-thumbnail').forEach(thumb => {
-          thumb.addEventListener('click', function() {
-            const videoId = this.getAttribute('data-video-id');
-            const video = videoData.find(v => v.id == videoId);
-            const playerContainer = document.getElementById(`player-${videoId}`);
-            
-            if (!video) return;
-            
-            // Скрываем все остальные плееры
-            document.querySelectorAll('[id^="player-"]').forEach(container => {
-              if (container.id !== `player-${videoId}`) {
-                container.innerHTML = '';
-              }
-            });
-            
-            // Создаем или обновляем плеер
-            if (playerContainer.innerHTML) {
-              playerContainer.innerHTML = '';
-            } else {
-              playerContainer.innerHTML = `
-                <div class="video-player-container">
-                  <iframe src="${video.embedUrl}" 
-                          frameborder="0" 
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                          allowfullscreen>
-                  </iframe>
-                </div>
-                <button class="btn-secondary w-full close-player-btn" data-video-id="${videoId}">
-                  <i class="fas fa-times"></i> Скрыть плеер
-                </button>
-              `;
-              
-              // Добавляем обработчик для кнопки закрытия
-              const closeBtn = playerContainer.querySelector('.close-player-btn');
-              closeBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                playerContainer.innerHTML = '';
-              });
-              
-              // Отслеживание просмотра
-              trackVideoView(video.category, video.platform);
-            }
-          });
-        });
-      }
-      
-      function trackVideoView(category, platform) {
-        gtag('event', 'video_play', {
-          event_category: 'video',
-          event_label: `${category}_${platform}`
-        });
-      }
-      
-      // Инициализация событий
-      videoSearch.addEventListener('input', debounce(filterVideos, 300));
-      categoryFilter.addEventListener('change', filterVideos);
-      
-      resetFilters.addEventListener('click', () => {
-        videoSearch.value = '';
-        categoryFilter.value = 'all';
-        filterVideos();
-        showNotification('Фильтры сброшены');
-      });
-      
-      categoryButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const category = btn.getAttribute('data-category');
-          categoryFilter.value = category;
-          filterVideos();
-          
-          // Обновляем активную кнопку категории
-          categoryButtons.forEach(b => b.classList.remove('bg-purple-500', 'text-white'));
-          btn.classList.add('bg-purple-500', 'text-white');
-        });
-      });
-      
-      loadMoreVideos.addEventListener('click', () => {
-        currentPage++;
-        renderVideos(filteredVideos, currentPage, true);
-      });
-      
-      // Инициализация
-      renderVideos();
-    }
-
-    // === СИСТЕМА КЛИПОВ TWITCH ===
-function initTwitchClipsSystem() {
-  const twitchClipsGrid = document.getElementById('twitchClipsGrid');
-  const loadMoreTwitchClips = document.getElementById('loadMoreTwitchClips');
-  
-  let currentTwitchPage = 1;
-  const clipsPerPage = 6;
-  
-  function renderTwitchClips(page = currentTwitchPage, append = false) {
-    if (!append) {
-      twitchClipsGrid.innerHTML = '';
-      currentTwitchPage = 1;
-    }
-    
-    const start = (page - 1) * clipsPerPage;
-    const end = start + clipsPerPage;
-    const clipsToShow = twitchClipsData.slice(start, end);
-    
-    if (clipsToShow.length === 0) {
-      loadMoreTwitchClips.style.display = 'none';
-      return;
-    }
-    
-    clipsToShow.forEach((clip, index) => {
-      const clipElement = createTwitchClipElement(clip, start + index);
-      twitchClipsGrid.appendChild(clipElement);
-    });
-    
-    // Проверяем, есть ли еще клипы для загрузки
-    loadMoreTwitchClips.style.display = end < twitchClipsData.length ? 'block' : 'none';
-    
-    // Инициализируем плееры для новых клипов
-    initTwitchPlayers();
-  }
-  
-  function initTwitchPlayers() {
-    document.querySelectorAll('.twitch-thumbnail').forEach(thumb => {
-      thumb.addEventListener('click', function() {
-        const clipId = this.getAttribute('data-clip-id');
-        const clip = twitchClipsData.find(c => c.id === clipId);
-        const playerContainer = document.getElementById(`twitch-player-${clipId}`);
-        
-        if (!clip) return;
-        
-        // Скрываем все остальные плееры
-        document.querySelectorAll('[id^="twitch-player-"]').forEach(container => {
-          if (container.id !== `twitch-player-${clipId}`) {
-            container.innerHTML = '';
-          }
-        });
-        
-        // Создаем или обновляем плеер
-        if (playerContainer.innerHTML) {
-          playerContainer.innerHTML = '';
-        } else {
-          playerContainer.innerHTML = `
-            <div class="video-player-container">
-              <iframe src="${clip.embedUrl}&parent=${window.location.hostname}" 
-                      frameborder="0" 
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowfullscreen>
-              </iframe>
-            </div>
-            <button class="btn-secondary w-full close-player-btn" data-clip-id="${clipId}">
-              <i class="fas fa-times"></i> Скрыть плеер
-            </button>
-          `;
-          
-          // Добавляем обработчик для кнопки закрытия
-          const closeBtn = playerContainer.querySelector('.close-player-btn');
-          closeBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            playerContainer.innerHTML = '';
-          });
-          
-          // Отслеживание просмотра
-          trackClipView(clip.game);
-        }
-      });
-    });
-  }
-  
-  function trackClipView(game) {
-    gtag('event', 'twitch_clip_play', {
-      event_category: 'twitch',
-      event_label: game
-    });
-  }
-  
-  function createTwitchClipElement(clip, index) {
-    const div = document.createElement('div');
-    div.className = 'twitch-clip-card animate-fadeInUp';
-    div.style.animationDelay = `${index * 0.1}s`;
-    
-    // Создаем цветовой градиент на основе названия игры
-    const gameColors = {
-      'Общение': 'from-purple-600 to-pink-600',
-      'R.E.P.O.': 'from-red-600 to-orange-600',
-      'PEAK': 'from-blue-600 to-cyan-600',
-      'CS2': 'from-yellow-600 to-orange-600'
+    // === КОНФИГУРАЦИЯ YOUTUBE API ===
+    const YOUTUBE_CONFIG = {
+        apiKey: '',  // Вставьте ваш YouTube API ключ
+        channelId: '', // Вставьте ID вашего YouTube канала
+        maxResults: 50
     };
     
-    const gradientClass = gameColors[clip.game] || 'from-purple-600 to-pink-600';
+    let videoData = [];
+    let isLoadingVideos = false;
+    let currentVideoSystem = null;
     
-    div.innerHTML = `
-      <div class="relative">
-        <div class="relative rounded-lg overflow-hidden mb-3 cursor-pointer twitch-thumbnail" data-clip-id="${clip.id}">
-          <div class="bg-gradient-to-br ${gradientClass} aspect-video flex items-center justify-center">
-            <img src="${clip.thumbnail}" 
-                 alt="${clip.title.replace(/"/g, '&quot;')}" 
-                 class="w-full h-full object-cover absolute inset-0"
-                 onerror="this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex';">
-            <div class="fallback hidden flex-col items-center justify-center text-white p-4 text-center">
-              <i class="fab fa-twitch text-5xl mb-2 opacity-50"></i>
-              <p class="text-sm font-medium">${clip.game}</p>
-              <p class="text-xs opacity-75 mt-1">Нажмите для просмотра</p>
-            </div>
-            <div class="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/30 transition-all duration-300">
-              <div class="w-16 h-16 rounded-full bg-purple-600/80 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                <i class="fas fa-play text-white text-2xl"></i>
-              </div>
-            </div>
-          </div>
-          <div class="absolute top-2 right-2 z-10">
-            <span class="twitch-views">
-              <i class="fas fa-eye"></i> ${clip.views}
-            </span>
-          </div>
-          <div class="absolute bottom-2 left-2 z-10">
-            <span class="bg-purple-600 text-white text-xs px-2 py-1 rounded">
-              ${clip.game}
-            </span>
-          </div>
-          <div class="absolute bottom-2 right-2 z-10">
-            <span class="bg-black/70 text-white text-xs px-2 py-1 rounded">
-              ${clip.duration}
-            </span>
-          </div>
-        </div>
-        <h3 class="font-semibold mb-2 line-clamp-2">${clip.title.replace(/"/g, '&quot;')}</h3>
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-sm text-gray-500">
-            <i class="fab fa-twitch text-purple-500 mr-1"></i>
-            Twitch клип
-          </span>
-          <a href="${clip.url}" target="_blank" class="text-purple-500 hover:text-purple-400 text-sm">
-            Открыть на Twitch <i class="fas fa-external-link-alt ml-1"></i>
-          </a>
-        </div>
-        <div id="twitch-player-${clip.id}"></div>
-      </div>
-    `;
+    // === ФУНКЦИИ ДЛЯ РАБОТЫ С YOUTUBE API ===
+    function formatDuration(duration) {
+        const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+        const hours = (match[1] || '').replace('H', '');
+        const minutes = (match[2] || '').replace('M', '');
+        const seconds = (match[3] || '').replace('S', '');
+        if (hours) return `${hours}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
+        return `${minutes || '0'}:${(seconds || '0').padStart(2, '0')}`;
+    }
     
-    return div;
-  }
-  
-  loadMoreTwitchClips.addEventListener('click', () => {
-    currentTwitchPage++;
-    renderTwitchClips(currentTwitchPage, true);
-  });
-  
-  // Инициализация
-  renderTwitchClips();
-}
-
-    // === СИСТЕМА НОВОСТЕЙ ===
-    function initNewsSystem() {
-      const newsGrid = document.getElementById('newsGrid');
-      const loadMoreNews = document.getElementById('loadMoreNews');
-      
-      let currentNewsPage = 1;
-      const newsPerPage = 3;
-      
-      function renderNews(page = currentNewsPage, append = false) {
-        if (!append) {
-          newsGrid.innerHTML = '';
-          currentNewsPage = 1;
+    function formatViews(views) {
+        const num = parseInt(views);
+        if (isNaN(num)) return '0';
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num.toString();
+    }
+    
+    async function fetchVideosFromYouTube() {
+        if (!YOUTUBE_CONFIG.apiKey || !YOUTUBE_CONFIG.channelId) return null;
+        try {
+            isLoadingVideos = true;
+            showNotification('Загрузка видео с YouTube... 📡');
+            const searchResponse = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CONFIG.channelId}&maxResults=${YOUTUBE_CONFIG.maxResults}&order=date&type=video&key=${YOUTUBE_CONFIG.apiKey}`);
+            if (!searchResponse.ok) throw new Error(`HTTP ${searchResponse.status}`);
+            const searchData = await searchResponse.json();
+            if (!searchData.items?.length) throw new Error('Нет видео');
+            const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+            const videosResponse = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics&id=${videoIds}&key=${YOUTUBE_CONFIG.apiKey}`);
+            const videosData = await videosResponse.json();
+            const videoDetailsMap = {};
+            videosData.items.forEach(video => {
+                videoDetailsMap[video.id] = {
+                    duration: formatDuration(video.contentDetails.duration),
+                    views: formatViews(video.statistics.viewCount)
+                };
+            });
+            const youtubeVideos = searchData.items.map((item, index) => ({
+                id: index + 1,
+                title: item.snippet.title,
+                views: videoDetailsMap[item.id.videoId]?.views || '0',
+                duration: videoDetailsMap[item.id.videoId]?.duration || '0:00',
+                thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.default?.url,
+                platform: 'youtube',
+                videoId: item.id.videoId
+            }));
+            showNotification(`Загружено ${youtubeVideos.length} видео с YouTube! 🎉`);
+            return youtubeVideos;
+        } catch (error) {
+            console.error('Ошибка загрузки YouTube:', error);
+            showNotification('Не удалось загрузить видео с YouTube. Использую резервные данные. ⚠️');
+            return null;
+        } finally {
+            isLoadingVideos = false;
+        }
+    }
+    
+    function loadCachedVideos() {
+        try {
+            const cached = localStorage.getItem('cachedVideos');
+            if (cached) {
+                const { data, timestamp } = JSON.parse(cached);
+                if ((Date.now() - timestamp) < 86400000 && data?.length) {
+                    videoData = data;
+                    return true;
+                }
+            }
+        } catch(e) {}
+        return false;
+    }
+    
+    async function updateVideosFromYouTube() {
+        if (isLoadingVideos) return;
+        const youtubeVideos = await fetchVideosFromYouTube();
+        if (youtubeVideos?.length) {
+            videoData = youtubeVideos;
+            try {
+                localStorage.setItem('cachedVideos', JSON.stringify({ data: videoData, timestamp: Date.now() }));
+            } catch(e) {}
+            if (currentVideoSystem) currentVideoSystem.refresh(videoData);
+        }
+    }
+    
+    function showNotification(message) {
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        notificationText.textContent = message;
+        notification.classList.add('show');
+        setTimeout(() => notification.classList.remove('show'), 5000);
+    }
+    
+    function hideNotification() { document.getElementById('notification').classList.remove('show'); }
+    function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func(...args), wait); }; }
+    
+    function initTheme() {
+        const themeToggle = document.getElementById('themeToggle');
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') document.body.classList.remove('light-theme');
+        else document.body.classList.add('light-theme');
+        updateThemeIcon(saved !== 'dark' ? 'light' : 'dark');
+        themeToggle.addEventListener('click', () => {
+            const isLight = document.body.classList.contains('light-theme');
+            if (isLight) document.body.classList.remove('light-theme');
+            else document.body.classList.add('light-theme');
+            const newTheme = isLight ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            showNotification(`Тема изменена на ${newTheme === 'light' ? 'светлую 🌞' : 'тёмную 🌙'}`);
+        });
+    }
+    function updateThemeIcon(theme) {
+        const icon = document.querySelector('#themeToggle i');
+        if (theme === 'light') { icon.className = 'fas fa-moon'; icon.title = 'Тёмная тема'; }
+        else { icon.className = 'fas fa-sun'; icon.title = 'Светлая тема'; }
+    }
+    
+    function initNavigation() {
+        const menuToggle = document.getElementById('menuToggle');
+        const closeMenu = document.getElementById('closeMenu');
+        const backdrop = document.getElementById('mobileMenuBackdrop');
+        const container = document.getElementById('mobileMenuContainer');
+        function closeMobileMenu() {
+            backdrop.classList.remove('active');
+            container.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        menuToggle?.addEventListener('click', () => {
+            backdrop.classList.add('active');
+            container.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        closeMenu?.addEventListener('click', closeMobileMenu);
+        backdrop?.addEventListener('click', closeMobileMenu);
+        document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', closeMobileMenu));
+        window.addEventListener('scroll', debounce(() => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+            sections.forEach(section => {
+                if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.clientHeight) {
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${section.id}`) link.classList.add('active');
+                    });
+                }
+            });
+        }, 100));
+    }
+    
+    class VideoSystem {
+        constructor() {
+            this.videoList = document.getElementById('videoList');
+            this.videoSearch = document.getElementById('videoSearch');
+            this.resetFilters = document.getElementById('resetFilters');
+            this.loadMoreVideos = document.getElementById('loadMoreVideos');
+            this.noVideosMessage = document.getElementById('noVideosMessage');
+            this.currentPage = 1;
+            this.videosPerPage = 6;
+            this.filteredVideos = [...videoData];
+            this.initEvents();
+            this.renderVideos();
         }
         
-        const start = (page - 1) * newsPerPage;
-        const end = start + newsPerPage;
-        const newsToShow = newsData.slice(start, end);
+        refresh(newData) {
+            this.filteredVideos = [...newData];
+            this.currentPage = 1;
+            this.renderVideos(this.filteredVideos);
+        }
         
-        newsToShow.forEach((news, index) => {
-          const newsElement = createNewsElement(news, start + index);
-          newsGrid.appendChild(newsElement);
-        });
+        initEvents() {
+            this.videoSearch.addEventListener('input', debounce(() => this.filterVideos(), 300));
+            this.resetFilters.addEventListener('click', () => {
+                this.videoSearch.value = '';
+                this.filterVideos();
+                showNotification('Поиск сброшен');
+            });
+            this.loadMoreVideos.addEventListener('click', () => {
+                this.currentPage++;
+                this.renderVideos(this.filteredVideos, this.currentPage, true);
+            });
+        }
         
-        // Проверяем, есть ли еще новости
-        loadMoreNews.style.display = end < newsData.length ? 'block' : 'none';
-      }
-      
-      function createNewsElement(news, index) {
-        const div = document.createElement('div');
-        div.className = 'modern-card news-card animate-fadeInUp';
-        div.style.animationDelay = `${index * 0.1}s`;
+        filterVideos() {
+            const searchTerm = this.videoSearch.value.toLowerCase();
+            this.filteredVideos = videoData.filter(video => {
+                return video.title.toLowerCase().includes(searchTerm);
+            });
+            this.currentPage = 1;
+            this.renderVideos(this.filteredVideos);
+        }
         
-        div.innerHTML = `
-          <div class="p-6">
-            <div class="flex items-center gap-4 mb-4">
-              <div class="w-12 h-12 rounded-lg ${news.color.replace('text-', 'bg-')}/10 flex items-center justify-center">
-                <i class="${news.icon} ${news.color} text-xl"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-lg">${news.title}</h3>
-                <div class="text-sm text-gray-500">${news.date}</div>
-              </div>
-            </div>
-            <div class="text-gray-600 dark:text-gray-300">
-              ${news.content}
-            </div>
-            <div class="news-date">
-              <i class="fas fa-heart text-red-400 mr-2"></i>
-              С любовью Mortis32 <3
-            </div>
-          </div>
-        `;
+        createVideoElement(video) {
+            const div = document.createElement('div');
+            div.className = 'modern-card overflow-hidden animate-fadeInUp';
+            div.innerHTML = `
+                <div class="video-thumbnail cursor-pointer" data-video-id="${video.id}">
+                    <img src="${video.thumbnail}" alt="${video.title.replace(/"/g, '&quot;')}" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 9\"><rect width=\"16\" height=\"9\" fill=\"%231e293b\"/><text x=\"8\" y=\"5\" font-size=\"2\" text-anchor=\"middle\" fill=\"%23cbd5e1\">No preview</text></svg>'">
+                    <div class="video-duration">${video.duration}</div>
+                    <div class="absolute inset-0 flex items-center justify-center"><div class="w-16 h-16 rounded-full bg-black/50 flex items-center justify-center"><i class="fab fa-youtube text-white text-2xl"></i></div></div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold mb-2 line-clamp-2">${video.title.replace(/"/g, '&quot;')}</h3>
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <span><i class="fas fa-eye mr-1"></i>${video.views} просмотров</span>
+                    </div>
+                    <div class="mt-4" id="player-${video.id}"></div>
+                </div>
+            `;
+            return div;
+        }
         
-        return div;
-      }
-      
-      loadMoreNews.addEventListener('click', () => {
-        currentNewsPage++;
-        renderNews(currentNewsPage, true);
-      });
-      
-      // Инициализация
-      renderNews();
+        renderVideos(videos = this.filteredVideos, page = this.currentPage, append = false) {
+            if (!append) { this.videoList.innerHTML = ''; this.currentPage = 1; }
+            const start = (page - 1) * this.videosPerPage;
+            const end = start + this.videosPerPage;
+            const videosToShow = videos.slice(start, end);
+            if (videosToShow.length === 0) {
+                this.noVideosMessage.classList.remove('hidden');
+                this.loadMoreVideos.style.display = 'none';
+                return;
+            }
+            this.noVideosMessage.classList.add('hidden');
+            videosToShow.forEach(video => this.videoList.appendChild(this.createVideoElement(video)));
+            this.loadMoreVideos.style.display = end < videos.length ? 'block' : 'none';
+            this.initVideoPlayers();
+        }
+        
+        initVideoPlayers() {
+            document.querySelectorAll('.video-thumbnail').forEach(thumb => {
+                thumb.addEventListener('click', () => {
+                    const videoId = thumb.getAttribute('data-video-id');
+                    const video = videoData.find(v => v.id == videoId);
+                    const container = document.getElementById(`player-${videoId}`);
+                    if (!video) return;
+                    document.querySelectorAll('[id^="player-"]').forEach(c => { if (c.id !== `player-${videoId}`) c.innerHTML = ''; });
+                    if (container.innerHTML) { container.innerHTML = ''; return; }
+                    container.innerHTML = `
+                        <div class="video-player-container"><iframe src="https://www.youtube.com/embed/${video.videoId}?autoplay=1&modestbranding=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+                        <button class="btn-secondary w-full close-player-btn"><i class="fas fa-times"></i> Скрыть плеер</button>
+                    `;
+                    container.querySelector('.close-player-btn').addEventListener('click', (e) => { e.stopPropagation(); container.innerHTML = ''; });
+                    gtag('event', 'video_play', { event_category: 'video', event_label: `youtube` });
+                });
+            });
+        }
     }
-
-    // === ПРОКРУТКА И ИНДИКАТОР ===
+    
+    const twitchClipsData = [
+        { id: "t1", title: "ЧУТЬ НЕ СПАЛИЛ", views: "19", duration: "0:60", thumbnail: "https://clips-media-assets2.twitch.tv/ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2-preview-480x272.jpg", url: "https://clips.twitch.tv/ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2", embedUrl: "https://clips.twitch.tv/embed?clip=ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2", game: "Общение" },
+        { id: "t2", title: "ЧТО ЗА ТАЙМИНГ?!", views: "6", duration: "0:18", thumbnail: "https://clips-media-assets2.twitch.tv/FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm-preview-480x272.jpg", url: "https://clips.twitch.tv/FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm", embedUrl: "https://clips.twitch.tv/embed?clip=FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm", game: "R.E.P.O." },
+        { id: "t3", title: "ПУНЬК", views: "29", duration: "0:30", thumbnail: "https://clips-media-assets2.twitch.tv/WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3-preview-480x272.jpg", url: "https://clips.twitch.tv/WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3", embedUrl: "https://clips.twitch.tv/embed?clip=WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3", game: "PEAK" },
+        { id: "t4", title: "Повторил и убил, конец удивил 0_0", views: "15", duration: "0:24", thumbnail: "https://clips-media-assets2.twitch.tv/MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm-preview-480x272.jpg", url: "https://clips.twitch.tv/MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm", embedUrl: "https://clips.twitch.tv/embed?clip=MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm", game: "CS2" }
+    ];
+    
+    function initTwitchClipsSystem() {
+        const grid = document.getElementById('twitchClipsGrid');
+        const loadMore = document.getElementById('loadMoreTwitchClips');
+        let page = 1;
+        const perPage = 6;
+        function render(append = false) {
+            if (!append) { grid.innerHTML = ''; page = 1; }
+            const start = (page - 1) * perPage;
+            const clips = twitchClipsData.slice(start, start + perPage);
+            if (!clips.length) { loadMore.style.display = 'none'; return; }
+            clips.forEach((clip, i) => {
+                const div = document.createElement('div');
+                div.className = 'twitch-clip-card animate-fadeInUp';
+                div.style.animationDelay = `${(start + i) * 0.1}s`;
+                const colors = { 'Общение': 'from-purple-600 to-pink-600', 'R.E.P.O.': 'from-red-600 to-orange-600', 'PEAK': 'from-blue-600 to-cyan-600', 'CS2': 'from-yellow-600 to-orange-600' };
+                div.innerHTML = `<div class="relative"><div class="relative rounded-lg overflow-hidden mb-3 cursor-pointer twitch-thumbnail" data-clip-id="${clip.id}"><div class="bg-gradient-to-br ${colors[clip.game] || 'from-purple-600 to-pink-600'} aspect-video flex items-center justify-center"><img src="${clip.thumbnail}" alt="${clip.title.replace(/"/g, '&quot;')}" class="w-full h-full object-cover absolute inset-0" onerror="this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex';"><div class="fallback hidden flex-col items-center justify-center text-white p-4 text-center"><i class="fab fa-twitch text-5xl mb-2 opacity-50"></i><p class="text-sm font-medium">${clip.game}</p><p class="text-xs opacity-75 mt-1">Нажмите для просмотра</p></div><div class="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/30 transition-all duration-300"><div class="w-16 h-16 rounded-full bg-purple-600/80 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300"><i class="fas fa-play text-white text-2xl"></i></div></div></div><div class="absolute top-2 right-2 z-10"><span class="twitch-views"><i class="fas fa-eye"></i> ${clip.views}</span></div><div class="absolute bottom-2 left-2 z-10"><span class="bg-purple-600 text-white text-xs px-2 py-1 rounded">${clip.game}</span></div><div class="absolute bottom-2 right-2 z-10"><span class="bg-black/70 text-white text-xs px-2 py-1 rounded">${clip.duration}</span></div></div><h3 class="font-semibold mb-2 line-clamp-2">${clip.title.replace(/"/g, '&quot;')}</h3><div class="flex items-center justify-between mb-3"><span class="text-sm text-gray-500"><i class="fab fa-twitch text-purple-500 mr-1"></i>Twitch клип</span><a href="${clip.url}" target="_blank" class="text-purple-500 hover:text-purple-400 text-sm">Открыть на Twitch <i class="fas fa-external-link-alt ml-1"></i></a></div><div id="twitch-player-${clip.id}"></div></div>`;
+                grid.appendChild(div);
+            });
+            loadMore.style.display = start + perPage < twitchClipsData.length ? 'block' : 'none';
+            initPlayers();
+        }
+        function initPlayers() {
+            document.querySelectorAll('.twitch-thumbnail').forEach(thumb => {
+                thumb.addEventListener('click', () => {
+                    const clipId = thumb.getAttribute('data-clip-id');
+                    const clip = twitchClipsData.find(c => c.id === clipId);
+                    const container = document.getElementById(`twitch-player-${clipId}`);
+                    if (!clip) return;
+                    document.querySelectorAll('[id^="twitch-player-"]').forEach(c => { if (c.id !== `twitch-player-${clipId}`) c.innerHTML = ''; });
+                    if (container.innerHTML) { container.innerHTML = ''; return; }
+                    container.innerHTML = `<div class="video-player-container"><iframe src="${clip.embedUrl}&parent=${window.location.hostname}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><button class="btn-secondary w-full close-player-btn"><i class="fas fa-times"></i> Скрыть плеер</button>`;
+                    container.querySelector('.close-player-btn').addEventListener('click', (e) => { e.stopPropagation(); container.innerHTML = ''; });
+                    gtag('event', 'twitch_clip_play', { event_category: 'twitch', event_label: clip.game });
+                });
+            });
+        }
+        render();
+        loadMore.addEventListener('click', () => { page++; render(true); });
+    }
+    
+    const newsData = [
+        { title: "🔥 Клипы Twitch открыты!", date: "Текущее обновление", content: "Мы рады сообщить, что долгожданный раздел <b>«Клипы с Twitch»</b> теперь открыт и полностью функционален! Теперь вы можете смотреть лучшие моменты с моих стримов прямо на сайте. На данный момент сейчас есть только 4 клипа, в скором времени мы добавим ещё несколько!<b> Нам просто нужно время.</b> Также мы добавили кнопку <b>«Прохождения»</b> в раздел «Видео», где теперь можно быстро перейти на YouTube канал для просмотра полных летсплеев. Исправлены мелкие ошибки и улучшена производительность сайта. Наслаждайтесь обновлённым функционалом! 🚀<br><br>Что нового:<br>• ✅ Открыт раздел «Клипы Twitch» с реальными клипами<br>• 🎮 Добавлена кнопка «Прохождения» в раздел «Видео»<br>• 🔧 Исправлены мелкие поправки в интерфейсе<br>• ⚡ Улучшена производительность загрузки<br>• 📱 Оптимизация для мобильных устройств", icon: "fas fa-twitch", color: "text-purple-500" },
+        { title: "🔥 Новый дизайн сайта!", date: "2 Февраля 2026", content: "Мы полностью переработали дизайн сайта! Теперь он выглядит ещё красивее, ошибки которые не удавалось исправить в старой версии были успешно исправлены. Мы переработали каждую деталь! 🚀<br><br>Что нового:<br>• Совершенно новый интерфейс<br>• Улучшенная светлая тема<br>• Переработанная система видео<br>• Исправлены все баги предыдущей версии<br>• Улучшена мобильная версия", icon: "fas fa-palette", color: "text-purple-500" },
+        { title: "С новым годом!", date: "8 января 2026", content: "Ну что друзья, вот и наступил 2026 год вместе с сайтом. Мы взяли перерыв над сайтом, поэтому с такими новостями мы и пришли. Как вы могли заметить, раздел Профиль исчез из за того что бета тестирование прошло успешно и мы приняли решение что мы временно удалим его и на его замену придет кое что другое. На данный момент пока что всё, ну и не забудьте конечно же посмотреть моё 3 <a href=\"https://youtu.be/TVgbipfwgEY\" target=\"_blank\" class=\"text-primary hover:underline\">Новогоднее поздравление)</a>.", icon: "fas fa-gift", color: "text-yellow-500" },
+        { title: "ИТОГИ ГОДА - Открыто!", date: "5 декабря 2025", content: "Кнопка Итоги года - активирована! Можете смотреть итоги года канала (Лично мною отредактировано). А также потихоньку заливаем новые и старые видосы из канала, ожидаем)...", icon: "fas fa-calendar-star", color: "text-blue-500" },
+        { title: "ЗИМА УЖЕ РЯДОМ.", date: "28 ноября 2025", content: "Зимняя обнова на месте! А значит и новые фишки: Новый раздел, новые функции но самое главное НОВОГОДНЯЯ ТРАДИЦИЯ, это ИТОГИ ГОДА! Как будет работать эта кнопка: Переходя по ней, вы увидите уникальные карточки через что мы прошли)...", icon: "fas fa-snowflake", color: "text-cyan-500" }
+    ];
+    
+    function initNewsSystem() {
+        const grid = document.getElementById('newsGrid');
+        const loadMore = document.getElementById('loadMoreNews');
+        let page = 1;
+        const perPage = 3;
+        function render(append = false) {
+            if (!append) { grid.innerHTML = ''; page = 1; }
+            const start = (page - 1) * perPage;
+            const news = newsData.slice(start, start + perPage);
+            if (!news.length) { loadMore.style.display = 'none'; return; }
+            news.forEach((item, i) => {
+                const div = document.createElement('div');
+                div.className = 'modern-card news-card animate-fadeInUp';
+                div.style.animationDelay = `${(start + i) * 0.1}s`;
+                div.innerHTML = `<div class="p-6"><div class="flex items-center gap-4 mb-4"><div class="w-12 h-12 rounded-lg ${item.color.replace('text-', 'bg-')}/10 flex items-center justify-center"><i class="${item.icon} ${item.color} text-xl"></i></div><div><h3 class="font-bold text-lg">${item.title}</h3><div class="text-sm text-gray-500">${item.date}</div></div></div><div class="text-gray-600 dark:text-gray-300">${item.content}</div><div class="news-date"><i class="fas fa-heart text-red-400 mr-2"></i>С любовью Mortis32 <3</div></div>`;
+                grid.appendChild(div);
+            });
+            loadMore.style.display = start + perPage < newsData.length ? 'block' : 'none';
+        }
+        render();
+        loadMore.addEventListener('click', () => { page++; render(true); });
+    }
+    
     function initScrollSystem() {
-      const scrollProgress = document.querySelector('.scroll-progress');
-      
-      window.addEventListener('scroll', () => {
-        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
-        scrollProgress.style.width = scrolled + '%';
-      });
+        const progress = document.querySelector('.scroll-progress');
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            progress.style.width = (winScroll / height) * 100 + '%';
+        });
     }
-
-    // === ЗАГРУЗЧИК ===
+    
     function initLoader() {
-      const loader = document.getElementById('loader');
-      const siteContent = document.getElementById('siteContent');
-      
-      // Минимальное время показа загрузчика для плавности
-      setTimeout(() => {
-        loader.style.opacity = '0';
+        const loader = document.getElementById('loader');
+        const content = document.getElementById('siteContent');
         setTimeout(() => {
-          loader.style.display = 'none';
-          siteContent.classList.remove('hidden');
-          
-          // Запускаем анимации после загрузки
-          document.querySelectorAll('.animate-fadeInUp').forEach((el, index) => {
-            el.style.animationDelay = `${index * 0.1}s`;
-          });
-        }, 500);
-      }, 1000);
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; content.classList.remove('hidden'); }, 500);
+        }, 1000);
     }
-
-    // === ПРИВЕТСТВЕННОЕ СООБЩЕНИЕ (ОДИН РАЗ) ===
+    
     function showWelcomeMessageOnce() {
-      const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-      
-      if (!hasSeenWelcome) {
-        // Показываем сообщение только при первом посещении
-        setTimeout(() => {
-          showNotification('Добро пожаловать на обновлённый сайт Mortis Play! Теперь с Twitch клипами! 🎮');
-        }, 1500);
-        
-        // Устанавливаем флаг, что пользователь уже видел приветствие
-        localStorage.setItem('hasSeenWelcome', 'true');
-      }
+        if (!localStorage.getItem('hasSeenWelcome')) {
+            setTimeout(() => showNotification('Добро пожаловать на обновлённый сайт Mortis Play! Видео автоматически загружаются с YouTube! 🎮'), 1500);
+            localStorage.setItem('hasSeenWelcome', 'true');
+        }
     }
-
-    // === ИНИЦИАЛИЗАЦИЯ ВСЕГО ===
-    document.addEventListener('DOMContentLoaded', () => {
-      initTheme();
-      initNavigation();
-      initVideoSystem();
-      initTwitchClipsSystem();
-      initNewsSystem();
-      initScrollSystem();
-      initLoader();
-      
-      // Показываем приветственное сообщение только один раз
-      showWelcomeMessageOnce();
-      
-      // Аналитика
-      gtag('event', 'page_view', {
-        page_title: 'Mortis Play - Главная',
-        page_location: window.location.href
-      });
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+        loadCachedVideos();
+        if (YOUTUBE_CONFIG.apiKey && YOUTUBE_CONFIG.channelId) {
+            await updateVideosFromYouTube();
+        } else {
+            showNotification('YouTube API не настроен. Используется демо-режим. 🎬');
+        }
+        setInterval(updateVideosFromYouTube, 3600000);
+        initTheme();
+        initNavigation();
+        currentVideoSystem = new VideoSystem();
+        initTwitchClipsSystem();
+        initNewsSystem();
+        initScrollSystem();
+        initLoader();
+        showWelcomeMessageOnce();
+        gtag('event', 'page_view', { page_title: 'Mortis Play - Главная', page_location: window.location.href });
     });
-
-    // === ОБРАБОТЧИКИ ОШИБОК ===
-    window.addEventListener('error', function(e) {
-      console.error('Произошла ошибка:', e.error);
-      showNotification('Произошла ошибка. Пожалуйста, обновите страницу.', 'error');
-    });
-
-    // === РЕСАЙЗ ОКНА ===
-    window.addEventListener('resize', debounce(() => {
-      // Обновляем активную навигацию при ресайзе
-      const event = new Event('scroll');
-      window.dispatchEvent(event);
-    }, 250));
+    
+    window.addEventListener('error', (e) => { console.error(e.error); showNotification('Произошла ошибка. Обновите страницу.'); });
+    window.addEventListener('resize', debounce(() => window.dispatchEvent(new Event('scroll')), 250));
   </script>
 </body>
 </html>
