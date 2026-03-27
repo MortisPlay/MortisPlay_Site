@@ -347,20 +347,111 @@
     }
 
     /* === ПОИСК === */
-    .search-input {
+    .search-input, .sort-select, .date-filter-btn {
       background: var(--card-bg);
       border: 1px solid var(--glass-border);
       color: var(--text-primary);
       padding: 0.75rem 1.25rem;
       border-radius: 9999px;
-      width: 100%;
       transition: all 0.3s ease;
       backdrop-filter: blur(8px);
     }
-    .search-input:focus {
+    .search-input { width: 100%; }
+    .sort-select { cursor: pointer; }
+    .search-input:focus, .sort-select:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
+    
+    /* === КАТЕГОРИИ (ТЕГИ) === */
+    .category-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+    }
+    .category-tag i { font-size: 0.65rem; }
+    .tag-cs { background: linear-gradient(135deg, #dc2626, #ea580c); color: white; border: none; }
+    .tag-угар { background: linear-gradient(135deg, #f59e0b, #f97316); color: white; border: none; }
+    .tag-стримы { background: linear-gradient(135deg, #8b5cf6, #a855f7); color: white; border: none; }
+    .tag-подкаст { background: linear-gradient(135deg, #06b6d4, #0ea5e9); color: white; border: none; }
+    .tag-shorts { background: linear-gradient(135deg, #ec4899, #f43f5e); color: white; border: none; }
+    .tag-другое { background: var(--glass-bg); border-color: var(--glass-border); }
+
+    /* === КНОПКА НАВЕРХ === */
+    .scroll-top-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 999;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+      border: none;
+    }
+    .scroll-top-btn.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    .scroll-top-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5);
+    }
+
+    /* === SKELETON LOADING === */
+    .skeleton-card {
+      background: var(--card-bg);
+      border-radius: 1.25rem;
+      overflow: hidden;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .skeleton-thumbnail {
+      aspect-ratio: 16/9;
+      background: rgba(139, 92, 246, 0.2);
+    }
+    .skeleton-title {
+      height: 1.5rem;
+      background: rgba(139, 92, 246, 0.2);
+      margin: 1rem;
+      border-radius: 0.5rem;
+      width: 80%;
+    }
+    .skeleton-stats {
+      height: 1rem;
+      background: rgba(139, 92, 246, 0.2);
+      margin: 1rem;
+      border-radius: 0.5rem;
+      width: 60%;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* === СЧЕТЧИК ВИДЕО === */
+    .video-counter {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: var(--glass-bg);
+      border-radius: 9999px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
     }
 
     /* === ВИДЕО ПЛЕЙЕР === */
@@ -439,11 +530,12 @@
       .btn-primary, .btn-secondary { padding: 0.75rem 1.5rem; font-size: 0.95rem; }
       .nav-link { padding: 0.5rem 0.75rem; font-size: 0.875rem; }
       .mobile-menu-container { width: 280px; }
+      .scroll-top-btn { width: 40px; height: 40px; bottom: 1rem; right: 1rem; }
     }
     @media (max-width: 480px) {
       .gradient-text { font-size: 2rem !important; }
       .btn-primary, .btn-secondary { padding: 0.625rem 1.25rem; font-size: 0.875rem; }
-      .search-input { padding: 0.625rem 1rem; font-size: 0.9rem; }
+      .search-input, .sort-select, .date-filter-btn { padding: 0.625rem 1rem; font-size: 0.9rem; }
       .stat-card { padding: 1rem; }
       .stat-number { font-size: 1.75rem; }
     }
@@ -497,6 +589,7 @@
 <body class="light-theme">
   <div class="scroll-progress"></div>
   <div id="loader"><div class="loader-spinner"></div></div>
+  <button id="scrollTopBtn" class="scroll-top-btn"><i class="fas fa-arrow-up"></i></button>
   <div id="mobileMenuBackdrop" class="mobile-menu-backdrop"></div>
   <div id="mobileMenuContainer" class="mobile-menu-container">
     <div class="p-6 h-full flex flex-col">
@@ -602,16 +695,35 @@
         <div class="text-center mb-12">
           <h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4">Видео</h2>
           <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Смотри лучшие моменты, стримы и подкасты. Всё видео автоматически загружается с YouTube!</p>
+          <div id="videoCounter" class="video-counter"></div>
         </div>
+        
         <div class="modern-card p-6 mb-8">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="relative">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="relative md:col-span-2">
               <input type="text" id="videoSearch" placeholder="Поиск видео..." class="search-input pl-12">
               <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
             </div>
-            <button id="resetFilters" class="btn-secondary"><i class="fas fa-redo"></i> Сбросить поиск</button>
+            <select id="sortSelect" class="sort-select">
+              <option value="date-desc">📅 Новые сначала</option>
+              <option value="date-asc">📅 Старые сначала</option>
+              <option value="views-desc">👁 Популярные сначала</option>
+              <option value="views-asc">👁 Менее популярные</option>
+              <option value="title-asc">🔤 Название (А-Я)</option>
+              <option value="title-desc">🔤 Название (Я-А)</option>
+            </select>
+            <button id="resetFilters" class="btn-secondary"><i class="fas fa-redo"></i> Сбросить всё</button>
+          </div>
+          
+          <div class="flex flex-wrap gap-2 mt-4">
+            <span class="text-sm text-gray-400 mr-2">Фильтр по дате:</span>
+            <button class="date-filter-btn text-sm px-3 py-1" data-days="7">📅 Неделя</button>
+            <button class="date-filter-btn text-sm px-3 py-1" data-days="30">📅 Месяц</button>
+            <button class="date-filter-btn text-sm px-3 py-1" data-days="90">📅 3 месяца</button>
+            <button class="date-filter-btn text-sm px-3 py-1 active" data-days="0">📅 Всё время</button>
           </div>
         </div>
+        
         <div id="videoList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         <div id="noVideosMessage" class="text-center py-12 hidden"><i class="fas fa-video-slash text-5xl text-gray-400 mb-4"></i><h3 class="text-xl font-semibold mb-2">Видео не найдены</h3><p class="text-gray-500">Попробуйте изменить параметры поиска</p></div>
         <div class="text-center mt-8"><button id="loadMoreVideos" class="btn-primary"><i class="fas fa-plus"></i> Загрузить ещё видео</button></div>
@@ -676,14 +788,15 @@
   <script nonce="${nonce}">
     // === КОНФИГУРАЦИЯ YOUTUBE API ===
     const YOUTUBE_CONFIG = {
-        apiKey: 'AIzaSyCHwEhu5s69hx9RgMyYsOrkmBkBW2TZ7fA',  // Вставьте ваш YouTube API ключ
-        channelId: 'UC2VwlrbzSa8UGLHAYmbuEZA', // Вставьте ID вашего YouTube канала
+        apiKey: 'AIzaSyCHwEhu5s69hx9RgMyYsOrkmBkBW2TZ7fA',
+        channelId: 'UC2VwlrbzSa8UGLHAYmbuEZA',
         maxResults: 100
     };
     
     let videoData = [];
     let isLoadingVideos = false;
     let currentVideoSystem = null;
+    let currentDateFilter = 0; // 0 = всё время, иначе количество дней
     
     // === ФУНКЦИИ ДЛЯ РАБОТЫ С YOUTUBE API ===
     function formatDuration(duration) {
@@ -703,10 +816,57 @@
         return num.toString();
     }
     
+    function detectCategory(title) {
+        const text = title.toLowerCase();
+        if (text.includes('cs') || text.includes('counter-strike') || text.includes('cs2')) return 'cs';
+        if (text.includes('стрим') || text.includes('трансляция') || text.includes('live')) return 'стримы';
+        if (text.includes('подкаст') || text.includes('podcast')) return 'подкаст';
+        if (text.includes('shorts') || (title.length < 60 && !text.includes('стрим'))) return 'shorts';
+        if (text.includes('угар') || text.includes('прикол') || text.includes('смешно')) return 'угар';
+        return 'другое';
+    }
+    
+    function getCategoryTagClass(category) {
+        const classes = {
+            'cs': 'tag-cs',
+            'угар': 'tag-угар',
+            'стримы': 'tag-стримы',
+            'подкаст': 'tag-подкаст',
+            'shorts': 'tag-shorts',
+            'другое': 'tag-другое'
+        };
+        return classes[category] || 'tag-другое';
+    }
+    
+    function getCategoryIcon(category) {
+        const icons = {
+            'cs': 'fa-gamepad',
+            'угар': 'fa-laugh',
+            'стримы': 'fa-broadcast-tower',
+            'подкаст': 'fa-microphone',
+            'shorts': 'fa-mobile-alt',
+            'другое': 'fa-ellipsis-h'
+        };
+        return icons[category] || 'fa-video';
+    }
+    
+    function getCategoryName(category) {
+        const names = {
+            'cs': 'CS Угар',
+            'угар': 'Угар',
+            'стримы': 'Стримы',
+            'подкаст': 'Подкаст',
+            'shorts': 'Shorts',
+            'другое': 'Другое'
+        };
+        return names[category] || category;
+    }
+    
     async function fetchVideosFromYouTube() {
         if (!YOUTUBE_CONFIG.apiKey || !YOUTUBE_CONFIG.channelId) return null;
         try {
             isLoadingVideos = true;
+            if (currentVideoSystem) currentVideoSystem.showSkeleton();
             showNotification('Загрузка видео с YouTube... 📡');
             const searchResponse = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CONFIG.channelId}&maxResults=${YOUTUBE_CONFIG.maxResults}&order=date&type=video&key=${YOUTUBE_CONFIG.apiKey}`);
             if (!searchResponse.ok) throw new Error(`HTTP ${searchResponse.status}`);
@@ -719,23 +879,26 @@
             videosData.items.forEach(video => {
                 videoDetailsMap[video.id] = {
                     duration: formatDuration(video.contentDetails.duration),
-                    views: formatViews(video.statistics.viewCount)
+                    views: formatViews(video.statistics.viewCount),
+                    publishedAt: video.snippet?.publishedAt || new Date().toISOString()
                 };
             });
             const youtubeVideos = searchData.items.map((item, index) => ({
                 id: index + 1,
                 title: item.snippet.title,
+                category: detectCategory(item.snippet.title),
                 views: videoDetailsMap[item.id.videoId]?.views || '0',
                 duration: videoDetailsMap[item.id.videoId]?.duration || '0:00',
                 thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.default?.url,
                 platform: 'youtube',
-                videoId: item.id.videoId
+                videoId: item.id.videoId,
+                publishedAt: videoDetailsMap[item.id.videoId]?.publishedAt || item.snippet.publishedAt
             }));
             showNotification(`Загружено ${youtubeVideos.length} видео с YouTube! 🎉`);
             return youtubeVideos;
         } catch (error) {
             console.error('Ошибка загрузки YouTube:', error);
-            showNotification('Не удалось загрузить видео с YouTube. Использую резервные данные. ⚠️');
+            showNotification('Не удалось загрузить видео с YouTube. ⚠️');
             return null;
         } finally {
             isLoadingVideos = false;
@@ -833,13 +996,27 @@
         }, 100));
     }
     
+    function initScrollTopButton() {
+        const btn = document.getElementById('scrollTopBtn');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) btn.classList.add('visible');
+            else btn.classList.remove('visible');
+        });
+        btn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+    
     class VideoSystem {
         constructor() {
             this.videoList = document.getElementById('videoList');
             this.videoSearch = document.getElementById('videoSearch');
+            this.sortSelect = document.getElementById('sortSelect');
             this.resetFilters = document.getElementById('resetFilters');
             this.loadMoreVideos = document.getElementById('loadMoreVideos');
             this.noVideosMessage = document.getElementById('noVideosMessage');
+            this.videoCounter = document.getElementById('videoCounter');
+            this.dateFilterBtns = document.querySelectorAll('.date-filter-btn');
             this.currentPage = 1;
             this.videosPerPage = 6;
             this.filteredVideos = [...videoData];
@@ -847,18 +1024,89 @@
             this.renderVideos();
         }
         
+        showSkeleton() {
+            if (!this.videoList) return;
+            this.videoList.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+                const skeleton = document.createElement('div');
+                skeleton.className = 'skeleton-card';
+                skeleton.innerHTML = `
+                    <div class="skeleton-thumbnail"></div>
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-stats"></div>
+                `;
+                this.videoList.appendChild(skeleton);
+            }
+        }
+        
         refresh(newData) {
             this.filteredVideos = [...newData];
             this.currentPage = 1;
+            this.applyFiltersAndSort();
+        }
+        
+        applyFiltersAndSort() {
+            let filtered = [...videoData];
+            
+            // Поиск
+            const searchTerm = this.videoSearch.value.toLowerCase();
+            if (searchTerm) {
+                filtered = filtered.filter(v => v.title.toLowerCase().includes(searchTerm));
+            }
+            
+            // Фильтр по дате
+            if (currentDateFilter > 0) {
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - currentDateFilter);
+                filtered = filtered.filter(v => new Date(v.publishedAt) >= cutoffDate);
+            }
+            
+            // Сортировка
+            const sortValue = this.sortSelect.value;
+            filtered.sort((a, b) => {
+                switch(sortValue) {
+                    case 'date-desc': return new Date(b.publishedAt) - new Date(a.publishedAt);
+                    case 'date-asc': return new Date(a.publishedAt) - new Date(b.publishedAt);
+                    case 'views-desc': return parseInt(b.views) - parseInt(a.views);
+                    case 'views-asc': return parseInt(a.views) - parseInt(b.views);
+                    case 'title-asc': return a.title.localeCompare(b.title);
+                    case 'title-desc': return b.title.localeCompare(a.title);
+                    default: return 0;
+                }
+            });
+            
+            this.filteredVideos = filtered;
+            this.currentPage = 1;
             this.renderVideos(this.filteredVideos);
+            this.updateCounter();
+        }
+        
+        updateCounter() {
+            if (this.videoCounter) {
+                this.videoCounter.innerHTML = `<i class="fas fa-video mr-2"></i>Всего видео: ${this.filteredVideos.length}`;
+            }
         }
         
         initEvents() {
-            this.videoSearch.addEventListener('input', debounce(() => this.filterVideos(), 300));
+            this.videoSearch.addEventListener('input', debounce(() => this.applyFiltersAndSort(), 300));
+            this.sortSelect.addEventListener('change', () => this.applyFiltersAndSort());
             this.resetFilters.addEventListener('click', () => {
                 this.videoSearch.value = '';
-                this.filterVideos();
-                showNotification('Поиск сброшен');
+                this.sortSelect.value = 'date-desc';
+                currentDateFilter = 0;
+                this.dateFilterBtns.forEach(btn => btn.classList.remove('active'));
+                document.querySelector('.date-filter-btn[data-days="0"]')?.classList.add('active');
+                this.applyFiltersAndSort();
+                showNotification('Все фильтры сброшены');
+            });
+            this.dateFilterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const days = parseInt(btn.getAttribute('data-days'));
+                    currentDateFilter = days;
+                    this.dateFilterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    this.applyFiltersAndSort();
+                });
             });
             this.loadMoreVideos.addEventListener('click', () => {
                 this.currentPage++;
@@ -866,28 +1114,26 @@
             });
         }
         
-        filterVideos() {
-            const searchTerm = this.videoSearch.value.toLowerCase();
-            this.filteredVideos = videoData.filter(video => {
-                return video.title.toLowerCase().includes(searchTerm);
-            });
-            this.currentPage = 1;
-            this.renderVideos(this.filteredVideos);
-        }
-        
         createVideoElement(video) {
             const div = document.createElement('div');
             div.className = 'modern-card overflow-hidden animate-fadeInUp';
+            const tagClass = getCategoryTagClass(video.category);
+            const tagIcon = getCategoryIcon(video.category);
+            const tagName = getCategoryName(video.category);
             div.innerHTML = `
                 <div class="video-thumbnail cursor-pointer" data-video-id="${video.id}">
-                    <img src="${video.thumbnail}" alt="${video.title.replace(/"/g, '&quot;')}" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 9\"><rect width=\"16\" height=\"9\" fill=\"%231e293b\"/><text x=\"8\" y=\"5\" font-size=\"2\" text-anchor=\"middle\" fill=\"%23cbd5e1\">No preview</text></svg>'">
+                    <img src="${video.thumbnail}" alt="${video.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 9\"><rect width=\"16\" height=\"9\" fill=\"%231e293b\"/><text x=\"8\" y=\"5\" font-size=\"2\" text-anchor=\"middle\" fill=\"%23cbd5e1\">No preview</text></svg>'">
                     <div class="video-duration">${video.duration}</div>
                     <div class="absolute inset-0 flex items-center justify-center"><div class="w-16 h-16 rounded-full bg-black/50 flex items-center justify-center"><i class="fab fa-youtube text-white text-2xl"></i></div></div>
                 </div>
                 <div class="p-4">
+                    <div class="flex items-center gap-2 mb-2 flex-wrap">
+                        <span class="category-tag ${tagClass}"><i class="fas ${tagIcon}"></i> ${tagName}</span>
+                    </div>
                     <h3 class="font-semibold mb-2 line-clamp-2">${video.title.replace(/"/g, '&quot;')}</h3>
                     <div class="flex justify-between items-center text-sm text-gray-500">
                         <span><i class="fas fa-eye mr-1"></i>${video.views} просмотров</span>
+                        <span><i class="far fa-calendar-alt mr-1"></i>${new Date(video.publishedAt).toLocaleDateString('ru-RU')}</span>
                     </div>
                     <div class="mt-4" id="player-${video.id}"></div>
                 </div>
@@ -900,7 +1146,7 @@
             const start = (page - 1) * this.videosPerPage;
             const end = start + this.videosPerPage;
             const videosToShow = videos.slice(start, end);
-            if (videosToShow.length === 0) {
+            if (videosToShow.length === 0 && !append) {
                 this.noVideosMessage.classList.remove('hidden');
                 this.loadMoreVideos.style.display = 'none';
                 return;
@@ -913,7 +1159,8 @@
         
         initVideoPlayers() {
             document.querySelectorAll('.video-thumbnail').forEach(thumb => {
-                thumb.addEventListener('click', () => {
+                thumb.removeEventListener('click', this._handleClick);
+                this._handleClick = () => {
                     const videoId = thumb.getAttribute('data-video-id');
                     const video = videoData.find(v => v.id == videoId);
                     const container = document.getElementById(`player-${videoId}`);
@@ -925,8 +1172,9 @@
                         <button class="btn-secondary w-full close-player-btn"><i class="fas fa-times"></i> Скрыть плеер</button>
                     `;
                     container.querySelector('.close-player-btn').addEventListener('click', (e) => { e.stopPropagation(); container.innerHTML = ''; });
-                    gtag('event', 'video_play', { event_category: 'video', event_label: `youtube` });
-                });
+                    gtag('event', 'video_play', { event_category: 'video', event_label: `youtube_${video.category}` });
+                };
+                thumb.addEventListener('click', this._handleClick);
             });
         }
     }
@@ -979,6 +1227,7 @@
     }
     
     const newsData = [
+        { title: "🎬 Интеграция с YouTube!", date: "27 Марта 2026", content: "Мы полностью переработали раздел <b>«Видео»</b>! Теперь все видео автоматически загружаются с YouTube канала. Добавлены новые функции:<br><br>• 🔍 Умный поиск по видео<br>• 📊 Сортировка по дате и популярности<br>• 🏷 Автоматические категории (CS Угар, Стримы, Подкасты, Shorts)<br>• 📅 Фильтрация по дате (неделя, месяц, 3 месяца)<br>• 🔝 Кнопка «Наверх» для удобной навигации<br>• ⚡ Skeleton loading для плавной загрузки<br><br><b>⚠️ Важно:</b> Для просмотра видео с YouTube может потребоваться VPN, так как сервис может быть недоступен в вашем регионе. Используйте VPN для доступа к контенту!<br><br>Наслаждайтесь обновлённым разделом! 🚀", icon: "fab fa-youtube", color: "text-red-500" },
         { title: "🔥 Клипы Twitch открыты!", date: "Текущее обновление", content: "Мы рады сообщить, что долгожданный раздел <b>«Клипы с Twitch»</b> теперь открыт и полностью функционален! Теперь вы можете смотреть лучшие моменты с моих стримов прямо на сайте. На данный момент сейчас есть только 4 клипа, в скором времени мы добавим ещё несколько!<b> Нам просто нужно время.</b> Также мы добавили кнопку <b>«Прохождения»</b> в раздел «Видео», где теперь можно быстро перейти на YouTube канал для просмотра полных летсплеев. Исправлены мелкие ошибки и улучшена производительность сайта. Наслаждайтесь обновлённым функционалом! 🚀<br><br>Что нового:<br>• ✅ Открыт раздел «Клипы Twitch» с реальными клипами<br>• 🎮 Добавлена кнопка «Прохождения» в раздел «Видео»<br>• 🔧 Исправлены мелкие поправки в интерфейсе<br>• ⚡ Улучшена производительность загрузки<br>• 📱 Оптимизация для мобильных устройств", icon: "fas fa-twitch", color: "text-purple-500" },
         { title: "🔥 Новый дизайн сайта!", date: "2 Февраля 2026", content: "Мы полностью переработали дизайн сайта! Теперь он выглядит ещё красивее, ошибки которые не удавалось исправить в старой версии были успешно исправлены. Мы переработали каждую деталь! 🚀<br><br>Что нового:<br>• Совершенно новый интерфейс<br>• Улучшенная светлая тема<br>• Переработанная система видео<br>• Исправлены все баги предыдущей версии<br>• Улучшена мобильная версия", icon: "fas fa-palette", color: "text-purple-500" },
         { title: "С новым годом!", date: "8 января 2026", content: "Ну что друзья, вот и наступил 2026 год вместе с сайтом. Мы взяли перерыв над сайтом, поэтому с такими новостями мы и пришли. Как вы могли заметить, раздел Профиль исчез из за того что бета тестирование прошло успешно и мы приняли решение что мы временно удалим его и на его замену придет кое что другое. На данный момент пока что всё, ну и не забудьте конечно же посмотреть моё 3 <a href=\"https://youtu.be/TVgbipfwgEY\" target=\"_blank\" class=\"text-primary hover:underline\">Новогоднее поздравление)</a>.", icon: "fas fa-gift", color: "text-yellow-500" },
@@ -1029,7 +1278,7 @@
     
     function showWelcomeMessageOnce() {
         if (!localStorage.getItem('hasSeenWelcome')) {
-            setTimeout(() => showNotification('Добро пожаловать на обновлённый сайт Mortis Play! Видео автоматически загружаются с YouTube! 🎮'), 1500);
+            setTimeout(() => showNotification('Добро пожаловать на обновлённый сайт Mortis Play! 🎮\n⚠️ Для просмотра видео с YouTube может понадобиться VPN.'), 1500);
             localStorage.setItem('hasSeenWelcome', 'true');
         }
     }
@@ -1044,6 +1293,7 @@
         setInterval(updateVideosFromYouTube, 3600000);
         initTheme();
         initNavigation();
+        initScrollTopButton();
         currentVideoSystem = new VideoSystem();
         initTwitchClipsSystem();
         initNewsSystem();
