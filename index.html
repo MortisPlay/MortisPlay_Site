@@ -667,7 +667,7 @@
             <a href="year-review.html" target="_blank" class="btn-primary btn-action-year animate-fadeInUp"><i class="fas fa-calendar-days"></i> Итоги года</a>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto animate-fadeInUp" style="animation-delay: 0.5s">
-            <div class="stat-card"><div class="stat-number">432</div><div class="text-sm text-gray-500 mt-2">Подписчиков</div></div>
+            <div class="stat-card"><div class="stat-number">435</div><div class="text-sm text-gray-500 mt-2">Подписчиков</div></div>
             <div class="stat-card"><div class="stat-number">168K</div><div class="text-sm text-gray-500 mt-2">Просмотров</div></div>
           </div>
         </div>
@@ -793,10 +793,21 @@
         maxResults: 100
     };
     
+    // === МАППИНГ КАТЕГОРИЙ ПО ID ПЛЕЙЛИСТОВ ===
+    // Здесь нужно указать ID плейлистов для каждой категории
+    const PLAYLIST_CATEGORIES = {
+        'cs угар 1 сезон': 'PL20P0vzErPbJbtSnR-InI8e5V1UFcNseZ',      // ID плейлиста для CS Угар 1 сезон
+        'угар': 'PL20P0vzErPbIBeemlW57KIGBhlOeTjwoD',    // ID плейлиста для Угар
+        'стримы': 'PL20P0vzErPbJpvvXvMv5qvESloixNxz2c',  // ID плейлиста для Стримы
+        'подкаст': 'PL20P0vzErPbL5axnFpJiav2Lc3lNkhX_9', // ID плейлиста для Подкаст
+        'cs угар 2 сезон': 'PL20P0vzErPbKJJgbxfE53jwre6_I-Ef-4'   // ID плейлиста для CS угар 2 сезон
+    };
+    
     let videoData = [];
+    let playlistVideosMap = {}; // { playlistId: [videoIds] }
     let isLoadingVideos = false;
     let currentVideoSystem = null;
-    let currentDateFilter = 0; // 0 = всё время, иначе количество дней
+    let currentDateFilter = 0;
     
     // === ФУНКЦИИ ДЛЯ РАБОТЫ С YOUTUBE API ===
     function formatDuration(duration) {
@@ -816,7 +827,44 @@
         return num.toString();
     }
     
-    function detectCategory(title) {
+    // Получение видео из плейлиста
+    async function fetchPlaylistVideos(playlistId) {
+        if (!YOUTUBE_CONFIG.apiKey || !playlistId) return [];
+        try {
+            const response = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50&key=${YOUTUBE_CONFIG.apiKey}`);
+            if (!response.ok) return [];
+            const data = await response.json();
+            return data.items.map(item => item.snippet.resourceId.videoId);
+        } catch (error) {
+            console.error(`Ошибка загрузки плейлиста ${playlistId}:`, error);
+            return [];
+        }
+    }
+    
+    // Загрузка всех плейлистов и создание маппинга видео по категориям
+    async function loadPlaylistCategories() {
+        const categories = {};
+        
+        for (const [category, playlistId] of Object.entries(PLAYLIST_CATEGORIES)) {
+            if (playlistId && playlistId !== 'PLxxxxxxxxxxxxx') {
+                const videoIds = await fetchPlaylistVideos(playlistId);
+                videoIds.forEach(videoId => {
+                    categories[videoId] = category;
+                });
+            }
+        }
+        
+        return categories;
+    }
+    
+    // Определение категории видео (сначала по плейлистам, потом по названию)
+    function detectCategory(title, videoId, playlistCategoryMap) {
+        // Сначала проверяем, есть ли видео в каком-либо плейлисте
+        if (playlistCategoryMap && playlistCategoryMap[videoId]) {
+            return playlistCategoryMap[videoId];
+        }
+        
+        // Если нет в плейлистах, определяем по названию
         const text = title.toLowerCase();
         if (text.includes('cs') || text.includes('counter-strike') || text.includes('cs2')) return 'cs';
         if (text.includes('стрим') || text.includes('трансляция') || text.includes('live')) return 'стримы';
@@ -828,11 +876,11 @@
     
     function getCategoryTagClass(category) {
         const classes = {
-            'cs': 'tag-cs',
+            'cs угар 1 сезон': 'tag-cs угар 1 сезон',
             'угар': 'tag-угар',
             'стримы': 'tag-стримы',
             'подкаст': 'tag-подкаст',
-            'shorts': 'tag-shorts',
+            'cs угар 2 сезон': 'tag-cs угар 2 сезон',
             'другое': 'tag-другое'
         };
         return classes[category] || 'tag-другое';
@@ -868,13 +916,19 @@
             isLoadingVideos = true;
             if (currentVideoSystem) currentVideoSystem.showSkeleton();
             showNotification('Загрузка видео с YouTube... 📡');
+            
+            // Загружаем категории из плейлистов
+            const playlistCategoryMap = await loadPlaylistCategories();
+            
             const searchResponse = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CONFIG.channelId}&maxResults=${YOUTUBE_CONFIG.maxResults}&order=date&type=video&key=${YOUTUBE_CONFIG.apiKey}`);
             if (!searchResponse.ok) throw new Error(`HTTP ${searchResponse.status}`);
             const searchData = await searchResponse.json();
             if (!searchData.items?.length) throw new Error('Нет видео');
+            
             const videoIds = searchData.items.map(item => item.id.videoId).join(',');
             const videosResponse = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics&id=${videoIds}&key=${YOUTUBE_CONFIG.apiKey}`);
             const videosData = await videosResponse.json();
+            
             const videoDetailsMap = {};
             videosData.items.forEach(video => {
                 videoDetailsMap[video.id] = {
@@ -883,10 +937,11 @@
                     publishedAt: video.snippet?.publishedAt || new Date().toISOString()
                 };
             });
+            
             const youtubeVideos = searchData.items.map((item, index) => ({
                 id: index + 1,
                 title: item.snippet.title,
-                category: detectCategory(item.snippet.title),
+                category: detectCategory(item.snippet.title, item.id.videoId, playlistCategoryMap),
                 views: videoDetailsMap[item.id.videoId]?.views || '0',
                 duration: videoDetailsMap[item.id.videoId]?.duration || '0:00',
                 thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.default?.url,
@@ -894,6 +949,7 @@
                 videoId: item.id.videoId,
                 publishedAt: videoDetailsMap[item.id.videoId]?.publishedAt || item.snippet.publishedAt
             }));
+            
             showNotification(`Загружено ${youtubeVideos.length} видео с YouTube! 🎉`);
             return youtubeVideos;
         } catch (error) {
@@ -1054,23 +1110,38 @@
                 filtered = filtered.filter(v => v.title.toLowerCase().includes(searchTerm));
             }
             
-            // Фильтр по дате
+            // Фильтр по дате (исправлено: правильное сравнение дат)
             if (currentDateFilter > 0) {
                 const cutoffDate = new Date();
                 cutoffDate.setDate(cutoffDate.getDate() - currentDateFilter);
-                filtered = filtered.filter(v => new Date(v.publishedAt) >= cutoffDate);
+                cutoffDate.setHours(0, 0, 0, 0); // Обнуляем время для корректного сравнения
+                filtered = filtered.filter(v => {
+                    const videoDate = new Date(v.publishedAt);
+                    videoDate.setHours(0, 0, 0, 0);
+                    return videoDate >= cutoffDate;
+                });
             }
             
-            // Сортировка
+            // Сортировка (исправлено: корректное сравнение чисел)
             const sortValue = this.sortSelect.value;
             filtered.sort((a, b) => {
                 switch(sortValue) {
-                    case 'date-desc': return new Date(b.publishedAt) - new Date(a.publishedAt);
-                    case 'date-asc': return new Date(a.publishedAt) - new Date(b.publishedAt);
-                    case 'views-desc': return parseInt(b.views) - parseInt(a.views);
-                    case 'views-asc': return parseInt(a.views) - parseInt(b.views);
-                    case 'title-asc': return a.title.localeCompare(b.title);
-                    case 'title-desc': return b.title.localeCompare(a.title);
+                    case 'date-desc': 
+                        return new Date(b.publishedAt) - new Date(a.publishedAt);
+                    case 'date-asc': 
+                        return new Date(a.publishedAt) - new Date(b.publishedAt);
+                    case 'views-desc': 
+                        const viewsA = parseInt(a.views) || 0;
+                        const viewsB = parseInt(b.views) || 0;
+                        return viewsB - viewsA;
+                    case 'views-asc': 
+                        const viewsA2 = parseInt(a.views) || 0;
+                        const viewsB2 = parseInt(b.views) || 0;
+                        return viewsA2 - viewsB2;
+                    case 'title-asc': 
+                        return a.title.localeCompare(b.title, 'ru');
+                    case 'title-desc': 
+                        return b.title.localeCompare(a.title, 'ru');
                     default: return 0;
                 }
             });
@@ -1227,7 +1298,7 @@
     }
     
     const newsData = [
-        { title: "🎬 Интеграция с YouTube!", date: "27 Марта 2026", content: "Мы полностью переработали раздел <b>«Видео»</b>! Теперь все видео автоматически загружаются с YouTube канала. Добавлены новые функции:<br><br>• 🔍 Умный поиск по видео<br>• 📊 Сортировка по дате и популярности<br>• 🏷 Автоматические категории (CS Угар, Стримы, Подкасты, Shorts)<br>• 📅 Фильтрация по дате (неделя, месяц, 3 месяца)<br>• 🔝 Кнопка «Наверх» для удобной навигации<br>• ⚡ Skeleton loading для плавной загрузки<br><br><b>⚠️ Важно:</b> Для просмотра видео с YouTube может потребоваться VPN, так как сервис может быть недоступен в вашем регионе. Используйте VPN для доступа к контенту!<br><br>Наслаждайтесь обновлённым разделом! 🚀", icon: "fab fa-youtube", color: "text-red-500" },
+        { title: "🎬 Интеграция с YouTube!", date: "27 Марта 2026", content: "Мы полностью переработали раздел <b>«Видео»</b>! Теперь все видео автоматически загружаются с YouTube канала. Добавлены новые функции:<br><br>• 🔍 Умный поиск по видео<br>• 📊 Сортировка по дате и популярности<br>• 🏷 Категории на основе плейлистов YouTube (CS Угар, Стримы, Подкасты, Shorts)<br>• 📅 Фильтрация по дате (неделя, месяц, 3 месяца)<br>• 🔝 Кнопка «Наверх» для удобной навигации<br>• ⚡ Skeleton loading для плавной загрузки<br><br><b>⚠️ Важно:</b> Для просмотра видео с YouTube может потребоваться VPN, так как сервис может быть недоступен в вашем регионе. Используйте VPN для доступа к контенту!<br><br>Наслаждайтесь обновлённым разделом! 🚀", icon: "fab fa-youtube", color: "text-red-500" },
         { title: "🔥 Клипы Twitch открыты!", date: "Текущее обновление", content: "Мы рады сообщить, что долгожданный раздел <b>«Клипы с Twitch»</b> теперь открыт и полностью функционален! Теперь вы можете смотреть лучшие моменты с моих стримов прямо на сайте. На данный момент сейчас есть только 4 клипа, в скором времени мы добавим ещё несколько!<b> Нам просто нужно время.</b> Также мы добавили кнопку <b>«Прохождения»</b> в раздел «Видео», где теперь можно быстро перейти на YouTube канал для просмотра полных летсплеев. Исправлены мелкие ошибки и улучшена производительность сайта. Наслаждайтесь обновлённым функционалом! 🚀<br><br>Что нового:<br>• ✅ Открыт раздел «Клипы Twitch» с реальными клипами<br>• 🎮 Добавлена кнопка «Прохождения» в раздел «Видео»<br>• 🔧 Исправлены мелкие поправки в интерфейсе<br>• ⚡ Улучшена производительность загрузки<br>• 📱 Оптимизация для мобильных устройств", icon: "fas fa-twitch", color: "text-purple-500" },
         { title: "🔥 Новый дизайн сайта!", date: "2 Февраля 2026", content: "Мы полностью переработали дизайн сайта! Теперь он выглядит ещё красивее, ошибки которые не удавалось исправить в старой версии были успешно исправлены. Мы переработали каждую деталь! 🚀<br><br>Что нового:<br>• Совершенно новый интерфейс<br>• Улучшенная светлая тема<br>• Переработанная система видео<br>• Исправлены все баги предыдущей версии<br>• Улучшена мобильная версия", icon: "fas fa-palette", color: "text-purple-500" },
         { title: "С новым годом!", date: "8 января 2026", content: "Ну что друзья, вот и наступил 2026 год вместе с сайтом. Мы взяли перерыв над сайтом, поэтому с такими новостями мы и пришли. Как вы могли заметить, раздел Профиль исчез из за того что бета тестирование прошло успешно и мы приняли решение что мы временно удалим его и на его замену придет кое что другое. На данный момент пока что всё, ну и не забудьте конечно же посмотреть моё 3 <a href=\"https://youtu.be/TVgbipfwgEY\" target=\"_blank\" class=\"text-primary hover:underline\">Новогоднее поздравление)</a>.", icon: "fas fa-gift", color: "text-yellow-500" },
