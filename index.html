@@ -661,19 +661,10 @@
         maxResults: 50
     };
     
-    // === МАППИНГ КАТЕГОРИЙ ПО ID ПЛЕЙЛИСТОВ ===
-    const PLAYLIST_CATEGORIES = {
-        'cs': 'PL20P0vzErPbJbtSnR-InI8e5V1UFcNseZ',
-        'угар': 'PL20P0vzErPbIBeemlW57KIGBhlOeTjwoD',
-        'стримы': 'PL20P0vzErPbJpvvXvMv5qvESloixNxz2c',
-        'подкаст': 'PL20P0vzErPbL5axnFpJiav2Lc3lNkhX_9'
-    };
-    
     let videoData = [];
     let isLoadingVideos = false;
     let currentVideoSystem = null;
     let currentDateFilter = 0;
-    let playlistCache = {}; // Кэш для плейлистов
     
     // === ФУНКЦИИ ДЛЯ РАБОТЫ С YOUTUBE API ===
     function formatDuration(duration) {
@@ -702,67 +693,8 @@
         });
     }
     
-    // Получение видео из плейлиста с кэшированием
-    async function fetchPlaylistVideos(playlistId) {
-        if (!YOUTUBE_CONFIG.apiKey || !playlistId) return [];
-        
-        // Проверяем кэш
-        if (playlistCache[playlistId]) {
-            return playlistCache[playlistId];
-        }
-        
-        try {
-            let allVideos = [];
-            let nextPageToken = '';
-            let hasMore = true;
-            
-            while (hasMore) {
-                const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50&key=${YOUTUBE_CONFIG.apiKey}${nextPageToken ? '&pageToken=' + nextPageToken : ''}`;
-                const response = await fetch(url);
-                
-                if (!response.ok) break;
-                
-                const data = await response.json();
-                const videoIds = data.items.map(item => item.snippet.resourceId.videoId);
-                allVideos.push(...videoIds);
-                
-                nextPageToken = data.nextPageToken;
-                hasMore = !!nextPageToken;
-                
-                // Небольшая задержка между запросами
-                if (hasMore) await new Promise(resolve => setTimeout(resolve, 100));
-            }
-            
-            playlistCache[playlistId] = allVideos;
-            return allVideos;
-        } catch (error) {
-            console.error(`Ошибка загрузки плейлиста ${playlistId}:`, error);
-            return [];
-        }
-    }
-    
-    // Загрузка всех плейлистов и создание маппинга видео по категориям
-    async function loadPlaylistCategories() {
-        const categories = {};
-        
-        for (const [category, playlistId] of Object.entries(PLAYLIST_CATEGORIES)) {
-            if (playlistId) {
-                const videoIds = await fetchPlaylistVideos(playlistId);
-                videoIds.forEach(videoId => {
-                    categories[videoId] = category;
-                });
-            }
-        }
-        
-        return categories;
-    }
-    
-    // Определение категории видео (сначала по плейлистам, потом по названию)
-    function detectCategory(title, videoId, playlistCategoryMap) {
-        if (playlistCategoryMap && playlistCategoryMap[videoId]) {
-            return playlistCategoryMap[videoId];
-        }
-        
+    // Определение категории по названию видео
+    function detectCategory(title) {
         const text = title.toLowerCase();
         if (text.includes('cs') || text.includes('counter-strike') || text.includes('cs2')) return 'cs';
         if (text.includes('стрим') || text.includes('трансляция') || text.includes('live')) return 'стримы';
@@ -815,34 +747,17 @@
             if (currentVideoSystem) currentVideoSystem.showSkeleton();
             showNotification('Загрузка видео с YouTube... 📡');
             
-            // Загружаем категории из плейлистов
-            const playlistCategoryMap = await loadPlaylistCategories();
+            // Загружаем видео с канала (только один запрос на 50 видео)
+            const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CONFIG.channelId}&maxResults=${YOUTUBE_CONFIG.maxResults}&order=date&type=video&key=${YOUTUBE_CONFIG.apiKey}`;
+            const searchResponse = await fetch(url);
             
-            // Загружаем видео с канала (до 100 штук)
-            let allVideos = [];
-            let nextPageToken = '';
-            let hasMore = true;
+            if (!searchResponse.ok) throw new Error(`HTTP ${searchResponse.status}`);
             
-            while (hasMore && allVideos.length < 100) {
-                const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CONFIG.channelId}&maxResults=50&order=date&type=video&key=${YOUTUBE_CONFIG.apiKey}${nextPageToken ? '&pageToken=' + nextPageToken : ''}`;
-                const searchResponse = await fetch(url);
-                
-                if (!searchResponse.ok) throw new Error(`HTTP ${searchResponse.status}`);
-                
-                const searchData = await searchResponse.json();
-                if (!searchData.items?.length) break;
-                
-                allVideos.push(...searchData.items);
-                nextPageToken = searchData.nextPageToken;
-                hasMore = !!nextPageToken;
-                
-                if (hasMore) await new Promise(resolve => setTimeout(resolve, 100));
-            }
+            const searchData = await searchResponse.json();
+            if (!searchData.items?.length) throw new Error('Нет видео');
             
-            if (allVideos.length === 0) throw new Error('Нет видео');
-            
-            // Получаем детали видео
-            const videoIds = allVideos.map(item => item.id.videoId).join(',');
+            // Получаем детали видео (длительность, просмотры)
+            const videoIds = searchData.items.map(item => item.id.videoId).join(',');
             const videosResponse = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics&id=${videoIds}&key=${YOUTUBE_CONFIG.apiKey}`);
             const videosData = await videosResponse.json();
             
@@ -850,24 +765,21 @@
             videosData.items.forEach(video => {
                 videoDetailsMap[video.id] = {
                     duration: formatDuration(video.contentDetails.duration),
-                    views: formatViews(video.statistics.viewCount),
-                    publishedAt: video.snippet?.publishedAt || videoDetailsMap[video.id]?.publishedAt
+                    views: formatViews(video.statistics.viewCount)
                 };
             });
             
-            // Используем дату из snippet search
-            const youtubeVideos = allVideos.map((item, index) => {
-                const publishedAt = item.snippet.publishedAt;
+            const youtubeVideos = searchData.items.map((item, index) => {
                 return {
                     id: index + 1,
                     title: item.snippet.title,
-                    category: detectCategory(item.snippet.title, item.id.videoId, playlistCategoryMap),
+                    category: detectCategory(item.snippet.title),
                     views: videoDetailsMap[item.id.videoId]?.views || '0',
                     duration: videoDetailsMap[item.id.videoId]?.duration || '0:00',
                     thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.default?.url,
                     platform: 'youtube',
                     videoId: item.id.videoId,
-                    publishedAt: publishedAt
+                    publishedAt: item.snippet.publishedAt
                 };
             });
             
@@ -1206,7 +1118,7 @@
     }
     
     const newsData = [
-        { title: "🎬 Интеграция с YouTube!", date: "27 Марта 2026", content: "Мы полностью переработали раздел <b>«Видео»</b>! Теперь все видео автоматически загружаются с YouTube канала. Добавлены новые функции:<br><br>• 🔍 Умный поиск по видео<br>• 📊 Сортировка по дате и популярности<br>• 🏷 Категории на основе плейлистов YouTube (CS Угар, Стримы, Подкасты, Shorts)<br>• 📅 Фильтрация по дате (неделя, месяц, 3 месяца)<br>• 🔝 Кнопка «Наверх» для удобной навигации<br>• ⚡ Skeleton loading для плавной загрузки<br><br><b>⚠️ Важно:</b> Для просмотра видео с YouTube может потребоваться VPN, так как сервис может быть недоступен в вашем регионе. Используйте VPN для доступа к контенту!<br><br>Наслаждайтесь обновлённым разделом! 🚀", icon: "fab fa-youtube", color: "text-red-500" },
+        { title: "🎬 Интеграция с YouTube!", date: "27 Марта 2026", content: "Мы полностью переработали раздел <b>«Видео»</b>! Теперь все видео автоматически загружаются с YouTube канала. Добавлены новые функции:<br><br>• 🔍 Умный поиск по видео<br>• 📊 Сортировка по дате и популярности<br>• 🏷 Автоматические категории (CS Угар, Стримы, Подкасты, Shorts)<br>• 📅 Фильтрация по дате (неделя, месяц, 3 месяца)<br>• 🔝 Кнопка «Наверх» для удобной навигации<br>• ⚡ Skeleton loading для плавной загрузки<br><br><b>⚠️ Важно:</b> Для просмотра видео с YouTube может потребоваться VPN, так как сервис может быть недоступен в вашем регионе. Используйте VPN для доступа к контенту!<br><br>Наслаждайтесь обновлённым разделом! 🚀", icon: "fab fa-youtube", color: "text-red-500" },
         { title: "🔥 Клипы Twitch открыты!", date: "Текущее обновление", content: "Мы рады сообщить, что долгожданный раздел <b>«Клипы с Twitch»</b> теперь открыт и полностью функционален! Теперь вы можете смотреть лучшие моменты с моих стримов прямо на сайте. На данный момент сейчас есть только 4 клипа, в скором времени мы добавим ещё несколько!<b> Нам просто нужно время.</b> Также мы добавили кнопку <b>«Прохождения»</b> в раздел «Видео», где теперь можно быстро перейти на YouTube канал для просмотра полных летсплеев. Исправлены мелкие ошибки и улучшена производительность сайта. Наслаждайтесь обновлённым функционалом! 🚀<br><br>Что нового:<br>• ✅ Открыт раздел «Клипы Twitch» с реальными клипами<br>• 🎮 Добавлена кнопка «Прохождения» в раздел «Видео»<br>• 🔧 Исправлены мелкие поправки в интерфейсе<br>• ⚡ Улучшена производительность загрузки<br>• 📱 Оптимизация для мобильных устройств", icon: "fas fa-twitch", color: "text-purple-500" },
         { title: "🔥 Новый дизайн сайта!", date: "2 Февраля 2026", content: "Мы полностью переработали дизайн сайта! Теперь он выглядит ещё красивее, ошибки которые не удавалось исправить в старой версии были успешно исправлены. Мы переработали каждую деталь! 🚀<br><br>Что нового:<br>• Совершенно новый интерфейс<br>• Улучшенная светлая тема<br>• Переработанная система видео<br>• Исправлены все баги предыдущей версии<br>• Улучшена мобильная версия", icon: "fas fa-palette", color: "text-purple-500" },
         { title: "С новым годом!", date: "8 января 2026", content: "Ну что друзья, вот и наступил 2026 год вместе с сайтом. Мы взяли перерыв над сайтом, поэтому с такими новостями мы и пришли. Как вы могли заметить, раздел Профиль исчез из за того что бета тестирование прошло успешно и мы приняли решение что мы временно удалим его и на его замену придет кое что другое. На данный момент пока что всё, ну и не забудьте конечно же посмотреть моё 3 <a href=\"https://youtu.be/TVgbipfwgEY\" target=\"_blank\" class=\"text-primary hover:underline\">Новогоднее поздравление)</a>.", icon: "fas fa-gift", color: "text-yellow-500" },
