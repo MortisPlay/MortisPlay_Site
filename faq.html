@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mortis Play — FAQ</title>
-  <meta name="description" content="Ответы на часто задаваемые вопросы о Mortis Play, стримах и видео!">
+  <meta name="description" content="Ответы на часто задаваемые вопросы о Mortis Play, стримах, видео, клипах Twitch и функциях сайта!">
   <meta name="robots" content="index,follow">
-  <meta name="keywords" content="Mortis Play, FAQ, стримы, CS2, профиль, видео">
+  <meta name="keywords" content="Mortis Play, FAQ, стримы, CS2, видео, клипы Twitch, сайт, функции">
   <meta property="og:title" content="Mortis Play — FAQ">
-  <meta property="og:description" content="Часто задаваемые вопросы о Mortis Play и стримах!">
+  <meta property="og:description" content="Часто задаваемые вопросы о Mortis Play, стримах, видео и клипах Twitch!">
   <meta property="og:image" content="https://mortisplay.ru/assets/og-image-faq.jpg">
   <meta property="og:url" content="https://mortisplay.ru/faq.html">
   <meta property="og:type" content="website">
@@ -132,7 +132,7 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
-      overflow: visible; /* ИЗМЕНЕНО: было hidden */
+      overflow: visible;
     }
 
     .glass-card::before {
@@ -180,13 +180,13 @@
       letter-spacing: -0.5px;
     }
 
-    /* FAQ Item - УБРАН overflow: hidden */
+    /* FAQ Item */
     .faq-item {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 16px;
       transition: all 0.3s ease;
-      margin-bottom: 1rem; /* Добавлен отступ между вопросами */
+      margin-bottom: 1rem;
     }
 
     .faq-item:last-child {
@@ -213,7 +213,6 @@
       position: relative;
     }
 
-    /* Убираем стандартный маркер для Firefox */
     .faq-item summary::-webkit-details-marker {
       display: none;
     }
@@ -416,7 +415,7 @@
           FAQ
         </h1>
         <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-medium">
-          Все ответы о Mortis Play, стримах, видео и сайте
+          Все ответы о Mortis Play, стримах, видео и функциях сайта
         </p>
       </header>
 
@@ -449,7 +448,7 @@
                   <p class="font-semibold">📅 Регулярный график:</p>
                   <p>• Основные видео: <span class="text-purple-300">Каждую неделю</span></p>
                   <p>• Shorts: <span class="text-purple-300">2-3 раза в неделю</span></p>
-                  <p>• Стримы: <span class="text-purple-300">?</span></p>
+                  <p>• Стримы: <span class="text-purple-300">По расписанию в Telegram</span></p>
                 </div>
                 <p class="text-sm text-gray-400"><i class="fas fa-bell mr-1"></i> Следи за анонсами в Telegram!</p>
               </div>
@@ -473,24 +472,84 @@
                 <p class="text-sm text-gray-400">Если не помогло — очисти кэш браузера в настройках</p>
               </div>
             </details>
+          </div>
+        </div>
+
+        <!-- About Site Section (NEW) -->
+        <div class="glass-card p-6 md:p-8 fade-in">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-3 h-8 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full"></div>
+            <h2 class="text-3xl md:text-4xl font-bold flex items-center gap-3">
+              <i class="fas fa-globe text-cyan-400"></i>
+              О сайте
+            </h2>
+          </div>
+          
+          <div class="space-y-4">
+            <details class="faq-item">
+              <summary>Какие технологии используются на сайте?</summary>
+              <div class="answer">
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                  <div class="p-3 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-lg">
+                    <p class="font-semibold text-sm">⚡ Frontend</p>
+                    <p class="text-xs text-gray-300">HTML5, Tailwind CSS, JavaScript ES6+</p>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg">
+                    <p class="font-semibold text-sm">🎨 Анимации</p>
+                    <p class="text-xs text-gray-300">CSS Keyframes, Glass morphism</p>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-lg">
+                    <p class="font-semibold text-sm">📊 API</p>
+                    <p class="text-xs text-gray-300">YouTube Data API v3</p>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-orange-900/20 to-red-900/20 rounded-lg">
+                    <p class="font-semibold text-sm">📦 Хранение</p>
+                    <p class="text-xs text-gray-300">LocalStorage (кеш видео)</p>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-400">Сайт полностью адаптивен и работает на всех устройствах!</p>
+              </div>
+            </details>
 
             <details class="faq-item">
-              <summary>Что с разделом Q&A?</summary>
+              <summary>Как работает светлая/тёмная тема?</summary>
               <div class="answer">
-                <p>Q&A снова открыт и лучше чем когда-либо! 🎉</p>
-                <div class="mt-3 p-4 bg-gradient-to-r from-green-900/20 to-emerald-900/20 rounded-xl">
-                  <p class="font-semibold">Как задать вопрос:</p>
-                  <p>1. Зайди в Telegram бота: <a href="https://t.me/mortisplay32_bot" class="text-green-300 underline" target="_blank">@mortisplay32_bot</a></p>
-                  <p>2. Напиши свой вопрос</p>
-                  <p>3. Получи ответ в следующих роликах</p>
+                <p>На сайте реализована система переключения тем:</p>
+                <ul class="list-disc list-inside mt-2 space-y-1">
+                  <li>🌙 <strong>Тёмная тема</strong> — включена по умолчанию, бережёт глаза</li>
+                  <li>☀️ <strong>Светлая тема</strong> — для комфорта днём</li>
+                </ul>
+                <div class="mt-3 p-3 bg-gray-800/50 rounded-lg">
+                  <p class="font-mono text-sm">🔧 Кнопка переключения — <i class="fas fa-sun"></i> / <i class="fas fa-moon"></i> в шапке сайта</p>
+                  <p class="text-xs text-gray-400 mt-1">Выбор темы сохраняется в localStorage вашего браузера</p>
                 </div>
-                <p class="mt-3 text-sm text-gray-400"><i class="fas fa-bolt mr-1"></i> Самые интересные вопросы попадают в видео!</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Есть ли поиск по сайту?</summary>
+              <div class="answer">
+                <p>Да! На сайте реализован удобный поиск:</p>
+                <div class="mt-3 space-y-2">
+                  <div class="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
+                    <i class="fas fa-search text-purple-400 w-6"></i>
+                    <span>Поиск видео по названию в разделе "Видео"</span>
+                  </div>
+                  <div class="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
+                    <i class="fas fa-filter text-purple-400 w-6"></i>
+                    <span>Фильтрация по категориям и дате</span>
+                  </div>
+                  <div class="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
+                    <i class="fas fa-sort-amount-down text-purple-400 w-6"></i>
+                    <span>Сортировка по просмотрам и названию</span>
+                  </div>
+                </div>
               </div>
             </details>
           </div>
         </div>
 
-        <!-- Video Section -->
+        <!-- Video Section (UPDATED with new info) -->
         <div class="glass-card p-6 md:p-8 fade-in">
           <div class="flex items-center gap-3 mb-8">
             <div class="w-3 h-8 bg-gradient-to-b from-red-500 to-orange-500 rounded-full"></div>
@@ -509,43 +568,28 @@
                     <p class="font-semibold mb-2 flex items-center gap-2">
                       <i class="fas fa-search"></i> Поиск
                     </p>
-                    <p>Введи название видео в поисковую строку</p>
+                    <p>Введи название видео в поисковую строку — результаты обновляются автоматически</p>
                   </div>
                   <div class="p-4 bg-gradient-to-br from-blue-900/30 to-cyan-900/30 rounded-xl">
                     <p class="font-semibold mb-2 flex items-center gap-2">
                       <i class="fas fa-filter"></i> Фильтрация
                     </p>
-                    <p>Выбери категорию из выпадающего списка</p>
+                    <p>Выбери категорию (CS Угар, Стримы, Подкаст, Shorts, Другое)</p>
                   </div>
                   <div class="p-4 bg-gradient-to-br from-green-900/30 to-emerald-900/30 rounded-xl">
                     <p class="font-semibold mb-2 flex items-center gap-2">
-                      <i class="fas fa-play"></i> Просмотр
+                      <i class="fas fa-calendar-alt"></i> Фильтр по дате
                     </p>
-                    <p>Нажми "Смотреть на сайте" или "На Rutube"</p>
+                    <p>Неделя, Месяц, 3 месяца или Всё время</p>
                   </div>
                   <div class="p-4 bg-gradient-to-br from-orange-900/30 to-red-900/30 rounded-xl">
                     <p class="font-semibold mb-2 flex items-center gap-2">
                       <i class="fas fa-redo"></i> Сброс
                     </p>
-                    <p>Кнопка "Сбросить" вернёт все фильтры</p>
+                    <p>Кнопка "Сбросить всё" вернёт все фильтры в исходное состояние</p>
                   </div>
                 </div>
-              </div>
-            </details>
-
-            <details class="faq-item">
-              <summary>Почему просмотры отличаются от Rutube?</summary>
-              <div class="answer">
-                <div class="p-4 bg-gradient-to-r from-yellow-900/20 to-orange-900/20 rounded-xl mb-3">
-                  <p class="font-semibold mb-2">📊 Особенности синхронизации:</p>
-                  <p>• Просмотры берутся с YouTube-канала</p>
-                  <p>• Синхронизация: <span class="text-yellow-300">от 2 часов до 2 дней</span></p>
-                  <p>• Иногда задержки из-за YouTube API</p>
-                </div>
-                <p class="text-sm text-gray-400">
-                  <i class="fas fa-exclamation-triangle mr-1"></i>
-                  Если разница большая — напиши в ТГ, ускорим обновление!
-                </p>
+                <p class="text-sm text-gray-400"><i class="fas fa-mouse-pointer mr-1"></i> Для просмотра — нажми на превью видео</p>
               </div>
             </details>
 
@@ -565,7 +609,17 @@
                   
                   <div class="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-900/10 to-transparent rounded-lg">
                     <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                      <i class="fas fa-stream text-blue-400"></i>
+                      <i class="fas fa-gamepad text-blue-400"></i>
+                    </div>
+                    <div>
+                      <p class="font-semibold">🎮 CS Угар</p>
+                      <p class="text-sm text-gray-400">Видео по CS2/CS:GO</p>
+                    </div>
+                  </div>
+                  
+                  <div class="flex items-center gap-3 p-3 bg-gradient-to-r from-indigo-900/10 to-transparent rounded-lg">
+                    <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
+                      <i class="fas fa-stream text-indigo-400"></i>
                     </div>
                     <div>
                       <p class="font-semibold">🎥 Стримы</p>
@@ -597,48 +651,130 @@
             </details>
 
             <details class="faq-item">
-              <summary>Почему видео открывается на Rutube?</summary>
+              <summary>Почему просмотры отличаются от YouTube?</summary>
               <div class="answer">
-                <div class="p-4 bg-gradient-to-r from-indigo-900/20 to-purple-900/20 rounded-xl mb-3">
-                  <p class="font-semibold mb-2">🔧 Технические ограничения:</p>
-                  <p>• Не все видео можно встроить напрямую</p>
-                  <p>• Ограничения платформ (YouTube/Rutube)</p>
-                  <p>• Перенаправление для лучшего качества</p>
+                <div class="p-4 bg-gradient-to-r from-yellow-900/20 to-orange-900/20 rounded-xl mb-3">
+                  <p class="font-semibold mb-2">📊 Особенности синхронизации:</p>
+                  <p>• Просмотры берутся с YouTube-канала через API</p>
+                  <p>• Синхронизация происходит при загрузке страницы</p>
+                  <p>• Иногда задержки из-за кэширования API (до 2-4 часов)</p>
                 </div>
-                <p class="text-purple-300">
-                  <i class="fas fa-check-circle mr-1"></i>
-                  Если есть кнопка "Смотреть на сайте" — можно смотреть прямо здесь!
+                <p class="text-sm text-gray-400">
+                  <i class="fas fa-exclamation-triangle mr-1"></i>
+                  Если разница большая — просто обнови страницу через час
                 </p>
               </div>
             </details>
 
             <details class="faq-item">
-              <summary>Видео не загружается — что делать?</summary>
+              <summary>Как работает кнопка "Загрузить ещё видео"?</summary>
               <div class="answer">
-                <div class="grid grid-cols-2 gap-3 mb-3">
-                  <div class="p-3 bg-gradient-to-br from-red-900/20 to-orange-900/20 rounded-lg">
-                    <p class="font-semibold text-sm mb-1">🌐 Интернет</p>
-                    <p class="text-xs">Проверь соединение</p>
-                  </div>
-                  <div class="p-3 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-lg">
-                    <p class="font-semibold text-sm mb-1">🔄 Обновить</p>
-                    <p class="text-xs">Нажми F5 или Ctrl+R</p>
-                  </div>
-                  <div class="p-3 bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-lg">
-                    <p class="font-semibold text-sm mb-1">🧹 Кэш</p>
-                    <p class="text-xs">Очисти кэш браузера</p>
-                  </div>
-                  <div class="p-3 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg">
-                    <p class="font-semibold text-sm mb-1">🚫 Блокировщик</p>
-                    <p class="text-xs">Отключи на время</p>
-                  </div>
+                <p>Для удобства просмотра видео разбиты на страницы:</p>
+                <ul class="list-disc list-inside mt-2 space-y-1">
+                  <li>📄 На одной странице отображается <strong>6 видео</strong></li>
+                  <li>➕ Кнопка "Загрузить ещё" подгружает следующие 6 видео</li>
+                  <li>🔄 При изменении фильтров или поиска список сбрасывается к первой странице</li>
+                </ul>
+                <div class="mt-3 p-3 bg-gray-800/50 rounded-lg">
+                  <p class="text-sm"><i class="fas fa-chart-line text-green-400 mr-1"></i> В верхней части раздела отображается общее количество видео</p>
                 </div>
-                <p class="text-sm text-gray-400">Если ничего не помогает — попробуй другой браузер</p>
               </div>
             </details>
           </div>
         </div>
 
+        <!-- NEW: Twitch Clips Section -->
+        <div class="glass-card p-6 md:p-8 fade-in">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-3 h-8 bg-gradient-to-b from-purple-600 to-pink-600 rounded-full"></div>
+            <h2 class="text-3xl md:text-4xl font-bold flex items-center gap-3">
+              <i class="fab fa-twitch text-purple-400"></i>
+              Раздел "Клипы Twitch"
+            </h2>
+          </div>
+          
+          <div class="space-y-4">
+            <details class="faq-item">
+              <summary>Как смотреть клипы с Twitch?</summary>
+              <div class="answer">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div class="p-4 bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl">
+                    <p class="font-semibold mb-2 flex items-center gap-2">
+                      <i class="fas fa-play-circle"></i> На сайте
+                    </p>
+                    <p>Нажми на превью клипа — плеер откроется прямо на странице</p>
+                  </div>
+                  <div class="p-4 bg-gradient-to-br from-blue-900/30 to-cyan-900/30 rounded-xl">
+                    <p class="font-semibold mb-2 flex items-center gap-2">
+                      <i class="fab fa-twitch"></i> На Twitch
+                    </p>
+                    <p>Нажми "Открыть на Twitch" — перейдёшь на оригинальный клип</p>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-400"><i class="fas fa-info-circle mr-1"></i> Клипы можно смотреть в любом качестве — плеер Twitch сам подстроит под твой интернет</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как часто обновляются клипы?</summary>
+              <div class="answer">
+                <div class="p-4 bg-gradient-to-r from-purple-900/20 to-pink-900/20 rounded-xl mb-3">
+                  <p class="font-semibold mb-2">🔄 Обновление контента:</p>
+                  <p>• Клипы добавляются <strong class="text-purple-300">вручную</strong> с моего Twitch канала</p>
+                  <p>• Обычно это лучшие моменты за последние стримы</p>
+                  <p>• Новые клипы появляются после крупных трансляций</p>
+                </div>
+                <p class="text-sm text-gray-400">
+                  <i class="fas fa-bell mr-1"></i>
+                  Следи за разделом — я стараюсь обновлять его регулярно!
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Почему клипы отмечены тегами игр?</summary>
+              <div class="answer">
+                <p>Для удобства навигации каждый клип получает цветной тег с названием игры:</p>
+                <div class="flex flex-wrap gap-2 mt-3">
+                  <span class="px-3 py-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-xs">🎮 Общение</span>
+                  <span class="px-3 py-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-full text-xs">🔥 R.E.P.O.</span>
+                  <span class="px-3 py-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full text-xs">🎯 PEAK</span>
+                  <span class="px-3 py-1 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-full text-xs">💣 CS2</span>
+                </div>
+                <p class="mt-3 text-sm text-gray-400">Теги помогают быстро найти клип по интересующей тебе игре</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Клип не загружается — что делать?</summary>
+              <div class="answer">
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                  <div class="p-3 bg-gradient-to-br from-red-900/20 to-orange-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🌐 Интернет</p>
+                    <p class="text-xs">Проверь соединение с Twitch</p>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🔒 Блокировки</p>
+                    <p class="text-xs">Twitch может быть заблокирован в регионе</p>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🔄 Обновить</p>
+                    <p class="text-xs">Закрой и открой плеер заново</p>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🚫 Блокировщик</p>
+                    <p class="text-xs">Отключи на время просмотра</p>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-400">
+                  <i class="fas fa-external-link-alt mr-1"></i>
+                  Всегда есть альтернатива — кнопка "Открыть на Twitch"
+                </p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
 
       <!-- Navigation buttons -->
       <div class="mt-16 fade-in">
@@ -755,17 +891,10 @@
         });
       });
 
-      // Исправление для Firefox - явно устанавливаем display для summary
+      // Fix for Firefox - explicitly set display for summary
       document.querySelectorAll('.faq-item summary').forEach(summary => {
-        // Убедимся, что у summary правильный display
         summary.style.display = 'flex';
       });
-
-      // Открываем первый FAQ по умолчанию для демонстрации
-      const firstFaq = document.querySelector('.faq-item');
-      if (firstFaq) {
-        firstFaq.open = true;
-      }
     });
   </script>
 </body>
