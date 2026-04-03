@@ -407,6 +407,34 @@
     }
     .social-btn:hover { background: rgba(139, 92, 246, 0.1); border-color: var(--primary); transform: translateY(-2px); }
 
+    /* Стили для баннера */
+    .shop-banner {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+        border: 1px solid rgba(139, 92, 246, 0.4);
+        border-radius: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    .shop-banner:hover {
+        transform: scale(1.01);
+        border-color: var(--primary);
+        box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+    }
+    .pulse-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background-color: #10b981;
+        border-radius: 50%;
+        margin-right: 8px;
+        animation: pulse-green 1.5s infinite;
+        box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+    }
+    @keyframes pulse-green {
+        0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
     @media (max-width: 768px) {
       .gradient-text { font-size: 2.5rem !important; }
       .stat-number { font-size: 2rem; }
@@ -539,6 +567,32 @@
             <div class="stat-card"><div class="stat-number">173K</div><div class="text-sm text-gray-500 mt-2">Просмотров</div></div>
           </div>
         </div>
+
+        <!-- НОВЫЙ БАННЕР МАГАЗИНА -->
+        <div class="max-w-4xl mx-auto mb-12 animate-fadeInUp" style="animation-delay: 0.6s">
+            <div class="shop-banner modern-card p-6 md:p-8">
+                <div class="flex flex-col md:flex-row items-center gap-6">
+                    <div class="flex-shrink-0 w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center shadow-lg">
+                        <i class="fab fa-telegram text-white text-4xl"></i>
+                    </div>
+                    <div class="flex-grow text-center md:text-left">
+                        <h3 class="text-2xl font-bold mb-2 gradient-text">⭐ Официальный магазин-бот</h3>
+                        <p class="text-lg font-semibold mb-1">Telegram Stars и NFT коллекции!</p>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">Звезды Telegram и NFT-контент от Mortis Play. Успей приобрести!</p>
+                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-4">
+                            <a href="https://t.me/mortisplay32_bot" target="_blank" class="btn-primary bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg">
+                                <i class="fab fa-telegram"></i> Перейти в магазин
+                            </a>
+                            <div class="flex items-center text-sm bg-white/20 dark:bg-black/20 rounded-full px-4 py-2 backdrop-blur-sm">
+                                <span class="pulse-dot"></span>
+                                <span class="font-medium">Бот работает: С 6-00 до 15-00 (МСК)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="max-w-4xl mx-auto animate-fadeInUp" style="animation-delay: 0.7s">
           <div class="modern-card p-2">
             <div class="relative rounded-xl overflow-hidden">
@@ -1117,7 +1171,9 @@
         loadMore.addEventListener('click', () => { page++; render(true); });
     }
     
+    // ОБНОВЛЕННЫЕ НОВОСТИ: добавляем новость о магазине
     const newsData = [
+        { title: "⭐ Открытие официального магазина-бота!", date: "Сегодня", content: "Рады сообщить об открытии нашего официального магазина в Telegram! 🚀<br><br>Теперь вы можете приобрести:<br>• ⭐ Telegram Stars для вашего аккаунта<br>• 🖼 Эксклюзивные NFT коллекции от Mortis Play<br>• 🎁 Уникальные цифровые предметы<br><br><b>Режим работы бота:</b><br> С 6-00 до 15-00(МСК)<br><br>Переходите в магазин и забирайте свой первый NFT уже сегодня! 🔥<br><br><a href=\"https://t.me/mortisplay32_bot\" target=\"_blank\" class=\"btn-primary inline-block mt-2 px-4 py-2 text-sm\"><i class=\"fab fa-telegram\"></i> Перейти в магазин-бот</a>", icon: "fas fa-store", color: "text-purple-500" },
         { title: "🎬 Интеграция с YouTube!", date: "27 Марта 2026", content: "Мы полностью переработали раздел <b>«Видео»</b>! Теперь все видео автоматически загружаются с YouTube канала. Добавлены новые функции:<br><br>• 🔍 Умный поиск по видео<br>• 📊 Сортировка по дате и популярности<br>• 🏷 Автоматические категории (CS Угар, Стримы, Подкасты, Shorts)<br>• 📅 Фильтрация по дате (неделя, месяц, 3 месяца)<br>• 🔝 Кнопка «Наверх» для удобной навигации<br>• ⚡ Skeleton loading для плавной загрузки<br><br><b>⚠️ Важно:</b> Для просмотра видео с YouTube может потребоваться VPN, так как сервис может быть недоступен в вашем регионе. Используйте VPN для доступа к контенту!<br><br>Наслаждайтесь обновлённым разделом! 🚀", icon: "fab fa-youtube", color: "text-red-500" },
         { title: "🔥 Клипы Twitch открыты!", date: "Текущее обновление", content: "Мы рады сообщить, что долгожданный раздел <b>«Клипы с Twitch»</b> теперь открыт и полностью функционален! Теперь вы можете смотреть лучшие моменты с моих стримов прямо на сайте. На данный момент сейчас есть только 4 клипа, в скором времени мы добавим ещё несколько!<b> Нам просто нужно время.</b> Также мы добавили кнопку <b>«Прохождения»</b> в раздел «Видео», где теперь можно быстро перейти на YouTube канал для просмотра полных летсплеев. Исправлены мелкие ошибки и улучшена производительность сайта. Наслаждайтесь обновлённым функционалом! 🚀<br><br>Что нового:<br>• ✅ Открыт раздел «Клипы Twitch» с реальными клипами<br>• 🎮 Добавлена кнопка «Прохождения» в раздел «Видео»<br>• 🔧 Исправлены мелкие поправки в интерфейсе<br>• ⚡ Улучшена производительность загрузки<br>• 📱 Оптимизация для мобильных устройств", icon: "fas fa-twitch", color: "text-purple-500" },
         { title: "🔥 Новый дизайн сайта!", date: "2 Февраля 2026", content: "Мы полностью переработали дизайн сайта! Теперь он выглядит ещё красивее, ошибки которые не удавалось исправить в старой версии были успешно исправлены. Мы переработали каждую деталь! 🚀<br><br>Что нового:<br>• Совершенно новый интерфейс<br>• Улучшенная светлая тема<br>• Переработанная система видео<br>• Исправлены все баги предыдущей версии<br>• Улучшена мобильная версия", icon: "fas fa-palette", color: "text-purple-500" },
