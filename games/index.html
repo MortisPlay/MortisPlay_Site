@@ -27,6 +27,10 @@
       color: #f8fafc;
       min-height: 100vh;
       overflow-x: hidden;
+      background-attachment: fixed;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* Animated gradient background */
@@ -86,6 +90,12 @@
       overflow: hidden;
       text-decoration: none;
       display: block;
+      min-height: 300px;
+    }
+
+    .glass-card:focus-visible {
+      outline: 2px solid rgba(139, 92, 246, 0.8);
+      outline-offset: 4px;
     }
 
     .glass-card::before {
@@ -362,7 +372,7 @@
       <!-- Games Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         <!-- 2048 -->
-        <a href="/games/2048.html" class="glass-card p-6 fade-in">
+<a href="2048.html" class="glass-card p-6 fade-in">
           <div class="game-icon bg-gradient-to-br from-orange-500 to-red-600">
             <i class="fas fa-cubes"></i>
           </div>
@@ -379,7 +389,7 @@
         </a>
 
         <!-- Змейка -->
-        <a href="/games/snake.html" class="glass-card p-6 fade-in">
+        <a href="snake.html" class="glass-card p-6 fade-in">
           <div class="game-icon bg-gradient-to-br from-green-500 to-emerald-600">
             <i class="fas fa-worm"></i>
           </div>
@@ -396,7 +406,7 @@
         </a>
 
         <!-- Тетрис -->
-        <a href="/games/tetris.html" class="glass-card p-6 fade-in">
+        <a href="tetris.html" class="glass-card p-6 fade-in">
           <div class="game-icon bg-gradient-to-br from-purple-500 to-pink-600">
             <i class="fas fa-cubes-stacked"></i>
           </div>
@@ -413,7 +423,7 @@
         </a>
 
         <!-- Сапёр -->
-        <a href="/games/minesweeper.html" class="glass-card p-6 fade-in">
+        <a href="minesweeper.html" class="glass-card p-6 fade-in">
           <div class="game-icon bg-gradient-to-br from-yellow-500 to-orange-600">
             <i class="fas fa-bomb"></i>
           </div>
@@ -430,7 +440,7 @@
         </a>
 
         <!-- Понг -->
-        <a href="/games/pong.html" class="glass-card p-6 fade-in">
+        <a href="pong.html" class="glass-card p-6 fade-in">
           <div class="game-icon bg-gradient-to-br from-indigo-500 to-purple-600">
             <i class="fas fa-table-tennis-paddle-ball"></i>
           </div>
@@ -448,7 +458,7 @@
 
 
         <!-- Предложить игру -->
-        <a href="https://t.me/MortisPlay_YT" target="_blank" class="glass-card p-6 fade-in suggest-card">
+        <a href="https://t.me/MortisPlay_YT" target="_blank" rel="noopener noreferrer" class="glass-card p-6 fade-in suggest-card">
           <div class="game-icon bg-gradient-to-br from-fuchsia-500 to-purple-600 mb-4">
             <i class="fas fa-plus"></i>
           </div>
@@ -464,12 +474,12 @@
       <!-- Navigation buttons -->
       <div class="mt-16 fade-in">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <a href="/" class="modern-btn flex items-center justify-center gap-3 py-4">
+          <a href="../index.html" class="modern-btn flex items-center justify-center gap-3 py-4">
             <i class="fas fa-home text-xl"></i>
             <span class="font-semibold text-lg">На главную</span>
           </a>
           
-          <a href="https://t.me/MortisPlay_YT" target="_blank" 
+          <a href="https://t.me/MortisPlay_YT" target="_blank" rel="noopener noreferrer"
              class="modern-btn telegram-btn flex items-center justify-center gap-3 py-4">
             <i class="fab fa-telegram text-xl"></i>
             <span class="font-semibold text-lg">Предложить игру</span>
@@ -500,11 +510,11 @@
           Больше игр — больше веселья!
         </p>
         <div class="flex justify-center gap-4">
-          <a href="https://t.me/MortisPlay_YT" target="_blank" 
+          <a href="https://t.me/MortisPlay_YT" target="_blank" rel="noopener noreferrer" 
              class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full hover:scale-105 transition-transform">
             <i class="fab fa-telegram-plane mr-2"></i>Telegram
           </a>
-          <a href="https://www.youtube.com/@MortisPlay" target="_blank" 
+          <a href="https://www.youtube.com/@MortisPlay" target="_blank" rel="noopener noreferrer" 
              class="px-4 py-2 bg-gradient-to-r from-red-600 to-orange-500 rounded-full hover:scale-105 transition-transform">
             <i class="fab fa-youtube mr-2"></i>YouTube
           </a>
@@ -564,8 +574,10 @@
       });
       
       // Add click tracking for game cards
+      const isGtagReady = typeof gtag === 'function';
       document.querySelectorAll('a.glass-card').forEach(card => {
-        card.addEventListener('click', (e) => {
+        card.addEventListener('click', () => {
+          if (!isGtagReady) return;
           const gameName = card.querySelector('h3').textContent.trim();
           gtag('event', 'game_click', {
             event_category: 'games',

@@ -389,8 +389,10 @@ function newGame() {
 document.getElementById('restart').addEventListener('click', newGame);
 
 document.getElementById('back').addEventListener('click', () => {
-    history.back();
+    location.href = './index.html';
 });
+
+field.addEventListener('contextmenu', event => event.preventDefault());
 
 // запуск
 newGame();

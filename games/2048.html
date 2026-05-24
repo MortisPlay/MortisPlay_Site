@@ -55,8 +55,9 @@
     }
     .light .grid { background: #bbada0; }
     .cell { 
+      position: relative;
       width: 100%; padding-bottom: 100%; background: rgba(30, 30, 40, 0.5); 
-      border-radius: 0.5rem; position: relative; 
+      border-radius: 0.5rem; 
     }
     .light .cell { background: rgba(238, 228, 218, 0.35); }
     .game-over { 
@@ -74,7 +75,7 @@
 <body class="min-h-screen">
   <div class="glass mx-auto max-w-7xl px-4 py-8">
     <div class="flex items-center justify-between mb-6">
-      <a href="/games/" class="flex items-center gap-2 font-bold text-xl hover:text-indigo-400 transition">
+      <a href="index.html" class="flex items-center gap-2 font-bold text-xl hover:text-indigo-400 transition">
         <i class="fa-solid fa-arrow-left"></i> Назад
       </a>
       <h1 class="text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">2048</h1>

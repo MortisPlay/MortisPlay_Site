@@ -90,7 +90,7 @@
             Пробел - сбросить вниз<br>
             P - пауза
         </div>
-        <button id="back-btn" onclick="history.back()">Назад</button>
+        <button id="back-btn">Назад</button>
     </div>
 
     <script>
@@ -335,19 +335,35 @@
                 playerDrop();
             } else if (event.keyCode === 38) {
                 playerRotate(1);
-            } else if (event.keyCode === 32) {
-                while (!collide(arena, player)) {
-                    player.pos.y++;
-                }
-                player.pos.y--;
-                playerDrop();
-            } else if (event.keyCode === 80) { // P для паузы
-                paused = !paused;
-                if (!paused) update();
-            }
-        });
+            if ([37,38,39,40,32,80].includes(event.keyCode)) {
+            event.preventDefault();
+        }
 
-        playerReset();
+        if (event.keyCode === 37) {
+            playerMove(-1);
+        } else if (event.keyCode === 39) {
+            playerMove(1);
+        } else if (event.keyCode === 40) {
+            playerDrop();
+        } else if (event.keyCode === 38) {
+            playerRotate(1);
+        } else if (event.keyCode === 32) {
+            while (!collide(arena, player)) {
+                player.pos.y++;
+            }
+            player.pos.y--;
+            playerDrop();
+        } else if (event.keyCode === 80) { // P для паузы
+            paused = !paused;
+            if (!paused) update();
+        }
+    });
+
+    document.getElementById('back-btn').addEventListener('click', () => {
+        location.href = './index.html';
+    });
+
+    playerReset();
         updateScore();
         update();
     </script>

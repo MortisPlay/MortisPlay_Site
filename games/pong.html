@@ -457,21 +457,23 @@ function setDifficulty(diff) {
   scoreLeft = 0;
   scoreRight = 0;
   resetBall();
-  paused = false;
-  togglePause(); // обновить UI
+  setPaused(false);
   
   // Скрываем меню сложности
   document.getElementById('difficulty-menu').style.display = 'none';
 }
 
-function togglePause() {
-  paused = !paused;
+function setPaused(value) {
+  paused = value;
   const pauseBtn = document.getElementById('pause');
   const overlay = document.getElementById('paused-overlay');
-  
   pauseBtn.textContent = paused ? 'Играть' : 'Пауза';
   pauseBtn.classList.toggle('paused', paused);
   overlay.classList.toggle('active', paused);
+}
+
+function togglePause() {
+  setPaused(!paused);
 }
 
 function gameLoop() {
@@ -503,14 +505,13 @@ document.getElementById('restart').onclick = () => {
   scoreLeft = 0;
   scoreRight = 0;
   resetBall();
-  paused = false;
-  togglePause();
+  setPaused(false);
 };
 
 document.getElementById('pause').onclick = togglePause;
 
 document.getElementById('back').onclick = () => {
-  history.back();
+  location.href = './index.html';
 };
 
 // Инициализация аудио
