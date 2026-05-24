@@ -34,7 +34,11 @@
     }
     
     body {
-      background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #1e1b4b 100%);
+      background:
+        radial-gradient(circle at 20% 15%, rgba(139, 92, 246, 0.14), transparent 28%),
+        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.16), transparent 24%),
+        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.12), transparent 30%),
+        linear-gradient(135deg, #05030e 0%, #120d28 55%, #1e1b4b 100%);
       color: #f8fafc;
       font-family: 'Inter', 'Segoe UI', sans-serif;
       min-height: 100vh;
@@ -50,11 +54,13 @@
       width: 100%;
       height: 100%;
       z-index: -2;
-      background: 
-        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
-      animation: gradientShift 15s ease infinite alternate;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 50% 10%, rgba(59, 130, 246, 0.08) 0%, transparent 35%);
+      animation: gradientShift 18s ease infinite alternate;
+      filter: blur(0.8px);
     }
 
     @keyframes gradientShift {
@@ -75,7 +81,9 @@
       position: absolute;
       background: linear-gradient(45deg, var(--primary), var(--secondary));
       border-radius: 50%;
-      opacity: 0.3;
+      opacity: 0.28;
+      mix-blend-mode: screen;
+      filter: blur(0.5px);
       animation: float 20s infinite linear;
     }
 

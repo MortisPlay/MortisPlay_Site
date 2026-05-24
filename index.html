@@ -479,7 +479,7 @@
           <a href="biography.html" target="_blank" class="text-sm p-2 rounded-lg text-center transition-colors" style="background: var(--glass-bg);">Биография</a>
           <a href="qa.html" target="_blank" class="text-sm p-2 rounded-lg text-center transition-colors" style="background: var(--glass-bg);">Q&A</a>
           <a href="faq.html" target="_blank" class="text-sm p-2 rounded-lg text-center transition-colors" style="background: var(--glass-bg);">FAQ</a>
-          <a href="/games/" target="_blank" class="text-sm p-2 rounded-lg text-center transition-colors disabled-link" style="background: var(--glass-bg); opacity: 0.5; cursor: not-allowed;" onclick="event.preventDefault(); showNotification('Раздел Игры скоро будет переработан! 🚧');">Игры</a>
+          <a href="games/" target="_blank" class="text-sm p-2 rounded-lg text-center transition-colors" style="background: var(--glass-bg);">Игры</a>
           <a href="year-review.html" target="_blank" class="text-sm p-2 rounded-lg text-center transition-colors" style="background: var(--glass-bg);">Итоги года</a>
         </div>
       </div>
@@ -525,11 +525,12 @@
             <a href="biography.html" target="_blank" class="btn-primary btn-action-bio animate-fadeInUp"><i class="fas fa-user"></i> Биография</a>
             <a href="qa.html" target="_blank" class="btn-primary btn-action-qa animate-fadeInUp"><i class="fas fa-question-circle"></i> Q&A</a>
             <a href="faq.html" target="_blank" class="btn-primary btn-action-faq animate-fadeInUp"><i class="fas fa-circle-question"></i> FAQ</a>
-            <a href="/games/" target="_blank" class="btn-primary btn-action-games animate-fadeInUp disabled" onclick="event.preventDefault(); showNotification('Раздел Игры скоро будет переработан! 🚧 Ожидайте обновлений.');"><i class="fas fa-gamepad"></i> Игры (скоро)</a>
+            <a href="games/" target="_blank" class="btn-primary btn-action-games animate-fadeInUp"><i class="fas fa-gamepad"></i> Игры</a>
             <a href="year-review.html" target="_blank" class="btn-primary btn-action-year animate-fadeInUp"><i class="fas fa-calendar-days"></i> Итоги года</a>
+            <button class="btn-secondary disabled bg-black text-white border-black opacity-70 cursor-not-allowed animate-fadeInUp" disabled><i class="fas fa-question"></i></button>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto animate-fadeInUp" style="animation-delay: 0.5s">
-            <div class="stat-card"><div class="stat-number">480</div><div class="text-sm mt-2" style="color: var(--text-secondary);">Подписчиков</div></div>
+            <div class="stat-card"><div class="stat-number">481</div><div class="text-sm mt-2" style="color: var(--text-secondary);">Подписчиков</div></div>
             <div class="stat-card"><div class="stat-number">202K</div><div class="text-sm mt-2" style="color: var(--text-secondary);">Просмотров</div></div>
           </div>
         </div>
@@ -600,10 +601,11 @@
       </div>
     </section>
     
-    <section id="news" class="section">
-      <div class="container-padding max-w-7xl mx-auto">
-        <div class="text-center mb-12"><h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4">Новости</h2><p style="color: var(--text-secondary); max-width: 2xl; margin: 0 auto;">Будь в курсе всех обновлений, анонсов и важных событий</p></div>
-        <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <section id="news" class="py-16 bg-slate-50 dark:bg-slate-900/40">
+      <div class="mx-auto max-w-7xl px-4">
+        <h2 class="text-center text-2xl md:text-3xl font-bold">Новости</h2>
+        <p class="mt-4 text-center text-sm text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">Все важные обновления сайта собираются здесь: от новых разделов до правок и улучшений. Удобно читать и легко ориентироваться.</p>
+        <div id="newsGrid" class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         <div class="text-center mt-8"><button id="loadMoreNews" class="btn-secondary"><i class="fas fa-plus"></i> Показать больше новостей</button></div>
       </div>
     </section>
@@ -1093,20 +1095,176 @@
     }
     
     const newsData = [
-        { title: "🚧 Раздел Игры на переработке", date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }), content: "Друзья! Сообщаем, что раздел <b>«Игры»</b> временно недоступен. Мы работаем над его полной переработкой, чтобы сделать его ещё удобнее и интереснее для вас! 🔧<br><br>Сейчас кнопка «Игры» на главной странице неактивна — это временная мера. Скоро мы представим обновлённый раздел с новыми функциями и контентом. Следите за новостями! 🎮", icon: "fas fa-gamepad", color: "text-pink-500" },
-        { title: "🎬 Интеграция с YouTube!", date: "27 Марта 2026", content: "Мы полностью переработали раздел <b>«Видео»</b>! Теперь все видео автоматически загружаются с YouTube канала. Добавлены новые функции:<br><br>• 🔍 Умный поиск по видео<br>• 📊 Сортировка по дате и популярности<br>• 📅 Фильтрация по дате (неделя, месяц, 3 месяца)<br>• 🔝 Кнопка «Наверх» для удобной навигации<br>• ⚡ Skeleton loading для плавной загрузки<br><br><b>⚠️ Важно:</b> Для просмотра видео с YouTube может потребоваться VPN, так как сервис может быть недоступен в вашем регионе. Используйте VPN для доступа к контенту!<br><br>Наслаждайтесь обновлённым разделом! 🚀", icon: "fab fa-youtube", color: "text-red-500" },
-        { title: "🔥 Клипы Twitch открыты!", date: "Текущее обновление", content: "Мы рады сообщить, что долгожданный раздел <b>«Клипы с Twitch»</b> теперь открыт и полностью функционален! Теперь вы можете смотреть лучшие моменты с моих стримов прямо на сайте. На данный момент сейчас есть только 4 клипа, в скором времени мы добавим ещё несколько!<b> Нам просто нужно время.</b> Также мы добавили кнопку <b>«Прохождения»</b> в раздел «Видео», где теперь можно быстро перейти на YouTube канал для просмотра полных летсплеев. Исправлены мелкие ошибки и улучшена производительность сайта. Наслаждайтесь обновлённым функционалом! 🚀<br><br>Что нового:<br>• ✅ Открыт раздел «Клипы Twitch» с реальными клипами<br>• 🎮 Добавлена кнопка «Прохождения» в раздел «Видео»<br>• 🔧 Исправлены мелкие поправки в интерфейсе<br>• ⚡ Улучшена производительность загрузки<br>• 📱 Оптимизация для мобильных устройств", icon: "fas fa-twitch", color: "text-purple-500" },
-        { title: "🔥 Новый дизайн сайта!", date: "2 Февраля 2026", content: "Мы полностью переработали дизайн сайта! Теперь он выглядит ещё красивее, ошибки которые не удавалось исправить в старой версии были успешно исправлены. Мы переработали каждую деталь! 🚀<br><br>Что нового:<br>• Совершенно новый интерфейс<br>• Улучшенная светлая тема<br>• Переработанная система видео<br>• Исправлены все баги предыдущей версии<br>• Улучшена мобильная версия", icon: "fas fa-palette", color: "text-purple-500" },
-        { title: "С новым годом!", date: "8 января 2026", content: "Ну что друзья, вот и наступил 2026 год вместе с сайтом. Мы взяли перерыв над сайтом, поэтому с такими новостями мы и пришли. Как вы могли заметить, раздел Профиль исчез из за того что бета тестирование прошло успешно и мы приняли решение что мы временно удалим его и на его замену придет кое что другое. На данный момент пока что всё, ну и не забудьте конечно же посмотреть моё 3 <a href=\"https://youtu.be/TVgbipfwgEY\" target=\"_blank\" class=\"text-primary hover:underline\">Новогоднее поздравление)</a>.", icon: "fas fa-gift", color: "text-yellow-500" },
-        { title: "ИТОГИ ГОДА - Открыто!", date: "5 декабря 2025", content: "Кнопка Итоги года - активирована! Можете смотреть итоги года канала (Лично мною отредактировано). А также потихоньку заливаем новые и старые видосы из канала, ожидаем)...", icon: "fas fa-calendar-star", color: "text-blue-500" },
-        { title: "ЗИМА УЖЕ РЯДОМ.", date: "28 ноября 2025", content: "Зимняя обнова на месте! А значит и новые фишки: Новый раздел, новые функции но самое главное НОВОГОДНЯЯ ТРАДИЦИЯ, это ИТОГИ ГОДА! Как будет работать эта кнопка: Переходя по ней, вы увидите уникальные карточки через что мы прошли)...", icon: "fas fa-snowflake", color: "text-cyan-500" }
+        {
+            title: "✅ Раздел «Игры» снова открыт",
+            date: "24 мая 2026",
+            sortDate: 20260524,
+            content: "Исправлены мелкие ошибки и баги на сайте, раздел <b>«Игры»</b> снова открыт и доступен для всех. Заходи, играй и проверяй свежие мини-игры! 🎮",
+            icon: "fas fa-gamepad",
+            bgGradient: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
+            footer: "С любовью Mortis32 <3 · 24 мая 2026"
+        },
+        {
+            title: "🔥 Клипы Twitch открыты!",
+            date: "24 мая 2026",
+            sortDate: 20260524,
+            content: "Долгожданный раздел <b>«Клипы с Twitch»</b> снова работает! Смотри лучшие моменты прямо на сайте — сейчас доступно 4 клипа, скоро добавим ещё больше. 🚀",
+            icon: "fas fa-twitch",
+            bgGradient: "linear-gradient(135deg, #7c3aed 0%, #ec4899 100%)",
+            footer: "С любовью Mortis32 <3 · 24 мая 2026"
+        },
+        {
+            title: "🎬 Интеграция с YouTube!",
+            date: "27 марта 2026",
+            sortDate: 20260327,
+            content: "Мы переработали раздел <b>«Видео»</b> — теперь все ролики автоматически загружаются с YouTube. Добавлены поиск, сортировка по просмотрам и фильтрация по датам. ⚡",
+            icon: "fab fa-youtube",
+            bgGradient: "linear-gradient(135deg, #ef4444 0%, #f97316 100%)",
+            footer: "С любовью Mortis32 <3 · 27 марта 2026"
+        },
+        {
+            title: "🚧 Раздел Игры на переработке",
+            date: "2 мая 2026",
+            sortDate: 20260502,
+            content: "Раздел <b>«Игры»</b> находился на доработке, чтобы стать ещё удобнее и красивее. Сейчас мы исправили проблемы и снова открыли его для вас. 🎮",
+            icon: "fas fa-tools",
+            bgGradient: "linear-gradient(135deg, #4338ca 0%, #6366f1 100%)",
+            footer: "С любовью Mortis32 <3 · 2 мая 2026"
+        },
+        {
+            title: "🔥 Новый дизайн сайта!",
+            date: "2 февраля 2026",
+            sortDate: 20260202,
+            content: "Полностью обновлён дизайн сайта: новые цвета, улучшенная навигация, оптимизация для мобильных устройств и меньше багов. Всё для вашего удобства. 🎨",
+            icon: "fas fa-palette",
+            bgGradient: "linear-gradient(135deg, #9333ea 0%, #ec4899 100%)",
+            footer: "С любовью Mortis32 <3 · 2 февраля 2026"
+        },
+        {
+            title: "С новым годом!",
+            date: "8 января 2026",
+            sortDate: 20260108,
+            content: "С новым 2026 годом! Мы подготовили много новинок и укрепили сайт. Раздел «Профиль» временно убран, но взамен готовятся новые функции. 🎉",
+            icon: "fas fa-gift",
+            bgGradient: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
+            footer: "С любовью Mortis32 <3 · 8 января 2026"
+        },
+        {
+            title: "ИТОГИ ГОДА - Открыто!",
+            date: "5 декабря 2025",
+            sortDate: 20251205,
+            content: "Кнопка «Итоги года» активирована. Теперь вы можете посмотреть весь путь проекта за этот год в удобном формате. 📅",
+            icon: "fas fa-calendar-star",
+            bgGradient: "linear-gradient(135deg, #2563eb 0%, #22d3ee 100%)",
+            footer: "С любовью Mortis32 <3 · 5 декабря 2025"
+        },
+        {
+            title: "Обновили немного сайт",
+            date: "25 сентября 2025",
+            sortDate: 20250925,
+            content: "Вернули узоры на сайт и обновили дизайн. Сейчас сайт не будет сильно меняться в течение месяца — мы переключаемся на создание контента. Если найдёшь баг, пиши в Telegram. 😊",
+            icon: "fas fa-brush",
+            bgGradient: "linear-gradient(135deg, #f97316 0%, #facc15 100%)",
+            footer: "С любовью Mortis32 <3 · 25 сентября 2025"
+        },
+        {
+            title: "Новый раздел «Настройки» и бот готов!",
+            date: "18 сентября 2025",
+            sortDate: 20250918,
+            content: "Новый раздел «Настройки» уже на сайте: меняй тему, шрифты, уведомления и производительность. Наш бот почти готов — следи за анонсами. 😎",
+            icon: "fas fa-cog",
+            bgGradient: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
+            footer: "С любовью Mortis32 <3 · 18 сентября 2025"
+        },
+        {
+            title: "Q&A готов к запуску!",
+            date: "15 сентября 2025",
+            sortDate: 20250915,
+            content: "Q&A стартует 22 сентября 2025! Пиши вопросы в Telegram, и лучшие из них попадут на сайт. Раздел «Видео» теперь с категориями, а «FAQ» обновлён. 🔥",
+            icon: "fas fa-comments",
+            bgGradient: "linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)",
+            footer: "С любовью Mortis32 <3 · 15 сентября 2025"
+        },
+        {
+            title: "Обновления на сайте!",
+            date: "1 сентября 2025",
+            sortDate: 20250901,
+            content: "Убрали версии сайта и архив обновлений, обновили фон, оптимизировали разделы «Мемы» и «Клипы», а также сделали FAQ ещё удобнее. В разделе «Видео» появились 2 новых ролика. 🎮",
+            icon: "fas fa-wrench",
+            bgGradient: "linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)",
+            footer: "С любовью Mortis32 <3 · 1 сентября 2025"
+        },
+        {
+            title: "Планы на новые разделы!",
+            date: "22 августа 2025",
+            sortDate: 20250822,
+            content: "По причине нестабильности мы временно убрали Q&A, но готовим крупные обновления для сайта. Следи за анонсами — будет ещё больше классных разделов! 😎",
+            icon: "fas fa-rocket",
+            bgGradient: "linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)",
+            footer: "С любовью Mortis32 <3 · 22 августа 2025"
+        },
+        {
+            title: "РЕДИЗАЙН САЙТА!!!",
+            date: "19 августа 2025",
+            sortDate: 20250819,
+            content: "Наш сайт получил новый дизайн: красивый, уникальный и обновлённый. Оцени свежий вид и новый вайб прямо сейчас! 😎",
+            icon: "fas fa-paintbrush",
+            bgGradient: "linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%)",
+            footer: "С любовью Mortis32 <3 · 19 августа 2025"
+        },
+        {
+            title: "Запуск Q&A!",
+            date: "28 июля 2025",
+            sortDate: 20250728,
+            content: "В августе 2025 года запускается раздел Q&A! Теперь ты сможешь задавать свои вопросы, а лучшие из них будут опубликованы после модерации. Готовь идеи и врывайся! 😎",
+            icon: "fas fa-question",
+            bgGradient: "linear-gradient(135deg, #2dd4bf 0%, #06b6d4 100%)",
+            footer: "С любовью Mortis32 <3 · 28 июля 2025"
+        },
+        {
+            title: "Про форум",
+            date: "27 июля 2025",
+            sortDate: 20250727,
+            content: "На форуме появился спам-бот, поэтому мы временно убрали его. Пока что вопросы можно отправлять в личку Telegram — форум вернётся с новым уникальным дизайном. 👍",
+            icon: "fas fa-comments-dollar",
+            bgGradient: "linear-gradient(135deg, #db2777 0%, #f43f5e 100%)",
+            footer: "С любовью Mortis32 <3 · 27 июля 2025"
+        },
+        {
+            title: "Ранний доступ vs полная версия",
+            date: "17 июля 2025",
+            sortDate: 20250717,
+            content: "В полной версии сайта будет новый раздел, розыгрыши, форум, уникальные фоны и закрытые посты в частном канале. Всё это появится во 2 полугодии 2025 или в 2026 году. 😎",
+            icon: "fas fa-lock",
+            bgGradient: "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+            footer: "С любовью Mortis32 <3 · 17 июля 2025"
+        },
+        {
+            title: "Новые мемы!",
+            date: "16 июля 2025",
+            sortDate: 20250716,
+            content: "Сайт Mortis Play завёз 7 новых мемов! В будущем они будут дополняться — если хочешь, отправляй свои мемы в раздел «Мемы от авторов». 😋",
+            icon: "fas fa-laugh",
+            bgGradient: "linear-gradient(135deg, #3b82f6 0%, #22c55e 100%)",
+            footer: "С любовью Mortis32 <3 · 16 июля 2025"
+        },
+        {
+            title: "Добро пожаловать!",
+            date: "16 июля 2025",
+            sortDate: 20250716,
+            content: "Добро пожаловать на наш первый сайт! Готовим для вас море эпичного контента: новые видео, мемы и эксклюзивные истории. Следите за обновлениями и присоединяйтесь к нашей тусовке. 😎",
+            icon: "fas fa-handshake",
+            bgGradient: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+            footer: "С любовью Mortis32 <3 · 16 июля 2025"
+        }
     ];
+    newsData.sort((a, b) => b.sortDate - a.sortDate);
     
     function initNewsSystem() {
         const grid = document.getElementById('newsGrid');
         const loadMore = document.getElementById('loadMoreNews');
         let page = 1;
-        const perPage = 3;
+        const perPage = 6;
         function render(append = false) {
             if (!append) { grid.innerHTML = ''; page = 1; }
             const start = (page - 1) * perPage;
@@ -1114,9 +1272,24 @@
             if (!news.length) { loadMore.style.display = 'none'; return; }
             news.forEach((item, i) => {
                 const div = document.createElement('div');
-                div.className = 'modern-card news-card animate-fadeInUp';
+                div.className = 'modern-card news-card animate-fadeInUp card-hover';
                 div.style.animationDelay = `${(start + i) * 0.1}s`;
-                div.innerHTML = `<div class="p-6"><div class="flex items-center gap-4 mb-4"><div class="w-12 h-12 rounded-lg ${item.color.replace('text-', 'bg-')}/10 flex items-center justify-center"><i class="${item.icon} ${item.color} text-xl"></i></div><div><h3 class="font-bold text-lg">${item.title}</h3><div class="text-sm" style="color: var(--text-secondary);">${item.date}</div></div></div><div style="color: var(--text-secondary);">${item.content}</div><div class="news-date"><i class="fas fa-heart text-red-400 mr-2"></i>С любовью Mortis32 <3</div></div>`;
+                const background = item.bgGradient ? `background: ${item.bgGradient};` : '';
+                div.setAttribute('style', `${div.getAttribute('style') || ''}${background}`);
+                div.innerHTML = `
+                    <div class="p-6 text-white">
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
+                                <i class="${item.icon} text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold leading-tight">${item.title}</h3>
+                                <div class="text-sm opacity-90 mt-2">${item.date}</div>
+                            </div>
+                        </div>
+                        <div class="text-sm leading-7 opacity-90 mb-6">${item.content}</div>
+                        <div class="text-xs opacity-80">${item.footer || 'С любовью Mortis32 <3'}</div>
+                    </div>`;
                 grid.appendChild(div);
             });
             loadMore.style.display = start + perPage < newsData.length ? 'block' : 'none';
