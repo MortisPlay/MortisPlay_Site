@@ -56,8 +56,16 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });
-    gtag('event', 'page_view', { page_title: 'FAQ', page_location: '/faq.html' });
+    gtag('config', 'G-W7QBLDDSSK', {
+      send_page_view: true,
+      anonymize_ip: true,
+      page_title: document.title,
+      page_location: window.location.href
+    });
+    gtag('event', 'page_view', {
+      page_title: document.title,
+      page_location: window.location.href
+    });
   </script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -73,59 +81,92 @@
     body {
       font-family: 'Inter', 'Segoe UI', sans-serif;
       background:
-        radial-gradient(circle at 20% 15%, rgba(139, 92, 246, 0.14), transparent 28%),
-        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.16), transparent 24%),
-        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.12), transparent 30%),
-        linear-gradient(135deg, #05030e 0%, #120d28 55%, #1e1b4b 100%);
+        radial-gradient(circle at 15% 15%, rgba(34, 211, 238, 0.14), transparent 24%),
+        radial-gradient(circle at 85% 20%, rgba(139, 92, 246, 0.16), transparent 26%),
+        radial-gradient(circle at 50% 85%, rgba(0, 255, 170, 0.12), transparent 30%),
+        linear-gradient(135deg, #020617 0%, #060b1f 45%, #0f172a 100%);
       color: #f8fafc;
       min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* Animated gradient background */
+    /* CyberWave animated background */
     .gradient-bg {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       z-index: -2;
       background:
-        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
-        radial-gradient(circle at 50% 10%, rgba(59, 130, 246, 0.08) 0%, transparent 35%);
-      animation: gradientShift 18s ease infinite alternate;
-      filter: blur(0.8px);
+        radial-gradient(circle at 20% 80%, rgba(34, 211, 238, 0.18) 0%, transparent 42%),
+        radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.2) 0%, transparent 42%),
+        radial-gradient(circle at 45% 35%, rgba(0, 255, 170, 0.12) 0%, transparent 46%),
+        linear-gradient(130deg, rgba(2, 6, 23, 0.98) 0%, rgba(7, 12, 30, 0.97) 50%, rgba(15, 23, 42, 0.98) 100%);
+      animation: gradientShift 16s ease-in-out infinite alternate;
+      filter: blur(0.6px);
+      overflow: hidden;
+    }
+
+    .gradient-bg::before {
+      content: '';
+      position: absolute;
+      inset: -10%;
+      background:
+        repeating-linear-gradient(90deg, rgba(34, 211, 238, 0.04) 0 1px, transparent 1px 140px),
+        repeating-linear-gradient(0deg, rgba(139, 92, 246, 0.05) 0 1px, transparent 1px 120px);
+      opacity: 0.5;
+      transform: perspective(600px) rotateX(55deg);
+      transform-origin: center bottom;
+      animation: gridMove 18s linear infinite;
+    }
+
+    .gradient-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 10%, rgba(34, 211, 238, 0.16), transparent 30%),
+        radial-gradient(ellipse at 40% 90%, rgba(0, 255, 170, 0.1), transparent 38%),
+        radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.14), transparent 40%);
+      animation: floatSky 12s ease-in-out infinite alternate;
     }
 
     @keyframes gradientShift {
       0% { transform: scale(1) rotate(0deg); }
-      100% { transform: scale(1.1) rotate(5deg); }
+      100% { transform: scale(1.06) rotate(3deg); }
     }
 
-    /* Floating particles */
+    @keyframes gridMove {
+      0% { transform: perspective(600px) rotateX(55deg) translateY(0); }
+      100% { transform: perspective(600px) rotateX(55deg) translateY(40px); }
+    }
+
+    @keyframes floatSky {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-4%) scale(1.03); }
+    }
+
+    /* Neon particles */
     .particles {
       position: fixed;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       z-index: -1;
       pointer-events: none;
+      overflow: hidden;
     }
 
     .particle {
       position: absolute;
-      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      background: radial-gradient(circle, rgba(255,255,255,0.95), rgba(34, 211, 238, 0.2) 45%, transparent 70%);
       border-radius: 50%;
-      opacity: 0.28;
+      opacity: 0.45;
       mix-blend-mode: screen;
-      filter: blur(0.5px);
-      animation: float 20s infinite linear;
+      filter: blur(0.7px);
+      box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+      animation: float 22s infinite linear;
     }
 
     @keyframes float {
-      0% { transform: translateY(0) rotate(0deg); }
-      100% { transform: translateY(-1000px) rotate(720deg); }
+      0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+      100% { transform: translate3d(-22vw, -110vh, 0) rotate(360deg); }
     }
 
     /* Glass morphism card */
@@ -441,43 +482,42 @@
           
           <div class="space-y-4">
             <details class="faq-item">
-              <summary>Как связаться с тобой?</summary>
+              <summary>Как связаться со мной?</summary>
               <div class="answer">
-                <p>Пиши в Telegram: <a href="https://t.me/Mortisplay_YT" class="text-purple-400 hover:text-purple-300 underline" target="_blank">@Mortisplay_YT</a></p>
-                <p>Или на email: <a href="mailto:mortisplay@mail.ru" class="text-purple-400 hover:text-purple-300 underline">mortisplay@mail.ru</a></p>
-                <p class="mt-2 text-sm text-gray-400"><i class="fas fa-clock mr-1"></i> Отвечаю в течение 24 часов</p>
+                <p>Самые быстрые способы — Telegram-канал, YouTube и раздел контактов на сайте.</p>
+                <p class="mt-2">Если хочешь следить за обновлениями, лучше всего подписаться на Telegram и следить за разделом “Контакты” на главной.</p>
+                <p class="mt-2 text-sm text-gray-400"><i class="fas fa-clock mr-1"></i> Я стараюсь отвечать и обновлять контент регулярно</p>
               </div>
             </details>
 
             <details class="faq-item">
-              <summary>Когда новые видео?</summary>
+              <summary>Когда выходят новые видео?</summary>
               <div class="answer">
                 <div class="p-4 bg-gradient-to-r from-purple-900/20 to-pink-900/20 rounded-xl mb-3">
-                  <p class="font-semibold">📅 Регулярный график:</p>
-                  <p>• Основные видео: <span class="text-purple-300">Каждую неделю</span></p>
-                  <p>• Shorts: <span class="text-purple-300">2-3 раза в неделю</span></p>
-                  <p>• Стримы: <span class="text-purple-300">По расписанию в Telegram</span></p>
+                  <p class="font-semibold">📅 Что обычно бывает:</p>
+                  <p>• Новые ролики появляются регулярно, когда есть свежий контент</p>
+                  <p>• Раздел “Видео” обновляется сразу после публикации</p>
+                  <p>• Стримы и важные анонсы чаще всего появляются в Telegram и на главной странице</p>
                 </div>
-                <p class="text-sm text-gray-400"><i class="fas fa-bell mr-1"></i> Следи за анонсами в Telegram!</p>
+                <p class="text-sm text-gray-400"><i class="fas fa-bell mr-1"></i> Лучше всего следить за обновлениями прямо на сайте и в Telegram</p>
               </div>
             </details>
 
             <details class="faq-item">
-              <summary>Как обновить сайт вручную?</summary>
+              <summary>Как обновить страницу, если что-то не отображается?</summary>
               <div class="answer">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                   <div class="p-3 bg-gray-900/50 rounded-lg">
-                    <p class="font-semibold mb-2">🔄 Windows/Linux:</p>
+                    <p class="font-semibold mb-2">🔄 Быстрое обновление:</p>
                     <code class="text-sm bg-black/50 p-2 rounded block">Ctrl + F5</code>
                     <p class="text-xs text-gray-400 mt-1">или Ctrl + Shift + R</p>
                   </div>
                   <div class="p-3 bg-gray-900/50 rounded-lg">
-                    <p class="font-semibold mb-2">🍎 macOS:</p>
-                    <code class="text-sm bg-black/50 p-2 rounded block">Cmd + Shift + R</code>
-                    <p class="text-xs text-gray-400 mt-1">или Cmd + Option + E</p>
+                    <p class="font-semibold mb-2">🧠 Если не помогло:</p>
+                    <p class="text-sm text-gray-300">Сайт запоминает тему и настройки, поэтому иногда достаточно просто обновить страницу и подождать пару секунд</p>
                   </div>
                 </div>
-                <p class="text-sm text-gray-400">Если не помогло — очисти кэш браузера в настройках</p>
+                <p class="text-sm text-gray-400">Если проблема сохраняется — можно очистить кэш браузера или открыть сайт в другой вкладке</p>
               </div>
             </details>
           </div>
@@ -495,68 +535,71 @@
           
           <div class="space-y-4">
             <details class="faq-item">
-              <summary>Какие технологии используются на сайте?</summary>
+              <summary>Какие технологии и функции есть на сайте?</summary>
               <div class="answer">
                 <div class="grid grid-cols-2 gap-3 mb-3">
                   <div class="p-3 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-lg">
-                    <p class="font-semibold text-sm">⚡ Frontend</p>
-                    <p class="text-xs text-gray-300">HTML5, Tailwind CSS, JavaScript ES6+</p>
+                    <p class="font-semibold text-sm">⚡ Интерфейс</p>
+                    <p class="text-xs text-gray-300">HTML5, Tailwind CSS, JavaScript</p>
                   </div>
                   <div class="p-3 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg">
-                    <p class="font-semibold text-sm">🎨 Анимации</p>
-                    <p class="text-xs text-gray-300">CSS Keyframes, Glass morphism</p>
+                    <p class="font-semibold text-sm">🎨 Дизайн</p>
+                    <p class="text-xs text-gray-300">Тёмная тема, светлая тема, стеклянные карточки</p>
                   </div>
                   <div class="p-3 bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-lg">
-                    <p class="font-semibold text-sm">📊 API</p>
-                    <p class="text-xs text-gray-300">YouTube Data API v3</p>
+                    <p class="font-semibold text-sm">📊 Видео</p>
+                    <p class="text-xs text-gray-300">Подгрузка с YouTube, кэш и счётчик</p>
                   </div>
                   <div class="p-3 bg-gradient-to-br from-orange-900/20 to-red-900/20 rounded-lg">
-                    <p class="font-semibold text-sm">📦 Хранение</p>
-                    <p class="text-xs text-gray-300">LocalStorage (кеш видео)</p>
+                    <p class="font-semibold text-sm">🧰 Удобства</p>
+                    <p class="text-xs text-gray-300">Настройки, мобильное меню, кнопка наверх, уведомления</p>
                   </div>
                 </div>
-                <p class="text-sm text-gray-400">Сайт полностью адаптивен и работает на всех устройствах!</p>
+                <p class="text-sm text-gray-400">Сайт адаптирован под мобильные устройства и поддерживает современные визуальные эффекты, удобные переходы и быстрый доступ к контенту.</p>
               </div>
             </details>
 
             <details class="faq-item">
-              <summary>Как работает светлая/тёмная тема?</summary>
+              <summary>Как работает тема и настройки?</summary>
               <div class="answer">
-                <p>На сайте реализована система переключения тем:</p>
+                <p>На сайте есть полноценная система настроек:</p>
                 <ul class="list-disc list-inside mt-2 space-y-1">
-                  <li>🌙 <strong>Тёмная тема</strong> — включена по умолчанию, бережёт глаза</li>
-                  <li>☀️ <strong>Светлая тема</strong> — для комфорта днём</li>
+                  <li>🌙 <strong>Тёмная тема</strong> — включена по умолчанию</li>
+                  <li>☀️ <strong>Светлая тема</strong> — можно включить в любой момент</li>
+                  <li>✨ <strong>Жидкое стекло</strong> — можно включать и отключать отдельно</li>
+                  <li>⚙️ <strong>Анимации и уведомления</strong> — тоже управляются через настройки</li>
                 </ul>
                 <div class="mt-3 p-3 bg-gray-800/50 rounded-lg">
-                  <p class="font-mono text-sm">🔧 Кнопка переключения — <i class="fas fa-sun"></i> / <i class="fas fa-moon"></i> в шапке сайта</p>
-                  <p class="text-xs text-gray-400 mt-1">Выбор темы сохраняется в localStorage вашего браузера</p>
+                  <p class="font-mono text-sm">🔧 Кнопка настроек находится в шапке сайта</p>
+                  <p class="text-xs text-gray-400 mt-1">Выбор темы и параметров сохраняется в браузере</p>
                 </div>
               </div>
             </details>
 
             <details class="faq-item">
-              <summary>Что есть на главной странице сайта?</summary>
+              <summary>Что есть на главной странице?</summary>
               <div class="answer">
-                <p>Главная страница содержит быстрые ссылки на все важные разделы сайта:</p>
+                <p>На главной собраны основные разделы и быстрые переходы:</p>
                 <ul class="list-disc list-inside mt-3 space-y-2 text-gray-300">
                   <li>• Биография</li>
                   <li>• Q&A</li>
                   <li>• FAQ</li>
                   <li>• Игры</li>
                   <li>• Итоги года</li>
+                  <li>• Новости, клипы Twitch и контакты</li>
                 </ul>
-                <p class="mt-3 text-sm text-gray-400">Там также отображаются новости, клипы Twitch и важные обновления Mortis Play.</p>
+                <p class="mt-3 text-sm text-gray-400">Главная страница теперь работает как быстрый центр навигации по всему сайту.</p>
               </div>
             </details>
 
             <details class="faq-item">
-              <summary>Есть ли поиск по сайту?</summary>
+              <summary>Есть ли удобные фильтры и поиск?</summary>
               <div class="answer">
-                <p>Да! На сайте реализован удобный поиск:</p>
+                <p>Да — особенно в разделе “Видео”:</p>
                 <div class="mt-3 space-y-2">
                   <div class="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
                     <i class="fas fa-search text-purple-400 w-6"></i>
-                    <span>Поиск видео по названию в разделе "Видео"</span>
+                    <span>Поиск по названию видео</span>
                   </div>
                   <div class="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
                     <i class="fas fa-filter text-purple-400 w-6"></i>
@@ -564,9 +607,49 @@
                   </div>
                   <div class="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
                     <i class="fas fa-sort-amount-down text-purple-400 w-6"></i>
-                    <span>Сортировка по просмотрам и названию</span>
+                    <span>Сортировка и сброс фильтров</span>
                   </div>
                 </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как пользоваться мобильным меню и быстрыми переходами?</summary>
+              <div class="answer">
+                <p>На телефоне и планшете меню открывается кнопкой в правом верхнем углу.</p>
+                <ul class="list-disc list-inside mt-2 space-y-1">
+                  <li>📱 В меню доступны основные разделы: видео, клипы, контакты и FAQ</li>
+                  <li>⚡ Быстрые ссылки помогают перейти к нужному блоку без длинной прокрутки</li>
+                  <li>🔄 После выбора раздела меню закрывается автоматически</li>
+                </ul>
+                <p class="mt-3 text-sm text-gray-400">Это самый удобный способ быстро перемещаться по сайту с мобильного устройства.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Что делать, если не открывается подсказка по видео или настройки?</summary>
+              <div class="answer">
+                <p>На главной странице есть модальные окна для FAQ по видео и для настроек сайта.</p>
+                <div class="mt-3 space-y-2">
+                  <div class="p-3 bg-gray-800/40 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">💡 FAQ по видео</p>
+                    <p class="text-xs text-gray-300">Появляется, если нужно быстро понять, как работает раздел с роликами</p>
+                  </div>
+                  <div class="p-3 bg-gray-800/40 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">⚙️ Настройки</p>
+                    <p class="text-xs text-gray-300">Открываются через кнопку с шестерёнкой и помогают управлять темой, анимациями и эффектами</p>
+                  </div>
+                </div>
+                <p class="mt-3 text-sm text-gray-400">Если окно не открылось — обновите страницу и проверьте, не блокирует ли его браузер или расширение.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Почему иногда появляются уведомления и как их отключить?</summary>
+              <div class="answer">
+                <p>Уведомления показываются, когда сайт сообщает о смене темы, обновлении интерфейса или важных действиях.</p>
+                <p class="mt-2">Их можно выключить в настройках сайта — там есть отдельный переключатель для уведомлений.</p>
+                <p class="mt-3 text-sm text-gray-400">Отключение не влияет на контент и не мешает пользоваться разделами сайта.</p>
               </div>
             </details>
           </div>
@@ -591,28 +674,28 @@
                     <p class="font-semibold mb-2 flex items-center gap-2">
                       <i class="fas fa-search"></i> Поиск
                     </p>
-                    <p>Введи название видео в поисковую строку — результаты обновляются автоматически</p>
+                    <p>Введи название ролика в строку поиска — список обновится сразу</p>
                   </div>
                   <div class="p-4 bg-gradient-to-br from-blue-900/30 to-cyan-900/30 rounded-xl">
                     <p class="font-semibold mb-2 flex items-center gap-2">
                       <i class="fas fa-filter"></i> Фильтрация
                     </p>
-                    <p>Выбери категорию (CS Угар, Стримы, Подкаст, Shorts, Другое)</p>
+                    <p>Можно выбрать категорию: Угар, CS Угар, Стримы, Подкаст, Shorts, Другое</p>
                   </div>
                   <div class="p-4 bg-gradient-to-br from-green-900/30 to-emerald-900/30 rounded-xl">
                     <p class="font-semibold mb-2 flex items-center gap-2">
                       <i class="fas fa-calendar-alt"></i> Фильтр по дате
                     </p>
-                    <p>Неделя, Месяц, 3 месяца или Всё время</p>
+                    <p>Доступны период: неделя, месяц, 3 месяца или всё время</p>
                   </div>
                   <div class="p-4 bg-gradient-to-br from-orange-900/30 to-red-900/30 rounded-xl">
                     <p class="font-semibold mb-2 flex items-center gap-2">
                       <i class="fas fa-redo"></i> Сброс
                     </p>
-                    <p>Кнопка "Сбросить всё" вернёт все фильтры в исходное состояние</p>
+                    <p>Кнопка “Сбросить всё” возвращает интерфейс в исходное состояние</p>
                   </div>
                 </div>
-                <p class="text-sm text-gray-400"><i class="fas fa-mouse-pointer mr-1"></i> Для просмотра — нажми на превью видео</p>
+                <p class="text-sm text-gray-400"><i class="fas fa-mouse-pointer mr-1"></i> Чтобы открыть видео — просто нажми на его превью</p>
               </div>
             </details>
 
@@ -674,17 +757,17 @@
             </details>
 
             <details class="faq-item">
-              <summary>Почему просмотры отличаются от YouTube?</summary>
+              <summary>Почему просмотры иногда отличаются от YouTube?</summary>
               <div class="answer">
                 <div class="p-4 bg-gradient-to-r from-yellow-900/20 to-orange-900/20 rounded-xl mb-3">
-                  <p class="font-semibold mb-2">📊 Особенности синхронизации:</p>
-                  <p>• Просмотры берутся с YouTube-канала через API</p>
-                  <p>• Синхронизация происходит при загрузке страницы</p>
-                  <p>• Иногда задержки из-за кэширования API (до 2-4 часов)</p>
+                  <p class="font-semibold mb-2">📊 Как это работает:</p>
+                  <p>• Данные берутся с YouTube через API</p>
+                  <p>• Часть информации кешируется на сайте, чтобы не грузить страницу слишком долго</p>
+                  <p>• Иногда обновление статистики происходит с небольшой задержкой</p>
                 </div>
                 <p class="text-sm text-gray-400">
                   <i class="fas fa-exclamation-triangle mr-1"></i>
-                  Если разница большая — просто обнови страницу через час
+                  Если данные кажутся устаревшими — достаточно обновить страницу или подождать немного
                 </p>
               </div>
             </details>
@@ -692,14 +775,14 @@
             <details class="faq-item">
               <summary>Как работает кнопка "Загрузить ещё видео"?</summary>
               <div class="answer">
-                <p>Для удобства просмотра видео разбиты на страницы:</p>
+                <p>Раздел сделан так, чтобы смотреть видео было удобнее:</p>
                 <ul class="list-disc list-inside mt-2 space-y-1">
-                  <li>📄 На одной странице отображается <strong>6 видео</strong></li>
-                  <li>➕ Кнопка "Загрузить ещё" подгружает следующие 6 видео</li>
-                  <li>🔄 При изменении фильтров или поиска список сбрасывается к первой странице</li>
+                  <li>📄 Сначала показывается часть списка</li>
+                  <li>➕ Кнопка “Загрузить ещё” подгружает следующие видео</li>
+                  <li>🔄 При смене поиска или фильтров список снова возвращается к стартовому состоянию</li>
                 </ul>
                 <div class="mt-3 p-3 bg-gray-800/50 rounded-lg">
-                  <p class="text-sm"><i class="fas fa-chart-line text-green-400 mr-1"></i> В верхней части раздела отображается общее количество видео</p>
+                  <p class="text-sm"><i class="fas fa-chart-line text-green-400 mr-1"></i> Вверху раздела отображается общее количество доступных роликов</p>
                 </div>
               </div>
             </details>

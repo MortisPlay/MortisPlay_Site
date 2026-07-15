@@ -7,6 +7,22 @@
   <meta name="description" content="Итоги 2023, 2024, 2025: реальный путь роста, достижения и ключевые события" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com" defer></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-W7QBLDDSSK', {
+      send_page_view: true,
+      anonymize_ip: true,
+      page_title: document.title,
+      page_location: window.location.href
+    });
+    gtag('event', 'page_view', {
+      page_title: document.title,
+      page_location: window.location.href
+    });
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -18,73 +34,129 @@
     }
     
     body {
+      position: relative;
+      isolation: isolate;
       font-family: 'Inter', 'Segoe UI', sans-serif;
       background:
-        radial-gradient(circle at 20% 15%, rgba(139, 92, 246, 0.14), transparent 28%),
-        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.16), transparent 24%),
+        radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.16), transparent 24%),
+        radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.14), transparent 22%),
         radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.12), transparent 30%),
-        linear-gradient(135deg, #05030e 0%, #120d28 55%, #1e1b4b 100%);
+        linear-gradient(135deg, #040816 0%, #0b1b34 45%, #16213b 100%);
       color: #f8fafc;
       min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* Animated gradient background */
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Christmas animated background */
     .gradient-bg {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -2;
+      inset: 0;
+      z-index: 0;
       background:
-        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
-        radial-gradient(circle at 50% 10%, rgba(59, 130, 246, 0.08) 0%, transparent 35%);
-      animation: gradientShift 18s ease infinite alternate;
-      filter: blur(0.8px);
+        radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.16) 0 2px, transparent 2.2px),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.14) 0 1.6px, transparent 2px),
+        radial-gradient(circle at 50% 15%, rgba(255, 255, 255, 0.12) 0 1.2px, transparent 1.8px),
+        radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.18), transparent 45%),
+        linear-gradient(180deg, rgba(8, 15, 30, 0.98) 0%, rgba(16, 24, 43, 0.95) 50%, rgba(32, 49, 74, 0.97) 100%);
+      animation: gradientShift 18s ease-in-out infinite alternate;
+      filter: blur(0.7px);
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .gradient-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.16), transparent 25%),
+        radial-gradient(circle at 80% 75%, rgba(255, 255, 255, 0.12), transparent 20%),
+        linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.06) 100%);
+      animation: shimmerGlow 10s ease-in-out infinite alternate;
+    }
+
+    .gradient-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 90%, rgba(34, 211, 238, 0.14), transparent 38%),
+        radial-gradient(ellipse at 50% 100%, rgba(255, 255, 255, 0.08), transparent 42%);
+      animation: auroraGlow 14s ease-in-out infinite alternate;
     }
 
     @keyframes gradientShift {
       0% { transform: scale(1) rotate(0deg); }
-      100% { transform: scale(1.1) rotate(5deg); }
+      100% { transform: scale(1.08) rotate(4deg); }
     }
 
-    /* Floating particles */
+    @keyframes shimmerGlow {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+
+    @keyframes auroraGlow {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-3%); }
+    }
+
+    /* Snowfall and particles */
     .particles {
       position: fixed;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
+      inset: 0;
+      z-index: 0;
       pointer-events: none;
+      overflow: hidden;
     }
 
     .particle {
       position: absolute;
-      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      background: radial-gradient(circle, rgba(255,255,255,0.95), rgba(191,219,254,0.2) 55%, transparent 72%);
       border-radius: 50%;
-      opacity: 0.28;
+      opacity: 0.4;
       mix-blend-mode: screen;
-      filter: blur(0.5px);
+      filter: blur(0.7px);
       animation: float 20s infinite linear;
+      will-change: transform, opacity;
+      box-shadow: 0 0 8px rgba(255,255,255,0.2);
+    }
+
+    .snowflake {
+      position: absolute;
+      top: -10vh;
+      color: #ffffff;
+      font-size: 1rem;
+      opacity: 0.8;
+      animation: snowfall linear infinite;
+      text-shadow: 0 0 8px rgba(255,255,255,0.4);
     }
 
     @keyframes float {
-      0% { transform: translateY(0) rotate(0deg); }
-      100% { transform: translateY(-1000px) rotate(720deg); }
+      0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+      100% { transform: translate3d(-20vw, -110vh, 0) rotate(360deg); }
+    }
+
+    @keyframes snowfall {
+      0% { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.8; }
+      100% { transform: translate3d(20vw, 110vh, 0) rotate(360deg); opacity: 0.9; }
     }
 
     /* Glass morphism card */
     .glass-card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 24px;
-      box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 10px 30px rgba(2, 6, 23, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
@@ -92,11 +164,11 @@
 
     .glass-card:hover {
       transform: translateY(-10px);
-      box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(139, 92, 246, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
-      border-color: rgba(139, 92, 246, 0.4);
+      box-shadow:
+        0 18px 45px rgba(2, 6, 23, 0.26),
+        0 0 0 1px rgba(139, 92, 246, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      border-color: rgba(139, 92, 246, 0.28);
     }
 
     /* Year cards with gradient borders */
@@ -115,12 +187,12 @@
       right: -2px;
       bottom: -2px;
       background: linear-gradient(45deg, 
-        #3b82f6, #8b5cf6, #ec4899, #f59e0b, #10b981, #3b82f6);
+        rgba(59, 130, 246, 0.35), rgba(139, 92, 246, 0.35), rgba(236, 72, 153, 0.35), rgba(245, 158, 11, 0.22), rgba(16, 185, 129, 0.28), rgba(59, 130, 246, 0.35));
       background-size: 300% 300%;
       border-radius: 26px;
       z-index: -1;
       animation: gradientBorder 4s ease infinite;
-      opacity: 0.6;
+      opacity: 0.35;
     }
 
     @keyframes gradientBorder {
@@ -131,20 +203,20 @@
     /* Year-specific gradient overlays */
     .year-2023 {
       background: linear-gradient(135deg, 
-        rgba(59, 130, 246, 0.1), 
-        rgba(139, 92, 246, 0.1));
+        rgba(59, 130, 246, 0.06), 
+        rgba(139, 92, 246, 0.05));
     }
 
     .year-2024 {
       background: linear-gradient(135deg, 
-        rgba(16, 185, 129, 0.1), 
-        rgba(59, 130, 246, 0.1));
+        rgba(16, 185, 129, 0.06), 
+        rgba(59, 130, 246, 0.05));
     }
 
     .year-2025 {
       background: linear-gradient(135deg, 
-        rgba(245, 158, 11, 0.1), 
-        rgba(236, 72, 153, 0.1));
+        rgba(245, 158, 11, 0.06), 
+        rgba(236, 72, 153, 0.05));
     }
 
     /* Gradient text */
@@ -184,7 +256,7 @@
 
     /* Month cards */
     .month-card {
-      background: rgba(255, 255, 255, 0.03);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.025));
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 16px;
       padding: 1.5rem;
@@ -193,8 +265,8 @@
     }
 
     .month-card:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(139, 92, 246, 0.3);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+      border-color: rgba(139, 92, 246, 0.22);
       transform: translateY(-2px);
     }
 
@@ -736,20 +808,21 @@
   </main>
 
   <script>
-    // Create floating particles
+    // Create floating particles and snowflakes
     function createParticles() {
       const container = document.getElementById('particles');
-      const particleCount = 25;
+      const particleCount = 20;
+      const snowflakeCount = 18;
+      const snowSymbols = ['❄', '✦', '✧'];
       
       for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         
-        // Random properties
-        const size = Math.random() * 20 + 5;
+        const size = Math.random() * 16 + 4;
         const posX = Math.random() * 100;
         const posY = Math.random() * 100;
-        const duration = Math.random() * 20 + 10;
+        const duration = Math.random() * 18 + 10;
         const delay = Math.random() * 20;
         
         particle.style.width = `${size}px`;
@@ -758,9 +831,30 @@
         particle.style.top = `${posY}%`;
         particle.style.animationDuration = `${duration}s`;
         particle.style.animationDelay = `${delay}s`;
-        particle.style.opacity = Math.random() * 0.15 + 0.1;
+        particle.style.opacity = Math.random() * 0.2 + 0.08;
         
         container.appendChild(particle);
+      }
+
+      for (let i = 0; i < snowflakeCount; i++) {
+        const flake = document.createElement('div');
+        flake.className = 'snowflake';
+        flake.textContent = snowSymbols[i % snowSymbols.length];
+
+        const posX = Math.random() * 100;
+        const size = Math.random() * 0.8 + 0.7;
+        const duration = Math.random() * 10 + 8;
+        const delay = Math.random() * 12;
+        const drift = Math.random() * 180 - 90;
+
+        flake.style.left = `${posX}%`;
+        flake.style.fontSize = `${size}rem`;
+        flake.style.animationDuration = `${duration}s`;
+        flake.style.animationDelay = `${delay}s`;
+        flake.style.transform = `translateX(${drift}px)`;
+        flake.style.opacity = Math.random() * 0.5 + 0.4;
+        
+        container.appendChild(flake);
       }
     }
     

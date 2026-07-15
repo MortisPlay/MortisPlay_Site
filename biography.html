@@ -22,7 +22,16 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });
+    gtag('config', 'G-W7QBLDDSSK', {
+      send_page_view: true,
+      anonymize_ip: true,
+      page_title: document.title,
+      page_location: window.location.href
+    });
+    gtag('event', 'page_view', {
+      page_title: document.title,
+      page_location: window.location.href
+    });
   </script>
   <style>
     :root {
@@ -35,10 +44,9 @@
     
     body {
       background:
-        radial-gradient(circle at 20% 15%, rgba(139, 92, 246, 0.14), transparent 28%),
-        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.16), transparent 24%),
-        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.12), transparent 30%),
-        linear-gradient(135deg, #05030e 0%, #120d28 55%, #1e1b4b 100%);
+        radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.12), transparent 22%),
+        radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.14), transparent 24%),
+        linear-gradient(135deg, #03040c 0%, #080b1b 45%, #121b35 100%);
       color: #f8fafc;
       font-family: 'Inter', 'Segoe UI', sans-serif;
       min-height: 100vh;
@@ -46,50 +54,149 @@
       overflow-x: hidden;
     }
 
-    /* Animated gradient background */
+    /* Animated night-sky background */
     .gradient-bg {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       z-index: -2;
       background:
-        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
-        radial-gradient(circle at 50% 10%, rgba(59, 130, 246, 0.08) 0%, transparent 35%);
-      animation: gradientShift 18s ease infinite alternate;
-      filter: blur(0.8px);
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.16) 0 1px, transparent 1.8px),
+        radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.15) 0 1.2px, transparent 1.8px),
+        radial-gradient(circle at 42% 32%, rgba(255, 255, 255, 0.12) 0 1.4px, transparent 2px),
+        radial-gradient(ellipse at 50% 110%, rgba(34, 211, 238, 0.12) 0%, rgba(59, 130, 246, 0.06) 28%, transparent 70%),
+        linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(9, 14, 31, 0.97) 45%, rgba(15, 23, 42, 0.98) 100%);
+      animation: gradientShift 20s ease-in-out infinite alternate;
+      filter: blur(0.6px);
+      overflow: hidden;
+    }
+
+    .gradient-bg::before {
+      content: '';
+      position: absolute;
+      inset: -12%;
+      background:
+        radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.85) 0 1px, transparent 2px),
+        radial-gradient(circle at 80% 15%, rgba(255, 255, 255, 0.7) 0 1.2px, transparent 2px),
+        radial-gradient(circle at 38% 40%, rgba(255, 255, 255, 0.45) 0 1.4px, transparent 2.2px),
+        radial-gradient(circle at 72% 70%, rgba(255, 255, 255, 0.35) 0 1.1px, transparent 1.8px),
+        radial-gradient(ellipse at 50% 110%, rgba(14, 165, 233, 0.16) 0%, rgba(16, 185, 129, 0.04) 35%, transparent 70%);
+      animation: twinkle 8s ease-in-out infinite alternate;
+      opacity: 0.85;
+    }
+
+    .gradient-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 90%, rgba(0, 255, 170, 0.1) 0%, transparent 40%),
+        radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.16) 0%, transparent 42%),
+        linear-gradient(180deg, transparent 0%, rgba(2, 6, 23, 0.18) 100%);
+      animation: floatSky 16s ease-in-out infinite alternate;
     }
 
     @keyframes gradientShift {
       0% { transform: scale(1) rotate(0deg); }
-      100% { transform: scale(1.1) rotate(5deg); }
+      100% { transform: scale(1.08) rotate(4deg); }
     }
 
-    /* Floating particles */
-    .particles {
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.04); }
+    }
+
+    @keyframes floatSky {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-3%) scale(1.03); }
+    }
+
+    /* Night scenery and floating particles */
+    .night-scene {
       position: fixed;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       z-index: -1;
       pointer-events: none;
+      overflow: hidden;
+    }
+
+    .moon {
+      position: absolute;
+      top: 8%;
+      right: 12%;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff9d6 0%, #ffe7a4 30%, #d6b96e 60%, rgba(255,255,255,0) 75%);
+      box-shadow: 0 0 90px rgba(255, 224, 138, 0.35);
+      animation: moonFloat 12s ease-in-out infinite alternate;
+      filter: blur(0.3px);
+    }
+
+    .hill {
+      position: absolute;
+      bottom: -8%;
+      border-radius: 50% 50% 0 0;
+      opacity: 0.45;
+      filter: blur(1px);
+    }
+
+    .hill-one {
+      left: 18%;
+      width: 58vw;
+      height: 24vh;
+      background: radial-gradient(ellipse at top, rgba(10, 15, 30, 0.95), rgba(4, 9, 20, 1));
+    }
+
+    .hill-two {
+      right: 14%;
+      width: 40vw;
+      height: 18vh;
+      background: radial-gradient(ellipse at top, rgba(12, 18, 34, 0.95), rgba(5, 9, 20, 1));
+    }
+
+    .mist {
+      position: absolute;
+      bottom: 12%;
+      left: -10%;
+      width: 120%;
+      height: 24vh;
+      background: radial-gradient(ellipse, rgba(166, 196, 255, 0.16), transparent 70%);
+      filter: blur(18px);
+      animation: driftMist 16s ease-in-out infinite alternate;
+    }
+
+    .particles {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
     }
 
     .particle {
       position: absolute;
-      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      background: radial-gradient(circle, rgba(255,255,255,0.95), rgba(191,219,254,0.22) 55%, transparent 72%);
       border-radius: 50%;
-      opacity: 0.28;
+      opacity: 0.45;
       mix-blend-mode: screen;
-      filter: blur(0.5px);
-      animation: float 20s infinite linear;
+      filter: blur(0.8px);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.22);
+      animation: float 24s infinite linear;
+    }
+
+    @keyframes moonFloat {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(18px) scale(1.03); }
+    }
+
+    @keyframes driftMist {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(6%); }
     }
 
     @keyframes float {
-      0% { transform: translateY(0) rotate(0deg); }
-      100% { transform: translateY(-1000px) rotate(720deg); }
+      0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+      100% { transform: translate3d(-20vw, -110vh, 0) rotate(360deg); }
     }
 
     /* Glass morphism card */
@@ -381,6 +488,12 @@
 <body>
   <!-- Animated background -->
   <div class="gradient-bg"></div>
+  <div class="night-scene" aria-hidden="true">
+    <div class="moon"></div>
+    <div class="hill hill-one"></div>
+    <div class="hill hill-two"></div>
+    <div class="mist"></div>
+  </div>
   
   <!-- Floating particles -->
   <div class="particles" id="particles"></div>

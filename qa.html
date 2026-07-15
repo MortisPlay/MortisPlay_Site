@@ -45,7 +45,16 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });
+    gtag('config', 'G-W7QBLDDSSK', {
+      send_page_view: true,
+      anonymize_ip: true,
+      page_title: document.title,
+      page_location: window.location.href
+    });
+    gtag('event', 'page_view', {
+      page_title: document.title,
+      page_location: window.location.href
+    });
   </script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -386,13 +395,13 @@
         <div class="space-y-6">
           <div class="p-4 bg-gradient-to-r from-blue-900/20 to-cyan-900/20 rounded-xl">
             <p class="text-lg text-gray-200 leading-relaxed">
-              Хочешь задать вопрос или предложить задачу для бота? Наш бот открыт к любым задачам и идеям! 
+              Хочешь задать вопрос или предложить задачу для бота? Наш бот-агент открыт к любым задачам и идеям! 
               Пиши прямо сейчас в Telegram — ответим в ближайшее время и рассмотрим любые предложения. 🎯
             </p>
           </div>
           
           <div class="flex flex-col sm:flex-row gap-4 items-center">
-            <a href="https://t.me/MortisPlayBIO?direct" target="_blank" rel="noopener noreferrer" 
+            <a href="https://telegram.me/agentplay_bot" target="_blank" rel="noopener noreferrer" 
                class="modern-btn telegram-btn flex items-center justify-center gap-3 py-4 w-full sm:w-auto">
               <i class="fab fa-telegram text-2xl"></i>
               <span class="font-semibold text-lg">Задать вопрос в Telegram</span>

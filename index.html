@@ -23,48 +23,135 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-W7QBLDDSSK', { send_page_view: true });
+    gtag('config', 'G-W7QBLDDSSK', {
+      send_page_view: true,
+      anonymize_ip: true,
+      page_title: document.title,
+      page_location: window.location.href
+    });
+    gtag('event', 'page_view', {
+      page_title: document.title,
+      page_location: window.location.href
+    });
   </script>
   <script src="https://cdn.tailwindcss.com" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #8b5cf6;
-      --primary-dark: #7c3aed;
-      --secondary: #06b6d4;
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #0ea5e9;
       --accent: #f59e0b;
       --bg-primary: #0f172a;
       --bg-secondary: #1e293b;
       --text-primary: #f1f5f9;
       --text-secondary: #cbd5e1;
-      --card-bg: rgba(30, 41, 59, 0.7);
-      --glass-bg: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.1);
+      --card-bg: rgba(30, 41, 59, 0.6);
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(99, 102, 241, 0.2);
       --light-bg: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
-      --light-card: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
+      --light-card: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 244, 248, 0.98) 100%);
     }
 
     .light-theme {
-      --primary: #7c3aed;
-      --primary-dark: #6d28d9;
-      --secondary: #0891b2;
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --secondary: #0284c7;
       --accent: #d97706;
       --bg-primary: var(--light-bg);
       --bg-secondary: #ffffff;
       --text-primary: #1e293b;
-      --text-secondary: #4b5563;
+      --text-secondary: #475569;
       --card-bg: var(--light-card);
-      --glass-bg: rgba(255, 255, 255, 0.15);
-      --glass-border: rgba(0, 0, 0, 0.08);
+      --glass-bg: rgba(99, 102, 241, 0.08);
+      --glass-border: rgba(99, 102, 241, 0.2);
     }
 
     body {
-      background: var(--bg-primary);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255, 77, 77, 0.22), transparent 28%),
+        radial-gradient(circle at 80% 0%, rgba(77, 184, 255, 0.2), transparent 26%),
+        radial-gradient(circle at 50% 100%, rgba(65, 255, 140, 0.18), transparent 28%),
+        linear-gradient(135deg, #020617 0%, #0f172a 45%, #111827 100%);
       color: var(--text-primary);
       font-family: 'Inter', 'Segoe UI', sans-serif;
       overflow-x: hidden;
       transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      width: 34rem;
+      height: 34rem;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.32;
+      animation: floatGlow 18s ease-in-out infinite alternate;
+    }
+
+    body::before {
+      top: -8rem;
+      left: -10rem;
+      background: linear-gradient(135deg, rgba(255, 77, 77, 0.35), rgba(255, 225, 77, 0.25));
+    }
+
+    body::after {
+      bottom: -10rem;
+      right: -8rem;
+      background: linear-gradient(135deg, rgba(77, 184, 255, 0.3), rgba(184, 92, 255, 0.24));
+      animation-duration: 22s;
+    }
+
+    body.light-theme {
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255, 77, 77, 0.14), transparent 24%),
+        radial-gradient(circle at 80% 0%, rgba(77, 184, 255, 0.16), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(65, 255, 140, 0.14), transparent 24%),
+        linear-gradient(135deg, #f8fafc 0%, #eef2ff 45%, #f8fafc 100%);
+    }
+
+    body.light-theme::before {
+      background: linear-gradient(135deg, rgba(255, 77, 77, 0.2), rgba(255, 225, 77, 0.16));
+      opacity: 0.24;
+    }
+
+    body.light-theme::after {
+      background: linear-gradient(135deg, rgba(77, 184, 255, 0.2), rgba(184, 92, 255, 0.16));
+      opacity: 0.2;
+    }
+
+    body::before, body::after {
+      animation: floatGlow 20s ease-in-out infinite alternate;
+    }
+
+    body.reduced-motion * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    body.reduced-glass .modern-card,
+    body.reduced-glass .modal-content,
+    body.reduced-glass .notification,
+    body.reduced-glass header,
+    body.reduced-glass .mobile-menu-container,
+    body.reduced-glass .btn-secondary,
+    body.reduced-glass .social-btn {
+      backdrop-filter: blur(6px) !important;
+    }
+
+    @keyframes floatGlow {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      100% { transform: translate3d(2rem, 1.5rem, 0) scale(1.08); }
     }
 
     .modern-card {
@@ -78,6 +165,75 @@
       overflow: hidden;
     }
 
+    .section,
+    section[id] {
+      position: relative;
+      padding: 5rem 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.035), rgba(99,102,241,0.05));
+      overflow: hidden;
+    }
+
+    .section::before,
+    section[id]::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.04), transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .light-theme .section::before,
+    .light-theme section[id]::before {
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.06), transparent 60%);
+    }
+
+    .section > *,
+    section[id] > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .news-section {
+      position: relative;
+    }
+
+    .news-toolbar {
+      border: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .light-theme .news-toolbar {
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .news-sort-select {
+      background: var(--glass-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+      border-radius: 9999px;
+      padding: 0.7rem 1rem;
+      outline: none;
+      min-width: 12rem;
+    }
+
+    .news-filter-chip {
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      color: var(--text-primary);
+      padding: 0.55rem 0.9rem;
+      border-radius: 9999px;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+    }
+
+    .news-filter-chip:hover,
+    .news-filter-chip.active {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.14);
+      color: var(--text-primary);
+    }
+
     .modern-card::before {
       content: '';
       position: absolute;
@@ -85,7 +241,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(14, 165, 233, 0.15) 100%);
       opacity: 0;
       transition: opacity 0.3s ease;
       pointer-events: none;
@@ -95,8 +251,8 @@
     .modern-card:hover::before { opacity: 1; }
     .modern-card:hover {
       transform: translateY(-8px);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      border-color: rgba(139, 92, 246, 0.3);
+      box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+      border-color: rgba(99, 102, 241, 0.4);
     }
 
     .gradient-text {
@@ -122,19 +278,20 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
     }
 
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(139, 92, 246, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(99, 102, 241, 0.5);
+      filter: brightness(1.1);
     }
 
     .btn-primary.disabled {
       opacity: 0.5;
       cursor: not-allowed;
       pointer-events: none;
-      filter: grayscale(30%);
+      filter: grayscale(50%);
     }
 
     .btn-secondary {
@@ -152,9 +309,10 @@
     }
 
     .btn-secondary:hover {
-      background: rgba(139, 92, 246, 0.1);
+      background: rgba(99, 102, 241, 0.15);
       border-color: var(--primary);
       transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
     }
 
     .rgb-glow-btn {
@@ -163,9 +321,9 @@
       overflow: hidden;
       color: white;
       font-weight: 700;
-      border: 1px solid rgba(255,255,255,0.3);
-      background: rgba(15, 23, 42, 0.85);
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 8px 24px rgba(139, 92, 246, 0.2);
+      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(15, 23, 42, 0.82);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 8px 24px rgba(99, 102, 241, 0.18);
       text-shadow: 0 0 10px rgba(255,255,255,0.25);
       backdrop-filter: blur(10px);
       transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
@@ -193,9 +351,18 @@
       transition: background 0.25s ease;
     }
 
+    body.light-theme .rgb-glow-btn {
+      border-color: rgba(79, 70, 229, 0.28);
+      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.12), 0 10px 24px rgba(79, 70, 229, 0.18);
+    }
+
+    body.light-theme .rgb-glow-btn::after {
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.95), rgba(14, 165, 233, 0.9));
+    }
+
     .rgb-glow-btn:hover {
       transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 0 22px rgba(255, 77, 77, 0.35), 0 0 34px rgba(77, 184, 255, 0.25);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 0 22px rgba(255, 77, 77, 0.4), 0 0 34px rgba(77, 184, 255, 0.3);
     }
 
     .rgb-glow-btn:hover::before {
@@ -208,27 +375,46 @@
       100% { background-position: 200% 50%; }
     }
 
-    .btn-action-contact { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
-    .btn-action-bio { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+    .btn-action-contact { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
+    .btn-action-bio { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); }
     .btn-action-qa { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
     .btn-action-faq { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-    .btn-action-games { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
-    .btn-action-year { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
+    .btn-action-year { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
     .btn-action-youtube { background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%); }
+
+    .topbar-shell {
+      border: 1px solid var(--glass-border);
+      background: rgba(15, 23, 42, 0.74);
+      box-shadow: 0 12px 30px rgba(2, 6, 23, 0.28);
+      backdrop-filter: blur(16px);
+      border-radius: 9999px;
+      padding: 0.4rem 0.5rem;
+    }
+
+    .light-theme .topbar-shell {
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    }
 
     .nav-link {
       color: var(--text-secondary);
-      padding: 0.5rem 1rem;
-      border-radius: 0.75rem;
-      transition: all 0.2s ease;
+      padding: 0.6rem 0.95rem;
+      border-radius: 9999px;
+      transition: all 0.3s ease;
       position: relative;
-      font-weight: 500;
+      font-weight: 600;
+      letter-spacing: 0.01em;
     }
-    .nav-link:hover { color: var(--text-primary); background: rgba(139, 92, 246, 0.1); }
+    .nav-link:hover { 
+      color: var(--text-primary); 
+      background: rgba(99, 102, 241, 0.16); 
+      transform: translateY(-1px);
+    }
     .nav-link.active {
       color: var(--text-primary);
-      background: rgba(139, 92, 246, 0.15);
-      font-weight: 600;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.24), rgba(14, 165, 233, 0.2));
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.22);
     }
     .nav-link.active::after {
       content: '';
@@ -239,6 +425,10 @@
       height: 2px;
       background: linear-gradient(90deg, var(--primary), var(--secondary));
       border-radius: 1px;
+    }
+    .nav-link.external {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.16), rgba(14, 165, 233, 0.12));
+      border: 1px solid rgba(99, 102, 241, 0.2);
     }
 
     header {
@@ -258,7 +448,8 @@
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
     }
 
-    #themeToggle {
+    #themeToggle,
+    #settingsToggle {
       width: 44px; height: 44px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -267,11 +458,23 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border: none;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 1;
     }
-    #themeToggle:hover { transform: scale(1.1) rotate(15deg); }
+    #themeToggle:hover,
+    #settingsToggle:hover {
+      transform: scale(1.06) rotate(6deg);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45);
+      filter: brightness(1.08);
+    }
+    body.light-theme #themeToggle,
+    body.light-theme #settingsToggle {
+      background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+    }
 
     .mobile-menu-backdrop {
       position: fixed; inset: 0;
@@ -320,14 +523,19 @@
     .stagger-delay > *:nth-child(5) { animation-delay: 0.5s; }
 
     .stat-card {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
-      border: 1px solid rgba(139, 92, 246, 0.2);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(14, 165, 233, 0.12) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.3);
       border-radius: 1rem;
       padding: 1.5rem;
       text-align: center;
       transition: all 0.3s ease;
     }
-    .stat-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2); }
+    .stat-card:hover { 
+      transform: translateY(-4px); 
+      border-color: var(--primary); 
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(14, 165, 233, 0.2) 100%);
+    }
     .stat-number {
       font-size: 2.5rem;
       font-weight: 800;
@@ -352,7 +560,14 @@
     .search-input:focus, .sort-select:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+      background: rgba(99, 102, 241, 0.1);
+    }
+    .date-filter-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-color: var(--primary);
+      color: white;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
     }
 
     .scroll-top-btn {
@@ -372,11 +587,17 @@
       visibility: hidden;
       transition: all 0.3s ease;
       z-index: 999;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
       border: none;
     }
-    .scroll-top-btn.visible { opacity: 1; visibility: visible; }
-    .scroll-top-btn:hover { transform: translateY(-5px); }
+    .scroll-top-btn.visible { 
+      opacity: 1; 
+      visibility: visible; 
+    }
+    .scroll-top-btn:hover { 
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+    }
 
     .skeleton-card {
       background: var(--card-bg);
@@ -387,39 +608,74 @@
     .skeleton-thumbnail { aspect-ratio: 16/9; background: rgba(139, 92, 246, 0.2); }
     .skeleton-title { height: 1.5rem; background: rgba(139, 92, 246, 0.2); margin: 1rem; border-radius: 0.5rem; width: 80%; }
     .skeleton-stats { height: 1rem; background: rgba(139, 92, 246, 0.2); margin: 1rem; border-radius: 0.5rem; width: 60%; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
     .video-counter {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      background: var(--glass-bg);
+      display: inline-flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(14, 165, 233, 0.15) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.3);
       border-radius: 9999px;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      color: var(--text-primary);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+      transition: all 0.3s ease;
+    }
+    .video-counter:hover {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(14, 165, 233, 0.25) 100%);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+      transform: translateY(-2px);
     }
 
     .video-thumbnail {
-      position: relative; border-radius: 0.75rem; overflow: hidden;
-      aspect-ratio: 16/9; background: var(--bg-secondary);
+      position: relative; 
+      border-radius: 0.75rem; 
+      overflow: hidden;
+      aspect-ratio: 16/9; 
+      background: var(--bg-secondary);
       cursor: pointer;
+      transition: all 0.3s ease;
     }
-    .video-thumbnail img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-    .video-thumbnail:hover img { transform: scale(1.05); }
+    .video-thumbnail img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      transition: transform 0.5s ease; 
+    }
+    .video-thumbnail:hover img { 
+      transform: scale(1.08);
+    }
+    .video-thumbnail:hover {
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+      border: 1px solid rgba(99, 102, 241, 0.5);
+    }
     .video-duration {
-      position: absolute; bottom: 0.5rem; right: 0.5rem;
-      background: rgba(0, 0, 0, 0.8); color: white;
-      padding: 0.25rem 0.5rem; border-radius: 0.25rem;
-      font-size: 0.75rem; font-weight: 500;
+      position: absolute; 
+      bottom: 0.5rem; 
+      right: 0.5rem;
+      background: rgba(0, 0, 0, 0.9); 
+      color: white;
+      padding: 0.35rem 0.75rem; 
+      border-radius: 0.35rem;
+      font-size: 0.75rem; 
+      font-weight: 600;
+      backdrop-filter: blur(8px);
     }
 
     .twitch-clip-card {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
-      border: 1px solid rgba(139, 92, 246, 0.3);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(236, 72, 153, 0.12) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.3);
       border-radius: 1rem; padding: 1.5rem;
       transition: all 0.3s ease;
       position: relative; overflow: hidden;
     }
-    .twitch-clip-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 15px 30px rgba(139, 92, 246, 0.3); }
+    .twitch-clip-card:hover { 
+      transform: translateY(-4px); 
+      border-color: var(--primary); 
+      box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+    }
     .twitch-views {
       display: inline-flex; align-items: center; gap: 0.25rem;
       background: rgba(0, 0, 0, 0.5); padding: 0.25rem 0.5rem;
@@ -445,55 +701,11 @@
       backdrop-filter: blur(8px);
       text-decoration: none;
     }
-    .social-btn:hover { background: rgba(139, 92, 246, 0.1); border-color: var(--primary); transform: translateY(-2px); }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(2, 6, 23, 0.78);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      z-index: 2000;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.25s ease;
-    }
-    .modal-backdrop.show {
-      opacity: 1;
-      visibility: visible;
-    }
-    .modal-content {
-      width: min(100%, 720px);
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.95));
-      border: 1px solid rgba(139, 92, 246, 0.3);
-      border-radius: 1.5rem;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-      padding: 1.5rem;
-      color: var(--text-primary);
-      position: relative;
-      overflow: hidden;
-    }
-    .modal-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      width: 2.3rem;
-      height: 2.3rem;
-      border-radius: 9999px;
-      border: none;
-      background: rgba(255,255,255,0.1);
-      color: white;
-      cursor: pointer;
-    }
-    .modal-text p, .modal-text li {
-      color: var(--text-secondary);
-      line-height: 1.7;
-    }
-    .modal-text ol {
-      padding-left: 1.2rem;
+    .social-btn:hover { 
+      background: rgba(99, 102, 241, 0.15); 
+      border-color: var(--primary); 
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
     }
 
     @media (max-width: 768px) {
@@ -502,11 +714,19 @@
       .btn-primary, .btn-secondary { padding: 0.75rem 1.5rem; font-size: 0.95rem; }
       .mobile-menu-container { width: 280px; }
       .scroll-top-btn { width: 40px; height: 40px; bottom: 1rem; right: 1rem; }
+      body::before, body::after { width: 20rem; height: 20rem; filter: blur(60px); }
+      .notification { max-width: calc(100vw - 2rem); right: 1rem; left: 1rem; bottom: 0.75rem; }
+      .section, section[id] { padding: 4rem 0; }
     }
     @media (max-width: 480px) {
       .gradient-text { font-size: 2rem !important; }
       .btn-primary, .btn-secondary { padding: 0.625rem 1.25rem; font-size: 0.875rem; }
       .search-input, .sort-select, .date-filter-btn { padding: 0.625rem 1rem; font-size: 0.9rem; }
+      header nav .flex.items-center.gap-3 { gap: 0.5rem; }
+      #themeToggle, #settingsToggle { width: 40px; height: 40px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
     }
 
     ::-webkit-scrollbar { width: 10px; }
@@ -530,14 +750,95 @@
     }
     .video-player-container iframe { width: 100%; aspect-ratio: 16/9; border: none; }
     .notification {
-      position: fixed; bottom: 1rem; right: 1rem;
-      background: var(--card-bg); border: 1px solid var(--glass-border);
-      border-radius: 0.75rem; padding: 1rem; max-width: 320px;
-      transform: translateX(100%); opacity: 0;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 1002; backdrop-filter: blur(12px);
+      position: fixed; bottom: 1rem; left: 50%; transform: translate(-50%, 120%);
+      background: linear-gradient(135deg, rgba(15,23,42,0.92), rgba(30,41,59,0.88));
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 999px; padding: 0.8rem 1rem; max-width: min(92vw, 420px);
+      opacity: 0;
+      transition: all 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1002; backdrop-filter: blur(14px); box-shadow: 0 12px 30px rgba(0,0,0,0.2);
     }
-    .notification.show { transform: translateX(0); opacity: 1; }
+    .notification.show { transform: translate(-50%, 0); opacity: 1; }
+    .notification .icon-pill {
+      width: 2.2rem; height: 2.2rem; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, rgba(99,102,241,0.28), rgba(14,165,233,0.2)); margin-right: 0.75rem;
+    }
+    
+    /* Модальное окно */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    .modal-backdrop.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-content {
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.08));
+      border: 1px solid rgba(255,255,255,0.24);
+      backdrop-filter: blur(20px);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      max-width: 560px;
+      width: 92%;
+      max-height: 84vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.28);
+      animation: modalSlideIn 0.3s ease;
+      position: relative;
+    }
+    @keyframes modalSlideIn {
+      from {
+        transform: scale(0.9) translateY(-30px);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    .modal-close:hover {
+      background: rgba(99, 102, 241, 0.2);
+      transform: rotate(90deg);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+    }
+    .modal-text {
+      text-align: left;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    .modal-text p {
+      margin-bottom: 1rem;
+    }
+    .modal-text ol li {
+      margin-bottom: 0.5rem;
+    }
+    
     .container-padding { padding-left: 1rem; padding-right: 1rem; }
     @media (min-width: 640px) { .container-padding { padding-left: 1.5rem; padding-right: 1.5rem; } }
     @media (min-width: 1024px) { .container-padding { padding-left: 2rem; padding-right: 2rem; } }
@@ -548,7 +849,7 @@
     }
   </style>
 </head>
-<body class="light-theme">
+<body>
   <div class="scroll-progress"></div>
   <div id="loader"><div class="loader-spinner"></div></div>
   <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Прокрутить наверх"><i class="fas fa-arrow-up"></i></button>
@@ -569,8 +870,8 @@
       <nav class="space-y-2 flex-grow">
         <a href="#welcome" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-home w-5"></i><span>Главная</span></a>
         <a href="#video" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-play-circle w-5"></i><span>Видео</span></a>
-        <a href="#news" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-newspaper w-5"></i><span>Новости</span></a>
-        <a href="#twitch-clips" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fab fa-twitch w-5"></i><span>Клипы Twitch</span></a>
+        <a href="news-archive.html" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-box-archive w-5"></i><span>Архив Новостей</span></a>
+        <a href="#twitch-clips" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fab fa-twitch w-5"></i><span>Twitch</span></a>
         <a href="#contact" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-envelope w-5"></i><span>Контакты</span></a>
       </nav>
       <div class="pt-8 border-t" style="border-color: var(--glass-border);">
@@ -579,36 +880,112 @@
           <a href="biography.html" target="_blank" class="text-sm p-2 rounded-lg text-center transition-colors" style="background: var(--glass-bg);">Биография</a>
           <a href="qa.html" target="_blank" class="text-sm p-2 rounded-lg text-center transition-colors" style="background: var(--glass-bg);">Q&A</a>
           <a href="faq.html" target="_blank" class="text-sm p-2 rounded-lg text-center transition-colors" style="background: var(--glass-bg);">FAQ</a>
-          <a href="games/" target="_blank" class="text-sm p-2 rounded-lg text-center transition-colors" style="background: var(--glass-bg);">Игры</a>
           <a href="year-review.html" target="_blank" class="text-sm p-2 rounded-lg text-center transition-colors" style="background: var(--glass-bg);">Итоги года</a>
         </div>
       </div>
     </div>
   </div>
   <div id="notification" class="notification">
-    <div class="flex items-center justify-between">
-      <span id="notificationText"></span>
-      <button onclick="hideNotification()" class="ml-4" style="color: var(--text-secondary);"><i class="fas fa-times"></i></button>
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex items-start">
+        <div class="icon-pill"><i class="fas fa-wand-magic-sparkles"></i></div>
+        <div>
+          <div class="font-semibold mb-1">Добро пожаловать</div>
+          <div id="notificationText" class="text-sm leading-6"></div>
+        </div>
+      </div>
+      <button onclick="hideNotification()" class="ml-2 rounded-full w-8 h-8 flex items-center justify-center" style="color: var(--text-primary); background: rgba(255,255,255,0.16);"><i class="fas fa-times"></i></button>
     </div>
   </div>
+  
+  <!-- Модальное окно FAQ для видео -->
+  <div id="videoFaqModal" class="modal-backdrop" onclick="closeVideoFaqModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeVideoFaqModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="text-center">
+        <i class="fas fa-circle-question text-5xl mb-4 gradient-text"></i>
+        <h3 class="text-3xl font-bold mb-6 gradient-text">Почему видео не загружаются?</h3>
+        <div class="modal-text">
+          <p class="mb-4">Из-за того, что в России замедлили YouTube, сайт не может нормально реагировать на отклик/отзыв видеозагрузки нашим серверам.</p>
+          
+          <p class="mb-4 font-semibold" style="color: var(--text-primary);">Как это исправить?</p>
+          <ol class="text-left mb-6" style="list-style-type: decimal; padding-left: 1.5rem; line-height: 1.8;">
+            <li class="mb-3">
+              <span class="font-semibold">Включите VPN</span> — используйте любой VPN сервис для доступа к YouTube
+            </li>
+            <li class="mb-3">
+              <span class="font-semibold">Перезагрузите сайт</span> — нажмите F5 или обновите страницу
+            </li>
+            <li class="mb-3">
+              Видео должны загрузиться автоматически
+            </li>
+          </ol>
+          
+          <p class="mb-4">Если и после этого видео не загружаются, то:</p>
+          <p class="mb-6">
+            <span class="font-semibold">Напишите нам в директ</span> 
+            <span style="color: var(--text-secondary);">(предварительно перейдя в раздел Q&A и кликнув на кнопку с Telegram)</span>
+          </p>
+          
+          <div class="bg-gradient-to-r from-indigo-500/20 to-cyan-500/20 border border-indigo-500/30 rounded-lg p-4 mt-6">
+            <p class="text-lg font-semibold mb-2" style="color: var(--text-primary);">❤️ Спасибо что остаётесь с нами!</p>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">Мы ценим ваше терпение и благодарны за поддержку</p>
+          </div>
+        </div>
+        <button onclick="closeVideoFaqModal()" class="btn-primary mt-8 w-full">
+          <i class="fas fa-check"></i> Понял, спасибо
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="settingsModal" class="modal-backdrop" onclick="closeSettingsModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeSettingsModal()"><i class="fas fa-times"></i></button>
+      <div class="text-center mb-6">
+        <i class="fas fa-sliders text-4xl mb-3 gradient-text"></i>
+        <h3 class="text-2xl font-bold gradient-text">Настройки</h3>
+        <p class="mt-2 text-sm" style="color: var(--text-secondary);">Настрой интерфейс под себя</p>
+      </div>
+      <div class="space-y-5">
+        <label class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
+          <span>Показывать анимации</span>
+          <input id="animationsToggle" type="checkbox" class="w-5 h-5 accent-indigo-500" checked>
+        </label>
+        <label class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
+          <span>Скрывать уведомления</span>
+          <input id="notificationsToggle" type="checkbox" class="w-5 h-5 accent-indigo-500" checked>
+        </label>
+        <label class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
+          <span>Жидкое стекло</span>
+          <input id="glassToggle" type="checkbox" class="w-5 h-5 accent-indigo-500" checked>
+        </label>
+      </div>
+      <button onclick="closeSettingsModal()" class="btn-primary mt-6 w-full">Сохранить</button>
+    </div>
+  </div>
+
   <header>
     <nav class="container-padding max-w-7xl mx-auto">
-      <div class="flex items-center justify-between h-16">
+      <div class="topbar-shell flex items-center justify-between h-16">
         <a href="#welcome" class="flex items-center gap-3 group">
           <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary">
-            <img src="/assets/photo.jpg" alt="Mortis Play" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+            <img src="/assets/photo.jpg" alt="Mortis Play" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" onerror="this.onerror=null;this.src='https://placehold.co/120x120/4f46e5/ffffff?text=M'">
           </div>
           <div><div class="font-bold text-lg gradient-text">Mortis Play</div><div class="text-xs" style="color: var(--text-secondary);">Официальный сайт</div></div>
         </a>
         <div class="hidden md:flex items-center gap-2">
           <a href="#welcome" class="nav-link active">Главная</a>
           <a href="#video" class="nav-link">Видео</a>
-          <a href="#news" class="nav-link">Новости</a>
-          <a href="#twitch-clips" class="nav-link">Клипы Twitch</a>
+          <a href="news-archive.html" class="nav-link external">Архив Новостей</a>
+          <a href="#twitch-clips" class="nav-link">Twitch</a>
           <a href="#contact" class="nav-link">Контакты</a>
         </div>
         <div class="flex items-center gap-3">
-          <button id="themeToggle" aria-label="Сменить тему"><i class="fas fa-sun"></i></button>
+          <button id="settingsToggle" aria-label="Настройки" title="Настройки"><i class="fas fa-gear"></i></button>
+          <button id="themeToggle" aria-label="Сменить тему" title="Сменить тему"><i class="fas fa-sun"></i></button>
           <button id="menuToggle" class="md:hidden w-10 h-10 rounded-lg flex items-center justify-center transition-colors" style="background: var(--glass-bg);"><i class="fas fa-bars text-xl"></i></button>
         </div>
       </div>
@@ -619,19 +996,21 @@
       <div class="container-padding max-w-7xl mx-auto">
         <div class="text-center mb-16">
           <h1 class="gradient-text text-5xl md:text-7xl font-bold mb-6 animate-fadeInUp">Mortis Play</h1>
-          <p class="text-xl max-w-3xl mx-auto mb-8 animate-fadeInUp" style="animation-delay: 0.2s; color: var(--text-secondary);">Эпичные видео, клипы с Twitch, новости и обновления от Mortis Play. Присоединяйся к вайбу! 😎</p>
-          <div class="flex flex-wrap justify-center gap-4 mb-12 stagger-delay">
-            <a href="#contact" class="btn-primary btn-action-contact animate-fadeInUp"><i class="fas fa-envelope"></i> Связаться</a>
-            <a href="biography.html" target="_blank" class="btn-primary btn-action-bio animate-fadeInUp"><i class="fas fa-user"></i> Биография</a>
-            <a href="qa.html" target="_blank" class="btn-primary btn-action-qa animate-fadeInUp"><i class="fas fa-question-circle"></i> Q&A</a>
-            <a href="faq.html" target="_blank" class="btn-primary btn-action-faq animate-fadeInUp"><i class="fas fa-circle-question"></i> FAQ</a>
-            <a href="games/" target="_blank" class="btn-primary btn-action-games animate-fadeInUp"><i class="fas fa-gamepad"></i> Игры</a>
-            <a href="year-review.html" target="_blank" class="btn-primary btn-action-year animate-fadeInUp"><i class="fas fa-calendar-days"></i> Итоги года</a>
-            <button type="button" class="btn-secondary rgb-glow-btn animate-fadeInUp disabled bg-black text-white border-black opacity-70 cursor-not-allowed" aria-label="Дата" disabled>16.07.2026</button>
+          <p class="text-xl max-w-3xl mx-auto mb-8 animate-fadeInUp" style="animation-delay: 0.2s; color: var(--text-secondary);">Видео, клипы и контент от Mortis Play</p>
+          <div class="max-w-2xl mx-auto mb-12">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 stagger-delay">
+              <a href="#contact" class="btn-primary btn-action-contact animate-fadeInUp"><i class="fas fa-envelope"></i> Связаться</a>
+              <a href="biography.html" target="_blank" class="btn-primary btn-action-bio animate-fadeInUp"><i class="fas fa-user"></i> Биография</a>
+              <a href="qa.html" target="_blank" class="btn-primary btn-action-qa animate-fadeInUp"><i class="fas fa-question-circle"></i> Q&A</a>
+              <a href="faq.html" target="_blank" class="btn-primary btn-action-faq animate-fadeInUp"><i class="fas fa-circle-question"></i> FAQ</a>
+              <a href="year-review.html" target="_blank" class="btn-primary btn-action-year animate-fadeInUp"><i class="fas fa-calendar-days"></i> Итоги года</a>
+              <a href="news-archive.html" class="btn-primary btn-action-contact animate-fadeInUp"><i class="fas fa-box-archive"></i> Архив Новостей</a>
+              <a href="secret/mortis.html" target="_blank" class="btn-secondary animate-fadeInUp rgb-glow-btn" aria-label="Вопрос">?</a>
+            </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto animate-fadeInUp" style="animation-delay: 0.5s">
-            <div class="stat-card" data-stat="subscribers"><div class="stat-number">N/A</div><div class="text-sm mt-2" style="color: var(--text-secondary);">Подписчиков</div></div>
-            <div class="stat-card" data-stat="views"><div class="stat-number">N/A</div><div class="text-sm mt-2" style="color: var(--text-secondary);">Просмотров</div></div>
+            <div class="stat-card" data-stat="subscribers"><div class="stat-number">—</div><div class="text-sm mt-2" style="color: var(--text-secondary);">Подписчиков</div></div>
+            <div class="stat-card" data-stat="views"><div class="stat-number">—</div><div class="text-sm mt-2" style="color: var(--text-secondary);">Просмотров</div></div>
           </div>
         </div>
 
@@ -645,7 +1024,7 @@
               <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               <div class="absolute bottom-6 left-6 right-6">
                 <div class="modern-card p-4 bg-white/10 backdrop-blur-sm">
-                  <p class="text-white text-center italic">"У самурая нет цели, у него есть только путь. 🥷"</p>
+                  <p class="text-white text-center italic">"Обыкновенная жизнь самых необыкновенных существ..."</p>
                 </div>
               </div>
             </div>
@@ -654,94 +1033,95 @@
       </div>
     </section>
     
-    <section id="video" class="section" style="background: var(--bg-secondary);">
+    <section id="video" class="section" style="background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(99, 102, 241, 0.05) 100%);">
       <div class="container-padding max-w-7xl mx-auto">
         <div class="text-center mb-12">
           <h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4">Видео</h2>
           <p style="color: var(--text-secondary); max-width: 2xl; margin: 0 auto;">Смотри лучшие моменты, стримы и подкасты. Всё видео автоматически загружается с YouTube!</p>
-          <div id="videoCounter" class="video-counter"></div>
+          <div id="videoCounter" class="video-counter mt-4"><i class="fas fa-film mr-2"></i>Загрузка информации о видео...</div>
         </div>
         
-        <div class="modern-card p-6 mb-8">
+        <div class="modern-card p-6 mb-8" style="border: 1px solid rgba(99, 102, 241, 0.3); background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(14, 165, 233, 0.08) 100%);">
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="relative md:col-span-2">
-              <input type="text" id="videoSearch" placeholder="Поиск видео..." class="search-input pl-12">
-              <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2" style="color: var(--text-secondary);"></i>
+              <input type="text" id="videoSearch" placeholder="🔍 Поиск видео..." class="search-input pl-12">
+              <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2" style="color: var(--text-secondary); opacity: 0.6;"></i>
             </div>
             <select id="sortSelect" class="sort-select">
               <option value="date-desc">📅 Новые сначала</option>
               <option value="date-asc">📅 Старые сначала</option>
-              <option value="views-desc">👁 Популярные сначала</option>
-              <option value="views-asc">👁 Менее популярные</option>
+              <option value="views-desc">👁️ Популярные сначала</option>
+              <option value="views-asc">👁️ Менее популярные</option>
               <option value="title-asc">🔤 Название (А-Я)</option>
               <option value="title-desc">🔤 Название (Я-А)</option>
             </select>
-            <button id="resetFilters" class="btn-secondary"><i class="fas fa-redo"></i> Сбросить всё</button>
+            <button id="resetFilters" class="btn-secondary" style="justify-content: center;"><i class="fas fa-redo"></i> Сбросить</button>
           </div>
           
-          <div class="flex flex-wrap gap-2 mt-4">
-            <span class="text-sm mr-2" style="color: var(--text-secondary);">Фильтр по дате:</span>
-            <button class="date-filter-btn text-sm px-3 py-1" data-days="7">📅 Неделя</button>
-            <button class="date-filter-btn text-sm px-3 py-1" data-days="30">📅 Месяц</button>
-            <button class="date-filter-btn text-sm px-3 py-1" data-days="90">📅 3 месяца</button>
-            <button class="date-filter-btn text-sm px-3 py-1 active" data-days="0">📅 Всё время</button>
+          <div class="flex flex-wrap gap-2 mt-6 pt-6 border-t" style="border-color: var(--glass-border);">
+            <span class="text-sm font-semibold mr-2" style="color: var(--text-secondary); align-self: center;">Фильтр по дате:</span>
+            <button class="date-filter-btn text-sm px-4 py-2" data-days="7" style="transition: all 0.3s ease;">📅 Неделя</button>
+            <button class="date-filter-btn text-sm px-4 py-2" data-days="30" style="transition: all 0.3s ease;">📅 Месяц</button>
+            <button class="date-filter-btn text-sm px-4 py-2" data-days="90" style="transition: all 0.3s ease;">📅 3 месяца</button>
+            <button class="date-filter-btn text-sm px-4 py-2 active" data-days="0" style="transition: all 0.3s ease;">📅 Всё время</button>
           </div>
         </div>
         
         <!-- Кнопка YouTube канала -->
-        <div class="text-center mb-4">
-          <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="btn-primary btn-action-youtube">
-            <i class="fab fa-youtube"></i> Смотреть все видео на YouTube канале
+        <div class="text-center mb-8">
+          <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="btn-primary btn-action-youtube" style="font-size: 1.1rem; padding: 1rem 2.5rem;">
+            <i class="fab fa-youtube mr-2"></i> Смотреть все видео на YouTube
           </a>
         </div>
         
-        <div class="text-center mb-4">
-          <button id="videoFaqBtn" type="button" class="btn-secondary" onclick="openVideoFaqModal()">
+        <div id="videoList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <div id="noVideosMessage" class="text-center py-12 hidden">
+          <i class="fas fa-video-slash text-5xl mb-4" style="color: var(--text-secondary);"></i>
+          <h3 class="text-xl font-semibold mb-2">Видео не найдены</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem;">Попробуйте изменить параметры поиска или обратитесь к FAQ</p>
+          <button id="videoFaqBtn" class="btn-secondary" onclick="openVideoFaqModal()">
             <i class="fas fa-circle-question"></i> Почему видео не загружаются?
           </button>
         </div>
-        <div id="videoList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        <div id="noVideosMessage" class="text-center py-12 hidden"><i class="fas fa-video-slash text-5xl mb-4" style="color: var(--text-secondary);"></i><h3 class="text-xl font-semibold mb-2">Видео не найдены</h3><p style="color: var(--text-secondary);">Попробуйте изменить параметры поиска</p></div>
         <div class="text-center mt-8"><button id="loadMoreVideos" class="btn-primary"><i class="fas fa-plus"></i> Загрузить ещё видео</button></div>
-      </div>
-    </section>
-
-    <div id="videoFaqModal" class="modal-backdrop" onclick="closeVideoFaqModal(event)">
-      <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="videoFaqTitle" onclick="event.stopPropagation()">
-        <button class="modal-close" type="button" aria-label="Закрыть" onclick="closeVideoFaqModal({ target: { id: 'videoFaqModal' } })">✕</button>
-        <div class="modal-text">
-          <h3 id="videoFaqTitle" class="text-2xl font-semibold mb-4">Почему видео не загружаются?</h3>
-          <p class="mb-4">Если ролики не показываются, чаще всего причина в одном из трёх вариантов:</p>
-          <ol class="space-y-3 mb-6">
-            <li>1. На вашем устройстве или в сети заблокирован доступ к YouTube.</li>
-            <li>2. В браузере отключены сторонние скрипты или блокировщик мешает загрузке.</li>
-            <li>3. YouTube временно ограничил доступ или API вернулся с ошибкой.</li>
-          </ol>
-          <p class="mb-3">Что можно сделать:</p>
-          <ul class="space-y-2">
-            <li>• Откройте страницу через VPN или попробуйте другой интернет.</li>
-            <li>• Отключите расширения-блокировщики на сайте.</li>
-            <li>• Обновите страницу через несколько минут.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    
-    <section id="news" class="py-16 bg-slate-50 dark:bg-slate-900/40">
-      <div class="mx-auto max-w-7xl px-4">
-        <h2 class="text-center text-2xl md:text-3xl font-bold">Новости</h2>
-        <p class="mt-4 text-center text-sm text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">Все важные обновления сайта собираются здесь: от новых разделов до правок и улучшений. Удобно читать и легко ориентироваться.</p>
-        <div id="newsGrid" class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        <div class="text-center mt-8"><button id="loadMoreNews" class="btn-secondary"><i class="fas fa-plus"></i> Показать больше новостей</button></div>
       </div>
     </section>
     
     <section id="twitch-clips" class="section bg-gradient-to-br from-purple-900/20 to-pink-900/20">
       <div class="container-padding max-w-7xl mx-auto">
-        <div class="text-center mb-12"><h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4"><i class="fab fa-twitch mr-2"></i> Клипы Twitch</h2><p style="color: var(--text-secondary); max-width: 2xl; margin: 0 auto;">Смотри лучшие моменты с моих трансляций на Twitch! Клипы обновляются автоматически с канала.</p></div>
+        <div class="text-center mb-12">
+          <h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4"><i class="fab fa-twitch mr-2"></i> Twitch</h2>
+          <p style="color: var(--text-secondary); max-width: 2xl; margin: 0 auto;">Смотри лучшие моменты, свежие хайлайты и прямые эфиры с моего канала — всё в одном месте, с удобной навигацией и быстрым доступом.</p>
+        </div>
+        <div class="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-6 mb-8">
+          <div class="modern-card p-4 md:p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+              <div>
+                <p class="text-sm font-semibold uppercase tracking-[0.25em]" style="color: var(--text-secondary);">Live / Highlights</p>
+                <h3 class="text-xl font-semibold">Трансляции и лучшие моменты</h3>
+              </div>
+              <a href="https://www.twitch.tv/mortisplay32" target="_blank" rel="noopener noreferrer" class="btn-secondary"><i class="fab fa-twitch"></i> Открыть канал</a>
+            </div>
+            <div class="aspect-video rounded-xl overflow-hidden border border-purple-500/20">
+              <iframe src="https://player.twitch.tv/?channel=mortisplay32&parent=www.mortisplay.ru&parent=localhost&parent=127.0.0.1" allowfullscreen="true" scrolling="no" class="w-full h-full"></iframe>
+            </div>
+          </div>
+          <div class="modern-card p-4 md:p-5">
+            <h3 class="text-xl font-semibold mb-4">Почему здесь удобно</h3>
+            <ul class="space-y-3 text-sm" style="color: var(--text-secondary);">
+              <li class="flex gap-3"><i class="fas fa-play-circle mt-1 text-purple-400"></i><span>Быстрый просмотр хайлайтов без лишних переходов.</span></li>
+              <li class="flex gap-3"><i class="fas fa-bolt mt-1 text-cyan-400"></i><span>Больше контента на одном экране и удобная загрузка.</span></li>
+              <li class="flex gap-3"><i class="fas fa-comments mt-1 text-emerald-400"></i><span>Ссылка на канал всегда под рукой для новых стримов.</span></li>
+            </ul>
+            <div class="mt-6 rounded-xl p-4 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.06);">
+              <p class="font-semibold mb-2">Следи за новыми моментами</p>
+              <p class="text-sm" style="color: var(--text-secondary);">Переходи на Twitch, чтобы не пропустить свежие эфиры и новые клипы.</p>
+            </div>
+          </div>
+        </div>
         <div id="twitchClipsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"></div>
-        <div class="text-center mt-8"><button id="loadMoreTwitchClips" class="btn-primary" style="background: linear-gradient(135deg, #9146FF, #6441A4);"><i class="fab fa-twitch"></i> Загрузить ещё клипы</button></div>
-        <div class="text-center mt-6"><a href="https://www.twitch.tv/mortisplay32" target="_blank" style="color: var(--text-secondary);"><i class="fab fa-twitch mr-1"></i> Больше клипов на моём Twitch канале →</a></div>
+        <div class="text-center mt-8"><button id="loadMoreTwitchClips" class="btn-primary" style="background: linear-gradient(135deg, #9146FF, #6441A4);"><i class="fab fa-twitch"></i> Показать ещё клипы</button></div>
+        <div class="text-center mt-6"><a href="https://www.twitch.tv/mortisplay32" target="_blank" rel="noopener noreferrer" style="color: var(--text-secondary);"><i class="fab fa-twitch mr-1"></i> Больше клипов на моём Twitch канале →</a></div>
       </div>
     </section>
     
@@ -755,6 +1135,7 @@
               <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center"><i class="fas fa-envelope text-purple-500"></i></div><div><div class="font-semibold">Email</div><a href="mailto:mortisplay@mail.ru" target="_blank" style="color: var(--text-secondary);">mortisplay@mail.ru</a></div></div>
               <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center"><i class="fab fa-telegram text-blue-500"></i></div><div><div class="font-semibold">Telegram</div><a href="https://t.me/dimap7221" target="_blank" style="color: var(--text-secondary);">@dimap7221</a></div></div>
               <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center"><i class="fab fa-youtube text-red-500"></i></div><div><div class="font-semibold">YouTube</div><a href="https://www.youtube.com/@MortisPlay" target="_blank" style="color: var(--text-secondary);">@MortisPlay</a></div></div>
+              <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-slate-500/10 flex items-center justify-center"><i class="fab fa-github text-slate-400"></i></div><div><div class="font-semibold">GitHub</div><a href="https://github.com/MortisPlay/MortisPlay_Site" target="_blank" style="color: var(--text-secondary);">MortisPlay_Site</a></div></div>
             </div>
             <div class="mt-8 pt-8 border-t" style="border-color: var(--glass-border);"><h4 class="font-semibold mb-4">Telegram каналы:</h4><ul class="space-y-2"><li><a href="https://t.me/MortisPlayTG" target="_blank" style="color: var(--text-secondary);"><i class="fab fa-telegram mr-2"></i> Основной канал</a></li><li><a href="https://t.me/+GqoVoVYJR185ZmYy" target="_blank" style="color: var(--text-secondary);"><i class="fab fa-telegram mr-2"></i> Частный канал</a></li></ul></div>
           </div>
@@ -764,9 +1145,11 @@
             <div class="grid grid-cols-2 gap-4">
               <a href="https://t.me/Mortisplay_YT" target="_blank" class="social-btn"><i class="fab fa-telegram"></i> Telegram</a>
               <a href="https://www.youtube.com/@MortisPlay" target="_blank" class="social-btn"><i class="fab fa-youtube"></i> YouTube</a>
+              <a href="https://www.youtube.com/@MortisPlayStudio" target="_blank" class="social-btn"><i class="fab fa-youtube"></i> Студийный YouTube</a>
               <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="social-btn"><i class="fab fa-twitch"></i> Twitch</a>
               <a href="https://www.tiktok.com/@mortisplay32" target="_blank" class="social-btn"><i class="fab fa-tiktok"></i> TikTok</a>
               <a href="https://discord.gg/PHPzAfUJqA" target="_blank" class="social-btn"><i class="fab fa-discord"></i> Discord</a>
+              <a href="https://t.me/MortisPlayReview" target="_blank" rel="noopener noreferrer" class="social-btn"><i class="fas fa-star"></i> Отзывы</a>
             </div>
             <div class="mt-8 pt-8 border-t" style="border-color: var(--glass-border);"><h4 class="font-semibold mb-4">Поддержать проект</h4><a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="btn-primary w-full"><i class="fas fa-heart"></i> Поддержать на DonationAlerts</a><p class="text-sm mt-3" style="color: var(--text-secondary);">Ваша поддержка помогает создавать ещё больше крутого контента!</p></div>
           </div>
@@ -794,6 +1177,8 @@
     let isLoadingVideos = false;
     let currentVideoSystem = null;
     let currentDateFilter = 0;
+    
+    // Конфиг для получения статистики канала
     let channelStats = {
         subscribers: 'N/A',
         views: 'N/A'
@@ -831,7 +1216,7 @@
         try {
             isLoadingVideos = true;
             if (currentVideoSystem) currentVideoSystem.showSkeleton();
-            showNotification('Загрузка видео с YouTube... 📡');
+            showNotification('Загрузка видео с YouTube... 📡', { silent: true });
             
             const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CONFIG.channelId}&maxResults=${YOUTUBE_CONFIG.maxResults}&order=date&type=video&key=${YOUTUBE_CONFIG.apiKey}`;
             const searchResponse = await fetch(url);
@@ -866,11 +1251,11 @@
                 };
             });
             
-            showNotification(`Загружено ${youtubeVideos.length} видео с YouTube! 🎉`);
+            showNotification(`Загружено ${youtubeVideos.length} видео с YouTube! 🎉`, { silent: true });
             return youtubeVideos;
         } catch (error) {
             console.error('Ошибка загрузки YouTube:', error);
-            showNotification('Не удалось загрузить видео с YouTube. ⚠️');
+            showNotification('Не удалось загрузить видео с YouTube. ⚠️', { type: 'warning', duration: 4000 });
             return null;
         } finally {
             isLoadingVideos = false;
@@ -902,7 +1287,7 @@
             if (currentVideoSystem) currentVideoSystem.refresh(videoData);
         }
     }
-
+    
     async function fetchChannelStats() {
         if (!YOUTUBE_CONFIG.apiKey || !YOUTUBE_CONFIG.channelId) return;
         try {
@@ -922,7 +1307,7 @@
             loadCachedStats();
         }
     }
-
+    
     function loadCachedStats() {
         try {
             const cached = localStorage.getItem('channelStats');
@@ -935,7 +1320,7 @@
             }
         } catch(e) {}
     }
-
+    
     function updateStatsDisplay() {
         const subscribersCard = document.querySelector('[data-stat="subscribers"] .stat-number');
         const viewsCard = document.querySelector('[data-stat="views"] .stat-number');
@@ -943,53 +1328,152 @@
         if (viewsCard) viewsCard.textContent = channelStats.views;
     }
     
-    function showNotification(message) {
+    function showNotification(message, options = {}) {
+        const { type = 'info', duration = 2600, silent = false, force = false } = options;
+        if ((!force && document.body.classList.contains('notifications-off')) || silent) return;
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notificationText');
+        const icon = notification?.querySelector('.icon-pill i');
+        if (!notification || !notificationText) return;
         notificationText.textContent = message;
+        notification.dataset.type = type;
+        if (icon) {
+            icon.className = type === 'warning' ? 'fas fa-triangle-exclamation' : type === 'success' ? 'fas fa-check-circle' : 'fas fa-bell';
+        }
+        notification.classList.remove('show');
+        window.clearTimeout(notification._hideTimer);
         notification.classList.add('show');
-        setTimeout(() => notification.classList.remove('show'), 5000);
+        notification._hideTimer = window.setTimeout(() => notification.classList.remove('show'), duration);
     }
     
     function hideNotification() { document.getElementById('notification').classList.remove('show'); }
-    function openVideoFaqModal() {
-        const modal = document.getElementById('videoFaqModal');
-        if (modal) {
-            modal.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
+
+    function openSettingsModal() {
+        const modal = document.getElementById('settingsModal');
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
     }
 
+    function closeSettingsModal(event) {
+        if (event && event.target.id !== 'settingsModal') return;
+        const modal = document.getElementById('settingsModal');
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+    
+    function openVideoFaqModal() {
+        const modal = document.getElementById('videoFaqModal');
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    
     function closeVideoFaqModal(event) {
         if (event && event.target.id !== 'videoFaqModal') return;
         const modal = document.getElementById('videoFaqModal');
-        if (modal) {
-            modal.classList.remove('show');
-            document.body.style.overflow = '';
-        }
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
     }
+    
     function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func(...args), wait); }; }
     
+    function applySettings() {
+        const saved = localStorage.getItem('site-settings');
+        let settings = { animations: true, notifications: true, glass: true };
+        try {
+            if (saved) settings = { ...settings, ...JSON.parse(saved) };
+        } catch (e) {}
+
+        document.body.classList.toggle('reduced-motion', settings.animations === false);
+        document.body.classList.toggle('notifications-off', settings.notifications === false);
+        document.body.classList.toggle('reduced-glass', settings.glass === false);
+
+        const animationsToggle = document.getElementById('animationsToggle');
+        const notificationsToggle = document.getElementById('notificationsToggle');
+        const glassToggle = document.getElementById('glassToggle');
+        if (animationsToggle) animationsToggle.checked = settings.animations !== false;
+        if (notificationsToggle) notificationsToggle.checked = settings.notifications !== false;
+        if (glassToggle) glassToggle.checked = settings.glass !== false;
+    }
+
+    function initSettings() {
+        const settingsToggle = document.getElementById('settingsToggle');
+        const animationsToggle = document.getElementById('animationsToggle');
+        const notificationsToggle = document.getElementById('notificationsToggle');
+        const glassToggle = document.getElementById('glassToggle');
+        const saveButton = document.querySelector('#settingsModal .btn-primary');
+
+        settingsToggle?.addEventListener('click', openSettingsModal);
+        const saveSettings = () => {
+            const settings = {
+                animations: animationsToggle?.checked !== false,
+                notifications: notificationsToggle?.checked !== false,
+                glass: glassToggle?.checked !== false
+            };
+            localStorage.setItem('site-settings', JSON.stringify(settings));
+            showNotification('Настройки сохранены. Для применения изменений перезагрузите страницу.', { type: 'success', duration: 4000, force: true });
+        };
+        animationsToggle?.addEventListener('change', () => {
+            if (animationsToggle.checked === false) {
+                document.body.classList.add('reduced-motion');
+            } else {
+                document.body.classList.remove('reduced-motion');
+            }
+        });
+        notificationsToggle?.addEventListener('change', () => {
+            if (notificationsToggle.checked === false) {
+                document.body.classList.add('notifications-off');
+            } else {
+                document.body.classList.remove('notifications-off');
+            }
+        });
+        glassToggle?.addEventListener('change', () => {
+            if (glassToggle.checked === false) {
+                document.body.classList.add('reduced-glass');
+            } else {
+                document.body.classList.remove('reduced-glass');
+            }
+        });
+        saveButton?.addEventListener('click', () => {
+            saveSettings();
+            closeSettingsModal();
+        });
+        applySettings();
+    }
+
+    function initTemporaryFeatures() {
+        const secretButton = document.querySelector('a[href="secret/index.html"]');
+        const removeAfter = new Date('2026-07-23T00:00:00');
+        if (secretButton && Date.now() >= removeAfter.getTime()) {
+            secretButton.remove();
+        }
+    }
+
     function initTheme() {
         const themeToggle = document.getElementById('themeToggle');
         const saved = localStorage.getItem('theme');
-        if (saved === 'dark') document.body.classList.remove('light-theme');
-        else document.body.classList.add('light-theme');
-        updateThemeIcon(saved !== 'dark' ? 'light' : 'dark');
-        themeToggle.addEventListener('click', () => {
+        const shouldUseDark = saved === 'dark' || saved === null || saved === undefined;
+        document.body.classList.toggle('light-theme', !shouldUseDark);
+        updateThemeIcon(shouldUseDark ? 'dark' : 'light');
+        themeToggle?.addEventListener('click', () => {
             const isLight = document.body.classList.contains('light-theme');
-            if (isLight) document.body.classList.remove('light-theme');
-            else document.body.classList.add('light-theme');
             const newTheme = isLight ? 'dark' : 'light';
+            document.body.classList.toggle('light-theme', newTheme === 'light');
             localStorage.setItem('theme', newTheme);
             updateThemeIcon(newTheme);
-            showNotification(`Тема изменена на ${newTheme === 'light' ? 'светлую 🌞' : 'тёмную 🌙'}`);
+            showNotification(`Тема изменена на ${newTheme === 'light' ? 'светлую 🌞' : 'тёмную 🌙'}`, { type: 'info', duration: 2200 });
         });
     }
+
     function updateThemeIcon(theme) {
         const icon = document.querySelector('#themeToggle i');
-        if (theme === 'light') { icon.className = 'fas fa-moon'; icon.title = 'Тёмная тема'; }
-        else { icon.className = 'fas fa-sun'; icon.title = 'Светлая тема'; }
+        if (!icon) return;
+        if (theme === 'light') {
+            icon.className = 'fas fa-moon';
+            icon.title = 'Тёмная тема';
+        } else {
+            icon.className = 'fas fa-sun';
+            icon.title = 'Светлая тема';
+        }
     }
     
     function initNavigation() {
@@ -1148,7 +1632,7 @@
                 this.dateFilterBtns.forEach(btn => btn.classList.remove('active'));
                 document.querySelector('.date-filter-btn[data-days="0"]')?.classList.add('active');
                 this.applyFiltersAndSort();
-                showNotification('Все фильтры сброшены');
+                showNotification('Все фильтры сброшены', { type: 'info', duration: 1800 });
             });
             this.dateFilterBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -1170,7 +1654,7 @@
             div.className = 'modern-card overflow-hidden animate-fadeInUp';
             div.innerHTML = `
                 <div class="video-thumbnail cursor-pointer" data-video-id="${video.id}">
-                    <img src="${video.thumbnail}" alt="${video.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 9\"><rect width=\"16\" height=\"9\" fill=\"%231e293b\"/><text x=\"8\" y=\"5\" font-size=\"2\" text-anchor=\"middle\" fill=\"%23cbd5e1\">No preview</text></svg>'">
+                    <img src="${video.thumbnail}" alt="${video.title.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/640x360/1e293b/cbd5e1?text=No+preview'">
                     <div class="video-duration">${video.duration}</div>
                     <div class="absolute inset-0 flex items-center justify-center"><div class="w-16 h-16 rounded-full bg-black/50 flex items-center justify-center"><i class="fab fa-youtube text-white text-2xl"></i></div></div>
                 </div>
@@ -1227,10 +1711,14 @@
     }
     
     const twitchClipsData = [
-        { id: "t1", title: "ЧУТЬ НЕ СПАЛИЛ", views: "19", duration: "0:60", thumbnail: "https://clips-media-assets2.twitch.tv/ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2-preview-480x272.jpg", url: "https://clips.twitch.tv/ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2", embedUrl: "https://clips.twitch.tv/embed?clip=ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2", game: "Общение" },
-        { id: "t2", title: "ЧТО ЗА ТАЙМИНГ?!", views: "6", duration: "0:18", thumbnail: "https://clips-media-assets2.twitch.tv/FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm-preview-480x272.jpg", url: "https://clips.twitch.tv/FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm", embedUrl: "https://clips.twitch.tv/embed?clip=FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm", game: "R.E.P.O." },
-        { id: "t3", title: "ПУНЬК", views: "29", duration: "0:30", thumbnail: "https://clips-media-assets2.twitch.tv/WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3-preview-480x272.jpg", url: "https://clips.twitch.tv/WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3", embedUrl: "https://clips.twitch.tv/embed?clip=WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3", game: "PEAK" },
-        { id: "t4", title: "Повторил и убил, конец удивил 0_0", views: "15", duration: "0:24", thumbnail: "https://clips-media-assets2.twitch.tv/MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm-preview-480x272.jpg", url: "https://clips.twitch.tv/MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm", embedUrl: "https://clips.twitch.tv/embed?clip=MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm", game: "CS2" }
+        { id: "t1", title: "ЧУТЬ НЕ СПАЛИЛ", views: "19", duration: "0:60", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2", game: "Общение" },
+        { id: "t2", title: "ЧТО ЗА ТАЙМИНГ?!", views: "6", duration: "0:18", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm", game: "R.E.P.O." },
+        { id: "t3", title: "ПУНЬК", views: "29", duration: "0:30", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3", game: "PEAK" },
+        { id: "t4", title: "Повторил и убил, конец удивил 0_0", views: "15", duration: "0:24", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm", game: "CS2" },
+        { id: "t5", title: "Смешной момент в эфире", views: "12", duration: "0:41", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2", game: "Just Chatting" },
+        { id: "t6", title: "Новый хайлайт из стрима", views: "21", duration: "0:33", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm", game: "Общение" },
+        { id: "t7", title: "Лучший момент недели", views: "17", duration: "0:27", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3", game: "PEAK" },
+        { id: "t8", title: "Неожиданная реакция", views: "9", duration: "0:22", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm", game: "CS2" }
     ];
     
     function initTwitchClipsSystem() {
@@ -1280,219 +1768,6 @@
         loadMore.addEventListener('click', () => { page++; render(true); });
     }
     
-    const newsData = [
-        {
-            title: "🛠️ Что изменилось на сайте и что ждёт раздел Новости",
-            date: "2 июля 2026",
-            sortDate: 20260702,
-            content: "Мы обновили ключевые элементы сайта и сделали интерфейс более удобным: добавили активную кнопку с датой, улучшили визуальные блоки на главной странице и в копии сайта, подключили живые счётчики подписчиков и просмотров из YouTube, а также добавили кнопку «Почему видео не загружаются?» с понятным пояснением. Эти изменения помогут быстрее ориентироваться по сайту и сделать просмотр видео и навигацию приятнее. <br><br>Кроме того, уже в ближайшее время раздел <b>«Новости»</b> будет переработан: мы планируем сделать его более современным, удобным для чтения и структурированным, чтобы обновления выглядели ещё лучше и информативнее.",
-            icon: "fas fa-pen-ruler",
-            bgGradient: "linear-gradient(135deg, #7c3aed 0%, #0ea5e9 100%)",
-            footer: "С любовью Mortis32 <3 · 2 июля 2026"
-        },
-        {
-            title: "✅ Раздел «Игры» снова открыт",
-            date: "24 мая 2026",
-            sortDate: 20260524,
-            content: "Исправлены мелкие ошибки и баги на сайте, раздел <b>«Игры»</b> снова открыт и доступен для всех. Заходи, играй и проверяй свежие мини-игры! 🎮",
-            icon: "fas fa-gamepad",
-            bgGradient: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
-            footer: "С любовью Mortis32 <3 · 24 мая 2026"
-        },
-        {
-            title: "🔥 Клипы Twitch открыты!",
-            date: "20 мая 2026",
-            sortDate: 20260520,
-            content: "Долгожданный раздел <b>«Клипы с Twitch»</b> снова работает! Смотри лучшие моменты прямо на сайте — сейчас доступно 4 клипа, скоро добавим ещё больше. 🚀",
-            icon: "fas fa-twitch",
-            bgGradient: "linear-gradient(135deg, #7c3aed 0%, #ec4899 100%)",
-            footer: "С любовью Mortis32 <3 · 20 мая 2026"
-        },
-        {
-            title: "🎬 Интеграция с YouTube!",
-            date: "27 марта 2026",
-            sortDate: 20260327,
-            content: "Мы переработали раздел <b>«Видео»</b> — теперь все ролики автоматически загружаются с YouTube. Добавлены поиск, сортировка по просмотрам и фильтрация по датам. ⚡",
-            icon: "fab fa-youtube",
-            bgGradient: "linear-gradient(135deg, #ef4444 0%, #f97316 100%)",
-            footer: "С любовью Mortis32 <3 · 27 марта 2026"
-        },
-        {
-            title: "🚧 Раздел Игры на переработке",
-            date: "2 мая 2026",
-            sortDate: 20260502,
-            content: "Раздел <b>«Игры»</b> находился на доработке, чтобы стать ещё удобнее и красивее. Сейчас мы исправили проблемы и снова открыли его для вас. 🎮",
-            icon: "fas fa-tools",
-            bgGradient: "linear-gradient(135deg, #4338ca 0%, #6366f1 100%)",
-            footer: "С любовью Mortis32 <3 · 2 мая 2026"
-        },
-        {
-            title: "🔥 Новый дизайн сайта!",
-            date: "2 февраля 2026",
-            sortDate: 20260202,
-            content: "Полностью обновлён дизайн сайта: новые цвета, улучшенная навигация, оптимизация для мобильных устройств и меньше багов. Всё для вашего удобства. 🎨",
-            icon: "fas fa-palette",
-            bgGradient: "linear-gradient(135deg, #9333ea 0%, #ec4899 100%)",
-            footer: "С любовью Mortis32 <3 · 2 февраля 2026"
-        },
-        {
-            title: "С новым годом!",
-            date: "8 января 2026",
-            sortDate: 20260108,
-            content: "С новым 2026 годом! Мы подготовили много новинок и укрепили сайт. Раздел «Профиль» временно убран, но взамен готовятся новые функции. 🎉",
-            icon: "fas fa-gift",
-            bgGradient: "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
-            footer: "С любовью Mortis32 <3 · 8 января 2026"
-        },
-        {
-            title: "ИТОГИ ГОДА - Открыто!",
-            date: "5 декабря 2025",
-            sortDate: 20251205,
-            content: "Кнопка «Итоги года» активирована. Теперь вы можете посмотреть весь путь проекта за этот год в удобном формате. 📅",
-            icon: "fas fa-calendar-star",
-            bgGradient: "linear-gradient(135deg, #2563eb 0%, #22d3ee 100%)",
-            footer: "С любовью Mortis32 <3 · 5 декабря 2025"
-        },
-        {
-            title: "Обновили немного сайт",
-            date: "25 сентября 2025",
-            sortDate: 20250925,
-            content: "Вернули узоры на сайт и обновили дизайн. Сейчас сайт не будет сильно меняться в течение месяца — мы переключаемся на создание контента. Если найдёшь баг, пиши в Telegram. 😊",
-            icon: "fas fa-brush",
-            bgGradient: "linear-gradient(135deg, #f97316 0%, #facc15 100%)",
-            footer: "С любовью Mortis32 <3 · 25 сентября 2025"
-        },
-        {
-            title: "Новый раздел «Настройки» и бот готов!",
-            date: "18 сентября 2025",
-            sortDate: 20250918,
-            content: "Новый раздел «Настройки» уже на сайте: меняй тему, шрифты, уведомления и производительность. Наш бот почти готов — следи за анонсами. 😎",
-            icon: "fas fa-cog",
-            bgGradient: "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)",
-            footer: "С любовью Mortis32 <3 · 18 сентября 2025"
-        },
-        {
-            title: "Q&A готов к запуску!",
-            date: "15 сентября 2025",
-            sortDate: 20250915,
-            content: "Q&A стартует 22 сентября 2025! Пиши вопросы в Telegram, и лучшие из них попадут на сайт. Раздел «Видео» теперь с категориями, а «FAQ» обновлён. 🔥",
-            icon: "fas fa-comments",
-            bgGradient: "linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)",
-            footer: "С любовью Mortis32 <3 · 15 сентября 2025"
-        },
-        {
-            title: "Обновления на сайте!",
-            date: "1 сентября 2025",
-            sortDate: 20250901,
-            content: "Убрали версии сайта и архив обновлений, обновили фон, оптимизировали разделы «Мемы» и «Клипы», а также сделали FAQ ещё удобнее. В разделе «Видео» появились 2 новых ролика. 🎮",
-            icon: "fas fa-wrench",
-            bgGradient: "linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)",
-            footer: "С любовью Mortis32 <3 · 1 сентября 2025"
-        },
-        {
-            title: "Планы на новые разделы!",
-            date: "22 августа 2025",
-            sortDate: 20250822,
-            content: "По причине нестабильности мы временно убрали Q&A, но готовим крупные обновления для сайта. Следи за анонсами — будет ещё больше классных разделов! 😎",
-            icon: "fas fa-rocket",
-            bgGradient: "linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)",
-            footer: "С любовью Mortis32 <3 · 22 августа 2025"
-        },
-        {
-            title: "РЕДИЗАЙН САЙТА!!!",
-            date: "19 августа 2025",
-            sortDate: 20250819,
-            content: "Наш сайт получил новый дизайн: красивый, уникальный и обновлённый. Оцени свежий вид и новый вайб прямо сейчас! 😎",
-            icon: "fas fa-paintbrush",
-            bgGradient: "linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%)",
-            footer: "С любовью Mortis32 <3 · 19 августа 2025"
-        },
-        {
-            title: "Запуск Q&A!",
-            date: "28 июля 2025",
-            sortDate: 20250728,
-            content: "В августе 2025 года запускается раздел Q&A! Теперь ты сможешь задавать свои вопросы, а лучшие из них будут опубликованы после модерации. Готовь идеи и врывайся! 😎",
-            icon: "fas fa-question",
-            bgGradient: "linear-gradient(135deg, #2dd4bf 0%, #06b6d4 100%)",
-            footer: "С любовью Mortis32 <3 · 28 июля 2025"
-        },
-        {
-            title: "Про форум",
-            date: "27 июля 2025",
-            sortDate: 20250727,
-            content: "На форуме появился спам-бот, поэтому мы временно убрали его. Пока что вопросы можно отправлять в личку Telegram — форум вернётся с новым уникальным дизайном. 👍",
-            icon: "fas fa-comments-dollar",
-            bgGradient: "linear-gradient(135deg, #db2777 0%, #f43f5e 100%)",
-            footer: "С любовью Mortis32 <3 · 27 июля 2025"
-        },
-        {
-            title: "Ранний доступ vs полная версия",
-            date: "17 июля 2025",
-            sortDate: 20250717,
-            content: "В полной версии сайта будет новый раздел, розыгрыши, форум, уникальные фоны и закрытые посты в частном канале. Всё это появится во 2 полугодии 2025 или в 2026 году. 😎",
-            icon: "fas fa-lock",
-            bgGradient: "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
-            footer: "С любовью Mortis32 <3 · 17 июля 2025"
-        },
-        {
-            title: "Новые мемы!",
-            date: "16 июля 2025",
-            sortDate: 20250716,
-            content: "Сайт Mortis Play завёз 7 новых мемов! В будущем они будут дополняться — если хочешь, отправляй свои мемы в раздел «Мемы от авторов». 😋",
-            icon: "fas fa-laugh",
-            bgGradient: "linear-gradient(135deg, #3b82f6 0%, #22c55e 100%)",
-            footer: "С любовью Mortis32 <3 · 16 июля 2025"
-        },
-        {
-            title: "Добро пожаловать!",
-            date: "16 июля 2025",
-            sortDate: 20250716,
-            content: "Добро пожаловать на наш первый сайт! Готовим для вас море эпичного контента: новые видео, мемы и эксклюзивные истории. Следите за обновлениями и присоединяйтесь к нашей тусовке. 😎",
-            icon: "fas fa-handshake",
-            bgGradient: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
-            footer: "С любовью Mortis32 <3 · 16 июля 2025"
-        }
-    ];
-    newsData.sort((a, b) => b.sortDate - a.sortDate);
-    
-    function initNewsSystem() {
-        const grid = document.getElementById('newsGrid');
-        const loadMore = document.getElementById('loadMoreNews');
-        let page = 1;
-        const perPage = 6;
-        function render(append = false) {
-            if (!append) { grid.innerHTML = ''; page = 1; }
-            const start = (page - 1) * perPage;
-            const news = newsData.slice(start, start + perPage);
-            if (!news.length) { loadMore.style.display = 'none'; return; }
-            news.forEach((item, i) => {
-                const div = document.createElement('div');
-                div.className = 'modern-card news-card animate-fadeInUp card-hover';
-                div.style.animationDelay = `${(start + i) * 0.1}s`;
-                const background = item.bgGradient ? `background: ${item.bgGradient};` : '';
-                div.setAttribute('style', `${div.getAttribute('style') || ''}${background}`);
-                div.innerHTML = `
-                    <div class="p-6 text-white">
-                        <div class="flex items-start gap-4 mb-4">
-                            <div class="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center">
-                                <i class="${item.icon} text-2xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-semibold leading-tight">${item.title}</h3>
-                                <div class="text-sm opacity-90 mt-2">${item.date}</div>
-                            </div>
-                        </div>
-                        <div class="text-sm leading-7 opacity-90 mb-6">${item.content}</div>
-                        <div class="text-xs opacity-80">${item.footer || 'С любовью Mortis32 <3'}</div>
-                    </div>`;
-                grid.appendChild(div);
-            });
-            loadMore.style.display = start + perPage < newsData.length ? 'block' : 'none';
-        }
-        render();
-        loadMore.addEventListener('click', () => { page++; render(true); });
-    }
-    
     function initScrollSystem() {
         const progress = document.querySelector('.scroll-progress');
         window.addEventListener('scroll', () => {
@@ -1512,10 +1787,59 @@
             setTimeout(() => { loader.style.display = 'none'; content.classList.remove('hidden'); }, 500);
         }, 1000);
     }
+
+    function trackAnalyticsEvent(eventName, params = {}) {
+        if (typeof window.gtag === 'function') {
+            window.gtag('event', eventName, {
+                page_title: document.title,
+                page_location: window.location.href,
+                ...params
+            });
+        }
+    }
+
+    function initAnalyticsTracking() {
+        document.querySelectorAll('.nav-link').forEach((link) => {
+            link.addEventListener('click', () => {
+                trackAnalyticsEvent('navigation_click', {
+                    target: link.textContent.trim(),
+                    href: link.getAttribute('href') || ''
+                });
+            });
+        });
+
+        const trackedElements = document.querySelectorAll(
+            '.btn-action-contact, .btn-action-bio, .btn-action-qa, .btn-action-faq, .btn-action-year, .btn-action-youtube, .social-btn, #videoFaqBtn, #loadMoreVideos, #loadMoreTwitchClips, #themeToggle, #settingsToggle, #resetFilters'
+        );
+
+        trackedElements.forEach((element) => {
+            const eventName = element.id === 'themeToggle'
+                ? 'theme_toggle'
+                : element.id === 'settingsToggle'
+                    ? 'settings_open'
+                    : element.id === 'videoFaqBtn'
+                        ? 'video_faq_open'
+                        : element.id === 'resetFilters'
+                            ? 'filters_reset'
+                            : element.id === 'loadMoreVideos'
+                                ? 'load_more_videos'
+                                : element.id === 'loadMoreTwitchClips'
+                                    ? 'load_more_twitch_clips'
+                                    : element.classList.contains('social-btn')
+                                        ? 'social_click'
+                                        : 'cta_click';
+
+            element.addEventListener('click', () => {
+                trackAnalyticsEvent(eventName, {
+                    element: element.textContent.trim() || element.getAttribute('aria-label') || element.id || 'unknown',
+                    href: element.getAttribute('href') || ''
+                });
+            });
+        });
+    }
     
     function showWelcomeMessageOnce() {
         if (!localStorage.getItem('hasSeenWelcome')) {
-            setTimeout(() => showNotification('Добро пожаловать на обновлённый сайт Mortis Play! 🎮\n⚠️ Для просмотра видео с YouTube может понадобиться VPN.'), 1500);
             localStorage.setItem('hasSeenWelcome', 'true');
         }
     }
@@ -1523,12 +1847,6 @@
     document.addEventListener('DOMContentLoaded', async () => {
         // Устанавливаем динамический год в футере
         document.getElementById('currentYear').textContent = new Date().getFullYear();
-        
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                closeVideoFaqModal({ target: { id: 'videoFaqModal' } });
-            }
-        });
         
         const hasCachedVideos = loadCachedVideos();
         if (currentVideoSystem && hasCachedVideos) {
@@ -1546,12 +1864,14 @@
         }
         
         setInterval(updateVideosFromYouTube, 3600000);
+        initTemporaryFeatures();
         initTheme();
+        initSettings();
         initNavigation();
+        initAnalyticsTracking();
         initScrollTopButton();
         currentVideoSystem = new VideoSystem();
         initTwitchClipsSystem();
-        initNewsSystem();
         initScrollSystem();
         initLoader();
         showWelcomeMessageOnce();
