@@ -717,6 +717,13 @@
       body::before, body::after { width: 20rem; height: 20rem; filter: blur(60px); }
       .notification { max-width: calc(100vw - 2rem); right: 1rem; left: 1rem; bottom: 0.75rem; }
       .section, section[id] { padding: 4rem 0; }
+      .topbar-shell { padding: 0.35rem 0.4rem; }
+      .topbar-shell a:first-child .font-bold { font-size: 0.95rem; }
+      .topbar-shell a:first-child .text-xs { display: none; }
+      .topbar-shell a:first-child .w-10 { width: 2.4rem; height: 2.4rem; }
+      .video-player-container iframe,
+      .aspect-video iframe,
+      .aspect-video { min-height: 280px; }
     }
     @media (max-width: 480px) {
       .gradient-text { font-size: 2rem !important; }
@@ -724,6 +731,12 @@
       .search-input, .sort-select, .date-filter-btn { padding: 0.625rem 1rem; font-size: 0.9rem; }
       header nav .flex.items-center.gap-3 { gap: 0.5rem; }
       #themeToggle, #settingsToggle { width: 40px; height: 40px; }
+      .topbar-shell { padding: 0.3rem 0.35rem; }
+      .topbar-shell a:first-child .font-bold { font-size: 0.9rem; }
+      .topbar-shell a:first-child .w-10 { width: 2.2rem; height: 2.2rem; }
+      .video-player-container iframe,
+      .aspect-video iframe,
+      .aspect-video { min-height: 320px; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
@@ -886,15 +899,15 @@
     </div>
   </div>
   <div id="notification" class="notification">
-    <div class="flex items-start justify-between gap-3">
-      <div class="flex items-start">
-        <div class="icon-pill"><i class="fas fa-wand-magic-sparkles"></i></div>
-        <div>
-          <div class="font-semibold mb-1">Добро пожаловать</div>
-          <div id="notificationText" class="text-sm leading-6"></div>
+    <div class="flex items-start justify-between gap-3 min-w-0">
+      <div class="flex items-start min-w-0">
+        <div class="icon-pill flex-shrink-0"><i class="fas fa-bell"></i></div>
+        <div class="min-w-0">
+          <div id="notificationTitle" class="font-semibold mb-1">Уведомление</div>
+          <div id="notificationText" class="text-sm leading-6 break-words"></div>
         </div>
       </div>
-      <button onclick="hideNotification()" class="ml-2 rounded-full w-8 h-8 flex items-center justify-center" style="color: var(--text-primary); background: rgba(255,255,255,0.16);"><i class="fas fa-times"></i></button>
+      <button onclick="hideNotification()" class="ml-2 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0" style="color: var(--text-primary); background: rgba(255,255,255,0.16);"><i class="fas fa-times"></i></button>
     </div>
   </div>
   
@@ -1103,7 +1116,7 @@
               <a href="https://www.twitch.tv/mortisplay32" target="_blank" rel="noopener noreferrer" class="btn-secondary"><i class="fab fa-twitch"></i> Открыть канал</a>
             </div>
             <div class="aspect-video rounded-xl overflow-hidden border border-purple-500/20">
-              <iframe src="https://player.twitch.tv/?channel=mortisplay32&enableExtensions=true&muted=false&parent=twitch.tv&player=popout&quality=1080p60&volume=0.54" allowfullscreen="true" scrolling="no" class="w-full h-full"></iframe>
+              <iframe id="twitch-live-embed" data-base-src="https://player.twitch.tv/?channel=mortisplay32&muted=false&player=popout&quality=1080p60&volume=0.54" allowfullscreen="true" scrolling="no" class="w-full h-full"></iframe>
             </div>
           </div>
           <div class="modern-card p-4 md:p-5">
@@ -1333,9 +1346,13 @@
         if ((!force && document.body.classList.contains('notifications-off')) || silent) return;
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notificationText');
+        const notificationTitle = document.getElementById('notificationTitle');
         const icon = notification?.querySelector('.icon-pill i');
         if (!notification || !notificationText) return;
         notificationText.textContent = message;
+        if (notificationTitle) {
+            notificationTitle.textContent = type === 'warning' ? 'Предупреждение' : type === 'success' ? 'Успешно' : 'Уведомление';
+        }
         notification.dataset.type = type;
         if (icon) {
             icon.className = type === 'warning' ? 'fas fa-triangle-exclamation' : type === 'success' ? 'fas fa-check-circle' : 'fas fa-bell';
@@ -1403,38 +1420,23 @@
         const saveButton = document.querySelector('#settingsModal .btn-primary');
 
         settingsToggle?.addEventListener('click', openSettingsModal);
-        const saveSettings = () => {
+        const saveSettings = (showToast = false) => {
             const settings = {
                 animations: animationsToggle?.checked !== false,
                 notifications: notificationsToggle?.checked !== false,
                 glass: glassToggle?.checked !== false
             };
             localStorage.setItem('site-settings', JSON.stringify(settings));
-            showNotification('Настройки сохранены. Для применения изменений перезагрузите страницу.', { type: 'success', duration: 4000, force: true });
+            applySettings();
+            if (showToast) {
+                showNotification('Настройки применены', { type: 'success', duration: 2600, force: true });
+            }
         };
-        animationsToggle?.addEventListener('change', () => {
-            if (animationsToggle.checked === false) {
-                document.body.classList.add('reduced-motion');
-            } else {
-                document.body.classList.remove('reduced-motion');
-            }
-        });
-        notificationsToggle?.addEventListener('change', () => {
-            if (notificationsToggle.checked === false) {
-                document.body.classList.add('notifications-off');
-            } else {
-                document.body.classList.remove('notifications-off');
-            }
-        });
-        glassToggle?.addEventListener('change', () => {
-            if (glassToggle.checked === false) {
-                document.body.classList.add('reduced-glass');
-            } else {
-                document.body.classList.remove('reduced-glass');
-            }
-        });
+        animationsToggle?.addEventListener('change', () => saveSettings(false));
+        notificationsToggle?.addEventListener('change', () => saveSettings(false));
+        glassToggle?.addEventListener('change', () => saveSettings(false));
         saveButton?.addEventListener('click', () => {
-            saveSettings();
+            saveSettings(true);
             closeSettingsModal();
         });
         applySettings();
@@ -1719,11 +1721,17 @@
         { id: "t6", title: "Новый хайлайт из стрима", views: "21", duration: "0:33", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm", game: "Общение" }
     ];
     
+    function getTwitchParentParams() {
+        const currentHost = window.location.hostname || 'mortisplay.ru';
+        const hosts = [currentHost, currentHost.replace(/^www\./, ''), currentHost.startsWith('www.') ? currentHost.replace(/^www\./, '') : `www.${currentHost}`].filter(Boolean);
+        const uniqueHosts = [...new Set(hosts)];
+        return uniqueHosts.map(host => `parent=${encodeURIComponent(host)}`).join('&');
+    }
+
     function initTwitchClipsSystem() {
         const grid = document.getElementById('twitchClipsGrid');
         const loadMore = document.getElementById('loadMoreTwitchClips');
-        const allowedDomains = ['mortisplay.ru', 'www.mortisplay.ru', 'localhost', '127.0.0.1'];
-        const parentDomain = allowedDomains.includes(window.location.hostname) ? window.location.hostname : 'mortisplay.ru';
+        const parentParams = getTwitchParentParams();
         
         let page = 1;
         const perPage = 6;
@@ -1753,7 +1761,7 @@
                     if (!clip) return;
                     document.querySelectorAll('[id^="twitch-player-"]').forEach(c => { if (c.id !== `twitch-player-${clipId}`) c.innerHTML = ''; });
                     if (container.innerHTML) { container.innerHTML = ''; return; }
-                    container.innerHTML = `<div class="video-player-container"><iframe src="${clip.embedUrl}&parent=${parentDomain}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><button class="btn-secondary w-full close-player-btn"><i class="fas fa-times"></i> Скрыть плеер</button>`;
+                    container.innerHTML = `<div class="video-player-container"><iframe src="${clip.embedUrl}&${parentParams}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><button class="btn-secondary w-full close-player-btn"><i class="fas fa-times"></i> Скрыть плеер</button>`;
                     container.querySelector('.close-player-btn').addEventListener('click', (e) => { e.stopPropagation(); container.innerHTML = ''; });
                     if (typeof gtag !== 'undefined') {
                         gtag('event', 'twitch_clip_play', { event_category: 'twitch', event_label: clip.game });
@@ -1845,6 +1853,12 @@
     document.addEventListener('DOMContentLoaded', async () => {
         // Устанавливаем динамический год в футере
         document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        const liveEmbed = document.getElementById('twitch-live-embed');
+        if (liveEmbed) {
+            const parentParams = getTwitchParentParams();
+            liveEmbed.src = `${liveEmbed.dataset.baseSrc}&${parentParams}`;
+        }
         
         const hasCachedVideos = loadCachedVideos();
         if (currentVideoSystem && hasCachedVideos) {
