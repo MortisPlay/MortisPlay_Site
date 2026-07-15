@@ -1710,118 +1710,21 @@
         }
     }
     
-    const twitchConfig = {
-        broadcasterLogin: 'mortisplay32',
-        broadcasterId: '',
-        clientId: 'ki1b81d3i4tdgc21jzr47m6il7n5vm',
-        accessToken: '',
-        proxyUrl: '',
-        fallbackData: [
-            { id: "t1", title: "ЧУТЬ НЕ СПАЛИЛ", views: "19", duration: "0:60", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2", game: "Общение" },
-            { id: "t2", title: "ЧТО ЗА ТАЙМИНГ?!", views: "6", duration: "0:18", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm", game: "R.E.P.O." },
-            { id: "t3", title: "ПУНЬК", views: "29", duration: "0:30", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3", game: "PEAK" },
-            { id: "t4", title: "Повторил и убил, конец удивил 0_0", views: "15", duration: "0:24", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm", game: "CS2" },
-            { id: "t5", title: "Смешной момент в эфире", views: "12", duration: "0:41", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2", game: "Just Chatting" },
-            { id: "t6", title: "Новый хайлайт из стрима", views: "21", duration: "0:33", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm", game: "Общение" },
-            { id: "t7", title: "Лучший момент недели", views: "17", duration: "0:27", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3", game: "PEAK" },
-            { id: "t8", title: "Неожиданная реакция", views: "9", duration: "0:22", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "", game: "CS2" }
-        ]
-    };
-
-    let twitchClipsData = [];
-
-    async function loadTwitchClipsData() {
-        async function resolveBroadcasterId() {
-            if (twitchConfig.broadcasterId) return twitchConfig.broadcasterId;
-            if (!twitchConfig.clientId || !twitchConfig.broadcasterLogin) return '';
-
-            try {
-                const response = await fetch(`https://api.twitch.tv/helix/users?logins=${encodeURIComponent(twitchConfig.broadcasterLogin)}`, {
-                    headers: {
-                        'Client-Id': twitchConfig.clientId
-                    }
-                });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                const user = Array.isArray(data?.data) ? data.data[0] : null;
-                return user?.id || '';
-            } catch (error) {
-                console.warn('Не удалось определить ID канала Twitch:', error);
-                return '';
-            }
-        }
-
-        const broadcasterId = await resolveBroadcasterId();
-        if (broadcasterId) {
-            twitchConfig.broadcasterId = broadcasterId;
-        }
-
-        if (twitchConfig.proxyUrl && broadcasterId) {
-            try {
-                const response = await fetch(`${twitchConfig.proxyUrl}?broadcasterId=${encodeURIComponent(broadcasterId)}`);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                const clips = Array.isArray(data?.data) ? data.data : [];
-                if (clips.length) {
-                    return clips.map(clip => ({
-                        id: clip.id,
-                        title: clip.title || 'Twitch clip',
-                        views: String(clip.view_count || 0),
-                        duration: `${Math.max(1, Math.round(clip.duration || 0))}s`,
-                        thumbnail: clip.thumbnail_url || '',
-                        url: clip.url || `https://www.twitch.tv/${twitchConfig.broadcasterLogin}`,
-                        embedUrl: clip.embed_url || '',
-                        game: clip.game_name || 'Twitch'
-                    }));
-                }
-            } catch (error) {
-                console.warn('Не удалось загрузить клипы через proxy:', error);
-            }
-        }
-
-        if (twitchConfig.clientId && broadcasterId) {
-            try {
-                const headers = {
-                    'Client-Id': twitchConfig.clientId
-                };
-                if (twitchConfig.accessToken) {
-                    headers.Authorization = `Bearer ${twitchConfig.accessToken}`;
-                }
-
-                const response = await fetch(`https://api.twitch.tv/helix/clips?broadcaster_id=${encodeURIComponent(broadcasterId)}&first=8`, {
-                    headers
-                });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                const clips = Array.isArray(data?.data) ? data.data : [];
-                if (clips.length) {
-                    return clips.map(clip => ({
-                        id: clip.id,
-                        title: clip.title || 'Twitch clip',
-                        views: String(clip.view_count || 0),
-                        duration: `${Math.max(1, Math.round(clip.duration || 0))}s`,
-                        thumbnail: clip.thumbnail_url || '',
-                        url: clip.url || `https://www.twitch.tv/${twitchConfig.broadcasterLogin}`,
-                        embedUrl: clip.embed_url || '',
-                        game: clip.game_name || 'Twitch'
-                    }));
-                }
-            } catch (error) {
-                console.warn('Не удалось загрузить клипы через Twitch API:', error);
-            }
-        }
-
-        return twitchConfig.fallbackData;
-    }
+    const twitchClipsData = [
+        { id: "t1", title: "ЧУТЬ НЕ СПАЛИЛ", views: "19", duration: "0:60", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2", game: "Общение" },
+        { id: "t2", title: "ЧТО ЗА ТАЙМИНГ?!", views: "6", duration: "0:18", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm", game: "R.E.P.O." },
+        { id: "t3", title: "ПУНЬК", views: "29", duration: "0:30", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=WanderingBelovedBeaverGingerPower-BwSFIOn5RR_Sf1A3", game: "PEAK" },
+        { id: "t4", title: "Повторил и убил, конец удивил 0_0", views: "15", duration: "0:24", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=MoldyWiseYogurtUnSane-LmJRvU5PxCwWHkIm", game: "CS2" },
+        { id: "t5", title: "Смешной момент в эфире", views: "12", duration: "0:41", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=ObedientDullMangoUWot-NOlOV2qo4qO7ZUL2", game: "Just Chatting" },
+        { id: "t6", title: "Новый хайлайт из стрима", views: "21", duration: "0:33", thumbnail: "", url: "https://www.twitch.tv/mortisplay32", embedUrl: "https://clips.twitch.tv/embed?clip=FrigidCrispyShingleTheTarFu-XVttdiPOvOgsGIFm", game: "Общение" }
+    ];
     
-    async function initTwitchClipsSystem() {
+    function initTwitchClipsSystem() {
         const grid = document.getElementById('twitchClipsGrid');
         const loadMore = document.getElementById('loadMoreTwitchClips');
         const allowedDomains = ['mortisplay.ru', 'www.mortisplay.ru', 'localhost', '127.0.0.1'];
         const parentDomain = allowedDomains.includes(window.location.hostname) ? window.location.hostname : 'mortisplay.ru';
         
-        twitchClipsData = await loadTwitchClipsData();
-
         let page = 1;
         const perPage = 6;
         function render(append = false) {
@@ -1966,7 +1869,7 @@
         initAnalyticsTracking();
         initScrollTopButton();
         currentVideoSystem = new VideoSystem();
-        await initTwitchClipsSystem();
+        initTwitchClipsSystem();
         initScrollSystem();
         initLoader();
         showWelcomeMessageOnce();
