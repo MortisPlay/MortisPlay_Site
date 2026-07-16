@@ -326,7 +326,7 @@
       box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 8px 24px rgba(99, 102, 241, 0.18);
       text-shadow: 0 0 10px rgba(255,255,255,0.25);
       backdrop-filter: blur(10px);
-      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, filter 0.25s ease;
     }
 
     .rgb-glow-btn::before {
@@ -334,11 +334,11 @@
       position: absolute;
       inset: -2px;
       z-index: -2;
-      background: linear-gradient(90deg, #ff4d4d, #ffe14d, #41ff8c, #4db8ff, #b85cff, #ff4d4d);
-      background-size: 240% 240%;
-      animation: rgbPulse 2.8s linear infinite;
+      background: conic-gradient(from 0deg, #ff4d4d 0deg, #ffe14d 70deg, #41ff8c 140deg, #4db8ff 210deg, #b85cff 280deg, #ff4d4d 360deg);
+      animation: rgbPulse 3.2s linear infinite;
       filter: blur(10px);
       opacity: 0.95;
+      transform: scale(1.04);
     }
 
     .rgb-glow-btn::after {
@@ -368,11 +368,27 @@
     .rgb-glow-btn:hover::before {
       filter: blur(14px);
       opacity: 1;
+      transform: scale(1.06);
     }
 
     @keyframes rgbPulse {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
+      from { transform: rotate(0deg) scale(1.04); }
+      to { transform: rotate(360deg) scale(1.04); }
+    }
+
+    .quote-banner {
+      background: rgba(2, 6, 23, 0.72);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.24);
+    }
+
+    .quote-banner-text {
+      color: #f8fafc;
+      text-align: center;
+      font-style: italic;
+      line-height: 1.6;
+      font-size: clamp(0.95rem, 1.5vw, 1.05rem);
     }
 
     .btn-action-contact { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
@@ -715,7 +731,17 @@
       .mobile-menu-container { width: 280px; }
       .scroll-top-btn { width: 40px; height: 40px; bottom: 1rem; right: 1rem; }
       body::before, body::after { width: 20rem; height: 20rem; filter: blur(60px); }
-      .notification { max-width: calc(100vw - 2rem); right: 1rem; left: 1rem; bottom: 0.75rem; }
+      .notification {
+        max-width: calc(100vw - 1.25rem);
+        width: calc(100vw - 1.25rem);
+        left: 50%;
+        right: auto;
+        bottom: 0.75rem;
+        border-radius: 1rem;
+        padding: 0.85rem 0.95rem;
+        transform: translate(-50%, 120%);
+      }
+      .notification.show { transform: translate(-50%, 0); }
       .section, section[id] { padding: 4rem 0; }
       .topbar-shell { padding: 0.35rem 0.4rem; }
       .topbar-shell a:first-child .font-bold { font-size: 0.95rem; }
@@ -737,6 +763,17 @@
       .video-player-container iframe,
       .aspect-video iframe,
       .aspect-video { min-height: 320px; }
+      .quote-banner {
+        left: 0.75rem;
+        right: 0.75rem;
+        bottom: 0.75rem;
+        padding: 0.8rem 0.9rem;
+        border-radius: 0.9rem;
+      }
+      .quote-banner-text {
+        font-size: 0.92rem;
+        line-height: 1.5;
+      }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
@@ -775,6 +812,25 @@
     .notification .icon-pill {
       width: 2.2rem; height: 2.2rem; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
       background: linear-gradient(135deg, rgba(99,102,241,0.28), rgba(14,165,233,0.2)); margin-right: 0.75rem;
+    }
+    .settings-soon-card {
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,0.08);
+      opacity: 0.82;
+    }
+    .settings-soon-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: rgba(245, 158, 11, 0.16);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.24);
     }
     
     /* Модальное окно */
@@ -883,7 +939,7 @@
       <nav class="space-y-2 flex-grow">
         <a href="#welcome" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-home w-5"></i><span>Главная</span></a>
         <a href="#video" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-play-circle w-5"></i><span>Видео</span></a>
-        <a href="news-archive.html" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-box-archive w-5"></i><span>Архив Новостей</span></a>
+        <a href="news-archive.html" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-box-archive w-5"></i><span>Архив Новостей</span></a>
         <a href="#twitch-clips" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fab fa-twitch w-5"></i><span>Twitch</span></a>
         <a href="#contact" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-envelope w-5"></i><span>Контакты</span></a>
       </nav>
@@ -975,6 +1031,33 @@
           <span>Жидкое стекло</span>
           <input id="glassToggle" type="checkbox" class="w-5 h-5 accent-indigo-500" checked>
         </label>
+
+        <div class="rounded-2xl p-4 settings-soon-card">
+          <div class="text-sm font-semibold uppercase tracking-[0.2em] mb-3" style="color: var(--text-secondary);">Скоро</div>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.06); pointer-events: none;">
+              <div>
+                <div class="font-medium">Персональные уведомления</div>
+                <div class="text-sm mt-1" style="color: var(--text-secondary);">Более точные напоминания и подборки.</div>
+              </div>
+              <span class="settings-soon-pill">Скоро</span>
+            </div>
+            <div class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.06); pointer-events: none;">
+              <div>
+                <div class="font-medium">Автосинхронизация контента</div>
+                <div class="text-sm mt-1" style="color: var(--text-secondary);">Обновления без ручной проверки.</div>
+              </div>
+              <span class="settings-soon-pill">Скоро</span>
+            </div>
+            <div class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.06); pointer-events: none;">
+              <div>
+                <div class="font-medium">Сохранённые фильтры</div>
+                <div class="text-sm mt-1" style="color: var(--text-secondary);">Быстрое возвращение к любимым настройкам.</div>
+              </div>
+              <span class="settings-soon-pill">Скоро</span>
+            </div>
+          </div>
+        </div>
       </div>
       <button onclick="closeSettingsModal()" class="btn-primary mt-6 w-full">Сохранить</button>
     </div>
@@ -992,7 +1075,7 @@
         <div class="hidden md:flex items-center gap-2">
           <a href="#welcome" class="nav-link active">Главная</a>
           <a href="#video" class="nav-link">Видео</a>
-          <a href="news-archive.html" class="nav-link external">Архив Новостей</a>
+          <a href="news-archive.html" target="_blank" rel="noopener noreferrer" class="nav-link external">Архив Новостей</a>
           <a href="#twitch-clips" class="nav-link">Twitch</a>
           <a href="#contact" class="nav-link">Контакты</a>
         </div>
@@ -1017,7 +1100,7 @@
               <a href="qa.html" target="_blank" class="btn-primary btn-action-qa animate-fadeInUp"><i class="fas fa-question-circle"></i> Q&A</a>
               <a href="faq.html" target="_blank" class="btn-primary btn-action-faq animate-fadeInUp"><i class="fas fa-circle-question"></i> FAQ</a>
               <a href="year-review.html" target="_blank" class="btn-primary btn-action-year animate-fadeInUp"><i class="fas fa-calendar-days"></i> Итоги года</a>
-              <a href="news-archive.html" class="btn-primary btn-action-contact animate-fadeInUp"><i class="fas fa-box-archive"></i> Архив Новостей</a>
+              <a href="news-archive.html" target="_blank" rel="noopener noreferrer" class="btn-primary btn-action-contact animate-fadeInUp"><i class="fas fa-box-archive"></i> Архив Новостей</a>
               <a href="secret/mortis.html" target="_blank" class="btn-secondary animate-fadeInUp rgb-glow-btn" aria-label="Вопрос">?</a>
             </div>
           </div>
@@ -1036,8 +1119,8 @@
               </video>
               <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               <div class="absolute bottom-6 left-6 right-6">
-                <div class="modern-card p-4 bg-white/10 backdrop-blur-sm">
-                  <p class="text-white text-center italic">"Обыкновенная жизнь самых необыкновенных существ..."</p>
+                <div class="modern-card p-4 bg-white/10 backdrop-blur-sm quote-banner">
+                  <p class="quote-banner-text">"Обыкновенная жизнь самых необыкновенных существ..."</p>
                 </div>
               </div>
             </div>
