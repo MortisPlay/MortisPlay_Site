@@ -391,6 +391,13 @@
       font-size: clamp(0.95rem, 1.5vw, 1.05rem);
     }
 
+    .twitch-player-container iframe {
+      width: 100%;
+      border: none;
+      min-height: 220px;
+      height: 100%;
+    }
+
     .btn-action-contact { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
     .btn-action-bio { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); }
     .btn-action-qa { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
@@ -763,12 +770,19 @@
       .video-player-container iframe,
       .aspect-video iframe,
       .aspect-video { min-height: 320px; }
+      .twitch-player-container iframe {
+        min-height: 300px;
+        height: min(62vh, 360px);
+      }
       .quote-banner {
-        left: 0.75rem;
-        right: 0.75rem;
-        bottom: 0.75rem;
-        padding: 0.8rem 0.9rem;
-        border-radius: 0.9rem;
+        position: static;
+        margin-top: 0.75rem;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        width: 100%;
+        padding: 0.85rem 0.95rem;
+        border-radius: 0.95rem;
       }
       .quote-banner-text {
         font-size: 0.92rem;
@@ -1030,6 +1044,10 @@
         <label class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
           <span>Жидкое стекло</span>
           <input id="glassToggle" type="checkbox" class="w-5 h-5 accent-indigo-500" checked>
+        </label>
+        <label class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
+          <span>Показывать уведомление об обновлениях</span>
+          <input id="updateNoticeToggle" type="checkbox" class="w-5 h-5 accent-indigo-500" checked>
         </label>
 
         <div class="rounded-2xl p-4 settings-soon-card">
@@ -1425,16 +1443,20 @@
     }
     
     function showNotification(message, options = {}) {
-        const { type = 'info', duration = 2600, silent = false, force = false } = options;
+        const { type = 'info', duration = 2600, silent = false, force = false, html = false, title } = options;
         if ((!force && document.body.classList.contains('notifications-off')) || silent) return;
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notificationText');
         const notificationTitle = document.getElementById('notificationTitle');
         const icon = notification?.querySelector('.icon-pill i');
         if (!notification || !notificationText) return;
-        notificationText.textContent = message;
+        if (html) {
+            notificationText.innerHTML = message;
+        } else {
+            notificationText.textContent = message;
+        }
         if (notificationTitle) {
-            notificationTitle.textContent = type === 'warning' ? 'Предупреждение' : type === 'success' ? 'Успешно' : 'Уведомление';
+            notificationTitle.textContent = title || (type === 'warning' ? 'Предупреждение' : type === 'success' ? 'Успешно' : 'Уведомление');
         }
         notification.dataset.type = type;
         if (icon) {
@@ -1475,13 +1497,18 @@
     }
     
     function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func(...args), wait); }; }
-    
-    function applySettings() {
+
+    function getSiteSettings() {
         const saved = localStorage.getItem('site-settings');
-        let settings = { animations: true, notifications: true, glass: true };
+        let settings = { animations: true, notifications: true, glass: true, updateNotice: true };
         try {
             if (saved) settings = { ...settings, ...JSON.parse(saved) };
         } catch (e) {}
+        return settings;
+    }
+    
+    function applySettings() {
+        const settings = getSiteSettings();
 
         document.body.classList.toggle('reduced-motion', settings.animations === false);
         document.body.classList.toggle('notifications-off', settings.notifications === false);
@@ -1490,9 +1517,11 @@
         const animationsToggle = document.getElementById('animationsToggle');
         const notificationsToggle = document.getElementById('notificationsToggle');
         const glassToggle = document.getElementById('glassToggle');
+        const updateNoticeToggle = document.getElementById('updateNoticeToggle');
         if (animationsToggle) animationsToggle.checked = settings.animations !== false;
         if (notificationsToggle) notificationsToggle.checked = settings.notifications !== false;
         if (glassToggle) glassToggle.checked = settings.glass !== false;
+        if (updateNoticeToggle) updateNoticeToggle.checked = settings.updateNotice !== false;
     }
 
     function initSettings() {
@@ -1500,6 +1529,7 @@
         const animationsToggle = document.getElementById('animationsToggle');
         const notificationsToggle = document.getElementById('notificationsToggle');
         const glassToggle = document.getElementById('glassToggle');
+        const updateNoticeToggle = document.getElementById('updateNoticeToggle');
         const saveButton = document.querySelector('#settingsModal .btn-primary');
 
         settingsToggle?.addEventListener('click', openSettingsModal);
@@ -1507,7 +1537,8 @@
             const settings = {
                 animations: animationsToggle?.checked !== false,
                 notifications: notificationsToggle?.checked !== false,
-                glass: glassToggle?.checked !== false
+                glass: glassToggle?.checked !== false,
+                updateNotice: updateNoticeToggle?.checked !== false
             };
             localStorage.setItem('site-settings', JSON.stringify(settings));
             applySettings();
@@ -1518,11 +1549,25 @@
         animationsToggle?.addEventListener('change', () => saveSettings(false));
         notificationsToggle?.addEventListener('change', () => saveSettings(false));
         glassToggle?.addEventListener('change', () => saveSettings(false));
+        updateNoticeToggle?.addEventListener('change', () => saveSettings(false));
         saveButton?.addEventListener('click', () => {
             saveSettings(true);
             closeSettingsModal();
         });
         applySettings();
+    }
+
+    function showSiteUpdateNotice() {
+        const settings = getSiteSettings();
+        if (settings.updateNotice === false) return;
+        if (sessionStorage.getItem('site-update-notice-shown') === '1') return;
+        sessionStorage.setItem('site-update-notice-shown', '1');
+        showNotification('Ведутся обновления сайта. Посмотреть последний коммит можно <a href="https://github.com/MortisPlay/MortisPlay_Site/commits/main/" target="_blank" rel="noopener noreferrer" style="color:#93c5fd;text-decoration:underline;">по этой ссылке</a>.', {
+            type: 'info',
+            duration: 9000,
+            html: true,
+            title: 'Обновление сайта'
+        });
     }
 
     function initTemporaryFeatures() {
@@ -1844,7 +1889,7 @@
                     if (!clip) return;
                     document.querySelectorAll('[id^="twitch-player-"]').forEach(c => { if (c.id !== `twitch-player-${clipId}`) c.innerHTML = ''; });
                     if (container.innerHTML) { container.innerHTML = ''; return; }
-                    container.innerHTML = `<div class="video-player-container"><iframe src="${clip.embedUrl}&${parentParams}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><button class="btn-secondary w-full close-player-btn"><i class="fas fa-times"></i> Скрыть плеер</button>`;
+                    container.innerHTML = `<div class="video-player-container twitch-player-container"><iframe src="${clip.embedUrl}&${parentParams}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><button class="btn-secondary w-full close-player-btn"><i class="fas fa-times"></i> Скрыть плеер</button>`;
                     container.querySelector('.close-player-btn').addEventListener('click', (e) => { e.stopPropagation(); container.innerHTML = ''; });
                     if (typeof gtag !== 'undefined') {
                         gtag('event', 'twitch_clip_play', { event_category: 'twitch', event_label: clip.game });
@@ -1962,6 +2007,7 @@
         initTemporaryFeatures();
         initTheme();
         initSettings();
+        showSiteUpdateNotice();
         initNavigation();
         initAnalyticsTracking();
         initScrollTopButton();
