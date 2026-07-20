@@ -930,6 +930,17 @@
     @media (max-width: 768px) {
       .scroll-top-btn { bottom: 80px; }
     }
+    
+    /* Пульсация кнопки "?" — быстрое мерцание/пульс каждый день до 23.07.2026 10:00 */
+    .secret-pulse-btn {
+      animation: secretPulse 0.6s ease-in-out infinite !important;
+    }
+    @keyframes secretPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+      25% { transform: scale(1.08); box-shadow: 0 0 12px 4px rgba(99, 102, 241, 0.5); }
+      50% { transform: scale(0.95); box-shadow: 0 0 20px 8px rgba(245, 158, 11, 0.6); }
+      75% { transform: scale(1.05); box-shadow: 0 0 12px 4px rgba(99, 102, 241, 0.5); }
+    }
   </style>
 </head>
 <body>
@@ -1571,10 +1582,20 @@
     }
 
     function initTemporaryFeatures() {
-        const secretButton = document.querySelector('a[href="secret/index.html"]');
-        const removeAfter = new Date('2026-07-23T00:00:00');
-        if (secretButton && Date.now() >= removeAfter.getTime()) {
-            secretButton.remove();
+        // Кнопка "?" — пульсация до 23.07.2026 10:00 (Asia/Vladivostok UTC+10), затем исчезает
+        const secretButton = document.querySelector('a[href="secret/mortis.html"]');
+        const deadlineStr = '2026-07-23T00:00:00Z'; // 23.07.2026 10:00 VLAT = 23.07.2026 00:00 UTC
+        const deadline = new Date(deadlineStr);
+        const now = Date.now();
+
+        if (secretButton) {
+            if (now >= deadline.getTime()) {
+                // После дедлайна — удаляем кнопку
+                secretButton.remove();
+            } else {
+                // До дедлайна — добавляем пульсацию
+                secretButton.classList.add('secret-pulse-btn');
+            }
         }
     }
 
