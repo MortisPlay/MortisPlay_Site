@@ -476,8 +476,7 @@
     }
 
     #themeToggle,
-    #settingsToggle,
-    .support-chat-toggle-btn {
+    #settingsToggle {
       width: 44px; height: 44px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -494,28 +493,14 @@
       z-index: 1;
     }
     #themeToggle:hover,
-    #settingsToggle:hover,
-    .support-chat-toggle-btn:hover {
+    #settingsToggle:hover {
       transform: scale(1.06) rotate(6deg);
       box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45);
       filter: brightness(1.08);
     }
     body.light-theme #themeToggle,
-    body.light-theme #settingsToggle,
-    body.light-theme .support-chat-toggle-btn {
+    body.light-theme #settingsToggle {
       background: linear-gradient(135deg, #4f46e5, #0ea5e9);
-    }
-    
-    /* Специальный стиль для кнопки Telegram — фирменный синий */
-    .support-chat-toggle-btn {
-      background: linear-gradient(135deg, #2AABEE 0%, #229ED9 100%) !important;
-      box-shadow: 0 4px 15px rgba(42, 171, 238, 0.4) !important;
-    }
-    .support-chat-toggle-btn:hover {
-      box-shadow: 0 8px 25px rgba(42, 171, 238, 0.55) !important;
-    }
-    body.light-theme .support-chat-toggle-btn {
-      background: linear-gradient(135deg, #2AABEE 0%, #229ED9 100%) !important;
     }
 
     .mobile-menu-backdrop {
@@ -1018,294 +1003,9 @@
       animation-play-state: paused;
     }
     
-    /* === ПОЛНОЦЕННЫЙ ЧАТ ПОДДЕРЖКИ === */
-    #supportChatWidget {
-      position: fixed;
-      bottom: 90px;
-      right: 20px;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 10px;
-    }
-    #supportChatWidget .chat-bubble {
-      display: none !important;
-    }
-    #supportChatWidget .chat-window {
-      width: 360px;
-      max-width: calc(100vw - 40px);
-      max-height: 560px;
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: 1.25rem;
-      overflow: hidden;
-      display: none;
-      flex-direction: column;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      animation: chatSlideIn 0.3s ease;
-    }
-    @keyframes chatSlideIn {
-      from { opacity: 0; transform: translateY(20px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    #supportChatWidget .chat-window.open {
-      display: flex;
-    }
-    #supportChatWidget .chat-header {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      padding: 1rem 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-    }
-    #supportChatWidget .chat-header .chat-header-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      min-width: 0;
-    }
-    #supportChatWidget .chat-header .chat-header-info .chat-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-    }
-    #supportChatWidget .chat-header .chat-header-info .chat-header-text h4 {
-      color: white;
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin: 0;
-    }
-    #supportChatWidget .chat-header .chat-header-info .chat-header-text span {
-      color: rgba(255,255,255,0.75);
-      font-size: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-    #supportChatWidget .chat-header .chat-header-info .chat-header-text span .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #22c55e;
-      display: inline-block;
-      animation: pulse-dot 2s infinite;
-    }
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-    #supportChatWidget .chat-header .chat-close-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      font-size: 0.85rem;
-      flex-shrink: 0;
-    }
-    #supportChatWidget .chat-header .chat-close-btn:hover {
-      background: rgba(255,255,255,0.25);
-      transform: rotate(90deg);
-    }
-    #supportChatWidget .chat-messages {
-      flex: 1;
-      padding: 1rem;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      min-height: 280px;
-      max-height: 360px;
-      background: rgba(0,0,0,0.15);
-    }
-    #supportChatWidget .chat-messages .message {
-      max-width: 85%;
-      padding: 0.6rem 0.9rem;
-      border-radius: 1rem;
-      font-size: 0.85rem;
-      line-height: 1.45;
-      word-wrap: break-word;
-      animation: msgIn 0.25s ease;
-    }
-    @keyframes msgIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    #supportChatWidget .chat-messages .message.user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      color: white;
-      border-bottom-right-radius: 0.25rem;
-    }
-    #supportChatWidget .chat-messages .message.admin {
-      align-self: flex-start;
-      background: rgba(255,255,255,0.1);
-      color: var(--text-primary);
-      border-bottom-left-radius: 0.25rem;
-    }
-    #supportChatWidget .chat-messages .message.system {
-      align-self: center;
-      background: rgba(99, 102, 241, 0.15);
-      color: var(--text-secondary);
-      font-size: 0.75rem;
-      padding: 0.4rem 0.8rem;
-      border-radius: 1rem;
-      text-align: center;
-      max-width: 90%;
-    }
-    #supportChatWidget .chat-messages .message .msg-time {
-      font-size: 0.6rem;
-      opacity: 0.6;
-      margin-top: 0.2rem;
-      display: block;
-    }
-    #supportChatWidget .chat-messages .typing-indicator {
-      align-self: flex-start;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      padding: 0.6rem 0.9rem;
-      background: rgba(255,255,255,0.1);
-      border-radius: 1rem;
-      border-bottom-left-radius: 0.25rem;
-      display: none;
-    }
-    #supportChatWidget .chat-messages .typing-indicator span {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--text-secondary);
-      animation: typingBounce 1.4s infinite;
-    }
-    #supportChatWidget .chat-messages .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-    #supportChatWidget .chat-messages .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes typingBounce {
-      0%, 60%, 100% { transform: translateY(0); }
-      30% { transform: translateY(-6px); }
-    }
-    #supportChatWidget .chat-quick-replies {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      padding: 0.5rem 1rem;
-      background: rgba(0,0,0,0.1);
-      border-top: 1px solid var(--glass-border);
-    }
-    #supportChatWidget .chat-quick-replies .quick-reply-btn {
-      padding: 0.35rem 0.7rem;
-      border-radius: 9999px;
-      border: 1px solid var(--glass-border);
-      background: rgba(255,255,255,0.05);
-      color: var(--text-secondary);
-      font-size: 0.75rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-    #supportChatWidget .chat-quick-replies .quick-reply-btn:hover {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-    #supportChatWidget .chat-input-area {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1rem;
-      background: rgba(0,0,0,0.15);
-      border-top: 1px solid var(--glass-border);
-    }
-    #supportChatWidget .chat-input-area input {
-      flex: 1;
-      padding: 0.6rem 0.9rem;
-      border-radius: 9999px;
-      border: 1px solid var(--glass-border);
-      background: rgba(255,255,255,0.08);
-      color: var(--text-primary);
-      font-size: 0.85rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    #supportChatWidget .chat-input-area input:focus {
-      border-color: var(--primary);
-    }
-    #supportChatWidget .chat-input-area input::placeholder {
-      color: var(--text-secondary);
-      opacity: 0.6;
-    }
-    #supportChatWidget .chat-input-area .chat-send-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      color: white;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      transition: all 0.2s ease;
-      flex-shrink: 0;
-    }
-    #supportChatWidget .chat-input-area .chat-send-btn:hover {
-      transform: scale(1.08);
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-    }
-    #supportChatWidget .chat-input-area .chat-send-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      transform: none;
-    }
-    @media (max-width: 480px) {
-      #supportChatWidget {
-        right: 10px;
-        bottom: 80px;
-      }
-      #supportChatWidget .chat-window {
-        width: calc(100vw - 20px);
-        max-height: 70vh;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
-      #supportChatWidget .chat-window.open {
-        transform: translate(-50%, -50%);
-      }
-      #supportChatWidget .chat-messages {
-        min-height: 200px;
-        max-height: 50vh;
-      }
-    }
   </style>
 </head>
 <body>
-  <!-- 🔐 Подключение конфигурации с токеном (не попадает в Git через .gitignore) -->
-  <script src="config.js"></script>
-  <script>
-    // Проверка, что config.js загружен
-    if (typeof CHAT_CONFIG === 'undefined') {
-      console.error('%c⚠️ ВНИМАНИЕ: config.js не найден!', 'color: red; font-size: 16px; font-weight: bold;');
-      console.error('%cСоздайте config.js на основе config.example.js и укажите токен бота.', 'color: orange; font-size: 14px;');
-    }
-  </script>
   <div class="scroll-progress"></div>
   <div id="loader"><div class="loader-spinner"></div></div>
   <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Прокрутить наверх"><i class="fas fa-arrow-up"></i></button>
@@ -1324,17 +1024,6 @@
         </button>
       </div>
       <div class="flex-grow flex flex-col items-center justify-center gap-4 px-4">
-        <!-- Кнопка чата поддержки — главная -->
-        <button id="mobileSupportChatToggle" class="w-full flex flex-col items-center justify-center gap-3 p-8 rounded-2xl transition-all duration-300" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(79, 70, 229, 0.1)); border: 2px solid rgba(99, 102, 241, 0.3); color: var(--text-primary);" onclick="toggleChat(); closeMobileMenu()">
-          <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);">
-            <i class="fas fa-comment-dots text-2xl text-white"></i>
-          </div>
-          <div class="text-center">
-            <div class="text-lg font-bold gradient-text">Чат поддержки</div>
-            <div class="text-sm mt-1" style="color: var(--text-secondary);">Напиши нам — ответим в течение часа</div>
-          </div>
-        </button>
-        
         <div class="text-xs font-medium uppercase tracking-widest" style="color: var(--text-secondary); opacity: 0.5;">Полезные ссылки</div>
         
         <div class="grid grid-cols-2 gap-3 w-full">
@@ -1439,18 +1128,6 @@
           <span>Показывать уведомление об обновлениях</span>
           <input id="updateNoticeToggle" type="checkbox" class="w-5 h-5 accent-indigo-500" checked>
         </label>
-        <label class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
-          <div class="flex items-center gap-3 min-w-0">
-            <i class="fas fa-bell text-lg" style="color: var(--primary);"></i>
-            <div class="min-w-0">
-              <div class="font-medium">Уведомления чата поддержки</div>
-              <div class="text-sm mt-1" style="color: var(--text-secondary);">Системные уведомления о новых ответах</div>
-            </div>
-          </div>
-          <button id="chatNotifyPermissionBtn" class="text-sm px-4 py-2 rounded-lg font-medium transition-all duration-200" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border: none; cursor: pointer; white-space: nowrap;" onclick="requestChatNotificationPermission()">
-            <i class="fas fa-bell"></i> Разрешить
-          </button>
-        </label>
         <div class="rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
           <label class="flex items-center justify-between">
             <div>
@@ -1475,39 +1152,6 @@
     </div>
   </div>
 
-  <!-- ПОЛНОЦЕННЫЙ ЧАТ ПОДДЕРЖКИ -->
-  <div id="supportChatWidget">
-    <!-- Окно чата -->
-    <div class="chat-window" id="chatWindow">
-      <div class="chat-header">
-        <div class="chat-header-info">
-          <div class="chat-avatar"><i class="fas fa-headset"></i></div>
-          <div class="chat-header-text">
-            <h4>Чат поддержки</h4>
-            <span><span class="status-dot"></span> Обычно отвечаем в течение часа</span>
-          </div>
-        </div>
-        <button class="chat-close-btn" onclick="toggleChat()" aria-label="Закрыть чат">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="chat-messages" id="chatMessages">
-        <!-- Сообщения будут добавляться сюда динамически -->
-      </div>
-      <div class="chat-quick-replies" id="chatQuickReplies">
-        <button class="quick-reply-btn" onclick="sendQuickReply('Где найти видео?')">🎬 Где видео?</button>
-        <button class="quick-reply-btn" onclick="sendQuickReply('Хочу сотрудничество')">🤝 Сотрудничество</button>
-        <button class="quick-reply-btn" onclick="sendQuickReply('Какой у тебя график?')">📅 График</button>
-        <button class="quick-reply-btn" onclick="sendQuickReply('У меня вопрос к админу')">👤 Вопрос админу</button>
-      </div>
-      <div class="chat-input-area">
-        <input type="text" id="chatInput" placeholder="Напишите сообщение..." onkeydown="if(event.key==='Enter') sendMessage()" maxlength="500">
-        <button class="chat-send-btn" id="chatSendBtn" onclick="sendMessage()" aria-label="Отправить">
-          <i class="fas fa-paper-plane"></i>
-        </button>
-      </div>
-    </div>
-  </div>
 
   <header>
     <nav class="container-padding max-w-7xl mx-auto">
@@ -1526,9 +1170,6 @@
           <a href="#contact" class="nav-link">Сотрудничество</a>
         </div>
         <div class="flex items-center gap-3">
-          <button id="supportChatToggle" class="support-chat-toggle-btn" aria-label="Чат поддержки" title="Чат поддержки" onclick="toggleChat()">
-            <i class="fas fa-comment-dots"></i>
-          </button>
           <button id="settingsToggle" aria-label="Настройки" title="Настройки"><i class="fas fa-gear"></i></button>
           <button id="themeToggle" aria-label="Сменить тему" title="Сменить тему"><i class="fas fa-sun"></i></button>
           <button id="menuToggle" class="md:hidden w-10 h-10 rounded-lg flex items-center justify-center transition-colors" style="background: var(--glass-bg);"><i class="fas fa-bars text-xl"></i></button>
@@ -1982,14 +1623,10 @@
     function getSiteSettings() {
         const saved = localStorage.getItem('site-settings');
         const isMobileViewport = () => window.matchMedia('(max-width: 768px)').matches;
-        let settings = { animations: true, notifications: true, glass: !isMobileViewport(), updateNotice: true, personalNotifications: true, notifyNewVideos: true, notifySiteUpdates: true, chatNotifications: false };
+        let settings = { animations: true, notifications: true, glass: !isMobileViewport(), updateNotice: true, personalNotifications: true, notifyNewVideos: true, notifySiteUpdates: true };
         try {
             if (saved) settings = { ...settings, ...JSON.parse(saved) };
         } catch (e) {}
-        // Автоматически определяем статус уведомлений чата по разрешению браузера
-        if ('Notification' in window && Notification.permission === 'granted' && !settings.chatNotifications) {
-            settings.chatNotifications = true;
-        }
         return settings;
     }
     
@@ -2016,86 +1653,6 @@
         if (newVideoNotificationsToggle) newVideoNotificationsToggle.checked = settings.notifyNewVideos !== false;
         if (siteUpdateNotificationsToggle) siteUpdateNotificationsToggle.checked = settings.notifySiteUpdates !== false;
         
-        // Обновляем статус кнопки разрешения уведомлений чата
-        updateChatNotifyButton();
-    }
-
-    function updateChatNotifyButton() {
-        const btn = document.getElementById('chatNotifyPermissionBtn');
-        if (!btn) return;
-        const settings = getSiteSettings();
-        if (settings.chatNotifications && Notification.permission === 'granted') {
-            btn.innerHTML = '<i class="fas fa-check-circle"></i> Включены';
-            btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
-            btn.style.cursor = 'default';
-            btn.onclick = null;
-        } else if (Notification.permission === 'denied') {
-            btn.innerHTML = '<i class="fas fa-times-circle"></i> Заблокированы';
-            btn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
-            btn.style.cursor = 'default';
-            btn.onclick = null;
-        } else {
-            btn.innerHTML = '<i class="fas fa-bell"></i> Разрешить';
-            btn.style.background = 'linear-gradient(135deg, var(--primary), var(--primary-dark))';
-            btn.style.cursor = 'pointer';
-            btn.onclick = requestChatNotificationPermission;
-        }
-    }
-
-    function requestChatNotificationPermission() {
-        if (!('Notification' in window)) {
-            showNotification('Ваш браузер не поддерживает системные уведомления', { type: 'warning', duration: 3000 });
-            return;
-        }
-        
-        Notification.requestPermission().then(permission => {
-            if (permission === 'granted') {
-                // Сохраняем настройку
-                const settings = getSiteSettings();
-                settings.chatNotifications = true;
-                localStorage.setItem('site-settings', JSON.stringify(settings));
-                updateChatNotifyButton();
-                showNotification('✅ Системные уведомления чата включены!', { type: 'success', duration: 3000, force: true });
-                
-                // Отправляем тестовое уведомление
-                const testNotify = new Notification('Mortis Play — Чат поддержки', {
-                    body: '✅ Уведомления работают! Теперь ты будешь получать оповещения об ответах.',
-                    icon: '/images/favicon.ico'
-                });
-                setTimeout(() => testNotify.close(), 5000);
-            } else {
-                showNotification('❌ Разрешение на уведомления не получено', { type: 'warning', duration: 3000, force: true });
-                updateChatNotifyButton();
-            }
-        });
-    }
-
-    function sendSystemNotification(title, body) {
-        if (!('Notification' in window)) return;
-        const settings = getSiteSettings();
-        if (!settings.chatNotifications) return;
-        if (Notification.permission !== 'granted') return;
-        
-        try {
-            const notification = new Notification(title, {
-                body: body,
-                icon: '/images/favicon.ico',
-                tag: 'chat-support',
-                requireInteraction: true
-            });
-            
-            // При клике на уведомление открываем чат
-            notification.onclick = () => {
-                window.focus();
-                toggleChat();
-                notification.close();
-            };
-            
-            // Автоматически закрываем через 10 секунд
-            setTimeout(() => notification.close(), 10000);
-        } catch (e) {
-            console.error('Ошибка отправки системного уведомления:', e);
-        }
     }
 
     function initSettings() {
@@ -2122,8 +1679,7 @@
                 updateNotice: updateNoticeToggle?.checked !== false,
                 personalNotifications: personalNotificationsToggle?.checked !== false,
                 notifyNewVideos: newVideoNotificationsToggle?.checked !== false,
-                notifySiteUpdates: siteUpdateNotificationsToggle?.checked !== false,
-                chatNotifications: currentSettings.chatNotifications // Сохраняем значение уведомлений чата
+                notifySiteUpdates: siteUpdateNotificationsToggle?.checked !== false
             };
             localStorage.setItem('site-settings', JSON.stringify(settings));
             applySettings();
@@ -2599,7 +2155,7 @@
         });
 
         const trackedElements = document.querySelectorAll(
-            '.btn-action-contact, .btn-action-bio, .btn-action-qa, .btn-action-faq, .btn-action-year, .btn-action-youtube, .social-btn, #videoFaqBtn, #loadMoreVideos, #loadMoreTwitchClips, #themeToggle, #settingsToggle, #resetFilters, #supportChatToggle, #mobileSupportChatToggle, #mobileBottomSupportChat'
+            '.btn-action-contact, .btn-action-bio, .btn-action-qa, .btn-action-faq, .btn-action-year, .btn-action-youtube, .social-btn, #videoFaqBtn, #loadMoreVideos, #loadMoreTwitchClips, #themeToggle, #settingsToggle, #resetFilters'
         );
 
         trackedElements.forEach((element) => {
@@ -2615,9 +2171,7 @@
                                 ? 'load_more_videos'
                                 : element.id === 'loadMoreTwitchClips'
                                     ? 'load_more_twitch_clips'
-                                    : element.id === 'supportChatToggle' || element.id === 'mobileSupportChatToggle' || element.id === 'mobileBottomSupportChat'
-                                        ? 'support_chat_open'
-                                        : element.classList.contains('social-btn')
+                                    : element.classList.contains('social-btn')
                                             ? 'social_click'
                                             : 'cta_click';
 
@@ -2634,559 +2188,6 @@
         if (!localStorage.getItem('hasSeenWelcome')) {
             localStorage.setItem('hasSeenWelcome', 'true');
         }
-    }
-    // === ПОЛНОЦЕННЫЙ ЧАТ ПОДДЕРЖКИ ===
-    // CHAT_CONFIG загружается из внешнего файла config.js (скрыт через .gitignore)
-
-    let chatState = {
-        isOpen: false,
-        userId: localStorage.getItem('chatUserId') || 'user_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5),
-        lastUpdateId: parseInt(localStorage.getItem('chatLastUpdateId') || '0'),
-        processedReplies: JSON.parse(localStorage.getItem('chatProcessedReplies') || '[]'),
-        adminMode: false  // Режим разговора с админом — агент не отвечает
-    };
-
-    // Сохраняем userId сразу
-    if (!localStorage.getItem('chatUserId')) {
-        localStorage.setItem('chatUserId', chatState.userId);
-    }
-
-    function toggleChat() {
-        const chatWindow = document.getElementById('chatWindow');
-        const chatMessages = document.getElementById('chatMessages');
-        chatState.isOpen = !chatState.isOpen;
-        
-        if (chatState.isOpen) {
-            chatWindow.classList.add('open');
-            // Проверяем автоочистку при каждом открытии чата
-            checkAndClearChatHistory();
-            // Загружаем историю при открытии
-            loadChatHistory();
-            // Прокручиваем вниз
-            setTimeout(() => {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 100);
-            // Фокус на ввод
-            setTimeout(() => {
-                document.getElementById('chatInput').focus();
-            }, 300);
-        } else {
-            chatWindow.classList.remove('open');
-        }
-    }
-
-    function addMessage(text, type, save = true) {
-        const chatMessages = document.getElementById('chatMessages');
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${type}`;
-        
-        const time = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-        msgDiv.innerHTML = `${text}<span class="msg-time">${time}</span>`;
-        
-        chatMessages.appendChild(msgDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        
-        if (save && type !== 'system') {
-            saveMessageToHistory(text, type);
-        }
-    }
-
-    function addSystemMessage(text) {
-        addMessage(text, 'system', false);
-    }
-
-    function saveMessageToHistory(text, type) {
-        try {
-            let history = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-            history.push({
-                text: text,
-                type: type,
-                time: new Date().toISOString()
-            });
-            // Храним последние 100 сообщений
-            if (history.length > 100) {
-                history = history.slice(-100);
-            }
-            localStorage.setItem('chatHistory', JSON.stringify(history));
-        } catch(e) {
-            console.error('Ошибка сохранения истории:', e);
-        }
-    }
-
-    function loadChatHistory() {
-        const chatMessages = document.getElementById('chatMessages');
-        // Очищаем сообщения, но сохраняем typing indicator если есть
-        const typingIndicator = chatMessages.querySelector('.typing-indicator');
-        chatMessages.innerHTML = '';
-        
-        try {
-            const history = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-            history.forEach(msg => {
-                const msgDiv = document.createElement('div');
-                msgDiv.className = `message ${msg.type}`;
-                const time = new Date(msg.time).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-                msgDiv.innerHTML = `${msg.text}<span class="msg-time">${time}</span>`;
-                chatMessages.appendChild(msgDiv);
-            });
-        } catch(e) {
-            console.error('Ошибка загрузки истории:', e);
-        }
-        
-        // Добавляем typing indicator обратно
-        if (typingIndicator) {
-            chatMessages.appendChild(typingIndicator);
-        }
-    }
-
-    async function sendToTelegram(messageText) {
-        // Проверяем, что CHAT_CONFIG загружен и настроен
-        if (typeof CHAT_CONFIG === 'undefined' || !CHAT_CONFIG.botToken || !CHAT_CONFIG.chatId) {
-            console.warn('[Chat] CHAT_CONFIG не настроен — сообщение не отправлено в Telegram.');
-            addSystemMessage('ℹ️ Режим офлайн: твоё сообщение сохранено локально. Администратор увидит его при следующем входе.');
-            return false;
-        }
-        
-        const url = `https://api.telegram.org/bot${CHAT_CONFIG.botToken}/sendMessage`;
-        const text = `💬 Новое сообщение из чата на сайте!\n\nОт: ${chatState.userId}\nСообщение: ${messageText}\n\n📌 Чтобы ответить, напиши:\n/reply ${chatState.userId} ваш ответ`;
-        
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: CHAT_CONFIG.chatId,
-                    text: text,
-                    parse_mode: 'HTML'
-                })
-            });
-            
-            if (!response.ok) {
-                const errData = await response.json();
-                console.error('Telegram API error:', errData);
-                addSystemMessage('⚠️ Не удалось отправить сообщение. Попробуйте позже.');
-                return false;
-            }
-            return true;
-        } catch (error) {
-            console.error('Ошибка отправки в Telegram:', error);
-            addSystemMessage('⚠️ Ошибка соединения. Проверьте подключение к интернету.');
-            return false;
-        }
-    }
-
-    // === БАЗА ЗНАНИЙ АГЕНТА (автоответчик) ===
-    const AGENT_KNOWLEDGE_BASE = [
-        {
-            keywords: ['привет', 'здравствуй', 'хай', 'ку', 'hello', 'hi', 'салют', 'здаров', 'добрый день', 'добрый вечер', 'доброе утро'],
-            answer: 'Привет! 👋 Я — виртуальный помощник Mortis Play. Чем могу помочь?'
-        },
-        {
-            keywords: ['как дела', 'как ты', 'чё как', 'дела', 'как жизнь', 'как сам'],
-            answer: 'У меня всё отлично! 🚀 Готов помочь с любыми вопросами. А у тебя как?'
-        },
-        {
-            keywords: ['пока', 'до свидания', 'удачи', 'счастливо', 'прощай', 'увидимся'],
-            answer: 'Был рад помочь! 🙌 Если будут ещё вопросы — обращайся. Хорошего дня!'
-        },
-        {
-            keywords: ['спасиб', 'благодар', 'благодарю', 'thx', 'thanks', 'thank'],
-            answer: 'Всегда пожалуйста! 😊 Рад, что смог помочь. Обращайся если будут ещё вопросы.'
-        },
-        {
-            keywords: ['видео', 'ютуб', 'youtube', 'где видео', 'не грузит видео', 'не работает видео', 'не загружается видео', 'видео не показываются'],
-            answer: '🎬 Все мои видео можно найти на YouTube-канале: https://www.youtube.com/@MortisPlay\n\nЕсли видео не загружаются на сайте — попробуй включить VPN и обновить страницу. YouTube может быть замедлен в некоторых регионах.\n\nТакже можешь посмотреть архив видео на сайте в разделе "Видео" — там есть поиск и сортировка!'
-        },
-        {
-            keywords: ['сотрудничеств', 'реклам', 'предложени', 'коллаб', 'коллабораци', 'партнер', 'партнёр', 'предложить', 'коммерческ'],
-            answer: '🤝 По вопросам сотрудничества пиши на почту или в Telegram. Я передам твоё предложение администратору, и он свяжется с тобой!\n\nА пока можешь заполнить форму в разделе "Сотрудничество" на сайте.'
-        },
-        {
-            keywords: ['график', 'стрим', 'когда стрим', 'во сколько', 'расписани', 'когда будет стрим', 'прямой эфир', 'live'],
-            answer: '📅 Точного расписания стримов пока нет, но я стараюсь радовать вас контентом регулярно! Следи за новостями на сайте и в Telegram. Администратор может дать более точный ответ.'
-        },
-        {
-            keywords: ['твич', 'twitch', 'клип', 'хайлайт', 'нарезк'],
-            answer: '📺 Мой Twitch-канал: https://www.twitch.tv/mortisplay32\nТам можно найти клипы и хайлайты с моих стримов. Заходи!'
-        },
-        {
-            keywords: ['сайт', 'баг', 'ошибк', 'не работ', 'сломал', 'проблем', 'не грузит', 'не открыва', 'не загружает', 'вылета', 'глюч', 'тормоз'],
-            answer: '🛠 Спасибо, что сообщаешь! Расскажи подробнее, что именно не работает. Если проблема серьёзная, я передам администратору.\n\nПопробуй также: очистить кэш браузера, обновить страницу (F5) или открыть сайт в другом браузере.'
-        },
-        {
-            keywords: ['бот', 'телеграм', 'telegram', 'agentplay', 'тг'],
-            answer: '🤖 У меня есть Telegram-бот: @agentplay_bot\nТам можно задавать вопросы, отправлять предложки и смотреть цитаты. Попробуй!\n\nТакже можешь подписаться на Telegram-канал Mortis Play, чтобы не пропускать новости.'
-        },
-        {
-            keywords: ['кто ты', 'ты кто', 'что ты', 'расскажи о себе', 'представься', 'твоя роль'],
-            answer: 'Я — виртуальный помощник Mortis Play 🤖\n\nОтвечаю на частые вопросы, помогаю с навигацией по сайту и передаю важные сообщения администратору. Я знаю всё о сайте, видео, стримах и многом другом!\n\nЧем могу помочь?'
-        },
-        {
-            keywords: ['админ', 'администратор', 'человек', 'оператор', 'живой', 'позови', 'переведи', 'соедини'],
-            answer: '👤 Сейчас я передам твой вопрос администратору. Он ответит в ближайшее время!'
-        },
-        {
-            keywords: ['новост', 'новое', 'обновлени', 'апдейт', 'что нового', 'изменени'],
-            answer: '📰 Все свежие новости можно найти в разделе "Архив Новостей" на сайте. Там публикуются все важные обновления и анонсы!'
-        },
-        {
-            keywords: ['биографи', 'био', 'кто такой', 'кто это', 'расскажи о mortis', 'о тебе'],
-            answer: '📖 Подробную биографию Mortis Play можно почитать на странице "Биография" на сайте. Там рассказано всё: от начала пути до сегодняшних дней!'
-        },
-        {
-            keywords: ['qa', 'вопрос ответ', 'вопросы', 'часто задаваемые', 'f.a.q.', 'faq'],
-            answer: '❓ Раздел Q&A и FAQ помогут найти ответы на самые частые вопросы. Загляни туда — возможно, твой вопрос уже там!'
-        },
-        {
-            keywords: ['контакт', 'связаться', 'написать', 'почт', 'email', 'связь', 'обратная связь'],
-            answer: '📧 Связаться со мной можно через:\n• Форму в разделе "Сотрудничество" на сайте\n• Telegram-бота @agentplay_bot\n• Чат поддержки прямо здесь (я передам админу)'
-        },
-        {
-            keywords: ['пароль', 'логин', 'регистраци', 'аккаунт', 'вход', 'профиль'],
-            answer: '🔐 На сайте пока нет регистрации и личных кабинетов. Все функции доступны без входа. Если тебе нужна помощь с чем-то конкретным — напиши, я помогу!'
-        },
-        {
-            keywords: ['игра', 'гейминг', 'прохождени', 'летсплей', 'game', 'геймплей'],
-            answer: '🎮 Mortis Play занимается созданием игрового контента! Все видео и стримы можно найти на YouTube и Twitch. Заходи посмотреть!'
-        },
-        {
-            keywords: ['музык', 'музло', 'саундтрек', 'фоновая музыка', 'трекс'],
-            answer: '🎵 Иногда в видео используется фоновая музыка. Конкретные треки обычно указываются в описании под видео на YouTube.'
-        },
-        {
-            keywords: ['донат', 'поддержать', 'спонсировать', 'донейт', 'подписка', 'boosty', 'patreon'],
-            answer: '❤️ Спасибо, что хочешь поддержать! Лучшая поддержка — это просмотры, лайки и подписка на YouTube и Twitch. Если появятся другие способы поддержки, я обязательно сообщу!'
-        },
-        {
-            keywords: ['мод', 'модератор', 'админка', 'прав', 'нарушени', 'жалоб'],
-            answer: '🛡 Если у тебя есть жалоба или вопрос к модерации — напиши подробнее, и я передам администратору.'
-        },
-        {
-            keywords: ['когда', 'скоро', 'выйдет', 'релиз', 'анонс', 'ожидать'],
-            answer: '⏳ Пока точных дат нет. Как только появится информация — я сразу сообщу в новостях на сайте и в Telegram. Следи за обновлениями!'
-        },
-        {
-            keywords: ['дизайн', 'вёрстк', 'оформлени', 'тема', 'тёмная тема', 'светлая тема', 'внешний вид'],
-            answer: '🎨 На сайте есть тёмная и светлая тема — можно переключать кнопкой вверху страницы или в настройках. Также доступны разные стили оформления!'
-        },
-        {
-            keywords: ['мобильн', 'телефон', 'андроид', 'ios', 'айфон', 'планшет', 'приложени', 'app'],
-            answer: '📱 Сайт отлично работает на мобильных устройствах! Специальное приложение пока не требуется — весь функционал доступен через браузер на телефоне.'
-        },
-        {
-            keywords: ['как пользоваться сайтом', 'как работать', 'навигаци', 'как найти', 'как открыть', 'как перейти', 'как посмотреть', 'как зайти', 'как использовать'],
-            answer: '🌐 Пользоваться сайтом очень просто!\n\n• **Главная** — приветствие и статистика канала\n• **Видео** — все видео с YouTube с поиском и сортировкой\n• **Twitch** — клипы и хайлайты со стримов\n• **Сотрудничество** — форма для связи\n• **Архив Новостей** — все обновления сайта\n• **Биография / Q&A / FAQ** — полезные страницы\n\nЕсли нужна помощь с чем-то конкретным — просто напиши!'
-        },
-        {
-            keywords: ['как скачать', 'скачать видео', 'сохранить', 'загрузить', 'download'],
-            answer: '📥 Скачивание видео напрямую с сайта не предусмотрено. Все видео можно смотреть на YouTube-канале @MortisPlay. Там же есть возможность сохранять видео в плейлисты или скачивать через сторонние сервисы.'
-        },
-        {
-            keywords: ['ошибка 404', '404', 'страница не найдена', 'не открывается страница', 'пустая страница'],
-            answer: '🔍 Если ты видишь ошибку 404 или страница не открывается — попробуй:\n1. Обновить страницу (F5)\n2. Проверить ссылку\n3. Открыть сайт через VPN\n\nЕсли ничего не помогает — напиши мне, я передам администратору!'
-        },
-        {
-            keywords: ['темная тема', 'светлая тема', 'переключить тему', 'сменить тему', 'ночной режим'],
-            answer: '🎨 Переключить тему можно кнопкой 🌙/☀️ в правом верхнем углу сайта (на ПК) или в нижнем меню (на телефоне). Также можно зайти в настройки ⚙️ и выбрать тему там!'
-        },
-        {
-            keywords: ['поиск', 'найти', 'искать', 'фильтр', 'сортировк'],
-            answer: '🔎 На сайте есть поиск по видео — просто введи название в поле поиска в разделе "Видео". Также можно сортировать видео по дате и популярности!'
-        }
-    ];
-
-    function findAgentAnswer(text) {
-        const lowerText = text.toLowerCase();
-        
-        // Сначала проверяем, не хочет ли пользователь поговорить с админом
-        const adminKeywords = ['админ', 'администратор', 'человек', 'оператор', 'живой', 'позови', 'переведи'];
-        const wantsAdmin = adminKeywords.some(keyword => lowerText.includes(keyword));
-        
-        if (wantsAdmin) {
-            return { answer: null, needsAdmin: true };
-        }
-        
-        // Собираем все совпадения с весом (количество совпавших ключевых слов)
-        let bestMatch = null;
-        let bestScore = 0;
-        
-        for (const item of AGENT_KNOWLEDGE_BASE) {
-            let score = 0;
-            for (const keyword of item.keywords) {
-                if (lowerText.includes(keyword)) {
-                    // Чем длиннее ключевое слово, тем больше вес (точнее совпадение)
-                    score += keyword.length;
-                }
-            }
-            if (score > bestScore) {
-                bestScore = score;
-                bestMatch = item;
-            }
-        }
-        
-        // Если нашли совпадение с достаточным весом — отвечаем
-        if (bestMatch && bestScore > 3) {
-            return { answer: bestMatch.answer, needsAdmin: false };
-        }
-        
-        // Если не нашли — нужна помощь админа
-        return { answer: null, needsAdmin: true };
-    }
-
-    function showTypingIndicator(show) {
-        const chatMessages = document.getElementById('chatMessages');
-        // Удаляем старый индикатор если он есть
-        const oldIndicator = chatMessages.querySelector('.typing-indicator');
-        if (oldIndicator) oldIndicator.remove();
-        
-        if (show) {
-            const indicator = document.createElement('div');
-            indicator.className = 'typing-indicator';
-            indicator.innerHTML = '<span></span><span></span><span></span>';
-            indicator.style.display = 'flex';
-            chatMessages.appendChild(indicator);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-    }
-
-    async function sendMessage() {
-        const input = document.getElementById('chatInput');
-        const sendBtn = document.getElementById('chatSendBtn');
-        const text = input.value.trim();
-        
-        if (!text) return;
-        
-        // Блокируем кнопку
-        sendBtn.disabled = true;
-        input.disabled = true;
-        
-        // Показываем сообщение пользователя
-        addMessage(escapeHtml(text), 'user');
-        input.value = '';
-        
-        // Если активен режим админа — все сообщения уходят напрямую админу
-        if (chatState.adminMode) {
-            showTypingIndicator(true);
-            await new Promise(resolve => setTimeout(resolve, 800));
-            showTypingIndicator(false);
-            
-            addSystemMessage('⏳ Отправляю администратору...');
-            const sent = await sendToTelegram(text);
-            if (sent) {
-                addSystemMessage('✅ Администратор получил твоё сообщение.');
-            }
-        } else {
-            // Ищем ответ в базе знаний агента
-            const agentResult = findAgentAnswer(text);
-            
-            if (agentResult.needsAdmin) {
-                // Показываем индикатор печати
-                showTypingIndicator(true);
-                
-                // Небольшая задержка для естественности
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                showTypingIndicator(false);
-                
-                // Отправляем админу в Telegram
-                addSystemMessage('⏳ Передаю вопрос администратору...');
-                const sent = await sendToTelegram(text);
-                
-                if (sent) {
-                    addSystemMessage('✅ Сообщение передано! Администратор ответит в ближайшее время.');
-                }
-            } else {
-                // Агент отвечает сам
-                showTypingIndicator(true);
-                
-                // Задержка как будто агент "печатает"
-                const delay = Math.min(500 + agentResult.answer.length * 15, 2500);
-                await new Promise(resolve => setTimeout(resolve, delay));
-                
-                showTypingIndicator(false);
-                
-                // Показываем ответ агента
-                addMessage('🤖 ' + agentResult.answer, 'admin');
-            }
-        }
-        
-        // Разблокируем
-        sendBtn.disabled = false;
-        input.disabled = false;
-        input.focus();
-    }
-
-    function sendQuickReply(text) {
-        document.getElementById('chatInput').value = text;
-        sendMessage();
-    }
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function closeAdminMode() {
-        chatState.adminMode = false;
-        addSystemMessage('✅ Режим разговора с админом завершён. Я снова отвечаю на вопросы!');
-        // Убираем кнопку закрытия если она есть
-        const closeBtn = document.getElementById('adminModeCloseBtn');
-        if (closeBtn) closeBtn.remove();
-    }
-
-    async function checkForAdminReplies() {
-        try {
-            // Пытаемся прочитать JSON-файл с ответами от админа
-            const response = await fetch('./chat_replies.json?t=' + Date.now(), {
-                method: 'GET',
-                headers: { 'Accept': 'application/json' }
-            });
-            if (!response.ok) {
-                // Файла ещё нет (404) — это нормально, не выводим в консоль
-                return;
-            }
-            
-            const data = await response.json();
-            if (!data || !data.replies || !Array.isArray(data.replies)) return;
-            
-            let hasNew = false;
-            
-            data.replies.forEach(reply => {
-                // Проверяем, предназначен ли ответ этому пользователю
-                if (reply.user_id === chatState.userId) {
-                    // Проверяем, не обработан ли уже этот ответ
-                    const replyKey = reply.id || (reply.user_id + '_' + reply.text + '_' + reply.timestamp);
-                    if (!chatState.processedReplies.includes(replyKey)) {
-                        // Добавляем ответ админа в чат
-                        addMessage('🛡️ ' + escapeHtml(reply.text), 'admin');
-                        chatState.processedReplies.push(replyKey);
-                        hasNew = true;
-                        
-                        // Включаем режим админа — агент больше не отвечает
-                        if (!chatState.adminMode) {
-                            chatState.adminMode = true;
-                            addSystemMessage('🔵 Теперь ты общаешься напрямую с администратором. Все сообщения будут уходить ему. Чтобы вернуться к агнету, нажми "Закрыть вопрос".');
-                            
-                            // Добавляем кнопку "Закрыть вопрос"
-                            const quickReplies = document.getElementById('chatQuickReplies');
-                            const existingBtn = document.getElementById('adminModeCloseBtn');
-                            if (quickReplies && !existingBtn) {
-                                const closeBtn = document.createElement('button');
-                                closeBtn.id = 'adminModeCloseBtn';
-                                closeBtn.className = 'quick-reply-btn';
-                                closeBtn.style.cssText = 'background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1)); border-color: #ef4444; color: #ef4444; font-weight: 700;';
-                                closeBtn.textContent = '🔴 Закрыть вопрос';
-                                closeBtn.onclick = closeAdminMode;
-                                quickReplies.prepend(closeBtn);
-                            }
-                        }
-                    }
-                }
-            });
-            
-            if (hasNew) {
-                // Сохраняем обработанные ответы
-                localStorage.setItem('chatProcessedReplies', JSON.stringify(chatState.processedReplies));
-                
-                // Показываем системное уведомление если чат закрыт
-                if (!chatState.isOpen) {
-                    showNotification('📩 У тебя новый ответ от администратора в чате поддержки!', {
-                        type: 'success',
-                        duration: 5000,
-                        title: 'Чат поддержки'
-                    });
-                    // Также отправляем системное (браузерное) уведомление, если разрешено
-                    sendSystemNotification('📩 Новый ответ в чате поддержки', 'Администратор ответил на твой вопрос! Нажми, чтобы открыть чат.');
-                }
-            }
-        } catch (error) {
-            // Ошибка чтения файла — игнорируем (файла может не быть)
-            if (error.name !== 'TypeError' && !error.message.includes('Failed to fetch')) {
-                console.error('checkForAdminReplies error:', error);
-            }
-        }
-    }
-
-    // === АВТООЧИСТКА ИСТОРИИ ЧАТА КАЖДЫЕ 12 ЧАСОВ ===
-    const CHAT_CLEAR_INTERVAL = 12 * 60 * 60 * 1000; // 12 часов в миллисекундах
-
-    function checkAndClearChatHistory() {
-        try {
-            const lastClear = localStorage.getItem('chatLastClearTime');
-            const now = Date.now();
-            
-            if (lastClear) {
-                const timeSinceLastClear = now - parseInt(lastClear);
-                // Если прошло меньше 12 часов — ничего не делаем
-                if (timeSinceLastClear < CHAT_CLEAR_INTERVAL) {
-                    return;
-                }
-            }
-            
-            // Очищаем историю сообщений
-            localStorage.removeItem('chatHistory');
-            localStorage.removeItem('chatProcessedReplies');
-            localStorage.removeItem('chatLastUpdateId');
-            
-            // Сбрасываем processedReplies в chatState
-            chatState.processedReplies = [];
-            chatState.lastUpdateId = 0;
-            chatState.adminMode = false;
-            
-            // Сохраняем время последней очистки
-            localStorage.setItem('chatLastClearTime', now.toString());
-            
-            // Если чат открыт — показываем системное сообщение об очистке
-            if (chatState.isOpen) {
-                const chatMessages = document.getElementById('chatMessages');
-                if (chatMessages) {
-                    // Очищаем все сообщения в DOM
-                    chatMessages.innerHTML = '';
-                    
-                    // Добавляем приветственное сообщение заново
-                    addMessage('🤖 Привет! Я — виртуальный помощник Mortis Play. Могу ответить на частые вопросы или передать твоё сообщение администратору. Чем помочь?', 'admin');
-                }
-            }
-            
-            // Показываем уведомление об очистке
-            showNotification('🧹 История чата поддержки очищена (автоочистка каждые 12 часов)', {
-                type: 'info',
-                duration: 4000,
-                silent: false,
-                force: true,
-                title: 'Чат поддержки'
-            });
-            
-            console.log('[Chat] История чата автоматически очищена:', new Date().toLocaleString('ru-RU'));
-        } catch(e) {
-            console.error('Ошибка при автоочистке чата:', e);
-        }
-    }
-
-    function initSupportChat() {
-        // Проверяем и очищаем историю при загрузке (если прошло 12+ часов)
-        checkAndClearChatHistory();
-        
-        // Загружаем историю при инициализации
-        loadChatHistory();
-        
-        // Добавляем приветственное сообщение если история пуста
-        try {
-            const history = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-            if (history.length === 0) {
-                addMessage('🤖 Привет! Я — виртуальный помощник Mortis Play. Могу ответить на частые вопросы или передать твоё сообщение администратору. Чем помочь?', 'admin');
-            }
-        } catch(e) {}
-        
-        // Запускаем проверку ответов каждые 15 секунд
-        setInterval(checkForAdminReplies, 15000);
-        
-        // Первая проверка через 2 секунды
-        setTimeout(checkForAdminReplies, 2000);
-        
-        // Запускаем проверку автоочистки каждые 30 минут
-        // (проверяет, не прошло ли 12 часов с последней очистки)
-        setInterval(checkAndClearChatHistory, 30 * 60 * 1000);
     }
     
     document.addEventListener('DOMContentLoaded', async () => {
@@ -3220,7 +2221,6 @@
         initSettings();
         await showSiteUpdateNotice();
         initNavigation();
-        initSupportChat();
         initAnalyticsTracking();
         initScrollTopButton();
         currentVideoSystem = new VideoSystem();
