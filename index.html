@@ -2658,6 +2658,8 @@
         
         if (chatState.isOpen) {
             chatWindow.classList.add('open');
+            // Проверяем автоочистку при каждом открытии чата
+            checkAndClearChatHistory();
             // Загружаем историю при открытии
             loadChatHistory();
             // Прокручиваем вниз
@@ -3095,7 +3097,66 @@
         }
     }
 
+    // === АВТООЧИСТКА ИСТОРИИ ЧАТА КАЖДЫЕ 12 ЧАСОВ ===
+    const CHAT_CLEAR_INTERVAL = 12 * 60 * 60 * 1000; // 12 часов в миллисекундах
+
+    function checkAndClearChatHistory() {
+        try {
+            const lastClear = localStorage.getItem('chatLastClearTime');
+            const now = Date.now();
+            
+            if (lastClear) {
+                const timeSinceLastClear = now - parseInt(lastClear);
+                // Если прошло меньше 12 часов — ничего не делаем
+                if (timeSinceLastClear < CHAT_CLEAR_INTERVAL) {
+                    return;
+                }
+            }
+            
+            // Очищаем историю сообщений
+            localStorage.removeItem('chatHistory');
+            localStorage.removeItem('chatProcessedReplies');
+            localStorage.removeItem('chatLastUpdateId');
+            
+            // Сбрасываем processedReplies в chatState
+            chatState.processedReplies = [];
+            chatState.lastUpdateId = 0;
+            chatState.adminMode = false;
+            
+            // Сохраняем время последней очистки
+            localStorage.setItem('chatLastClearTime', now.toString());
+            
+            // Если чат открыт — показываем системное сообщение об очистке
+            if (chatState.isOpen) {
+                const chatMessages = document.getElementById('chatMessages');
+                if (chatMessages) {
+                    // Очищаем все сообщения в DOM
+                    chatMessages.innerHTML = '';
+                    
+                    // Добавляем приветственное сообщение заново
+                    addMessage('🤖 Привет! Я — виртуальный помощник Mortis Play. Могу ответить на частые вопросы или передать твоё сообщение администратору. Чем помочь?', 'admin');
+                }
+            }
+            
+            // Показываем уведомление об очистке
+            showNotification('🧹 История чата поддержки очищена (автоочистка каждые 12 часов)', {
+                type: 'info',
+                duration: 4000,
+                silent: false,
+                force: true,
+                title: 'Чат поддержки'
+            });
+            
+            console.log('[Chat] История чата автоматически очищена:', new Date().toLocaleString('ru-RU'));
+        } catch(e) {
+            console.error('Ошибка при автоочистке чата:', e);
+        }
+    }
+
     function initSupportChat() {
+        // Проверяем и очищаем историю при загрузке (если прошло 12+ часов)
+        checkAndClearChatHistory();
+        
         // Загружаем историю при инициализации
         loadChatHistory();
         
@@ -3112,6 +3173,10 @@
         
         // Первая проверка через 2 секунды
         setTimeout(checkForAdminReplies, 2000);
+        
+        // Запускаем проверку автоочистки каждые 30 минут
+        // (проверяет, не прошло ли 12 часов с последней очистки)
+        setInterval(checkAndClearChatHistory, 30 * 60 * 1000);
     }
     
     document.addEventListener('DOMContentLoaded', async () => {
