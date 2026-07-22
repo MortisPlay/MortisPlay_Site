@@ -2739,6 +2739,13 @@
     }
 
     async function sendToTelegram(messageText) {
+        // Проверяем, что CHAT_CONFIG загружен и настроен
+        if (typeof CHAT_CONFIG === 'undefined' || !CHAT_CONFIG.botToken || !CHAT_CONFIG.chatId) {
+            console.warn('[Chat] CHAT_CONFIG не настроен — сообщение не отправлено в Telegram.');
+            addSystemMessage('ℹ️ Режим офлайн: твоё сообщение сохранено локально. Администратор увидит его при следующем входе.');
+            return false;
+        }
+        
         const url = `https://api.telegram.org/bot${CHAT_CONFIG.botToken}/sendMessage`;
         const text = `💬 Новое сообщение из чата на сайте!\n\nОт: ${chatState.userId}\nСообщение: ${messageText}\n\n📌 Чтобы ответить, напиши:\n/reply ${chatState.userId} ваш ответ`;
         
@@ -3030,9 +3037,12 @@
     async function checkForAdminReplies() {
         try {
             // Пытаемся прочитать JSON-файл с ответами от админа
-            const response = await fetch('./chat_replies.json?t=' + Date.now());
+            const response = await fetch('./chat_replies.json?t=' + Date.now(), {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
             if (!response.ok) {
-                // Файла ещё нет — это нормально
+                // Файла ещё нет (404) — это нормально, не выводим в консоль
                 return;
             }
             
