@@ -411,7 +411,8 @@
       box-shadow: 0 12px 30px rgba(2, 6, 23, 0.28);
       backdrop-filter: blur(16px);
       border-radius: 9999px;
-      padding: 0.4rem 0.5rem;
+      padding: 0.55rem 0.75rem;
+      min-height: 3.95rem;
     }
 
     .light-theme .topbar-shell {
@@ -465,6 +466,9 @@
       border-bottom: 1px solid var(--glass-border);
       transition: all 0.3s ease;
     }
+    @media (max-width: 768px) {
+      header { top: 0; left: 0; right: 0; z-index: 1000; }
+    }
     .light-theme header {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(15px);
@@ -472,7 +476,8 @@
     }
 
     #themeToggle,
-    #settingsToggle {
+    #settingsToggle,
+    .support-chat-toggle-btn {
       width: 44px; height: 44px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -489,14 +494,28 @@
       z-index: 1;
     }
     #themeToggle:hover,
-    #settingsToggle:hover {
+    #settingsToggle:hover,
+    .support-chat-toggle-btn:hover {
       transform: scale(1.06) rotate(6deg);
       box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45);
       filter: brightness(1.08);
     }
     body.light-theme #themeToggle,
-    body.light-theme #settingsToggle {
+    body.light-theme #settingsToggle,
+    body.light-theme .support-chat-toggle-btn {
       background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+    }
+    
+    /* Специальный стиль для кнопки Telegram — фирменный синий */
+    .support-chat-toggle-btn {
+      background: linear-gradient(135deg, #2AABEE 0%, #229ED9 100%) !important;
+      box-shadow: 0 4px 15px rgba(42, 171, 238, 0.4) !important;
+    }
+    .support-chat-toggle-btn:hover {
+      box-shadow: 0 8px 25px rgba(42, 171, 238, 0.55) !important;
+    }
+    body.light-theme .support-chat-toggle-btn {
+      background: linear-gradient(135deg, #2AABEE 0%, #229ED9 100%) !important;
     }
 
     .mobile-menu-backdrop {
@@ -743,27 +762,30 @@
         width: calc(100vw - 1.25rem);
         left: 50%;
         right: auto;
-        bottom: 0.75rem;
+        bottom: 5.5rem;
         border-radius: 1rem;
         padding: 0.85rem 0.95rem;
         transform: translate(-50%, 120%);
       }
       .notification.show { transform: translate(-50%, 0); }
       .section, section[id] { padding: 4rem 0; }
-      .topbar-shell { padding: 0.35rem 0.4rem; }
+      header { top: 0.7rem; left: 0.6rem; right: 0.6rem; border-radius: 1rem; }
+      .topbar-shell { padding: 0.4rem 0.45rem; min-height: 3.45rem; border-radius: 1rem; }
       .topbar-shell a:first-child .font-bold { font-size: 0.95rem; }
       .topbar-shell a:first-child .text-xs { display: none; }
       .topbar-shell a:first-child .w-10 { width: 2.4rem; height: 2.4rem; }
+      nav.container-padding { padding-left: 0.6rem; padding-right: 0.6rem; }
       .video-player-container iframe,
       .aspect-video iframe,
       .aspect-video { min-height: 280px; }
+    }
+    @media (max-width: 768px) {
+      header { display: none !important; }
     }
     @media (max-width: 480px) {
       .gradient-text { font-size: 2rem !important; }
       .btn-primary, .btn-secondary { padding: 0.625rem 1.25rem; font-size: 0.875rem; }
       .search-input, .sort-select, .date-filter-btn { padding: 0.625rem 1rem; font-size: 0.9rem; }
-      header nav .flex.items-center.gap-3 { gap: 0.5rem; }
-      #themeToggle, #settingsToggle { width: 40px; height: 40px; }
       .topbar-shell { padding: 0.3rem 0.35rem; }
       .topbar-shell a:first-child .font-bold { font-size: 0.9rem; }
       .topbar-shell a:first-child .w-10 { width: 2.2rem; height: 2.2rem; }
@@ -798,7 +820,60 @@
     ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 5px; }
 
     .section { padding: 6rem 0; }
-    @media (max-width: 768px) { .section { padding: 4rem 0; } }
+    @media (max-width: 768px) { 
+      .section { padding: 4rem 0; }
+      main#siteContent { padding-bottom: 5rem; }
+    }
+
+    /* Mobile Bottom Navigation */
+    .mobile-bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 5rem;
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(30, 41, 59, 0.95) 100%);
+      border-top: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 999;
+      gap: 0.5rem;
+      padding: 0.5rem;
+    }
+    @media (min-width: 769px) {
+      .mobile-bottom-nav { display: none; }
+    }
+    .mobile-bottom-nav button,
+    .mobile-bottom-nav a {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      padding: 0.5rem;
+      border-radius: 0.75rem;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      font-size: 0.65rem;
+      font-weight: 600;
+      min-height: 4rem;
+    }
+    .mobile-bottom-nav button:active,
+    .mobile-bottom-nav a:active {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--primary);
+      color: var(--text-primary);
+    }
+    .mobile-bottom-nav i {
+      font-size: 1.25rem;
+    }
 
     footer { background: var(--bg-secondary); border-top: 1px solid var(--glass-border); }
     .scroll-progress {
@@ -931,15 +1006,174 @@
       .scroll-top-btn { bottom: 80px; }
     }
     
-    /* Пульсация кнопки "?" — быстрое мерцание/пульс каждый день до 23.07.2026 10:00 */
-    .secret-pulse-btn {
-      animation: secretPulse 0.6s ease-in-out infinite !important;
+    /* Пульсация для кнопки с вопросительным знаком */
+    @keyframes questionPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4); }
+      50% { transform: scale(1.08); box-shadow: 0 4px 35px rgba(99, 102, 241, 0.7), 0 0 50px rgba(99, 102, 241, 0.3); }
     }
-    @keyframes secretPulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
-      25% { transform: scale(1.08); box-shadow: 0 0 12px 4px rgba(99, 102, 241, 0.5); }
-      50% { transform: scale(0.95); box-shadow: 0 0 20px 8px rgba(245, 158, 11, 0.6); }
-      75% { transform: scale(1.05); box-shadow: 0 0 12px 4px rgba(99, 102, 241, 0.5); }
+    .pulse-btn {
+      animation: questionPulse 1.2s ease-in-out infinite;
+    }
+    .pulse-btn:hover {
+      animation-play-state: paused;
+    }
+    
+    /* Чат поддержки Telegram */
+    .support-chat-modal .modal-content {
+      max-width: 420px;
+      max-height: 80vh;
+      padding: 0;
+      overflow: hidden;
+      border-radius: 1.5rem;
+    }
+    .support-chat-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .support-chat-header h3 {
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .support-chat-header h3 i {
+      font-size: 1.3rem;
+    }
+    .support-chat-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .support-chat-close:hover {
+      background: rgba(255,255,255,0.25);
+      transform: rotate(90deg);
+    }
+    .support-chat-body {
+      padding: 1.25rem 1.5rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+    }
+    .support-chat-body p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .support-chat-body .chat-iframe-container {
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      background: var(--bg-secondary);
+      min-height: 340px;
+      max-height: 420px;
+      position: relative;
+    }
+    .support-chat-body .chat-iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 340px;
+      max-height: 420px;
+      border: none;
+    }
+    .support-chat-body .chat-iframe-container .iframe-fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-secondary);
+      padding: 2rem;
+      text-align: center;
+      gap: 1rem;
+    }
+    .support-chat-body .chat-iframe-container .iframe-fallback i {
+      font-size: 3rem;
+      color: var(--primary);
+      opacity: 0.6;
+    }
+    .support-chat-body .chat-iframe-container .iframe-fallback p {
+      font-size: 0.85rem;
+      margin-bottom: 0;
+    }
+    .support-chat-footer {
+      padding: 1rem 1.5rem 1.25rem;
+      background: var(--card-bg);
+      border-top: 1px solid var(--glass-border);
+      backdrop-filter: blur(12px);
+    }
+    .support-chat-footer .btn-telegram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      width: 100%;
+      padding: 0.85rem 1.5rem;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #2AABEE 0%, #229ED9 100%);
+      color: white;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(42, 171, 238, 0.35);
+    }
+    .support-chat-footer .btn-telegram:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(42, 171, 238, 0.5);
+      filter: brightness(1.08);
+    }
+    .support-chat-footer .btn-telegram i {
+      font-size: 1.2rem;
+    }
+    .support-chat-footer .hint-text {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.6rem;
+      opacity: 0.7;
+    }
+    @media (max-width: 480px) {
+      .support-chat-modal .modal-content {
+        max-width: 96%;
+        max-height: 90vh;
+        border-radius: 1.25rem;
+      }
+      .support-chat-header {
+        padding: 1rem 1.25rem;
+      }
+      .support-chat-body {
+        padding: 1rem 1.25rem;
+      }
+      .support-chat-body .chat-iframe-container {
+        min-height: 280px;
+        max-height: 360px;
+      }
+      .support-chat-body .chat-iframe-container iframe {
+        min-height: 280px;
+        max-height: 360px;
+      }
+      .support-chat-footer {
+        padding: 0.85rem 1.25rem 1rem;
+      }
     }
   </style>
 </head>
@@ -966,7 +1200,10 @@
         <a href="#video" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-play-circle w-5"></i><span>Видео</span></a>
         <a href="news-archive.html" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-box-archive w-5"></i><span>Архив Новостей</span></a>
         <a href="#twitch-clips" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fab fa-twitch w-5"></i><span>Twitch</span></a>
-        <a href="#contact" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-envelope w-5"></i><span>Контакты</span></a>
+        <a href="#contact" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-envelope w-5"></i><span>Сотрудничество</span></a>
+        <button id="mobileSupportChatToggle" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium w-full text-left" style="background: linear-gradient(135deg, rgba(42, 171, 238, 0.15), rgba(34, 158, 217, 0.1)); border: 1px solid rgba(42, 171, 238, 0.2); color: var(--text-primary);">
+          <i class="fab fa-telegram w-5" style="color: #2AABEE;"></i><span>Чат поддержки</span>
+        </button>
       </nav>
       <div class="pt-8 border-t" style="border-color: var(--glass-border);">
         <div class="text-sm mb-4 font-medium" style="color: var(--text-secondary);">Быстрые ссылки:</div>
@@ -1049,7 +1286,7 @@
           <input id="animationsToggle" type="checkbox" class="w-5 h-5 accent-indigo-500" checked>
         </label>
         <label class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
-          <span>Скрывать уведомления</span>
+          <span>Скрыть всплывающее уведомление</span>
           <input id="notificationsToggle" type="checkbox" class="w-5 h-5 accent-indigo-500" checked>
         </label>
         <label class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
@@ -1060,35 +1297,61 @@
           <span>Показывать уведомление об обновлениях</span>
           <input id="updateNoticeToggle" type="checkbox" class="w-5 h-5 accent-indigo-500" checked>
         </label>
-
-        <div class="rounded-2xl p-4 settings-soon-card">
-          <div class="text-sm font-semibold uppercase tracking-[0.2em] mb-3" style="color: var(--text-secondary);">Скоро</div>
-          <div class="space-y-3">
-            <div class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.06); pointer-events: none;">
-              <div>
-                <div class="font-medium">Персональные уведомления</div>
-                <div class="text-sm mt-1" style="color: var(--text-secondary);">Более точные напоминания и подборки.</div>
-              </div>
-              <span class="settings-soon-pill">Скоро</span>
+        <div class="rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
+          <label class="flex items-center justify-between">
+            <div>
+              <div class="font-medium">Персональные уведомления</div>
+              <div class="text-sm mt-1" style="color: var(--text-secondary);">Более точные напоминания и подборки.</div>
             </div>
-            <div class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.06); pointer-events: none;">
-              <div>
-                <div class="font-medium">Автосинхронизация контента</div>
-                <div class="text-sm mt-1" style="color: var(--text-secondary);">Обновления без ручной проверки.</div>
-              </div>
-              <span class="settings-soon-pill">Скоро</span>
-            </div>
-            <div class="flex items-center justify-between rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.06); pointer-events: none;">
-              <div>
-                <div class="font-medium">Сохранённые фильтры</div>
-                <div class="text-sm mt-1" style="color: var(--text-secondary);">Быстрое возвращение к любимым настройкам.</div>
-              </div>
-              <span class="settings-soon-pill">Скоро</span>
-            </div>
+            <input id="personalNotificationsToggle" type="checkbox" class="w-5 h-5 accent-indigo-500" checked>
+          </label>
+          <div class="mt-3 space-y-2 pl-1">
+            <label class="flex items-center justify-between rounded-lg px-3 py-2 text-sm" style="background: rgba(255,255,255,0.05);">
+              <span>Новое видео на канале</span>
+              <input id="newVideoNotificationsToggle" type="checkbox" class="w-4 h-4 accent-indigo-500" checked>
+            </label>
+            <label class="flex items-center justify-between rounded-lg px-3 py-2 text-sm" style="background: rgba(255,255,255,0.05);">
+              <span>Новое обновление на сайте</span>
+              <input id="siteUpdateNotificationsToggle" type="checkbox" class="w-4 h-4 accent-indigo-500" checked>
+            </label>
           </div>
         </div>
       </div>
       <button onclick="closeSettingsModal()" class="btn-primary mt-6 w-full">Сохранить</button>
+    </div>
+  </div>
+
+  <!-- Модальное окно чата поддержки Telegram -->
+  <div id="supportChatModal" class="modal-backdrop support-chat-modal" onclick="closeSupportChatModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="support-chat-header">
+        <h3><i class="fab fa-telegram"></i> Чат поддержки</h3>
+        <button class="support-chat-close" onclick="closeSupportChatModal()" aria-label="Закрыть чат">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="support-chat-body">
+        <p>Задай вопрос нашему агенту поддержки. Мы стараемся отвечать максимально быстро!</p>
+        <div class="chat-iframe-container" id="chatIframeContainer">
+          <iframe id="telegramChatIframe"
+            src="https://t.me/agentplay_bot"
+            title="Чат поддержки Telegram"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+          <div class="iframe-fallback" id="chatFallback">
+            <i class="fab fa-telegram"></i>
+            <p>Не удалось загрузить чат напрямую. Нажмите кнопку ниже, чтобы открыть диалог с ботом в Telegram.</p>
+          </div>
+        </div>
+      </div>
+      <div class="support-chat-footer">
+        <a href="https://t.me/agentplay_bot" target="_blank" rel="noopener noreferrer" class="btn-telegram" onclick="trackSupportChatOpen()">
+          <i class="fab fa-telegram"></i> Открыть в Telegram
+        </a>
+        <p class="hint-text">Нажмите «Start» / «Запустить» в боте, чтобы начать диалог</p>
+      </div>
     </div>
   </div>
 
@@ -1106,9 +1369,12 @@
           <a href="#video" class="nav-link">Видео</a>
           <a href="news-archive.html" target="_blank" rel="noopener noreferrer" class="nav-link external">Архив Новостей</a>
           <a href="#twitch-clips" class="nav-link">Twitch</a>
-          <a href="#contact" class="nav-link">Контакты</a>
+          <a href="#contact" class="nav-link">Сотрудничество</a>
         </div>
         <div class="flex items-center gap-3">
+          <button id="supportChatToggle" class="support-chat-toggle-btn" aria-label="Чат поддержки" title="Чат поддержки">
+            <i class="fab fa-telegram"></i>
+          </button>
           <button id="settingsToggle" aria-label="Настройки" title="Настройки"><i class="fas fa-gear"></i></button>
           <button id="themeToggle" aria-label="Сменить тему" title="Сменить тему"><i class="fas fa-sun"></i></button>
           <button id="menuToggle" class="md:hidden w-10 h-10 rounded-lg flex items-center justify-center transition-colors" style="background: var(--glass-bg);"><i class="fas fa-bars text-xl"></i></button>
@@ -1130,7 +1396,6 @@
               <a href="faq.html" target="_blank" class="btn-primary btn-action-faq animate-fadeInUp"><i class="fas fa-circle-question"></i> FAQ</a>
               <a href="year-review.html" target="_blank" class="btn-primary btn-action-year animate-fadeInUp"><i class="fas fa-calendar-days"></i> Итоги года</a>
               <a href="news-archive.html" target="_blank" rel="noopener noreferrer" class="btn-primary btn-action-contact animate-fadeInUp"><i class="fas fa-box-archive"></i> Архив Новостей</a>
-              <a href="secret/mortis.html" target="_blank" class="btn-secondary animate-fadeInUp rgb-glow-btn" aria-label="Вопрос">?</a>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto animate-fadeInUp" style="animation-delay: 0.5s">
@@ -1204,7 +1469,7 @@
           <i class="fas fa-video-slash text-5xl mb-4" style="color: var(--text-secondary);"></i>
           <h3 class="text-xl font-semibold mb-2">Видео не найдены</h3>
           <p style="color: var(--text-secondary); margin-bottom: 1rem;">Попробуйте изменить параметры поиска или обратитесь к FAQ</p>
-          <button id="videoFaqBtn" class="btn-secondary" onclick="openVideoFaqModal()">
+          <button id="videoFaqBtn" class="btn-secondary pulse-btn" onclick="openVideoFaqModal()">
             <i class="fas fa-circle-question"></i> Почему видео не загружаются?
           </button>
         </div>
@@ -1252,7 +1517,7 @@
     
     <section id="contact" class="section" style="background: var(--bg-secondary);">
       <div class="container-padding max-w-7xl mx-auto">
-        <div class="text-center mb-12"><h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4">Контакты</h2><p style="color: var(--text-secondary); max-width: 2xl; margin: 0 auto;">Хочешь коллаб или просто поболтать? Пиши в любой из соцсетей!</p></div>
+        <div class="text-center mb-12"><h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4">Сотрудничество</h2><p style="color: var(--text-secondary); max-width: 2xl; margin: 0 auto;">Хочешь коллаб или просто поболтать? Пиши в любой из соцсетей!</p></div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div class="modern-card p-8">
             <h3 class="text-2xl font-bold mb-6 gradient-text">Связь со мной</h3>
@@ -1290,6 +1555,39 @@
       </div>
     </footer>
   </main>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav md:hidden">
+    <a href="#welcome" title="Главная" aria-label="Главная">
+      <i class="fas fa-home"></i>
+      <span>Главная</span>
+    </a>
+    <a href="#video" title="Видео" aria-label="Видео">
+      <i class="fas fa-play-circle"></i>
+      <span>Видео</span>
+    </a>
+    <a href="#twitch-clips" title="Twitch" aria-label="Twitch">
+      <i class="fab fa-twitch"></i>
+      <span>Twitch</span>
+    </a>
+    <a href="#contact" title="Сотрудничество" aria-label="Сотрудничество">
+      <i class="fas fa-envelope"></i>
+      <span>Сотруд.</span>
+    </a>
+    <button id="mobileThemeToggle" title="Сменить тему" aria-label="Сменить тему">
+      <i class="fas fa-sun"></i>
+      <span>Тема</span>
+    </button>
+    <button id="mobileSettingsToggle" title="Настройки" aria-label="Настройки">
+      <i class="fas fa-gear"></i>
+      <span>Настр.</span>
+    </button>
+    <button id="mobileBottomSupportChat" title="Чат поддержки" aria-label="Чат поддержки">
+      <i class="fab fa-telegram" style="color: #2AABEE;"></i>
+      <span>Поддержка</span>
+    </button>
+  </nav>
+
   <script>
     // === КОНФИГУРАЦИЯ YOUTUBE API ===
     const YOUTUBE_CONFIG = {
@@ -1376,6 +1674,11 @@
                 };
             });
             
+            const settings = getSiteSettings();
+            const hasNewVideos = youtubeVideos.length > 0 && (!videoData.length || youtubeVideos.some(video => !videoData.some(existing => existing.id === video.id)));
+            if (hasNewVideos && settings.personalNotifications !== false && settings.notifyNewVideos !== false) {
+                showNotification('Появилось новое видео на канале! 🎬', { type: 'success', duration: 5000, category: 'channel-video' });
+            }
             showNotification(`Загружено ${youtubeVideos.length} видео с YouTube! 🎉`, { silent: true });
             return youtubeVideos;
         } catch (error) {
@@ -1453,9 +1756,22 @@
         if (viewsCard) viewsCard.textContent = channelStats.views;
     }
     
+    function shouldShowNotification(options = {}) {
+        const settings = getSiteSettings();
+        const { silent = false, force = false, category = null } = options;
+        if (silent) return false;
+        if (force) return true;
+        if (settings.notifications === false || document.body.classList.contains('notifications-off')) return false;
+        if (category === 'channel-video' && settings.personalNotifications === false) return false;
+        if (category === 'channel-video' && settings.notifyNewVideos === false) return false;
+        if (category === 'site-update' && settings.personalNotifications === false) return false;
+        if (category === 'site-update' && settings.notifySiteUpdates === false) return false;
+        return true;
+    }
+
     function showNotification(message, options = {}) {
-        const { type = 'info', duration = 2600, silent = false, force = false, html = false, title } = options;
-        if ((!force && document.body.classList.contains('notifications-off')) || silent) return;
+        const { type = 'info', duration = 2600, silent = false, force = false, html = false, title, category = null } = options;
+        if (!shouldShowNotification({ silent, force, category })) return;
         const notification = document.getElementById('notification');
         const notificationText = document.getElementById('notificationText');
         const notificationTitle = document.getElementById('notificationTitle');
@@ -1511,7 +1827,8 @@
 
     function getSiteSettings() {
         const saved = localStorage.getItem('site-settings');
-        let settings = { animations: true, notifications: true, glass: true, updateNotice: true };
+        const isMobileViewport = () => window.matchMedia('(max-width: 768px)').matches;
+        let settings = { animations: true, notifications: true, glass: !isMobileViewport(), updateNotice: true, personalNotifications: true, notifyNewVideos: true, notifySiteUpdates: true };
         try {
             if (saved) settings = { ...settings, ...JSON.parse(saved) };
         } catch (e) {}
@@ -1524,32 +1841,48 @@
         document.body.classList.toggle('reduced-motion', settings.animations === false);
         document.body.classList.toggle('notifications-off', settings.notifications === false);
         document.body.classList.toggle('reduced-glass', settings.glass === false);
+        document.body.classList.toggle('personal-notifications-off', settings.personalNotifications === false);
 
         const animationsToggle = document.getElementById('animationsToggle');
         const notificationsToggle = document.getElementById('notificationsToggle');
         const glassToggle = document.getElementById('glassToggle');
         const updateNoticeToggle = document.getElementById('updateNoticeToggle');
+        const personalNotificationsToggle = document.getElementById('personalNotificationsToggle');
+        const newVideoNotificationsToggle = document.getElementById('newVideoNotificationsToggle');
+        const siteUpdateNotificationsToggle = document.getElementById('siteUpdateNotificationsToggle');
         if (animationsToggle) animationsToggle.checked = settings.animations !== false;
         if (notificationsToggle) notificationsToggle.checked = settings.notifications !== false;
         if (glassToggle) glassToggle.checked = settings.glass !== false;
         if (updateNoticeToggle) updateNoticeToggle.checked = settings.updateNotice !== false;
+        if (personalNotificationsToggle) personalNotificationsToggle.checked = settings.personalNotifications !== false;
+        if (newVideoNotificationsToggle) newVideoNotificationsToggle.checked = settings.notifyNewVideos !== false;
+        if (siteUpdateNotificationsToggle) siteUpdateNotificationsToggle.checked = settings.notifySiteUpdates !== false;
     }
 
     function initSettings() {
         const settingsToggle = document.getElementById('settingsToggle');
+        const mobileSettingsToggle = document.getElementById('mobileSettingsToggle');
         const animationsToggle = document.getElementById('animationsToggle');
         const notificationsToggle = document.getElementById('notificationsToggle');
         const glassToggle = document.getElementById('glassToggle');
         const updateNoticeToggle = document.getElementById('updateNoticeToggle');
+        const personalNotificationsToggle = document.getElementById('personalNotificationsToggle');
+        const newVideoNotificationsToggle = document.getElementById('newVideoNotificationsToggle');
+        const siteUpdateNotificationsToggle = document.getElementById('siteUpdateNotificationsToggle');
         const saveButton = document.querySelector('#settingsModal .btn-primary');
 
-        settingsToggle?.addEventListener('click', openSettingsModal);
+        const handleSettingsClick = () => openSettingsModal();
+        settingsToggle?.addEventListener('click', handleSettingsClick);
+        mobileSettingsToggle?.addEventListener('click', handleSettingsClick);
         const saveSettings = (showToast = false) => {
             const settings = {
                 animations: animationsToggle?.checked !== false,
                 notifications: notificationsToggle?.checked !== false,
                 glass: glassToggle?.checked !== false,
-                updateNotice: updateNoticeToggle?.checked !== false
+                updateNotice: updateNoticeToggle?.checked !== false,
+                personalNotifications: personalNotificationsToggle?.checked !== false,
+                notifyNewVideos: newVideoNotificationsToggle?.checked !== false,
+                notifySiteUpdates: siteUpdateNotificationsToggle?.checked !== false
             };
             localStorage.setItem('site-settings', JSON.stringify(settings));
             applySettings();
@@ -1561,6 +1894,9 @@
         notificationsToggle?.addEventListener('change', () => saveSettings(false));
         glassToggle?.addEventListener('change', () => saveSettings(false));
         updateNoticeToggle?.addEventListener('change', () => saveSettings(false));
+        personalNotificationsToggle?.addEventListener('change', () => saveSettings(false));
+        newVideoNotificationsToggle?.addEventListener('change', () => saveSettings(false));
+        siteUpdateNotificationsToggle?.addEventListener('change', () => saveSettings(false));
         saveButton?.addEventListener('click', () => {
             saveSettings(true);
             closeSettingsModal();
@@ -1568,62 +1904,110 @@
         applySettings();
     }
 
-    function showSiteUpdateNotice() {
+    async function showSiteUpdateNotice() {
         const settings = getSiteSettings();
         if (settings.updateNotice === false) return;
         if (sessionStorage.getItem('site-update-notice-shown') === '1') return;
-        sessionStorage.setItem('site-update-notice-shown', '1');
-        showNotification('Ведутся обновления сайта. Посмотреть последний коммит можно <a href="https://github.com/MortisPlay/MortisPlay_Site/commits/main/" target="_blank" rel="noopener noreferrer" style="color:#93c5fd;text-decoration:underline;">по этой ссылке</a>.', {
-            type: 'info',
-            duration: 9000,
-            html: true,
-            title: 'Обновление сайта'
-        });
+        
+        try {
+            // Запрашиваем последний коммит через GitHub API
+            const response = await fetch('https://api.github.com/repos/MortisPlay/MortisPlay_Site/commits/main?per_page=1');
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            
+            const data = await response.json();
+            const latestSha = data.sha;
+            const commitMessage = data.commit?.message?.split('\n')[0] || 'Новое обновление';
+            const commitDate = new Date(data.commit?.committer?.date).toLocaleDateString('ru-RU', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            });
+            const commitUrl = data.html_url;
+            
+            // Сравниваем с сохранённым SHA
+            const lastNotifiedSha = localStorage.getItem('lastNotifiedCommitSha');
+            
+            if (lastNotifiedSha !== latestSha) {
+                // Новый коммит — показываем уведомление
+                sessionStorage.setItem('site-update-notice-shown', '1');
+                localStorage.setItem('lastNotifiedCommitSha', latestSha);
+                
+                showNotification(`📦 ${commitMessage} — <a href="${commitUrl}" target="_blank" rel="noopener noreferrer" style="color:#93c5fd;text-decoration:underline;">Подробнее</a>`, {
+                    type: 'info',
+                    duration: 10000,
+                    html: true,
+                    title: `Обновление сайта от ${commitDate}`,
+                    category: 'site-update'
+                });
+            }
+        } catch (error) {
+            console.warn('GitHub API недоступен, показываем стандартное уведомление:', error);
+            // Если API недоступен, показываем стандартное уведомление (только если ещё не показывали)
+            sessionStorage.setItem('site-update-notice-shown', '1');
+            showNotification('Ведутся обновления сайта. Посмотреть последний коммит можно <a href="https://github.com/MortisPlay/MortisPlay_Site/commits/main/" target="_blank" rel="noopener noreferrer" style="color:#93c5fd;text-decoration:underline;">по этой ссылке</a>.', {
+                type: 'info',
+                duration: 9000,
+                html: true,
+                title: 'Обновление сайта',
+                category: 'site-update'
+            });
+        }
     }
 
     function initTemporaryFeatures() {
-        // Кнопка "?" — пульсация до 23.07.2026 10:00 (Asia/Vladivostok UTC+10), затем исчезает
-        const secretButton = document.querySelector('a[href="secret/mortis.html"]');
-        const deadlineStr = '2026-07-23T00:00:00Z'; // 23.07.2026 10:00 VLAT = 23.07.2026 00:00 UTC
-        const deadline = new Date(deadlineStr);
-        const now = Date.now();
-
-        if (secretButton) {
-            if (now >= deadline.getTime()) {
-                // После дедлайна — удаляем кнопку
-                secretButton.remove();
+        const secretButton = document.querySelector('a[href="secret/index.html"]');
+        const removeAfter = new Date('2026-07-23T00:00:00');
+        if (secretButton && Date.now() >= removeAfter.getTime()) {
+            secretButton.remove();
+        }
+        
+        // Кнопка с вопросительным знаком — пульсация до 23.07.2026 10:00, затем исчезновение
+        const questionBtn = document.getElementById('videoFaqBtn');
+        const deadline = new Date('2026-07-23T10:00:00+10:00'); // 23.07.2026 10:00 по Владивостоку (UTC+10)
+        const now = new Date();
+        
+        if (questionBtn) {
+            if (now >= deadline) {
+                // После дедлайна — кнопка исчезает
+                questionBtn.style.display = 'none';
             } else {
-                // До дедлайна — добавляем пульсацию
-                secretButton.classList.add('secret-pulse-btn');
+                // До дедлайна — пульсация включена
+                questionBtn.classList.add('pulse-btn');
             }
         }
     }
 
     function initTheme() {
         const themeToggle = document.getElementById('themeToggle');
+        const mobileThemeToggle = document.getElementById('mobileThemeToggle');
         const saved = localStorage.getItem('theme');
         const shouldUseDark = saved === 'dark' || saved === null || saved === undefined;
         document.body.classList.toggle('light-theme', !shouldUseDark);
         updateThemeIcon(shouldUseDark ? 'dark' : 'light');
-        themeToggle?.addEventListener('click', () => {
+        const handleThemeToggle = () => {
             const isLight = document.body.classList.contains('light-theme');
             const newTheme = isLight ? 'dark' : 'light';
             document.body.classList.toggle('light-theme', newTheme === 'light');
             localStorage.setItem('theme', newTheme);
             updateThemeIcon(newTheme);
             showNotification(`Тема изменена на ${newTheme === 'light' ? 'светлую 🌞' : 'тёмную 🌙'}`, { type: 'info', duration: 2200 });
-        });
+        };
+        themeToggle?.addEventListener('click', handleThemeToggle);
+        mobileThemeToggle?.addEventListener('click', handleThemeToggle);
     }
 
     function updateThemeIcon(theme) {
         const icon = document.querySelector('#themeToggle i');
-        if (!icon) return;
+        const mobileIcon = document.querySelector('#mobileThemeToggle i');
+        if (!icon && !mobileIcon) return;
         if (theme === 'light') {
-            icon.className = 'fas fa-moon';
-            icon.title = 'Тёмная тема';
+            if (icon) icon.className = 'fas fa-moon';
+            if (mobileIcon) mobileIcon.className = 'fas fa-moon';
+            if (icon) icon.title = 'Тёмная тема';
+            if (mobileIcon) mobileIcon.title = 'Тёмная тема';
         } else {
-            icon.className = 'fas fa-sun';
-            icon.title = 'Светлая тема';
+            if (icon) icon.className = 'fas fa-sun';
+            if (mobileIcon) mobileIcon.className = 'fas fa-sun';
+            if (icon) icon.title = 'Светлая тема';
+            if (mobileIcon) mobileIcon.title = 'Светлая тема';
         }
     }
     
@@ -1964,7 +2348,7 @@
         });
 
         const trackedElements = document.querySelectorAll(
-            '.btn-action-contact, .btn-action-bio, .btn-action-qa, .btn-action-faq, .btn-action-year, .btn-action-youtube, .social-btn, #videoFaqBtn, #loadMoreVideos, #loadMoreTwitchClips, #themeToggle, #settingsToggle, #resetFilters'
+            '.btn-action-contact, .btn-action-bio, .btn-action-qa, .btn-action-faq, .btn-action-year, .btn-action-youtube, .social-btn, #videoFaqBtn, #loadMoreVideos, #loadMoreTwitchClips, #themeToggle, #settingsToggle, #resetFilters, #supportChatToggle, #mobileSupportChatToggle, #mobileBottomSupportChat'
         );
 
         trackedElements.forEach((element) => {
@@ -1980,9 +2364,11 @@
                                 ? 'load_more_videos'
                                 : element.id === 'loadMoreTwitchClips'
                                     ? 'load_more_twitch_clips'
-                                    : element.classList.contains('social-btn')
-                                        ? 'social_click'
-                                        : 'cta_click';
+                                    : element.id === 'supportChatToggle' || element.id === 'mobileSupportChatToggle' || element.id === 'mobileBottomSupportChat'
+                                        ? 'support_chat_open'
+                                        : element.classList.contains('social-btn')
+                                            ? 'social_click'
+                                            : 'cta_click';
 
             element.addEventListener('click', () => {
                 trackAnalyticsEvent(eventName, {
@@ -1996,6 +2382,79 @@
     function showWelcomeMessageOnce() {
         if (!localStorage.getItem('hasSeenWelcome')) {
             localStorage.setItem('hasSeenWelcome', 'true');
+        }
+    }
+    
+    // === ЧАТ ПОДДЕРЖКИ TELEGRAM ===
+    function openSupportChatModal() {
+        const modal = document.getElementById('supportChatModal');
+        if (!modal) return;
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        
+        // Прячем fallback, показываем iframe при открытии
+        const fallback = document.getElementById('chatFallback');
+        const iframe = document.getElementById('telegramChatIframe');
+        if (fallback) fallback.style.display = 'none';
+        if (iframe) iframe.style.display = 'block';
+        
+        trackAnalyticsEvent('support_chat_open', { source: 'button_click' });
+    }
+    
+    function closeSupportChatModal(event) {
+        if (event && event.target && event.target.id !== 'supportChatModal') return;
+        const modal = document.getElementById('supportChatModal');
+        if (!modal) return;
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+    
+    function trackSupportChatOpen() {
+        trackAnalyticsEvent('support_chat_telegram_click', { source: 'modal_button' });
+    }
+    
+    function initSupportChat() {
+        const toggleBtn = document.getElementById('supportChatToggle');
+        const mobileToggle = document.getElementById('mobileSupportChatToggle');
+        const mobileBottomToggle = document.getElementById('mobileBottomSupportChat');
+        
+        const openHandler = () => openSupportChatModal();
+        
+        if (toggleBtn) toggleBtn.addEventListener('click', openHandler);
+        if (mobileToggle) mobileToggle.addEventListener('click', openHandler);
+        if (mobileBottomToggle) mobileBottomToggle.addEventListener('click', openHandler);
+        
+        // Обработка ошибки загрузки iframe — показываем fallback
+        const iframe = document.getElementById('telegramChatIframe');
+        if (iframe) {
+            iframe.addEventListener('error', () => {
+                const fallback = document.getElementById('chatFallback');
+                if (fallback) fallback.style.display = 'flex';
+                iframe.style.display = 'none';
+            });
+            
+            // Таймаут на случай, если iframe не загрузился (Telegram блокирует)
+            setTimeout(() => {
+                try {
+                    // Проверяем, загрузился ли iframe (доступ к contentDocument может вызвать ошибку из-за CORS)
+                    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                    if (!doc || !doc.body || doc.body.innerHTML.trim() === '') {
+                        const fallback = document.getElementById('chatFallback');
+                        if (fallback) {
+                            fallback.style.display = 'flex';
+                            iframe.style.display = 'none';
+                        }
+                    }
+                } catch (e) {
+                    // CORS ошибка — значит iframe загрузился с другого домена, всё ок
+                    // Telegram блокирует iframe, поэтому показываем fallback
+                    const fallback = document.getElementById('chatFallback');
+                    if (fallback) {
+                        fallback.style.display = 'flex';
+                        iframe.style.display = 'none';
+                    }
+                }
+            }, 3000);
         }
     }
     
@@ -2028,8 +2487,9 @@
         initTemporaryFeatures();
         initTheme();
         initSettings();
-        showSiteUpdateNotice();
+        await showSiteUpdateNotice();
         initNavigation();
+        initSupportChat();
         initAnalyticsTracking();
         initScrollTopButton();
         currentVideoSystem = new VideoSystem();

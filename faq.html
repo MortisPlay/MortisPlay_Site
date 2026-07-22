@@ -520,6 +520,20 @@
                 <p class="text-sm text-gray-400">Если проблема сохраняется — можно очистить кэш браузера или открыть сайт в другой вкладке</p>
               </div>
             </details>
+
+            <details class="faq-item">
+              <summary>Как поддержать проект?</summary>
+              <div class="answer">
+                <p>Если хочешь поддержать создание контента, это можно сделать через DonationAlerts:</p>
+                <div class="mt-3 p-4 bg-gradient-to-r from-yellow-900/20 to-orange-900/20 rounded-xl">
+                  <p class="font-semibold mb-2">💖 Способы поддержки:</p>
+                  <p>• <a href="https://www.donationalerts.com/r/mortis32" target="_blank" class="text-purple-400 hover:text-purple-300">DonationAlerts</a> — разовая поддержка</p>
+                  <p>• Подписка на <a href="https://www.twitch.tv/mortisplay32" target="_blank" class="text-purple-400 hover:text-purple-300">Twitch</a> — помощь каналу</p>
+                  <p>• Репост и лайки — тоже огромная поддержка!</p>
+                </div>
+                <p class="mt-2 text-sm text-gray-400">Любая поддержка помогает делать ещё больше крутого контента! ❤️</p>
+              </div>
+            </details>
           </div>
         </div>
 
@@ -650,6 +664,40 @@
                 <p>Уведомления показываются, когда сайт сообщает о смене темы, обновлении интерфейса или важных действиях.</p>
                 <p class="mt-2">Их можно выключить в настройках сайта — там есть отдельный переключатель для уведомлений.</p>
                 <p class="mt-3 text-sm text-gray-400">Отключение не влияет на контент и не мешает пользоваться разделами сайта.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как переключать тему и где находятся настройки?</summary>
+              <div class="answer">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                  <div class="p-3 bg-gradient-to-br from-indigo-900/20 to-cyan-900/20 rounded-lg">
+                    <p class="font-semibold text-sm">🌙 Тёмная / ☀️ Светлая тема</p>
+                    <p class="text-xs text-gray-300">Кнопка с солнцем/луной в шапке сайта — переключает тему. Выбор сохраняется в браузере.</p>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg">
+                    <p class="font-semibold text-sm">⚙️ Настройки</p>
+                    <p class="text-xs text-gray-300">Кнопка с шестерёнкой открывает модальное окно, где можно управлять анимациями, уведомлениями и эффектом "Жидкое стекло".</p>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-400">На мобильных устройствах кнопки темы и настроек также доступны в нижней панели навигации.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Откуда берутся уведомления об обновлениях сайта?</summary>
+              <div class="answer">
+                <p>Сайт автоматически проверяет последние изменения через GitHub API. Если появился новый коммит в репозитории — ты получишь уведомление с его названием и датой.</p>
+                <div class="mt-3 p-3 bg-gray-800/50 rounded-lg">
+                  <p class="text-sm">🔔 Как это работает:</p>
+                  <ul class="list-disc list-inside mt-1 space-y-1 text-sm text-gray-300">
+                    <li>При загрузке сайта запрашивается последний коммит через GitHub API</li>
+                    <li>Если SHA коммита отличается от сохранённого — показывается уведомление</li>
+                    <li>Новый SHA сохраняется в браузере, чтобы уведомление не повторялось</li>
+                    <li>В уведомлении есть прямая ссылка на коммит на GitHub</li>
+                  </ul>
+                </div>
+                <p class="mt-2 text-sm text-gray-400">Уведомления можно отключить в настройках сайта — переключатель "Показывать уведомление об обновлениях". Если GitHub API временно недоступен, показывается стандартное уведомление со ссылкой на список коммитов.</p>
               </div>
             </details>
           </div>
@@ -784,6 +832,28 @@
                 <div class="mt-3 p-3 bg-gray-800/50 rounded-lg">
                   <p class="text-sm"><i class="fas fa-chart-line text-green-400 mr-1"></i> Вверху раздела отображается общее количество доступных роликов</p>
                 </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Почему видео не загружаются и что делать?</summary>
+              <div class="answer">
+                <div class="p-4 bg-gradient-to-r from-indigo-900/20 to-cyan-900/20 rounded-xl mb-3">
+                  <p class="font-semibold mb-2">⚠️ Причина:</p>
+                  <p>Из-за замедления YouTube в России сайт не может нормально загружать видео через YouTube API.</p>
+                </div>
+                <div class="p-4 bg-gradient-to-r from-green-900/20 to-emerald-900/20 rounded-xl mb-3">
+                  <p class="font-semibold mb-2">✅ Как исправить:</p>
+                  <ol class="list-decimal list-inside space-y-1 text-gray-300">
+                    <li><strong>Включите VPN</strong> — используйте любой VPN-сервис для доступа к YouTube</li>
+                    <li><strong>Перезагрузите сайт</strong> — нажмите F5 или обновите страницу</li>
+                    <li>Видео должны загрузиться автоматически</li>
+                  </ol>
+                </div>
+                <p class="text-sm text-gray-400">
+                  <i class="fas fa-envelope mr-1"></i>
+                  Если и после этого видео не загружаются — напишите в Telegram или в раздел Q&A
+                </p>
               </div>
             </details>
           </div>
