@@ -1374,6 +1374,22 @@
     const PROFILE_STORAGE_KEY = 'site_user_account';
     let currentUser = null;
 
+    // Синхронизация профиля с чатом: после логина/регистрации/сохранения
+    // обновляем currentUserProfile и currentUsername, чтобы чат увидел авторизацию
+    function syncProfileToChat() {
+      if (currentUser && currentUser.nickname) {
+        currentUserProfile = currentUser;
+        currentUsername = currentUser.nickname;
+        localStorage.setItem('community_username', currentUsername);
+        // Снимаем флаг выхода
+        try { sessionStorage.removeItem('profile_logged_out'); } catch(e) {}
+      } else {
+        currentUserProfile = null;
+        currentUsername = localStorage.getItem('community_username') || '';
+      }
+      updateChatAccess();
+    }
+
     function loadUserAccount() {
         try {
             const loggedOut = sessionStorage.getItem('profile_logged_out');
@@ -1460,6 +1476,7 @@
             loadUserAccount();
         }
         if (currentUser) {
+            syncProfileToChat(); // синхронизируем с чатом перед показом
             showProfileLoggedIn();
         } else {
             showProfileLogin();
@@ -1501,6 +1518,9 @@
         document.getElementById('profileAuthBlock').style.display = 'none';
         document.getElementById('profileLoggedIn').style.display = 'block';
         try { sessionStorage.removeItem('profile_logged_out'); } catch(e) {}
+
+        // Синхронизируем с чатом
+        syncProfileToChat();
 
         if (currentUser) {
             const isOfficial = isOfficialUser(currentUser);
@@ -1628,6 +1648,7 @@
     function handleLogout() {
         currentUser = null;
         try { sessionStorage.setItem('profile_logged_out', 'true'); } catch(e) {}
+        syncProfileToChat(); // синхронизируем выход с чатом
         showProfileLogin();
         showNotification('Вы вышли из аккаунта', { type: 'info', duration: 2500 });
     }
@@ -1654,6 +1675,7 @@
         if (newColor) currentUser.accentColor = newColor;
         currentUser.privacyShowAvatar = privacyShowAvatar;
         saveUserAccount(currentUser);
+        syncProfileToChat(); // синхронизируем изменения с чатом
         document.getElementById('profileDisplayName').textContent = newNickname;
         if (newColor) applyProfileAccentColor(newColor);
         showNotification('Профиль сохранён! ✅', { type: 'success', duration: 2500 });
@@ -1770,12 +1792,20 @@
 
     function loadUserProfile() {
       try {
-        // Проверяем флаг выхода из аккаунта (устанавливается в index.html)
+        // Проверяем флаг выхода из аккаунта
         const loggedOut = sessionStorage.getItem('profile_logged_out');
         if (loggedOut === 'true') {
           currentUserProfile = null;
           currentUsername = '';
           return false;
+        }
+        
+        // Если профиль уже загружен через систему профиля — используем его
+        if (currentUser && currentUser.nickname) {
+          currentUserProfile = currentUser;
+          currentUsername = currentUser.nickname;
+          localStorage.setItem('community_username', currentUsername);
+          return true;
         }
         
         const stored = localStorage.getItem(PROFILE_STORAGE_KEY);
@@ -2146,6 +2176,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       // Инициализация профиля
       loadUserAccount();
+      syncProfileToChat(); // синхронизируем с чатом при загрузке страницы
       
       // События профиля
       document.getElementById('profileTabLogin')?.addEventListener('click', showProfileLogin);
@@ -2176,11 +2207,23 @@
         // Проверяем флаг выхода из аккаунта
         const loggedOut = sessionStorage.getItem('profile_logged_out');
         if (loggedOut === 'true') {
-          if (currentUserProfile !== null) {
+          if (currentUserProfile !== null || currentUser !== null) {
             currentUserProfile = null;
+            currentUser = null;
             currentUsername = '';
             updateChatAccess();
             console.log('[Profile] Обнаружен выход из аккаунта');
+          }
+          return;
+        }
+        
+        // Если профиль уже загружен через систему профиля — используем его
+        if (currentUser && currentUser.nickname) {
+          if (currentUserProfile !== currentUser) {
+            currentUserProfile = currentUser;
+            currentUsername = currentUser.nickname;
+            localStorage.setItem('community_username', currentUsername);
+            updateChatAccess();
           }
           return;
         }
@@ -2195,6 +2238,7 @@
                   currentUserProfile.avatarDataUrl !== parsed.avatarDataUrl ||
                   currentUserProfile.accentColor !== parsed.accentColor) {
                 currentUserProfile = parsed;
+                currentUser = parsed;
                 currentUsername = parsed.nickname;
                 localStorage.setItem('community_username', currentUsername);
                 updateChatAccess();
@@ -2204,8 +2248,9 @@
           } catch(e) {}
         } else {
           // Профиль удалён из localStorage
-          if (currentUserProfile !== null) {
+          if (currentUserProfile !== null || currentUser !== null) {
             currentUserProfile = null;
+            currentUser = null;
             currentUsername = '';
             updateChatAccess();
           }
