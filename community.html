@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Зал комьюнити — Mortis Play</title>
+  <meta name="description" content="Зал комьюнити Mortis Play: общий чат, галерея мемов и всё созданное для сообщества." />
+  <meta name="robots" content="index,follow" />
+  <link rel="icon" href="/images/favicon.ico" />
+  <meta property="og:title" content="Зал комьюнити — Mortis Play" />
+  <meta property="og:description" content="Общий чат, галерея мемов и всё для сообщества." />
+  <meta property="og:image" content="https://mortisplay.ru/assets/og-image.jpg" />
+  <meta property="og:url" content="https://mortisplay.ru/community.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ru_RU" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W7QBLDDSSK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-W7QBLDDSSK', {
+      send_page_view: true,
+      anonymize_ip: true,
+      page_title: document.title,
+      page_location: window.location.href
+    });
+  </script>
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Firebase SDK для общего чата (без defer — должен загрузиться до скриптов в body) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #0ea5e9;
+      --accent: #f59e0b;
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --card-bg: rgba(30, 41, 59, 0.6);
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(99, 102, 241, 0.2);
+      --light-bg: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+      --light-card: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 244, 248, 0.98) 100%);
+    }
+
+    .light-theme {
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --secondary: #0284c7;
+      --accent: #d97706;
+      --bg-primary: var(--light-bg);
+      --bg-secondary: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --card-bg: var(--light-card);
+      --glass-bg: rgba(99, 102, 241, 0.08);
+      --glass-border: rgba(99, 102, 241, 0.2);
+    }
+
+    /* Canvas для частиц */
+    #particlesCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0a0a0f 0%, #0d1117 30%, #0f172a 60%, #0a0a0f 100%);
+      color: var(--text-primary);
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 20%, rgba(99, 102, 241, 0.12), transparent 50%),
+        radial-gradient(ellipse at 85% 15%, rgba(14, 165, 233, 0.08), transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(245, 158, 11, 0.06), transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body.light-theme {
+      background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 30%, #f1f5f9 60%, #f8fafc 100%);
+    }
+    body.light-theme::before {
+      background:
+        radial-gradient(ellipse at 15% 20%, rgba(99, 102, 241, 0.08), transparent 50%),
+        radial-gradient(ellipse at 85% 15%, rgba(14, 165, 233, 0.06), transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(245, 158, 11, 0.04), transparent 50%);
+    }
+
+    /* Бета-шапка */
+    .beta-header {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #1e293b;
+      text-align: center;
+      padding: 0.75rem 1rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-bottom: 2px solid rgba(0,0,0,0.15);
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+      position: relative;
+      z-index: 1001;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .beta-header i {
+      font-size: 1.2rem;
+    }
+    .beta-header .beta-badge {
+      background: rgba(0,0,0,0.2);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      color: #fff;
+    }
+    .beta-header .beta-countdown {
+      font-weight: 600;
+      font-size: 0.85rem;
+      background: rgba(255,255,255,0.25);
+      padding: 0.2rem 0.8rem;
+      border-radius: 999px;
+    }
+
+    .modern-card {
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(12px);
+      border-radius: 1.25rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modern-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(14, 165, 233, 0.15) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .modern-card:hover::before { opacity: 1; }
+    .modern-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 800;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 0.875rem 2rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(99, 102, 241, 0.5);
+      filter: brightness(1.1);
+    }
+
+    .btn-secondary {
+      background: var(--glass-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+    }
+    .btn-secondary:hover {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+    }
+
+    .section {
+      position: relative;
+      padding: 5rem 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.035), rgba(99,102,241,0.05));
+      overflow: hidden;
+    }
+    .section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.04), transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .section > * { position: relative; z-index: 1; }
+
+    /* Чат */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 500px;
+      border: 1px solid var(--glass-border);
+      border-radius: 1.25rem;
+      overflow: hidden;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .chat-message {
+      display: flex;
+      gap: 0.75rem;
+      animation: fadeInUp 0.3s ease forwards;
+    }
+    .chat-message .avatar {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .chat-message .bubble {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--glass-border);
+      border-radius: 1rem;
+      padding: 0.6rem 1rem;
+      max-width: 80%;
+    }
+    .chat-message .bubble .username {
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--primary);
+      margin-bottom: 0.2rem;
+    }
+    .chat-message .bubble .text {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .chat-message .bubble .time {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-top: 0.3rem;
+      opacity: 0.7;
+    }
+    .chat-message.own .bubble {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+    .chat-input-area {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      border-top: 1px solid var(--glass-border);
+      background: rgba(0,0,0,0.2);
+    }
+    .chat-input-area input {
+      flex: 1;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 9999px;
+      padding: 0.7rem 1rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    .chat-input-area input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+    .chat-input-area input::placeholder { color: var(--text-secondary); opacity: 0.6; }
+    .chat-input-area button {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chat-input-area button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+    .chat-welcome {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+    }
+    .chat-welcome i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    /* Галерея */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .gallery-item {
+      position: relative;
+      border-radius: 1rem;
+      overflow: hidden;
+      aspect-ratio: 1;
+      cursor: pointer;
+      border: 1px solid var(--glass-border);
+      transition: all 0.3s ease;
+    }
+    .gallery-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
+      border-color: var(--primary);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .gallery-item:hover img { transform: scale(1.08); }
+    .gallery-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .gallery-item:hover video { transform: scale(1.08); }
+    .gallery-item .video-badge {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      pointer-events: none;
+    }
+    .gallery-item .overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      padding: 1rem;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .gallery-item:hover .overlay { opacity: 1; }
+    .gallery-item .author-tag {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* Модалка галереи */
+    .gallery-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      backdrop-filter: blur(12px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    .gallery-modal.show { opacity: 1; visibility: visible; }
+    .gallery-modal img {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: 1rem;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.5);
+    }
+    .gallery-modal .close-btn {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+    .gallery-modal .close-btn:hover {
+      background: rgba(255,255,255,0.2);
+      transform: rotate(90deg);
+    }
+    .gallery-modal .caption {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 1rem;
+      background: rgba(0,0,0,0.6);
+      padding: 0.5rem 1.5rem;
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Форма добавления мема */
+    .upload-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1.5rem;
+      border: 2px dashed var(--glass-border);
+      border-radius: 1.25rem;
+      background: rgba(255,255,255,0.04);
+      transition: all 0.3s ease;
+    }
+    .upload-form:hover {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.06);
+    }
+    .upload-form input, .upload-form textarea {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    .upload-form input:focus, .upload-form textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+    .upload-form textarea { resize: vertical; min-height: 80px; }
+    .upload-form input[type="file"] {
+      padding: 0.5rem;
+      cursor: pointer;
+    }
+    .upload-form input[type="file"]::file-selector-button {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 1rem;
+      transition: all 0.3s ease;
+    }
+    .upload-form input[type="file"]::file-selector-button:hover {
+      filter: brightness(1.1);
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeInUp { animation: fadeInUp 0.6s ease forwards; }
+
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 5px; }
+
+    .container-padding { padding-left: 1rem; padding-right: 1rem; }
+    @media (min-width: 640px) { .container-padding { padding-left: 1.5rem; padding-right: 1.5rem; } }
+    @media (min-width: 1024px) { .container-padding { padding-left: 2rem; padding-right: 2rem; } }
+
+    @media (max-width: 768px) {
+      .section { padding: 3rem 0; }
+      .chat-container { height: 400px; }
+      .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
+      .beta-header { font-size: 0.8rem; padding: 0.6rem 0.8rem; }
+      .beta-header .beta-countdown { font-size: 0.75rem; }
+    }
+
+    .notification {
+      position: fixed; bottom: 1rem; left: 50%; transform: translate(-50%, 120%);
+      background: linear-gradient(135deg, rgba(15,23,42,0.92), rgba(30,41,59,0.88));
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 999px; padding: 0.8rem 1rem; max-width: min(92vw, 420px);
+      opacity: 0;
+      transition: all 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1002; backdrop-filter: blur(14px); box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+    .notification.show { transform: translate(-50%, 0); opacity: 1; }
+    .notification .icon-pill {
+      width: 2.2rem; height: 2.2rem; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, rgba(99,102,241,0.28), rgba(14,165,233,0.2)); margin-right: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Canvas для анимированных частиц -->
+  <canvas id="particlesCanvas"></canvas>
+
+  <!-- Бета-шапка -->
+  <div class="beta-header" id="betaHeader">
+    <i class="fas fa-flask"></i>
+    <span>⚡ Бета-тестирование сообщества — 14 дней</span>
+    <span class="beta-badge">BETA</span>
+    <span class="beta-countdown" id="betaCountdown">Загрузка...</span>
+  </div>
+
+  <!-- Бета-шапка с предупреждением о багах -->
+  <div id="betaNoticeBar" style="display: none; background: linear-gradient(135deg, #f59e0b, #d97706); color: #1a1a2e; padding: 0.6rem 1rem; text-align: center; font-size: 0.85rem; font-weight: 600; position: relative; z-index: 10001;">
+    <span>⚠️ ВНИМАНИЕ! Если вы обнаружите баг или ошибку, обратитесь к нашему агенту </span>
+    <a href="https://t.me/agentplay_bot" target="_blank" style="color: #1a1a2e; text-decoration: underline; font-weight: 800;">@agentplay_bot</a>
+    <span> — это очень важно для нас. Спасибо ❤️</span>
+    <button onclick="dismissBetaNotice()" style="background: none; border: none; color: #1a1a2e; cursor: pointer; font-size: 1.1rem; margin-left: 0.75rem; vertical-align: middle; opacity: 0.7;" title="Закрыть">&times;</button>
+  </div>
+
+  <!-- Навигация -->
+  <header style="position: sticky; top: 0; z-index: 1000; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--glass-border);">
+    <nav class="container-padding max-w-7xl mx-auto">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0;">
+        <a href="index.html" style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="width: 2.5rem; height: 2.5rem; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary);">
+            <img src="/assets/photo.jpg" alt="Mortis Play" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <span class="font-bold gradient-text" style="font-size: 1.1rem;">Mortis Play</span>
+        </a>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <a href="index.html" class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+            <i class="fas fa-arrow-left"></i> На главную
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Секция: Общий чат -->
+    <section class="section" id="chat">
+      <div class="container-padding max-w-7xl mx-auto">
+        <div class="text-center mb-10">
+          <h1 class="gradient-text text-4xl md:text-5xl font-bold mb-4 animate-fadeInUp">
+            <i class="fas fa-comments"></i> Зал комьюнити
+          </h1>
+          <p class="text-lg animate-fadeInUp" style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+            Всё созданное для сообщества: общий чат и галерея мемов
+          </p>
+        </div>
+
+        <div class="modern-card p-6 mb-8 animate-fadeInUp">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+            <div style="width: 3rem; height: 3rem; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center;">
+              <i class="fas fa-comment-dots text-white"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold">Общий чат</h2>
+              <p style="color: var(--text-secondary); font-size: 0.85rem;">Общайся с теми, кто сейчас на сайте</p>
+            </div>
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 0.5rem;">
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Онлайн:</span>
+              <span id="onlineCount" style="font-weight: 700; color: #22c55e;">0</span>
+            </div>
+          </div>
+
+          <!-- Блок чата (виден только авторизованным) -->
+          <div id="chatArea" class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+              <div class="chat-welcome" id="chatWelcome">
+                <i class="fas fa-comments"></i>
+                <h3 class="text-lg font-semibold mb-2">Добро пожаловать в чат!</h3>
+                <p>Напиши что-нибудь, чтобы начать общение</p>
+              </div>
+            </div>
+            <div class="chat-input-area">
+              <input type="text" id="chatInput" placeholder="Введите сообщение..." maxlength="500" />
+              <button id="chatSendBtn" title="Отправить">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Заглушка для неавторизованных -->
+          <div id="chatLoginPrompt" class="chat-container" style="display: none; align-items: center; justify-content: center; text-align: center; padding: 2rem;">
+            <div>
+              <div style="width: 4rem; height: 4rem; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                <i class="fas fa-lock text-white" style="font-size: 1.5rem;"></i>
+              </div>
+              <h3 class="text-lg font-bold mb-2">Чат доступен только для авторизованных</h3>
+              <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem; max-width: 300px; margin-left: auto; margin-right: auto;">
+                Войди в свой профиль или зарегистрируйся, чтобы общаться с сообществом
+              </p>
+              <a href="index.html#profile" class="btn-primary" style="text-decoration: none; display: inline-flex;">
+                <i class="fas fa-sign-in-alt"></i> Войти / Регистрация
+              </a>
+            </div>
+          </div>
+
+          <div style="margin-top: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <span style="font-size: 0.75rem; color: var(--text-secondary);">
+              <i class="fas fa-info-circle"></i> Сообщения видят все посетители сайта. Будьте вежливы!
+            </span>
+            <span style="font-size: 0.75rem; color: var(--text-secondary);">
+              <i class="fas fa-users"></i> Сообщений: <span id="totalMessages">0</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Секция: Галерея мемов -->
+    <section class="section" id="gallery" style="background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(99, 102, 241, 0.05) 100%);">
+      <div class="container-padding max-w-7xl mx-auto">
+        <div class="text-center mb-10 animate-fadeInUp">
+          <h2 class="gradient-text text-3xl md:text-4xl font-bold mb-4">
+            <i class="fas fa-images"></i> Галерея мемов
+          </h2>
+          <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+            Мемы, созданные сообществом. Ты тоже можешь добавить свой!
+          </p>
+        </div>
+
+        <!-- Форма загрузки -->
+        <div class="modern-card p-6 mb-8 animate-fadeInUp">
+          <h3 class="text-lg font-bold mb-4">
+            <i class="fas fa-upload" style="color: var(--primary);"></i> Добавить мем
+          </h3>
+          <div class="upload-form" id="uploadForm">
+            <input type="text" id="memeAuthor" placeholder="Ваше имя (никнейм)" maxlength="30" />
+            <input type="text" id="memeTitle" placeholder="Название мема" maxlength="60" />
+            <input type="file" id="memeFile" accept="image/*,video/*" />
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn-primary" id="uploadMemeBtn" style="align-self: flex-start;">
+                <i class="fas fa-cloud-upload-alt"></i> Загрузить мем
+              </button>
+              <span style="font-size: 0.75rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.4rem;">
+                <i class="fas fa-info-circle" style="color: var(--primary);"></i>
+                Лимит: фото/GIF — 5 МБ · видео — 100 МБ
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Сетка галереи -->
+        <div id="galleryGrid" class="gallery-grid animate-fadeInUp">
+          <!-- Мемы будут загружаться сюда -->
+        </div>
+        <div id="noMemesMessage" class="text-center py-12 hidden">
+          <i class="fas fa-image text-5xl mb-4" style="color: var(--text-secondary);"></i>
+          <h3 class="text-xl font-semibold mb-2">Мемов пока нет</h3>
+          <p style="color: var(--text-secondary);">Будь первым, кто добавит мем в галерею!</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Модалка галереи -->
+  <div class="gallery-modal" id="galleryModal" onclick="closeGalleryModal(event)">
+    <button class="close-btn" onclick="closeGalleryModal()"><i class="fas fa-times"></i></button>
+    <img id="galleryModalImg" src="" alt="Мем" />
+    <div class="caption" id="galleryModalCaption"></div>
+  </div>
+
+  <!-- Уведомление -->
+  <div id="notification" class="notification">
+    <div class="flex items-start justify-between gap-3 min-w-0">
+      <div class="flex items-start min-w-0">
+        <div class="icon-pill flex-shrink-0"><i class="fas fa-bell"></i></div>
+        <div class="min-w-0">
+          <div id="notificationTitle" class="font-semibold mb-1">Уведомление</div>
+          <div id="notificationText" class="text-sm leading-6 break-words"></div>
+        </div>
+      </div>
+      <button onclick="hideNotification()" class="ml-2 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0" style="color: var(--text-primary); background: rgba(255,255,255,0.16);"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
+
+  <script>
+    // === БЕТА ТАЙМЕР ===
+    function updateBetaCountdown() {
+      // Старт: 23 июля 2026, 14:00 МСК (UTC+3) = 11:00 UTC
+      const startDate = new Date('2026-07-23T11:00:00Z');
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + 14); // +14 дней
+      const now = new Date();
+      
+      const el = document.getElementById('betaCountdown');
+      if (!el) return;
+
+      if (now < startDate) {
+        const diff = startDate - now;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        el.textContent = `До беты: ${days}д ${hours}ч ${minutes}м ${seconds}с`;
+        return;
+      }
+
+      if (now >= endDate) {
+        el.textContent = 'Бета завершена!';
+        return;
+      }
+
+      const diff = endDate - now;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      el.textContent = `Осталось: ${days}д ${hours}ч ${minutes}м ${seconds}с`;
+    }
+    updateBetaCountdown();
+    setInterval(updateBetaCountdown, 1000);
+
+    // === ИНИЦИАЛИЗАЦИЯ FIREBASE ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDUBtozQ4B1i5tmu7W5EtNxqn8JIaB9y8",
+      authDomain: "chatmortis-a.firebaseapp.com",
+      databaseURL: "https://chatmortis-a-default-rtdb.firebaseio.com",
+      projectId: "chatmortis-a",
+      storageBucket: "chatmortis-a.firebasestorage.app",
+      messagingSenderId: "737064609315",
+      appId: "1:737064609315:web:7203506a570a7c4aa5f396",
+      measurementId: "G-FB5LXST38T"
+    };
+
+    let firebaseInitialized = false;
+    function initFirebase() {
+      if (firebaseInitialized) return;
+      try {
+        if (typeof firebase !== 'undefined') {
+          firebase.initializeApp(firebaseConfig);
+          firebaseInitialized = true;
+          console.log('[Firebase] Инициализирован');
+        } else {
+          console.warn('[Firebase] SDK не загружен');
+        }
+      } catch(e) {
+        console.error('[Firebase] Ошибка инициализации:', e);
+      }
+    }
+
+    // === ЧАТ (Firebase Realtime Database) ===
+    const PROFILE_STORAGE_KEY = 'site_user_account';
+    let chatMessages = [];
+    let currentUsername = '';
+    let currentUserProfile = null;
+    let chatListenerAttached = false;
+
+    // Бета-шапка с предупреждением о багах
+    function dismissBetaNotice() {
+        const bar = document.getElementById('betaNoticeBar');
+        if (bar) bar.style.display = 'none';
+        try { localStorage.setItem('betaNoticeDismissed', 'true'); } catch(e) {}
+    }
+
+    function showBetaNotice() {
+        const bar = document.getElementById('betaNoticeBar');
+        if (!bar) return;
+        const dismissed = localStorage.getItem('betaNoticeDismissed');
+        if (dismissed === 'true') return;
+        bar.style.display = 'block';
+    }
+
+    function loadUserProfile() {
+      try {
+        // Проверяем флаг выхода из аккаунта (устанавливается в index.html)
+        const loggedOut = sessionStorage.getItem('profile_logged_out');
+        if (loggedOut === 'true') {
+          currentUserProfile = null;
+          currentUsername = '';
+          return false;
+        }
+        
+        const stored = localStorage.getItem(PROFILE_STORAGE_KEY);
+        if (stored) {
+          currentUserProfile = JSON.parse(stored);
+          if (currentUserProfile && currentUserProfile.nickname) {
+            currentUsername = currentUserProfile.nickname;
+            localStorage.setItem('community_username', currentUsername);
+            return true;
+          }
+        }
+      } catch(e) {}
+      // Если профиля нет, но есть старый username из localStorage — используем его
+      const storedUsername = localStorage.getItem('community_username');
+      if (storedUsername) {
+        currentUsername = storedUsername;
+      } else {
+        currentUsername = '';
+      }
+      currentUserProfile = null;
+      return false;
+    }
+
+    // Переключает видимость чата в зависимости от наличия профиля
+    function updateChatAccess() {
+      const chatArea = document.getElementById('chatArea');
+      const chatPrompt = document.getElementById('chatLoginPrompt');
+      if (!chatArea || !chatPrompt) return;
+      
+      const hasProfile = currentUserProfile && currentUserProfile.nickname;
+      if (hasProfile) {
+        chatArea.style.display = 'flex';
+        chatPrompt.style.display = 'none';
+      } else {
+        chatArea.style.display = 'none';
+        chatPrompt.style.display = 'flex';
+      }
+    }
+
+    // Синхронизация профиля: если данные изменились в другой вкладке — подхватываем
+    window.addEventListener('storage', (e) => {
+      if (e.key === PROFILE_STORAGE_KEY) {
+        if (e.newValue) {
+          try {
+            currentUserProfile = JSON.parse(e.newValue);
+            if (currentUserProfile && currentUserProfile.nickname) {
+              currentUsername = currentUserProfile.nickname;
+            }
+          } catch(e) {}
+        } else {
+          currentUserProfile = null;
+          currentUsername = localStorage.getItem('community_username') || '';
+        }
+      }
+    });
+
+    function getProfileAvatar() {
+      if (currentUserProfile && currentUserProfile.avatarDataUrl) {
+        return currentUserProfile.avatarDataUrl;
+      }
+      return null;
+    }
+
+    function getProfileAccentColor() {
+      if (currentUserProfile && currentUserProfile.accentColor) {
+        return currentUserProfile.accentColor;
+      }
+      return null;
+    }
+
+    // Список официальных пользователей (только Mortis Play — синяя галочка)
+    const OFFICIAL_USERS = [
+      { nickname: 'Mortis Play', email: 'mortis@mortisplay.com' },
+      { nickname: 'Mortis', email: 'mortis@example.com' },
+      { nickname: 'MortisPlay', email: 'mortisplay@mail.ru' }
+    ];
+
+    // Синяя галочка "Официально" — только из статического массива
+    function isOfficialUser(data) {
+      if (!data || !data.nickname || !data.email) return false;
+      return OFFICIAL_USERS.some(u =>
+        u.nickname.toLowerCase() === data.nickname.toLowerCase() &&
+        u.email.toLowerCase() === data.email.toLowerCase()
+      );
+    }
+
+    // Статус "Донатер" ($) — только из статического массива (проверка по email)
+    const DONATER_EMAILS = [
+      'johnnydrillbato554@gmail.com'
+    ];
+
+    function isDonater(data) {
+      if (!data || !data.email) return false;
+      return DONATER_EMAILS.some(email =>
+        email.toLowerCase() === data.email.toLowerCase()
+      );
+    }
+
+    function renderChatMessages() {
+      const container = document.getElementById('chatMessages');
+      const welcome = document.getElementById('chatWelcome');
+      const totalEl = document.getElementById('totalMessages');
+
+      if (chatMessages.length === 0) {
+        if (welcome) welcome.style.display = 'block';
+        if (totalEl) totalEl.textContent = '0';
+        return;
+      }
+
+      if (welcome) welcome.style.display = 'none';
+      if (totalEl) totalEl.textContent = chatMessages.length;
+
+      container.innerHTML = '';
+      const messagesToShow = chatMessages.slice(-50);
+      messagesToShow.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = `chat-message ${msg.username === currentUsername ? 'own' : ''}`;
+        
+        const avatarLetter = (msg.username || 'А')[0].toUpperCase();
+        const time = new Date(msg.timestamp).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        const isOwn = msg.username === currentUsername;
+        
+        // Данные профиля из сообщения (приходят от других пользователей)
+        const msgAvatar = msg.avatarDataUrl || '';
+        const msgColor = msg.accentColor || '';
+        const msgIsOfficial = msg.isOfficial === true;
+        const msgIsDonater = msg.isDonater === true;
+
+        let avatarHtml;
+        if (msgAvatar) {
+          avatarHtml = `<div class="avatar" style="background: transparent; overflow: hidden;"><img src="${msgAvatar}" alt="" style="width: 100%; height: 100%; object-fit: cover;"></div>`;
+        } else {
+          avatarHtml = `<div class="avatar" style="background: ${msgColor || '#6366f1'};">${avatarLetter}</div>`;
+        }
+
+        // Бейдж: синяя галочка "Официально" или значок "Донатер" ($)
+        let badgeHtml = '';
+        if (msgIsOfficial) {
+          badgeHtml = ` <span style="display: inline-flex; align-items: center; gap: 0.15rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.25rem;"><i class="fas fa-check-circle" style="font-size: 0.6rem;"></i> Офф.</span>`;
+        } else if (msgIsDonater) {
+          badgeHtml = ` <span style="display: inline-flex; align-items: center; gap: 0.15rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.25rem;"><i class="fas fa-dollar-sign" style="font-size: 0.6rem;"></i> Дон.</span>`;
+        }
+
+        div.innerHTML = `
+          ${avatarHtml}
+          <div class="bubble" ${msgColor ? `style="background: ${msgColor}22; border-color: ${msgColor}44;"` : ''}>
+            <div class="username" ${msgColor ? `style="color: ${msgColor};"` : ''}>${escapeHtml(msg.username || 'Аноним')}${badgeHtml}</div>
+            <div class="text">${escapeHtml(msg.text)}</div>
+            <div class="time">${time}</div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Подключаемся к Firebase и слушаем сообщения
+    function attachChatListener() {
+      if (chatListenerAttached || !firebaseInitialized) return;
+      chatListenerAttached = true;
+
+      const db = firebase.database();
+      const messagesRef = db.ref('chat_messages');
+      
+      // Слушаем новые сообщения в реальном времени
+      messagesRef.orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
+        chatMessages = [];
+        snapshot.forEach((child) => {
+          chatMessages.push(child.val());
+        });
+        renderChatMessages();
+      }, (error) => {
+        console.error('[Firebase] Ошибка чтения чата:', error);
+      });
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      // Всегда перезагружаем профиль перед отправкой, чтобы подхватить
+      // свежие аватарку и цвет акцента (даже если username уже известен)
+      loadUserProfile();
+
+      if (!currentUsername) {
+        const hasProfile = currentUserProfile && currentUserProfile.nickname;
+        if (!hasProfile) {
+          currentUsername = prompt('Введите ваш никнейм для чата:') || 'Аноним';
+          if (currentUsername.trim() === '') currentUsername = 'Аноним';
+          localStorage.setItem('community_username', currentUsername);
+        }
+      }
+
+      if (!firebaseInitialized) {
+        showNotification('Чат временно недоступен. Попробуйте позже.', { type: 'warning' });
+        return;
+      }
+
+      // Проверяем настройку приватности — показывать ли аватар в чате
+      const privacyShowAvatar = currentUserProfile ? currentUserProfile.privacyShowAvatar !== false : true;
+      
+      // Отправляем сообщение с данными профиля
+      const message = {
+        username: currentUsername,
+        text: text,
+        timestamp: Date.now(),
+        avatarDataUrl: privacyShowAvatar ? (getProfileAvatar() || '') : '',
+        accentColor: getProfileAccentColor() || '',
+        isOfficial: isOfficialUser(currentUserProfile),
+        isDonater: isDonater(currentUserProfile)
+      };
+
+      const db = firebase.database();
+      db.ref('chat_messages').push(message)
+        .then(() => {
+          input.value = '';
+        })
+        .catch((error) => {
+          console.error('[Firebase] Ошибка отправки:', error);
+          showNotification('Ошибка отправки сообщения', { type: 'warning' });
+        });
+    }
+
+    // === ОНЛАЙН-СЧЁТЧИК ЧЕРЕЗ FIREBASE ===
+    const ONLINE_TIMEOUT = 15000;
+    const HEARTBEAT_INTERVAL = 10000;
+    let onlineUserId = null;
+    let onlineListenerAttached = false;
+
+    function generateOnlineUserId() {
+      let id = localStorage.getItem('community_online_id');
+      if (!id) {
+        id = 'user_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+        localStorage.setItem('community_online_id', id);
+      }
+      return id;
+    }
+
+    function sendHeartbeat() {
+      if (!firebaseInitialized) return;
+      if (!onlineUserId) onlineUserId = generateOnlineUserId();
+      const db = firebase.database();
+      // Пишем heartbeat с никнеймом для красоты
+      db.ref('online_users/' + onlineUserId).set({
+        lastSeen: Date.now(),
+        username: currentUsername || 'Аноним'
+      });
+    }
+
+    function attachOnlineListener() {
+      if (onlineListenerAttached || !firebaseInitialized) return;
+      onlineListenerAttached = true;
+
+      const db = firebase.database();
+      const onlineRef = db.ref('online_users');
+      
+      onlineRef.on('value', (snapshot) => {
+        const now = Date.now();
+        let count = 0;
+        const updates = {};
+        
+        snapshot.forEach((child) => {
+          const data = child.val();
+          if (data && data.lastSeen && (now - data.lastSeen < ONLINE_TIMEOUT)) {
+            count++;
+          } else {
+            // Удаляем устаревшие записи
+            updates[child.key] = null;
+          }
+        });
+        
+        // Очищаем офлайн-пользователей
+        if (Object.keys(updates).length > 0) {
+          onlineRef.update(updates);
+        }
+        
+        const el = document.getElementById('onlineCount');
+        if (el) el.textContent = count;
+      });
+    }
+
+    function cleanupHeartbeat() {
+      if (onlineUserId && firebaseInitialized) {
+        const db = firebase.database();
+        db.ref('online_users/' + onlineUserId).remove();
+      }
+    }
+
+    // Инициализация чата, онлайн-счётчика и галереи
+    document.addEventListener('DOMContentLoaded', () => {
+      showBetaNotice();
+      loadUserProfile();
+      updateChatAccess();
+      
+      // Периодически проверяем профиль (на случай, если пользователь
+      // создал/изменил его на index.html или вышел из аккаунта)
+      setInterval(() => {
+        // Проверяем флаг выхода из аккаунта
+        const loggedOut = sessionStorage.getItem('profile_logged_out');
+        if (loggedOut === 'true') {
+          if (currentUserProfile !== null) {
+            currentUserProfile = null;
+            currentUsername = '';
+            updateChatAccess();
+            console.log('[Profile] Обнаружен выход из аккаунта');
+          }
+          return;
+        }
+        
+        const stored = localStorage.getItem(PROFILE_STORAGE_KEY);
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            if (parsed && parsed.nickname) {
+              // Сравниваем по никнейму — если изменился, обновляем
+              if (!currentUserProfile || currentUserProfile.nickname !== parsed.nickname ||
+                  currentUserProfile.avatarDataUrl !== parsed.avatarDataUrl ||
+                  currentUserProfile.accentColor !== parsed.accentColor) {
+                currentUserProfile = parsed;
+                currentUsername = parsed.nickname;
+                localStorage.setItem('community_username', currentUsername);
+                updateChatAccess();
+                console.log('[Profile] Автообновление профиля из localStorage');
+              }
+            }
+          } catch(e) {}
+        } else {
+          // Профиль удалён из localStorage
+          if (currentUserProfile !== null) {
+            currentUserProfile = null;
+            currentUsername = '';
+            updateChatAccess();
+          }
+        }
+      }, 3000);
+      
+      // Инициализируем Firebase
+      initFirebase();
+      
+      function startFirebaseServices() {
+        if (!firebaseInitialized) return;
+        
+        // Подключаем чат
+        attachChatListener();
+        
+        // Подключаем онлайн-счётчик
+        onlineUserId = generateOnlineUserId();
+        sendHeartbeat();
+        attachOnlineListener();
+        
+        // Heartbeat каждые 10 секунд
+        setInterval(() => {
+          sendHeartbeat();
+        }, HEARTBEAT_INTERVAL);
+        
+        // Очистка при закрытии вкладки
+        window.addEventListener('beforeunload', cleanupHeartbeat);
+        window.addEventListener('pagehide', cleanupHeartbeat);
+        
+        // Подключаем галерею
+        attachGalleryListener();
+      }
+      
+      if (firebaseInitialized) {
+        startFirebaseServices();
+      } else {
+        const checkFirebase = setInterval(() => {
+          if (typeof firebase !== 'undefined' && !firebaseInitialized) {
+            initFirebase();
+            if (firebaseInitialized) {
+              startFirebaseServices();
+              clearInterval(checkFirebase);
+            }
+          }
+        }, 500);
+        setTimeout(() => clearInterval(checkFirebase), 10000);
+      }
+
+      const sendBtn = document.getElementById('chatSendBtn');
+      const chatInput = document.getElementById('chatInput');
+
+      sendBtn.addEventListener('click', sendMessage);
+      chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') sendMessage();
+      });
+      
+      // Кнопка загрузки мема
+      document.getElementById('uploadMemeBtn').addEventListener('click', uploadMeme);
+    });
+
+    // === ГАЛЕРЕЯ МЕМОВ (Firebase) ===
+    let galleryMemes = [];
+    let galleryListenerAttached = false;
+
+    function renderGallery() {
+      const grid = document.getElementById('galleryGrid');
+      const noMemes = document.getElementById('noMemesMessage');
+
+      if (galleryMemes.length === 0) {
+        grid.innerHTML = '';
+        noMemes.classList.remove('hidden');
+        return;
+      }
+
+      noMemes.classList.add('hidden');
+      grid.innerHTML = '';
+
+      // Показываем в обратном порядке (новые сверху)
+      const memesToShow = [...galleryMemes].reverse();
+      memesToShow.forEach(meme => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        const isVideo = meme.fileType === 'video';
+        
+        if (isVideo) {
+          item.innerHTML = `
+            <video src="${meme.dataUrl}" muted loop preload="metadata" style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;"></video>
+            <div class="video-badge"><i class="fas fa-play"></i></div>
+            <div class="author-tag"><i class="fas fa-user"></i> ${escapeHtml(meme.author)}</div>
+            <div class="overlay">${escapeHtml(meme.title)}</div>
+          `;
+        } else {
+          item.innerHTML = `
+            <img src="${meme.dataUrl}" alt="${escapeHtml(meme.title)}" loading="lazy" />
+            <div class="author-tag"><i class="fas fa-user"></i> ${escapeHtml(meme.author)}</div>
+            <div class="overlay">${escapeHtml(meme.title)}</div>
+          `;
+        }
+        item.addEventListener('click', () => openGalleryModal(meme.dataUrl, meme.title, isVideo));
+        grid.appendChild(item);
+      });
+    }
+
+    function attachGalleryListener() {
+      if (galleryListenerAttached || !firebaseInitialized) return;
+      galleryListenerAttached = true;
+
+      const db = firebase.database();
+      const galleryRef = db.ref('gallery_memes');
+      
+      galleryRef.orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
+        galleryMemes = [];
+        snapshot.forEach((child) => {
+          galleryMemes.push(child.val());
+        });
+        renderGallery();
+      }, (error) => {
+        console.error('[Firebase] Ошибка чтения галереи:', error);
+      });
+    }
+
+    function openGalleryModal(src, title, isVideo) {
+      const modal = document.getElementById('galleryModal');
+      const img = document.getElementById('galleryModalImg');
+      const caption = document.getElementById('galleryModalCaption');
+      
+      if (isVideo) {
+        // Показываем видео вместо изображения
+        img.style.display = 'none';
+        let video = modal.querySelector('.gallery-modal-video');
+        if (!video) {
+          video = document.createElement('video');
+          video.className = 'gallery-modal-video';
+          video.controls = true;
+          video.autoplay = true;
+          video.style.cssText = 'max-width: 90vw; max-height: 80vh; border-radius: 0.75rem; display: block; margin: 0 auto;';
+          modal.querySelector('.modal-content').insertBefore(video, caption);
+        }
+        video.style.display = 'block';
+        video.src = src;
+        video.load();
+      } else {
+        // Показываем изображение
+        img.style.display = 'block';
+        const video = modal.querySelector('.gallery-modal-video');
+        if (video) video.style.display = 'none';
+        img.src = src;
+      }
+      
+      caption.textContent = title || 'Мем сообщества';
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeGalleryModal(event) {
+      if (event && event.target !== document.getElementById('galleryModal')) return;
+      const modal = document.getElementById('galleryModal');
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    // Загрузка мема
+    function uploadMeme() {
+      const fileInput = document.getElementById('memeFile');
+      const titleInput = document.getElementById('memeTitle');
+      const authorInput = document.getElementById('memeAuthor');
+
+      const file = fileInput.files[0];
+      const title = titleInput.value.trim() || 'Мем';
+      let author = authorInput.value.trim();
+
+      if (!author) {
+        if (currentUserProfile && currentUserProfile.nickname) {
+          author = currentUserProfile.nickname;
+        } else {
+          author = localStorage.getItem('community_username') || 'Аноним';
+        }
+      }
+
+      if (!file) {
+        showNotification('Выберите файл для загрузки', { type: 'warning' });
+        return;
+      }
+
+      if (file.size > 100 * 1024 * 1024) {
+        showNotification('Файл слишком большой. Максимум 100 МБ', { type: 'warning' });
+        return;
+      }
+
+      if (!firebaseInitialized) {
+        showNotification('Галерея временно недоступна', { type: 'warning' });
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const isVideo = file.type.startsWith('video/');
+        const meme = {
+          title: title,
+          author: author,
+          dataUrl: e.target.result,
+          fileType: isVideo ? 'video' : 'image',
+          timestamp: Date.now()
+        };
+
+        // Отправляем в Firebase
+        const db = firebase.database();
+        db.ref('gallery_memes').push(meme)
+          .then(() => {
+            fileInput.value = '';
+            titleInput.value = '';
+            authorInput.value = '';
+            showNotification('Мем добавлен в галерею! 🎉', { type: 'success', duration: 3000 });
+          })
+          .catch((error) => {
+            console.error('[Firebase] Ошибка загрузки мема:', error);
+            showNotification('Ошибка загрузки мема', { type: 'warning' });
+          });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // === УВЕДОМЛЕНИЯ ===
+    function showNotification(message, options = {}) {
+      const { type = 'info', duration = 2600 } = options;
+      const notification = document.getElementById('notification');
+      const notificationText = document.getElementById('notificationText');
+      const notificationTitle = document.getElementById('notificationTitle');
+      const icon = notification?.querySelector('.icon-pill i');
+      if (!notification || !notificationText) return;
+
+      notificationText.textContent = message;
+      if (notificationTitle) {
+        notificationTitle.textContent = type === 'warning' ? 'Предупреждение' : type === 'success' ? 'Успешно' : 'Уведомление';
+      }
+      if (icon) {
+        icon.className = type === 'warning' ? 'fas fa-triangle-exclamation' : type === 'success' ? 'fas fa-check-circle' : 'fas fa-bell';
+      }
+      notification.classList.remove('show');
+      window.clearTimeout(notification._hideTimer);
+      notification.classList.add('show');
+      notification._hideTimer = window.setTimeout(() => notification.classList.remove('show'), duration);
+    }
+
+    function hideNotification() {
+      document.getElementById('notification').classList.remove('show');
+    }
+
+    // Тема
+    document.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('theme');
+      const shouldUseDark = saved === 'dark' || saved === null || saved === undefined;
+      document.body.classList.toggle('light-theme', !shouldUseDark);
+    });
+
+    // === АНИМИРОВАННЫЕ ЧАСТИЦЫ НА ФОНЕ ===
+    function initParticles() {
+      const canvas = document.getElementById('particlesCanvas');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let animationId = null;
+      let mouseX = 0;
+      let mouseY = 0;
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function createParticles(count) {
+        particles = [];
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            radius: Math.random() * 2 + 0.5,
+            opacity: Math.random() * 0.5 + 0.1,
+            color: ['#6366f1', '#0ea5e9', '#8b5cf6', '#a78bfa'][Math.floor(Math.random() * 4)]
+          });
+        }
+      }
+
+      function drawParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((p, i) => {
+          // Движение
+          p.x += p.vx;
+          p.y += p.vy;
+
+          // Отталкивание от мыши
+          const dx = p.x - mouseX;
+          const dy = p.y - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            const force = (120 - dist) / 120;
+            p.x += (dx / dist) * force * 1.5;
+            p.y += (dy / dist) * force * 1.5;
+          }
+
+          // Границы
+          if (p.x < 0) p.x = canvas.width;
+          if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height;
+          if (p.y > canvas.height) p.y = 0;
+
+          // Рисуем частицу
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.opacity;
+          ctx.fill();
+
+          // Соединяем близкие частицы линиями
+          for (let j = i + 1; j < particles.length; j++) {
+            const q = particles[j];
+            const dx2 = p.x - q.x;
+            const dy2 = p.y - q.y;
+            const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+            if (dist2 < 150) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(q.x, q.y);
+              ctx.strokeStyle = '#6366f1';
+              ctx.globalAlpha = (1 - dist2 / 150) * 0.15;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        });
+
+        ctx.globalAlpha = 1;
+        animationId = requestAnimationFrame(drawParticles);
+      }
+
+      function onMouseMove(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      }
+
+      resizeCanvas();
+      const particleCount = Math.min(Math.floor(window.innerWidth * window.innerHeight / 12000), 80);
+      createParticles(particleCount);
+      drawParticles();
+
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        createParticles(particleCount);
+      });
+      window.addEventListener('mousemove', onMouseMove);
+
+      // Останавливаем анимацию при уходе со страницы
+      window.addEventListener('beforeunload', () => {
+        if (animationId) cancelAnimationFrame(animationId);
+      });
+    }
+
+    // Запускаем частицы после загрузки
+    if (document.readyState === 'complete') {
+      initParticles();
+    } else {
+      window.addEventListener('load', initParticles);
+    }
+  </script>
+</body>
+</html>

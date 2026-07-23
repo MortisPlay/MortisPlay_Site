@@ -35,6 +35,10 @@
     });
   </script>
   <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <!-- Firebase SDK для админ-панели (выдача статуса "Донатер") -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -880,7 +884,13 @@
       border-radius: 999px; padding: 0.8rem 1rem; max-width: min(92vw, 420px);
       opacity: 0;
       transition: all 0.32s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 1002; backdrop-filter: blur(14px); box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+      z-index: 3001; backdrop-filter: blur(14px); box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+    /* Хак для отлова автозаполнения браузерных менеджеров паролей */
+    @keyframes onAutoFill { from { opacity: 1; } to { opacity: 1; } }
+    .profile-input:-webkit-autofill {
+      animation-name: onAutoFill;
+      animation-duration: 1ms;
     }
     .notification.show { transform: translate(-50%, 0); opacity: 1; }
     .notification .icon-pill {
@@ -1003,9 +1013,129 @@
       animation-play-state: paused;
     }
     
+    /* Бета-шапка профиля */
+    .profile-beta-header {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #1e293b;
+      text-align: center;
+      padding: 0.6rem 1rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      border-bottom: 2px solid rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      border-radius: 1.5rem 1.5rem 0 0;
+    }
+    .profile-beta-header i {
+      font-size: 1rem;
+    }
+    .profile-beta-header .beta-badge {
+      background: rgba(0,0,0,0.2);
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      color: #fff;
+    }
+    .profile-beta-header .beta-countdown {
+      font-weight: 600;
+      font-size: 0.75rem;
+      background: rgba(255,255,255,0.25);
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+    }
+    
+    /* Профиль модальное окно */
+    #profileModal .modal-content {
+      max-width: 520px;
+      padding: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .profile-body {
+      padding: 1.75rem;
+    }
+    .profile-avatar {
+      width: 5rem;
+      height: 5rem;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--primary);
+      margin: 0 auto 1rem;
+    }
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 0.25rem;
+    }
+    
+    /* Формы профиля */
+    .profile-form-group {
+      margin-bottom: 1rem;
+    }
+    .profile-input {
+      width: 100%;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+    }
+    .profile-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+      background: rgba(99, 102, 241, 0.08);
+    }
+    .profile-input::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.5;
+    }
+    .profile-tab {
+      transition: all 0.3s ease !important;
+    }
+    .profile-tab.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+      color: white !important;
+    }
+    .profile-form {
+      animation: fadeInUp 0.3s ease forwards;
+    }
+    .profile-color-btn {
+      transition: all 0.2s ease !important;
+    }
+    .profile-color-btn.active {
+      border-color: white !important;
+      box-shadow: 0 0 0 2px var(--bg-secondary), 0 0 0 4px currentColor !important;
+      transform: scale(1.15);
+    }
+    .profile-color-btn:hover {
+      transform: scale(1.1);
+    }
+    
   </style>
 </head>
 <body>
+  <!-- Бета-шапка с предупреждением -->
+  <div id="betaNoticeBar" style="display: none; background: linear-gradient(135deg, #f59e0b, #d97706); color: #1a1a2e; padding: 0.6rem 1rem; text-align: center; font-size: 0.85rem; font-weight: 600; position: relative; z-index: 10001;">
+    <span>⚠️ ВНИМАНИЕ! Если вы обнаружите баг или ошибку, обратитесь к нашему агенту </span>
+    <a href="https://t.me/agentplay_bot" target="_blank" style="color: #1a1a2e; text-decoration: underline; font-weight: 800;">@agentplay_bot</a>
+    <span> — это очень важно для нас. Спасибо ❤️</span>
+    <button onclick="dismissBetaNotice()" style="background: none; border: none; color: #1a1a2e; cursor: pointer; font-size: 1.1rem; margin-left: 0.75rem; vertical-align: middle; opacity: 0.7;" title="Закрыть">&times;</button>
+  </div>
   <div class="scroll-progress"></div>
   <div id="loader"><div class="loader-spinner"></div></div>
   <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Прокрутить наверх"><i class="fas fa-arrow-up"></i></button>
@@ -1043,6 +1173,24 @@
             <i class="fas fa-calendar-days text-xl" style="color: #22c55e;"></i>
             <span class="text-sm font-medium" style="color: var(--text-primary);">Итоги года</span>
           </a>
+        </div>
+        
+        <div class="w-full mt-4 pt-4 border-t" style="border-color: var(--glass-border);">
+          <div class="text-xs font-medium uppercase tracking-widest mb-3" style="color: var(--text-secondary); opacity: 0.5;">Быстрые действия</div>
+          <div class="grid grid-cols-3 gap-2 w-full">
+            <button id="mobileMenuProfileBtn" class="flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-200" style="background: var(--glass-bg); border: 1px solid var(--glass-border); cursor: pointer;" onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--glass-border)'; this.style.transform='none'">
+              <i class="fas fa-user-circle text-xl" style="color: #f59e0b;"></i>
+              <span class="text-sm font-medium" style="color: var(--text-primary);">Профиль</span>
+            </button>
+            <button id="mobileMenuThemeBtn" class="flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-200" style="background: var(--glass-bg); border: 1px solid var(--glass-border); cursor: pointer;" onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--glass-border)'; this.style.transform='none'">
+              <i class="fas fa-sun text-xl" style="color: var(--secondary);"></i>
+              <span class="text-sm font-medium" style="color: var(--text-primary);">Тема</span>
+            </button>
+            <button id="mobileMenuSettingsBtn" class="flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-200" style="background: var(--glass-bg); border: 1px solid var(--glass-border); cursor: pointer;" onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--glass-border)'; this.style.transform='none'">
+              <i class="fas fa-gear text-xl" style="color: var(--accent);"></i>
+              <span class="text-sm font-medium" style="color: var(--text-primary);">Настр.</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1152,6 +1300,321 @@
     </div>
   </div>
 
+  <!-- Модальное окно Профиль (Регистрация / Вход) -->
+  <div id="profileModal" class="modal-backdrop" onclick="closeProfileModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="profile-beta-header">
+        <i class="fas fa-flask"></i>
+        <span>⚡ Бета-тест — 14 дней</span>
+        <span class="beta-badge">BETA</span>
+        <span class="beta-countdown" id="profileBetaCountdown">Загрузка...</span>
+      </div>
+      <button class="modal-close" onclick="closeProfileModal()" style="top: 3.5rem; right: 1rem; z-index: 10;"><i class="fas fa-times"></i></button>
+      <div class="profile-body">
+        <!-- Блок для НЕ авторизованных: Вкладки + Формы -->
+        <div id="profileAuthBlock">
+          <!-- Вкладки: Вход / Регистрация -->
+          <div class="profile-tabs" style="display: flex; gap: 0; margin-bottom: 1.5rem; border-radius: 0.75rem; overflow: hidden; border: 1px solid var(--glass-border);">
+            <button id="profileTabLogin" class="profile-tab active" style="flex: 1; padding: 0.75rem; text-align: center; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; transition: all 0.3s ease;">
+              <i class="fas fa-sign-in-alt"></i> Вход
+            </button>
+            <button id="profileTabRegister" class="profile-tab" style="flex: 1; padding: 0.75rem; text-align: center; font-weight: 600; font-size: 0.9rem; cursor: pointer; border: none; background: var(--glass-bg); color: var(--text-secondary); transition: all 0.3s ease;">
+              <i class="fas fa-user-plus"></i> Регистрация
+            </button>
+          </div>
+
+          <!-- Форма Входа -->
+          <div id="profileLoginForm" class="profile-form">
+            <div class="text-center mb-4">
+              <i class="fas fa-user-circle text-5xl mb-2" style="color: var(--primary); opacity: 0.6;"></i>
+              <h3 class="text-xl font-bold gradient-text">Добро пожаловать!</h3>
+              <p style="color: var(--text-secondary); font-size: 0.85rem;">Войди в аккаунт, чтобы получить доступ к функциям</p>
+            </div>
+            <div class="profile-form-group">
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.4rem;">
+                <i class="fas fa-envelope"></i> Email или никнейм
+              </label>
+              <input type="text" id="loginEmail" class="profile-input" placeholder="Введите email или никнейм" autocomplete="username" />
+            </div>
+            <div class="profile-form-group">
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.4rem;">
+                <i class="fas fa-lock"></i> Пароль
+              </label>
+              <input type="password" id="loginPassword" class="profile-input" placeholder="Введите пароль" autocomplete="current-password" />
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+              <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); cursor: pointer;">
+                <input type="checkbox" id="loginRemember" checked style="accent-color: var(--primary);" /> Запомнить меня
+              </label>
+              <a href="#" style="font-size: 0.8rem; color: var(--primary);">Забыли пароль?</a>
+            </div>
+            <button id="profileLoginBtn" class="btn-primary w-full" style="margin-bottom: 0.75rem;">
+              <i class="fas fa-sign-in-alt"></i> Войти
+            </button>
+            <button id="profileDiagnosticBtn" type="button" style="font-size: 0.75rem; color: var(--text-secondary); background: none; border: none; cursor: pointer; margin-bottom: 0.5rem; width: 100%; text-align: center; padding: 0.25rem; text-decoration: underline; opacity: 0.6;" onclick="diagnoseProfile()">
+              🔍 Диагностика
+            </button>
+            <p style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">
+              Нет аккаунта? <a href="#" id="profileSwitchToRegister" style="color: var(--primary); font-weight: 600;">Зарегистрироваться</a>
+            </p>
+          </div>
+
+          <!-- Форма Регистрации -->
+          <div id="profileRegisterForm" class="profile-form" style="display: none;">
+            <div class="text-center mb-4">
+              <i class="fas fa-user-plus text-5xl mb-2" style="color: var(--primary); opacity: 0.6;"></i>
+              <h3 class="text-xl font-bold gradient-text">Создать аккаунт</h3>
+              <p style="color: var(--text-secondary); font-size: 0.85rem;">Присоединяйся к сообществу Mortis Play!</p>
+            </div>
+            <div class="profile-form-group">
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.4rem;">
+                <i class="fas fa-user"></i> Никнейм
+              </label>
+              <input type="text" id="regNickname" class="profile-input" placeholder="Придумайте никнейм" maxlength="20" autocomplete="username" />
+            </div>
+            <div class="profile-form-group">
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.4rem;">
+                <i class="fas fa-envelope"></i> Email
+              </label>
+              <input type="email" id="regEmail" class="profile-input" placeholder="Введите email" autocomplete="email" />
+            </div>
+            <div class="profile-form-group">
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.4rem;">
+                <i class="fas fa-lock"></i> Пароль
+              </label>
+              <input type="password" id="regPassword" class="profile-input" placeholder="Минимум 6 символов" minlength="6" autocomplete="new-password" />
+            </div>
+            <div class="profile-form-group">
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.4rem;">
+                <i class="fas fa-lock"></i> Подтвердите пароль
+              </label>
+              <input type="password" id="regPasswordConfirm" class="profile-input" placeholder="Повторите пароль" autocomplete="new-password" />
+            </div>
+            <label style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 1rem; font-size: 0.8rem; color: var(--text-secondary); cursor: pointer;">
+              <input type="checkbox" id="regAgree" style="accent-color: var(--primary); margin-top: 0.15rem;" />
+              <span>Я согласен с <a href="#" onclick="event.preventDefault(); openTermsModal();" style="color: var(--primary);">условиями использования</a> и <a href="#" onclick="event.preventDefault(); openPrivacyModal();" style="color: var(--primary);">политикой конфиденциальности</a></span>
+            </label>
+            <button id="profileRegisterBtn" class="btn-primary w-full" style="margin-bottom: 0.75rem; background: linear-gradient(135deg, #f59e0b, #d97706);">
+              <i class="fas fa-user-plus"></i> Создать аккаунт
+            </button>
+            <p style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">
+              Уже есть аккаунт? <a href="#" id="profileSwitchToLogin" style="color: var(--primary); font-weight: 600;">Войти</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- Профиль пользователя (показывается после входа, без вкладок/статистики/ссылок) -->
+        <div id="profileLoggedIn" class="profile-form" style="display: none;">
+          <!-- Шапка профиля -->
+          <div class="text-center mb-6">
+            <div class="profile-avatar" style="width: 5rem; height: 5rem; margin-bottom: 1rem; position: relative; display: inline-block;">
+              <img src="/assets/photo.jpg" alt="Аватар" id="profileAvatarImg" onerror="this.onerror=null;this.src='https://placehold.co/120x120/4f46e5/ffffff?text=U'" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+              <button id="profileAvatarChangeBtn" style="position: absolute; bottom: 0; right: 0; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--bg-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
+                <i class="fas fa-pen"></i>
+              </button>
+            </div>
+            <h3 class="text-2xl font-bold gradient-text" id="profileDisplayName">Пользователь</h3>
+            <p style="color: var(--text-secondary); font-size: 0.85rem;" id="profileDisplayEmail">email@example.com</p>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.3rem; font-style: italic;" id="profileDisplayStatus"></p>
+            <div style="margin-top: 0.5rem; display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(34, 197, 94, 0.15); color: #22c55e; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">
+              <i class="fas fa-circle" style="font-size: 0.5rem;"></i> Аккаунт активен
+            </div>
+          </div>
+
+          <!-- Настройки профиля -->
+          <div style="margin-bottom: 1.5rem;">
+            <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">
+              <i class="fas fa-sliders"></i> Настройки профиля
+            </h4>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <div>
+                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Никнейм</label>
+                <input type="text" id="profileEditNickname" class="profile-input" placeholder="Ваш никнейм" maxlength="20" />
+              </div>
+              <div>
+                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Статус</label>
+                <input type="text" id="profileEditStatus" class="profile-input" placeholder="Ваш статус (например: ✨ В эфире!)" maxlength="50" />
+              </div>
+              <div>
+                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">О себе</label>
+                <textarea id="profileEditBio" class="profile-input" placeholder="Расскажите о себе..." maxlength="200" style="resize: vertical; min-height: 60px; font-family: inherit;"></textarea>
+              </div>
+              <div>
+                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">Цвет акцента</label>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <button class="profile-color-btn active" data-color="#6366f1" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #6366f1; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;"></button>
+                  <button class="profile-color-btn" data-color="#f59e0b" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #f59e0b; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;"></button>
+                  <button class="profile-color-btn" data-color="#22c55e" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #22c55e; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;"></button>
+                  <button class="profile-color-btn" data-color="#ef4444" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #ef4444; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;"></button>
+                  <button class="profile-color-btn" data-color="#ec4899" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #ec4899; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;"></button>
+                  <button class="profile-color-btn" data-color="#8b5cf6" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #8b5cf6; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;"></button>
+                </div>
+              </div>
+              <div>
+                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">
+                  <i class="fas fa-shield-alt"></i> Приватность
+                </label>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                  <label style="display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.75rem; border-radius: 0.75rem; background: var(--glass-bg); border: 1px solid var(--glass-border); cursor: pointer;">
+                    <span style="font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                      <i class="fas fa-image" style="color: var(--primary);"></i> Показывать аватар в чате
+                    </span>
+                    <input type="checkbox" id="profilePrivacyShowAvatar" checked style="accent-color: var(--primary); width: 1.1rem; height: 1.1rem; cursor: pointer;" />
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Кнопки действий -->
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <button id="profileEmailChangeBtn" class="btn-primary w-full" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+              <i class="fas fa-envelope"></i> Сменить email
+            </button>
+            <button id="profileSaveBtn" class="btn-primary w-full">
+              <i class="fas fa-save"></i> Сохранить изменения
+            </button>
+            <button id="profileLogoutBtn" class="btn-primary w-full" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+              <i class="fas fa-sign-out-alt"></i> Выйти из аккаунта
+            </button>
+          </div>
+
+          <!-- Админ-панель (видна только тем, у кого есть галочка) -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно: Условия использования -->
+  <div id="termsModal" class="modal-backdrop" onclick="closeTermsModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 600px;">
+      <button class="modal-close" onclick="closeTermsModal()"><i class="fas fa-times"></i></button>
+      <div class="text-center mb-6">
+        <div style="width: 3.5rem; height: 3.5rem; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+          <i class="fas fa-file-contract text-white" style="font-size: 1.5rem;"></i>
+        </div>
+        <h3 class="text-2xl font-bold gradient-text">Условия использования</h3>
+      </div>
+      <div class="modal-text" style="max-height: 50vh; overflow-y: auto; padding-right: 0.5rem;">
+        <p>Последнее обновление: 23 июля 2026 г.</p>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">1. Общие положения</h4>
+        <p>Регистрируясь на сайте Mortis Play, вы соглашаетесь с настоящими условиями использования. Если вы не согласны с каким-либо пунктом, пожалуйста, не используйте наш сайт.</p>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">2. Правила поведения в чате</h4>
+        <p>Запрещается:</p>
+        <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+          <li>Оскорбление других участников</li>
+          <li>Спам и реклама</li>
+          <li>Распространение запрещённого контента</li>
+          <li>Выдача себя за других пользователей</li>
+        </ul>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">3. Аккаунт</h4>
+        <p>Вы несёте ответственность за сохранность своих данных для входа. Администрация сайта не несёт ответственности за утерю доступа к аккаунту.</p>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">4. Изменение условий</h4>
+        <p>Мы оставляем за собой право изменять условия использования в любое время. Продолжая использовать сайт после изменений, вы принимаете новые условия.</p>
+      </div>
+      <div style="text-align: center; margin-top: 1.5rem;">
+        <button class="btn-primary" onclick="closeTermsModal()">
+          <i class="fas fa-check"></i> Закрыть
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно: Политика конфиденциальности -->
+  <div id="privacyModal" class="modal-backdrop" onclick="closePrivacyModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 600px;">
+      <button class="modal-close" onclick="closePrivacyModal()"><i class="fas fa-times"></i></button>
+      <div class="text-center mb-6">
+        <div style="width: 3.5rem; height: 3.5rem; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+          <i class="fas fa-shield-alt text-white" style="font-size: 1.5rem;"></i>
+        </div>
+        <h3 class="text-2xl font-bold gradient-text">Политика конфиденциальности</h3>
+      </div>
+      <div class="modal-text" style="max-height: 50vh; overflow-y: auto; padding-right: 0.5rem;">
+        <p>Последнее обновление: 23 июля 2026 г.</p>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">1. Какие данные мы собираем</h4>
+        <p>При регистрации вы предоставляете: никнейм, email и пароль. Эти данные хранятся локально в вашем браузере (localStorage) и не передаются на сторонние серверы, за исключением Firebase Realtime Database для работы чата.</p>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">2. Firebase</h4>
+        <p>Для работы общего чата и галереи мемов мы используем Firebase Realtime Database (Google). В Firebase передаются: никнейм, текст сообщения, аватар (если загружен), цвет акцента. Эти данные видны другим пользователям сайта.</p>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">3. Cookie и аналитика</h4>
+        <p>Мы используем Google Analytics для сбора анонимной статистики посещений. Вы можете отключить cookie в настройках браузера.</p>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">4. Ваши права</h4>
+        <p>Вы можете в любой момент удалить свои данные, очистив localStorage в настройках браузера. Данные из Firebase удаляются по запросу.</p>
+      </div>
+      <div style="text-align: center; margin-top: 1.5rem;">
+        <button class="btn-primary" onclick="closePrivacyModal()">
+          <i class="fas fa-check"></i> Закрыть
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно смены email -->
+  <div id="emailChangeModal" class="modal-backdrop" onclick="closeEmailChangeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 480px;">
+      <div class="text-center mb-6">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📧</div>
+        <h3 style="font-size: 1.3rem; font-weight: 700;">Смена email</h3>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.3rem;">
+          Введите новый email, мы отправим код подтверждения
+        </p>
+      </div>
+
+      <!-- Шаг 1: Ввод нового email -->
+      <div id="emailChangeStep1">
+        <div class="profile-form-group">
+          <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">
+            <i class="fas fa-envelope"></i> Новый email
+          </label>
+          <input type="email" id="emailChangeNewEmail" class="profile-input" placeholder="example@mail.ru" />
+        </div>
+        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+          <button class="btn-primary" style="flex: 1;" onclick="sendEmailCode()">
+            <i class="fas fa-paper-plane"></i> Отправить код
+          </button>
+          <button class="btn-primary" style="flex: 0 0 auto; background: linear-gradient(135deg, #6b7280, #4b5563);" onclick="closeEmailChangeModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Шаг 2: Подтверждение кода -->
+      <div id="emailChangeStep2" style="display: none;">
+        <div style="text-align: center; margin-bottom: 1rem;">
+          <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+            Код отправлен на <strong id="emailChangeSentTo" style="color: var(--primary);"></strong>
+          </div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">
+            Введите 6-значный код из письма
+          </div>
+        </div>
+        <div style="text-align: center; margin-bottom: 1rem;">
+          <input type="text" id="emailChangeCode" class="profile-input" placeholder="000000" maxlength="6" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; font-family: 'Courier New', monospace; max-width: 200px; margin: 0 auto;" />
+        </div>
+        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+          <button class="btn-primary" style="flex: 1;" onclick="confirmEmailChange()">
+            <i class="fas fa-check"></i> Подтвердить
+          </button>
+          <button class="btn-primary" style="flex: 0 0 auto; background: linear-gradient(135deg, #6b7280, #4b5563);" onclick="closeEmailChangeModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div style="text-align: center; margin-top: 0.75rem;">
+          <button style="background: none; border: none; color: var(--primary); cursor: pointer; font-size: 0.8rem; text-decoration: underline;" onclick="resendEmailCode()">
+            <i class="fas fa-redo"></i> Отправить код повторно
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <header>
     <nav class="container-padding max-w-7xl mx-auto">
@@ -1168,6 +1631,9 @@
           <a href="news-archive.html" target="_blank" rel="noopener noreferrer" class="nav-link external">Архив Новостей</a>
           <a href="#twitch-clips" class="nav-link">Twitch</a>
           <a href="#contact" class="nav-link">Сотрудничество</a>
+          <button id="profileNavBtn" class="nav-link" style="background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(217,119,6,0.15)); border: 1px solid rgba(245,158,11,0.3); cursor: pointer;">
+            <i class="fas fa-user-circle"></i> Профиль
+          </button>
         </div>
         <div class="flex items-center gap-3">
           <button id="settingsToggle" aria-label="Настройки" title="Настройки"><i class="fas fa-gear"></i></button>
@@ -1191,6 +1657,7 @@
               <a href="faq.html" target="_blank" class="btn-primary btn-action-faq animate-fadeInUp"><i class="fas fa-circle-question"></i> FAQ</a>
               <a href="year-review.html" target="_blank" class="btn-primary btn-action-year animate-fadeInUp"><i class="fas fa-calendar-days"></i> Итоги года</a>
               <a href="news-archive.html" target="_blank" rel="noopener noreferrer" class="btn-primary btn-action-contact animate-fadeInUp"><i class="fas fa-box-archive"></i> Архив Новостей</a>
+              <a href="community.html" class="btn-primary animate-fadeInUp" style="background: linear-gradient(135deg, #f59e0b, #d97706); grid-column: 1 / -1; max-width: 100%;"><i class="fas fa-users"></i> Зал комьюнити 🎉</a>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto animate-fadeInUp" style="animation-delay: 0.5s">
@@ -1369,14 +1836,6 @@
       <i class="fas fa-envelope"></i>
       <span>Сотруд.</span>
     </a>
-    <button id="mobileThemeToggle" title="Сменить тему" aria-label="Сменить тему">
-      <i class="fas fa-sun"></i>
-      <span>Тема</span>
-    </button>
-    <button id="mobileSettingsToggle" title="Настройки" aria-label="Настройки">
-      <i class="fas fa-gear"></i>
-      <span>Настр.</span>
-    </button>
     <button id="mobileMenuToggle" title="Меню" aria-label="Меню">
       <i class="fas fa-bars"></i>
       <span>Меню</span>
@@ -1384,6 +1843,30 @@
   </nav>
 
   <script>
+    // === ИНИЦИАЛИЗАЦИЯ FIREBASE (для админ-панели) ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDUBtozQ4B1i5tmu7W5EtNxqn8JIaB9y8",
+      authDomain: "chatmortis-a.firebaseapp.com",
+      databaseURL: "https://chatmortis-a-default-rtdb.firebaseio.com",
+      projectId: "chatmortis-a",
+      storageBucket: "chatmortis-a.firebasestorage.app",
+      messagingSenderId: "737064609315",
+      appId: "1:737064609315:web:1f9e9e9e9e9e9e9e9e9e9e"
+    };
+
+    let firebaseInitialized = false;
+    try {
+      if (typeof firebase !== 'undefined') {
+        firebase.initializeApp(firebaseConfig);
+        firebaseInitialized = true;
+        console.log('[Firebase Index] Инициализирован');
+      } else {
+        console.warn('[Firebase Index] SDK не загружен');
+      }
+    } catch(e) {
+      console.error('[Firebase Index] Ошибка инициализации:', e);
+    }
+
     // === КОНФИГУРАЦИЯ YOUTUBE API ===
     const YOUTUBE_CONFIG = {
         apiKey: 'AIzaSyCHwEhu5s69hx9RgMyYsOrkmBkBW2TZ7fA',
@@ -1564,6 +2047,13 @@
         return true;
     }
 
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(text));
+        return div.innerHTML;
+    }
+
     function showNotification(message, options = {}) {
         const { type = 'info', duration = 2600, silent = false, force = false, html = false, title, category = null } = options;
         if (!shouldShowNotification({ silent, force, category })) return;
@@ -1616,6 +2106,698 @@
         const modal = document.getElementById('videoFaqModal');
         modal.classList.remove('show');
         document.body.style.overflow = '';
+    }
+    
+    // === ПРОФИЛЬ (Регистрация / Вход) ===
+    const PROFILE_STORAGE_KEY = 'site_user_account';
+    let currentUser = null;
+
+    function loadUserAccount() {
+        try {
+            // Проверяем флаг выхода из аккаунта
+            const loggedOut = sessionStorage.getItem('profile_logged_out');
+            if (loggedOut === 'true') {
+                console.log('[loadUserAccount] Пользователь вышел из аккаунта — пропускаем загрузку');
+                return;
+            }
+            
+            // Сначала пробуем localStorage
+            let stored = localStorage.getItem(PROFILE_STORAGE_KEY);
+            
+            // Если нет — пробуем sessionStorage (fallback)
+            if (!stored) {
+                stored = sessionStorage.getItem(PROFILE_STORAGE_KEY);
+                if (stored) {
+                    console.log('[loadUserAccount] Восстановлено из sessionStorage');
+                    // Пытаемся восстановить в localStorage
+                    try {
+                        localStorage.setItem(PROFILE_STORAGE_KEY, stored);
+                    } catch(e) {
+                        console.warn('[loadUserAccount] Не удалось восстановить в localStorage:', e.message);
+                    }
+                }
+            }
+            
+            if (stored) {
+                const data = JSON.parse(stored);
+                if (data && data.nickname && data.email) {
+                    // Проверка целостности данных (защита от подмены)
+                    if (data.integrityHash) {
+                        const calculatedHash = calculateIntegrityHash(data);
+                        if (calculatedHash !== data.integrityHash) {
+                            console.error('[loadUserAccount] ❌ Нарушение целостности данных! Профиль мог быть изменён.');
+                            showNotification('Обнаружено нарушение целостности профиля. Данные сброшены.', { type: 'warning', duration: 5000 });
+                            localStorage.removeItem(PROFILE_STORAGE_KEY);
+                            sessionStorage.removeItem(PROFILE_STORAGE_KEY);
+                            return;
+                        }
+                        console.log('[loadUserAccount] ✅ Целостность данных подтверждена');
+                    }
+                    
+                    currentUser = data;
+                    console.log('[loadUserAccount] Профиль загружен:', data.nickname);
+                    return;
+                }
+            }
+            
+            console.log('[loadUserAccount] Профиль не найден');
+        } catch(e) {
+            console.error('[loadUserAccount] Ошибка:', e);
+        }
+    }
+
+    // Хеширование пароля с помощью SHA-256
+    async function hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password + 'MortisPlay_Salt_2026');
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Вычисление хеша целостности данных профиля
+    function calculateIntegrityHash(data) {
+        const integrityData = {
+            nickname: data.nickname,
+            email: data.email,
+            password: data.password,
+            status: data.status || '',
+            bio: data.bio || '',
+            accentColor: data.accentColor || '#6366f1',
+            privacyShowAvatar: data.privacyShowAvatar !== false
+        };
+        const json = JSON.stringify(integrityData) + 'MortisPlay_Integrity_2026';
+        let hash = 0;
+        for (let i = 0; i < json.length; i++) {
+            const char = json.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        return 'hash_' + Math.abs(hash).toString(36);
+    }
+
+    // Список официальных пользователей (только Mortis Play — синяя галочка)
+    const OFFICIAL_USERS = [
+        { nickname: 'MortisPlay', email: 'mortisplay@mail.ru' }
+    ];
+
+    // Синяя галочка "Официально" — только из статического массива
+    function isOfficialUser(data) {
+        if (!data || !data.nickname || !data.email) return false;
+        return OFFICIAL_USERS.some(u =>
+            u.nickname.toLowerCase() === data.nickname.toLowerCase() &&
+            u.email.toLowerCase() === data.email.toLowerCase()
+        );
+    }
+
+    // Статус "Донатер" ($) — только из статического массива (проверка по email)
+    const DONATER_EMAILS = [
+        'johnnydrillbato554@gmail.com'
+    ];
+
+    function isDonater(data) {
+        if (!data || !data.email) return false;
+        return DONATER_EMAILS.some(email =>
+            email.toLowerCase() === data.email.toLowerCase()
+        );
+    }
+
+    function diagnoseProfile() {
+        console.log('=== ДИАГНОСТИКА ПРОФИЛЯ ===');
+        console.log('PROFILE_STORAGE_KEY:', PROFILE_STORAGE_KEY);
+        console.log('window.location.protocol:', window.location.protocol);
+        console.log('window.location.href:', window.location.href);
+        
+        // Проверяем, доступен ли localStorage
+        let localStorageAvailable = false;
+        try {
+            const testKey = '_test_storage_';
+            localStorage.setItem(testKey, 'test');
+            localStorage.removeItem(testKey);
+            localStorageAvailable = true;
+        } catch(e) {
+            console.error('localStorage НЕДОСТУПЕН:', e);
+        }
+        console.log('localStorage доступен:', localStorageAvailable);
+        
+        const stored = localStorage.getItem(PROFILE_STORAGE_KEY);
+        console.log('stored value:', stored);
+        if (stored) {
+            try {
+                const data = JSON.parse(stored);
+                console.log('parsed data:', data);
+                console.log('nickname:', data.nickname);
+                console.log('email:', data.email);
+                console.log('password:', data.password);
+            } catch(e) {
+                console.error('parse error:', e);
+            }
+        } else {
+            console.log('❌ Ключ site_user_account НЕ НАЙДЕН в localStorage');
+            // Проверяем sessionStorage
+            const sessionStored = sessionStorage.getItem(PROFILE_STORAGE_KEY);
+            console.log('sessionStorage fallback:', sessionStored);
+            console.log('Все ключи localStorage:');
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                console.log(`  [${i}] ${key}:`, localStorage.getItem(key));
+            }
+        }
+        console.log('currentUser:', currentUser);
+        console.log('=== КОНЕЦ ДИАГНОСТИКИ ===');
+        showNotification('Диагностика в консоли (F12 → Console)', { type: 'info', duration: 4000 });
+    }
+
+    function saveUserAccount(data) {
+        // Вычисляем хеш целостности перед сохранением
+        data.integrityHash = calculateIntegrityHash(data);
+        
+        const json = JSON.stringify(data);
+        console.log('[saveUserAccount] Сохраняю:', PROFILE_STORAGE_KEY, json);
+        
+        // Сохраняем в sessionStorage в первую очередь (он надёжнее)
+        sessionStorage.setItem(PROFILE_STORAGE_KEY, json);
+        console.log('[saveUserAccount] sessionStorage: OK');
+        
+        // Пробуем localStorage
+        try {
+            localStorage.setItem(PROFILE_STORAGE_KEY, json);
+            console.log('[saveUserAccount] localStorage: OK');
+        } catch(e) {
+            console.warn('[saveUserAccount] localStorage ОШИБКА:', e.message);
+        }
+        
+        currentUser = data;
+    }
+
+    function clearUserAccount() {
+        localStorage.removeItem(PROFILE_STORAGE_KEY);
+        sessionStorage.removeItem(PROFILE_STORAGE_KEY);
+        currentUser = null;
+    }
+
+    function openProfileModal() {
+        const modal = document.getElementById('profileModal');
+        if (!modal) return;
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        updateProfileBetaCountdown();
+        
+        // Fallback: загружаем профиль из localStorage, если ещё не загружен
+        if (!currentUser) {
+            loadUserAccount();
+        }
+        
+        // Показываем нужный экран
+        if (currentUser) {
+            showProfileLoggedIn();
+        } else {
+            showProfileLogin();
+        }
+    }
+    
+    function closeProfileModal(event) {
+        if (event && event.target.id !== 'profileModal') return;
+        const modal = document.getElementById('profileModal');
+        if (!modal) return;
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    function showProfileLogin() {
+        document.getElementById('profileAuthBlock').style.display = 'block';
+        document.getElementById('profileLoginForm').style.display = 'block';
+        document.getElementById('profileRegisterForm').style.display = 'none';
+        document.getElementById('profileLoggedIn').style.display = 'none';
+        document.getElementById('profileTabLogin').classList.add('active');
+        document.getElementById('profileTabRegister').classList.remove('active');
+        
+        // Автоподстановка сохранённого логина ("Запомнить меня")
+        const rememberedLogin = localStorage.getItem('profile_remembered_login');
+        const loginEmailInput = document.getElementById('loginEmail');
+        if (rememberedLogin && loginEmailInput) {
+            loginEmailInput.value = rememberedLogin;
+        }
+    }
+
+    function showProfileRegister() {
+        document.getElementById('profileAuthBlock').style.display = 'block';
+        document.getElementById('profileLoginForm').style.display = 'none';
+        document.getElementById('profileRegisterForm').style.display = 'block';
+        document.getElementById('profileLoggedIn').style.display = 'none';
+        document.getElementById('profileTabLogin').classList.remove('active');
+        document.getElementById('profileTabRegister').classList.add('active');
+    }
+
+    function showProfileLoggedIn() {
+        document.getElementById('profileAuthBlock').style.display = 'none';
+        document.getElementById('profileLoggedIn').style.display = 'block';
+        
+        // При успешном входе/регистрации снимаем флаг выхода
+        try {
+            sessionStorage.removeItem('profile_logged_out');
+        } catch(e) {}
+        
+        if (currentUser) {
+            // Отображаем имя с бейджем: синяя галочка "Официально" или значок "Донатер"
+            const isOfficial = isOfficialUser(currentUser);
+            const isDonaterUser = isDonater(currentUser);
+            const nameEl = document.getElementById('profileDisplayName');
+            if (isOfficial) {
+                nameEl.innerHTML = currentUser.nickname + ' <span style="display: inline-flex; align-items: center; gap: 0.2rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; vertical-align: middle;"><i class="fas fa-check-circle" style="font-size: 0.7rem;"></i> Официально</span>';
+            } else if (isDonaterUser) {
+                nameEl.innerHTML = currentUser.nickname + ' <span style="display: inline-flex; align-items: center; gap: 0.2rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; vertical-align: middle;"><i class="fas fa-dollar-sign" style="font-size: 0.7rem;"></i> Донатер</span>';
+            } else {
+                nameEl.textContent = currentUser.nickname;
+            }
+            
+            document.getElementById('profileDisplayEmail').textContent = currentUser.email;
+            
+            // Отображаем статус, если есть
+            const statusEl = document.getElementById('profileDisplayStatus');
+            if (currentUser.status) {
+                statusEl.textContent = '💬 ' + currentUser.status;
+                statusEl.style.display = 'block';
+            } else {
+                statusEl.style.display = 'none';
+            }
+            
+            document.getElementById('profileEditNickname').value = currentUser.nickname || '';
+            document.getElementById('profileEditStatus').value = currentUser.status || '';
+            document.getElementById('profileEditBio').value = currentUser.bio || '';
+            
+            // Настройки приватности
+            document.getElementById('profilePrivacyShowAvatar').checked = currentUser.privacyShowAvatar !== false;
+            
+            // Применяем сохранённый цвет акцента
+            if (currentUser.accentColor) {
+                applyProfileAccentColor(currentUser.accentColor);
+                document.querySelectorAll('.profile-color-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.color === currentUser.accentColor);
+                });
+            }
+            
+            // Применяем сохранённый аватар
+            if (currentUser.avatarDataUrl) {
+                document.getElementById('profileAvatarImg').src = currentUser.avatarDataUrl;
+            }
+        }
+    }
+
+    async function handleLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const remember = document.getElementById('loginRemember')?.checked || false;
+        
+        if (!email || !password) {
+            showNotification('Заполните все поля для входа', { type: 'warning' });
+            return;
+        }
+
+        // Проверяем, есть ли такой пользователь
+        const stored = localStorage.getItem(PROFILE_STORAGE_KEY);
+        if (stored) {
+            try {
+                const data = JSON.parse(stored);
+                if (data.email === email || data.nickname === email) {
+                    // Хешируем введённый пароль и сравниваем с сохранённым хешем
+                    const hashedInput = await hashPassword(password);
+                    if (data.password === hashedInput) {
+                        currentUser = data;
+                        
+                        // "Запомнить меня" — сохраняем email/никнейм для автоподстановки
+                        if (remember) {
+                            localStorage.setItem('profile_remembered_login', data.nickname);
+                        } else {
+                            localStorage.removeItem('profile_remembered_login');
+                        }
+                        
+                        showProfileLoggedIn();
+                        showNotification('Вы успешно вошли! 🎉', { type: 'success', duration: 3000 });
+                        return;
+                    } else {
+                        showNotification('Неверный пароль', { type: 'warning' });
+                        return;
+                    }
+                }
+            } catch(e) {
+                console.error('[handleLogin] Ошибка парсинга данных профиля:', e);
+            }
+        }
+        
+        showNotification('Пользователь не найден. Зарегистрируйтесь!', { type: 'warning' });
+    }
+
+    async function handleRegister() {
+        const nickname = document.getElementById('regNickname').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        const passwordConfirm = document.getElementById('regPasswordConfirm').value;
+        const agree = document.getElementById('regAgree').checked;
+
+        if (!nickname || !email || !password || !passwordConfirm) {
+            showNotification('Заполните все поля для регистрации', { type: 'warning' });
+            return;
+        }
+
+        if (nickname.length < 2) {
+            showNotification('Никнейм должен быть минимум 2 символа', { type: 'warning' });
+            return;
+        }
+
+        if (!email.includes('@') || !email.includes('.')) {
+            showNotification('Введите корректный email', { type: 'warning' });
+            return;
+        }
+
+        if (password.length < 6) {
+            showNotification('Пароль должен быть минимум 6 символов', { type: 'warning' });
+            return;
+        }
+
+        if (password !== passwordConfirm) {
+            showNotification('Пароли не совпадают', { type: 'warning' });
+            return;
+        }
+
+        if (!agree) {
+            showNotification('Примите условия использования', { type: 'warning' });
+            return;
+        }
+
+        // Проверяем, не занят ли никнейм или email
+        const stored = localStorage.getItem(PROFILE_STORAGE_KEY);
+        if (stored) {
+            const data = JSON.parse(stored);
+            if (data.nickname === nickname) {
+                showNotification('Этот никнейм уже занят', { type: 'warning' });
+                return;
+            }
+            if (data.email === email) {
+                showNotification('Этот email уже зарегистрирован', { type: 'warning' });
+                return;
+            }
+        }
+
+        // Хешируем пароль перед сохранением
+        const hashedPassword = await hashPassword(password);
+
+        const userData = {
+            nickname,
+            email,
+            password: hashedPassword,
+            status: '',
+            bio: '',
+            accentColor: '#6366f1',
+            avatarDataUrl: '',
+            privacyShowAvatar: true,
+            registeredAt: Date.now()
+        };
+        console.log('[handleRegister] Данные для сохранения:', userData);
+        saveUserAccount(userData);
+        
+        // Автоматически запоминаем при регистрации
+        localStorage.setItem('profile_remembered_login', nickname);
+        
+        // Проверка: сразу читаем обратно
+        const check = localStorage.getItem(PROFILE_STORAGE_KEY);
+        console.log('[handleRegister] Проверка после сохранения:', check);
+        
+        showProfileLoggedIn();
+        showNotification('Аккаунт создан! Добро пожаловать! 🎉', { type: 'success', duration: 4000 });
+    }
+
+    function handleLogout() {
+        // Не удаляем данные из localStorage/sessionStorage —
+        // пользователь может захотеть войти снова!
+        // Но ставим флаг в sessionStorage, чтобы при перезагрузке
+        // не подхватить старый профиль автоматически
+        currentUser = null;
+        try {
+            sessionStorage.setItem('profile_logged_out', 'true');
+        } catch(e) {}
+        showProfileLogin();
+        showNotification('Вы вышли из аккаунта', { type: 'info', duration: 2500 });
+    }
+
+    function handleSaveProfile() {
+        if (!currentUser) return;
+        
+        const newNickname = document.getElementById('profileEditNickname').value.trim();
+        const newStatus = document.getElementById('profileEditStatus').value.trim();
+        const newBio = document.getElementById('profileEditBio').value.trim();
+        const activeColorBtn = document.querySelector('.profile-color-btn.active');
+        const newColor = activeColorBtn ? activeColorBtn.dataset.color : null;
+        
+        // Настройки приватности
+        const privacyShowAvatar = document.getElementById('profilePrivacyShowAvatar').checked;
+        
+        if (!newNickname) {
+            showNotification('Никнейм не может быть пустым', { type: 'warning' });
+            return;
+        }
+        
+        if (newNickname.length < 2) {
+            showNotification('Никнейм должен быть минимум 2 символа', { type: 'warning' });
+            return;
+        }
+        
+        // Обновляем данные
+        currentUser.nickname = newNickname;
+        currentUser.status = newStatus;
+        currentUser.bio = newBio;
+        if (newColor) currentUser.accentColor = newColor;
+        currentUser.privacyShowAvatar = privacyShowAvatar;
+        
+        saveUserAccount(currentUser);
+        
+        // Обновляем отображение
+        document.getElementById('profileDisplayName').textContent = newNickname;
+        
+        if (newColor) applyProfileAccentColor(newColor);
+        
+        showNotification('Профиль сохранён! ✅', { type: 'success', duration: 2500 });
+    }
+
+    function applyProfileAccentColor(color) {
+        document.documentElement.style.setProperty('--profile-accent', color);
+        // Меняем цвет рамки аватара
+        const avatar = document.querySelector('#profileLoggedIn .profile-avatar');
+        if (avatar) avatar.style.borderColor = color;
+    }
+
+    function handleAvatarChange() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) {
+                showNotification('Файл слишком большой. Максимум 2 МБ', { type: 'warning' });
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const dataUrl = ev.target.result;
+                document.getElementById('profileAvatarImg').src = dataUrl;
+                if (currentUser) {
+                    currentUser.avatarDataUrl = dataUrl;
+                    saveUserAccount(currentUser);
+                    showNotification('Аватар обновлён! 📸', { type: 'success', duration: 2500 });
+                }
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    }
+
+    function initProfileColorButtons() {
+        document.querySelectorAll('.profile-color-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.profile-color-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    }
+    
+    // === Модальные окна: Условия использования и Политика конфиденциальности ===
+    function openTermsModal() {
+        const modal = document.getElementById('termsModal');
+        if (!modal) return;
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeTermsModal(event) {
+        if (event && event.target.id !== 'termsModal') return;
+        const modal = document.getElementById('termsModal');
+        if (!modal) return;
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+    
+    function openPrivacyModal() {
+        const modal = document.getElementById('privacyModal');
+        if (!modal) return;
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closePrivacyModal(event) {
+        if (event && event.target.id !== 'privacyModal') return;
+        const modal = document.getElementById('privacyModal');
+        if (!modal) return;
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    // === Смена email через EmailJS ===
+    let pendingEmailCode = null;
+    let pendingNewEmail = null;
+
+    function openEmailChangeModal() {
+        const modal = document.getElementById('emailChangeModal');
+        if (!modal) return;
+        document.getElementById('emailChangeStep1').style.display = 'block';
+        document.getElementById('emailChangeStep2').style.display = 'none';
+        document.getElementById('emailChangeNewEmail').value = '';
+        document.getElementById('emailChangeCode').value = '';
+        pendingEmailCode = null;
+        pendingNewEmail = null;
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEmailChangeModal(event) {
+        if (event && event.target.id !== 'emailChangeModal') return;
+        const modal = document.getElementById('emailChangeModal');
+        if (!modal) return;
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+        pendingEmailCode = null;
+        pendingNewEmail = null;
+    }
+
+    async function sendEmailCode() {
+        const newEmail = document.getElementById('emailChangeNewEmail').value.trim();
+        
+        if (!newEmail || !newEmail.includes('@') || !newEmail.includes('.')) {
+            showNotification('Введите корректный email', { type: 'warning' });
+            return;
+        }
+
+        if (!currentUser) {
+            showNotification('Ошибка: пользователь не найден', { type: 'error' });
+            return;
+        }
+
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        pendingEmailCode = code;
+        pendingNewEmail = newEmail;
+
+        setTimeout(() => {
+            if (pendingEmailCode === code) {
+                pendingEmailCode = null;
+                pendingNewEmail = null;
+            }
+        }, 10 * 60 * 1000);
+
+        try {
+            const templateParams = {
+                to_email: newEmail,
+                verification_code: code,
+                nickname: currentUser.nickname || 'Пользователь',
+                new_email: newEmail,
+                time: new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Vladivostok' })
+            };
+
+            await emailjs.send(
+                'service_htws14a',
+                'template_jw8t4ik',
+                templateParams,
+                '_VoyQ3LeHKQ2XJzgt'
+            );
+
+            document.getElementById('emailChangeStep1').style.display = 'none';
+            document.getElementById('emailChangeStep2').style.display = 'block';
+            document.getElementById('emailChangeSentTo').textContent = newEmail;
+
+            showNotification('Код отправлен на ' + newEmail + ' 📧', { type: 'success', duration: 4000 });
+        } catch (err) {
+            console.error('[EmailJS] Ошибка отправки:', err);
+            showNotification('Ошибка отправки кода. Попробуйте позже.', { type: 'error' });
+        }
+    }
+
+    async function resendEmailCode() {
+        if (!pendingNewEmail) {
+            showNotification('Сначала введите email', { type: 'warning' });
+            return;
+        }
+        document.getElementById('emailChangeNewEmail').value = pendingNewEmail;
+        await sendEmailCode();
+    }
+
+    async function confirmEmailChange() {
+        const enteredCode = document.getElementById('emailChangeCode').value.trim();
+
+        if (!enteredCode || enteredCode.length !== 6) {
+            showNotification('Введите 6-значный код из письма', { type: 'warning' });
+            return;
+        }
+
+        if (!pendingEmailCode || !pendingNewEmail) {
+            showNotification('Код устарел. Запросите новый код.', { type: 'warning' });
+            return;
+        }
+
+        if (enteredCode !== pendingEmailCode) {
+            showNotification('Неверный код. Проверьте письмо.', { type: 'warning' });
+            return;
+        }
+
+        if (!currentUser) {
+            showNotification('Ошибка: пользователь не найден', { type: 'error' });
+            return;
+        }
+
+        currentUser.email = pendingNewEmail;
+        saveUserAccount(currentUser);
+
+        document.getElementById('profileDisplayEmail').textContent = pendingNewEmail;
+
+        closeEmailChangeModal();
+        pendingEmailCode = null;
+        pendingNewEmail = null;
+
+        showNotification('Email успешно изменён! ✅', { type: 'success', duration: 3000 });
+    }
+
+    function updateProfileBetaCountdown() {
+        const el = document.getElementById('profileBetaCountdown');
+        if (!el) return;
+        // Старт: 23 июля 2026, 14:00 МСК (UTC+3) = 11:00 UTC = 21:00 VLAT (UTC+10)
+        const startDate = new Date('2026-07-23T11:00:00Z');
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 14);
+        const now = new Date();
+        if (now < startDate) {
+            const diff = startDate - now;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            el.textContent = `До беты: ${days}д ${hours}ч ${minutes}м ${seconds}с`;
+            return;
+        }
+        if (now >= endDate) { el.textContent = 'Бета завершена!'; return; }
+        const diff = endDate - now;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        el.textContent = `Осталось: ${days}д ${hours}ч ${minutes}м ${seconds}с`;
     }
     
     function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func(...args), wait); }; }
@@ -2189,8 +3371,26 @@
             localStorage.setItem('hasSeenWelcome', 'true');
         }
     }
+
+    // Бета-шапка с предупреждением о багах
+    function dismissBetaNotice() {
+        const bar = document.getElementById('betaNoticeBar');
+        if (bar) bar.style.display = 'none';
+        try { localStorage.setItem('betaNoticeDismissed', 'true'); } catch(e) {}
+    }
+
+    function showBetaNotice() {
+        const bar = document.getElementById('betaNoticeBar');
+        if (!bar) return;
+        const dismissed = localStorage.getItem('betaNoticeDismissed');
+        if (dismissed === 'true') return;
+        bar.style.display = 'block';
+    }
     
     document.addEventListener('DOMContentLoaded', async () => {
+        // Показываем бета-шапку
+        showBetaNotice();
+        
         // Устанавливаем динамический год в футере
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
@@ -2229,11 +3429,104 @@
         initLoader();
         showWelcomeMessageOnce();
         
+        // Инициализация профиля
+        loadUserAccount();
+        
+        const profileNavBtn = document.getElementById('profileNavBtn');
+        const mobileMenuProfileBtn = document.getElementById('mobileMenuProfileBtn');
+        if (profileNavBtn) profileNavBtn.addEventListener('click', openProfileModal);
+        if (mobileMenuProfileBtn) mobileMenuProfileBtn.addEventListener('click', openProfileModal);
+        
+        // Вкладки профиля
+        const tabLogin = document.getElementById('profileTabLogin');
+        const tabRegister = document.getElementById('profileTabRegister');
+        const switchToRegister = document.getElementById('profileSwitchToRegister');
+        const switchToLogin = document.getElementById('profileSwitchToLogin');
+        
+        if (tabLogin) tabLogin.addEventListener('click', showProfileLogin);
+        if (tabRegister) tabRegister.addEventListener('click', showProfileRegister);
+        if (switchToRegister) switchToRegister.addEventListener('click', (e) => { e.preventDefault(); showProfileRegister(); });
+        if (switchToLogin) switchToLogin.addEventListener('click', (e) => { e.preventDefault(); showProfileLogin(); });
+        
+        // Кнопки входа/регистрации/выхода
+        const loginBtn = document.getElementById('profileLoginBtn');
+        const registerBtn = document.getElementById('profileRegisterBtn');
+        const logoutBtn = document.getElementById('profileLogoutBtn');
+        
+        if (loginBtn) loginBtn.addEventListener('click', handleLogin);
+        if (registerBtn) registerBtn.addEventListener('click', handleRegister);
+        if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+        
+        // Enter для отправки форм
+        document.getElementById('loginPassword')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+        document.getElementById('regPasswordConfirm')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleRegister(); });
+        
+        // Отлавливаем автозаполнение от Google Password Manager / браузерных менеджеров паролей
+        const loginEmailInput = document.getElementById('loginEmail');
+        const loginPasswordInput = document.getElementById('loginPassword');
+        if (loginEmailInput) {
+            loginEmailInput.addEventListener('animationstart', (e) => {
+                if (e.animationName === 'onAutoFill') {
+                    // Браузер автозаполнил поле — подхватываем значение
+                    const remembered = localStorage.getItem('profile_remembered_login');
+                    if (!remembered && loginEmailInput.value) {
+                        localStorage.setItem('profile_remembered_login', loginEmailInput.value);
+                    }
+                }
+            });
+            // Дополнительно: слушаем change (некоторые менеджеры так заполняют)
+            loginEmailInput.addEventListener('input', () => {
+                if (loginEmailInput.value && loginPasswordInput?.value) {
+                    // Оба поля заполнены — можно сразу пробовать вход (но не делаем авто-вход)
+                }
+            });
+        }
+        
+        // Кнопки темы и настроек в мобильном меню
+        const mobileMenuThemeBtn = document.getElementById('mobileMenuThemeBtn');
+        const mobileMenuSettingsBtn = document.getElementById('mobileMenuSettingsBtn');
+        if (mobileMenuThemeBtn) {
+            mobileMenuThemeBtn.addEventListener('click', () => {
+                const isLight = document.body.classList.contains('light-theme');
+                const newTheme = isLight ? 'dark' : 'light';
+                document.body.classList.toggle('light-theme', newTheme === 'light');
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+                closeMobileMenu();
+                showNotification(`Тема изменена на ${newTheme === 'light' ? 'светлую 🌞' : 'тёмную 🌙'}`, { type: 'info', duration: 2200 });
+            });
+        }
+        if (mobileMenuSettingsBtn) {
+            mobileMenuSettingsBtn.addEventListener('click', () => {
+                closeMobileMenu();
+                openSettingsModal();
+            });
+        }
+        
+        // Инициализация EmailJS
+        try {
+            emailjs.init('_VoyQ3LeHKQ2XJzgt');
+        } catch(e) {
+            console.warn('[EmailJS] Ошибка инициализации:', e);
+        }
+
+        // Кнопки кастомизации профиля
+        const profileSaveBtn = document.getElementById('profileSaveBtn');
+        const profileAvatarChangeBtn = document.getElementById('profileAvatarChangeBtn');
+        const profileEmailChangeBtn = document.getElementById('profileEmailChangeBtn');
+        if (profileSaveBtn) profileSaveBtn.addEventListener('click', handleSaveProfile);
+        if (profileAvatarChangeBtn) profileAvatarChangeBtn.addEventListener('click', handleAvatarChange);
+        if (profileEmailChangeBtn) profileEmailChangeBtn.addEventListener('click', openEmailChangeModal);
+        initProfileColorButtons();
+
+        // Таймер беты в профиле
+        setInterval(updateProfileBetaCountdown, 1000);
+        
         if (typeof gtag !== 'undefined') {
             gtag('event', 'page_view', { page_title: 'Mortis Play - Главная', page_location: window.location.href });
         }
     });
-    
+
     window.addEventListener('error', (e) => { console.error(e.error); showNotification('Произошла ошибка. Обновите страницу.'); });
     window.addEventListener('resize', debounce(() => window.dispatchEvent(new Event('scroll')), 250));
   </script>
