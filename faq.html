@@ -985,6 +985,131 @@
                 </div>
               </div>
             </details>
+
+            <details class="faq-item">
+              <summary>Что означает иконка ℹ️ в профиле пользователя?</summary>
+              <div class="answer">
+                <p>При клике на никнейм пользователя в чате открывается его профиль. Если рядом с датой регистрации отображается иконка ℹ️ с текстом «Аккаунт не зарегистрирован» — это значит, что пользователь:</p>
+                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-300">
+                  <li>Не зарегистрирован в базе данных Firebase</li>
+                  <li>Использует только локальное хранилище браузера</li>
+                  <li>Его данные могут быть неполными или устаревшими</li>
+                </ul>
+                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                  <p class="text-xs text-gray-400"><i class="fas fa-info-circle mr-1 text-amber-400"></i> Таким пользователям недоступна система друзей, так как она требует регистрации в базе данных</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как работает система друзей?</summary>
+              <div class="answer">
+                <p>Система друзей позволяет добавлять других зарегистрированных пользователей в друзья:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                  <div class="p-3 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">📨 Отправка заявки</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Открой профиль пользователя в чате (нажми на никнейм)</li>
+                      <li>Нажми кнопку «Добавить в друзья»</li>
+                      <li>Заявка отправится в Firebase</li>
+                      <li>Кнопка изменится на «Заявка отправлена»</li>
+                    </ul>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">✅ Принятие заявки</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Открой свой профиль на главной странице</li>
+                      <li>В разделе «Друзья» появятся входящие заявки</li>
+                      <li>Нажми зелёную галочку ✓ чтобы принять</li>
+                      <li>Нажми красный крестик ✗ чтобы отклонить</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-3 p-3 bg-amber-900/20 rounded-lg">
+                  <p class="text-xs"><i class="fas fa-exclamation-triangle text-amber-400 mr-1"></i> Кнопка «Добавить в друзья» показывается только для зарегистрированных в БД пользователей. Себя в друзья добавить нельзя</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как увидеть список друзей и входящие заявки?</summary>
+              <div class="answer">
+                <p>Список друзей и заявки отображаются в твоём профиле на главной странице:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                  <div class="p-3 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">👥 Список друзей</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Открой профиль (кнопка «Профиль» в шапке)</li>
+                      <li>Раздел «Друзья» показывает всех твоих друзей</li>
+                      <li>Рядом с каждым другом есть кнопка «Удалить из друзей»</li>
+                      <li>Список обновляется автоматически</li>
+                    </ul>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-amber-900/20 to-orange-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">📩 Входящие заявки</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Если кто-то отправил тебе заявку — она появится в разделе «Заявки в друзья»</li>
+                      <li>На кнопке «Профиль» в шапке появится красный бейдж с цифрой</li>
+                      <li>Цифра показывает количество непрочитанных заявок</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                  <p class="text-xs text-gray-400"><i class="fas fa-sync mr-1 text-green-400"></i> Список друзей и заявки обновляются в реальном времени — не нужно обновлять страницу</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Какие новые цвета акцента появились в профиле?</summary>
+              <div class="answer">
+                <p>В настройках профиля теперь доступно 12 цветов акцента вместо 6:</p>
+                <div class="flex flex-wrap gap-2 mt-3">
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: #6366f1; color: white;">Индиго</span>
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: #f59e0b; color: white;">Янтарный</span>
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: #22c55e; color: white;">Зелёный</span>
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: #ef4444; color: white;">Красный</span>
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: #ec4899; color: white;">Розовый</span>
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: #8b5cf6; color: white;">Фиолетовый</span>
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: #06b6d4; color: white;">Циан</span>
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: #14b8a6; color: white;">Бирюзовый</span>
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: #f97316; color: white;">Оранжевый</span>
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: #a855f7; color: white;">Пурпурный</span>
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: #e11d48; color: white;">Малиновый</span>
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: #0ea5e9; color: white;">Голубой</span>
+                </div>
+                <p class="mt-3 text-sm text-gray-400">Цвет акцента влияет на отображение твоего никнейма в чате и цвет аватара</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как удалить аватарку или сбросить цвет акцента?</summary>
+              <div class="answer">
+                <p>В профиле появились новые возможности для управления внешним видом:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                  <div class="p-3 bg-gradient-to-br from-red-900/20 to-orange-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🗑️ Удалить аватарку</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Открой профиль</li>
+                      <li>Наведи на аватарку — появится красная кнопка с крестиком</li>
+                      <li>Нажми на неё — аватарка удалится</li>
+                      <li>Вместо картинки будет показываться первая буква никнейма на цветном фоне</li>
+                    </ul>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-gray-900/20 to-gray-700/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🔄 Сбросить цвет</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>В разделе выбора цвета акцента нажми кнопку «Сбросить цвет»</li>
+                      <li>Цвет вернётся на стандартный индиго (#6366f1)</li>
+                      <li>Изменения применяются сразу</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                  <p class="text-xs text-gray-400"><i class="fas fa-info-circle mr-1 text-blue-400"></i> Если у тебя нет загруженной аватарки — вместо неё автоматически показывается буква никнейма на цвете акцента. Больше не отображается стандартное изображение баннера</p>
+                </div>
+              </div>
+            </details>
           </div>
         </div>
 
