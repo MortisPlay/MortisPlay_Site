@@ -3431,11 +3431,6 @@
     // Слушаем уведомления из Зала комьюнити (community.html) через localStorage
     window.addEventListener('storage', (e) => {
         if (e.key === 'community_notification' && e.newValue) {
-            // Если пользователь уже был в community.html в этой сессии — НЕ показываем уведомления
-            if (sessionStorage.getItem('community_visited') === 'true') {
-                console.log('[Community Notification] Пользователь уже был в зале комьюнити — уведомление скрыто');
-                return;
-            }
             try {
                 const data = JSON.parse(e.newValue);
                 if (data && data.message) {
@@ -3463,13 +3458,6 @@
 
     // Также проверяем при загрузке страницы, не было ли уведомления
     function checkPendingCommunityNotification() {
-        // Если пользователь уже был в community.html в этой сессии — НЕ показываем уведомления
-        if (sessionStorage.getItem('community_visited') === 'true') {
-            console.log('[Community Notification] Пользователь уже был в зале комьюнити — pending уведомление скрыто');
-            // Всё равно очищаем pending, чтобы не накапливался
-            sessionStorage.removeItem('community_notification_pending');
-            return;
-        }
         try {
             const pending = sessionStorage.getItem('community_notification_pending');
             if (pending) {

@@ -277,6 +277,7 @@
       flex-shrink: 0;
     }
     .chat-message .bubble {
+      position: relative;
       background: rgba(255,255,255,0.08);
       border: 1px solid var(--glass-border);
       border-radius: 1rem;
@@ -1116,12 +1117,9 @@
     }
     /* Панель выбора реакций (появляется при наведении) */
     .chat-message .reaction-picker {
-      position: absolute;
-      bottom: 100%;
-      left: 0;
       display: none;
       gap: 0.15rem;
-      padding: 0.3rem 0.5rem;
+      padding: 0.2rem 0.4rem;
       background: rgba(15, 23, 42, 0.95);
       border: 1px solid var(--glass-border);
       border-radius: 999px;
@@ -2066,11 +2064,13 @@
             ${statusHtml}
             ${replyHtml}
             <div class="text">${escapeHtml(msg.text)}</div>
-            ${reactionsHtml}
-            <div class="time">${time} <button class="reply-btn" data-username="${escapeHtml(msg.username || 'Аноним')}" data-text="${escapeHtml(msg.text.slice(0, 80))}" title="Ответить"><i class="fas fa-reply"></i></button></div>
-            <div class="reaction-picker" id="rp-${msgId}">
-              ${pickerEmojis}
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; margin-top: 0.3rem;">
+              ${reactionsHtml}
+              <div class="reaction-picker" id="rp-${msgId}" style="position: static; display: none; flex-direction: row; gap: 0.15rem; padding: 0.2rem 0.4rem; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--glass-border); border-radius: 999px; backdrop-filter: blur(12px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); white-space: nowrap;">
+                ${pickerEmojis}
+              </div>
             </div>
+            <div class="time">${time} <button class="reply-btn" data-username="${escapeHtml(msg.username || 'Аноним')}" data-text="${escapeHtml(msg.text.slice(0, 80))}" title="Ответить"><i class="fas fa-reply"></i></button></div>
           </div>
         `;
         container.appendChild(div);
@@ -2985,7 +2985,7 @@
       reader.readAsDataURL(file);
     }
 
-    // === ОТПРАВКА УВЕДОМЛЕНИЙ НА ГЛАВНУЮ СТРАНИЦУ (index.html) ===
+    // === ОТПРАВКА УВЕДОМЛЕНИЙ НА ГЛАВНУЮ СТРАНИЦУ (index.html) И ЛОКАЛЬНО ===
     function sendCommunityNotification(message, options = {}) {
       const { type = 'info', duration = 4000, title = 'Зал комьюнити', subCategory = 'community' } = options;
       const data = JSON.stringify({ message, type, duration, title, subCategory });
@@ -2995,6 +2995,8 @@
       try { sessionStorage.setItem('community_notification_pending', data); } catch(e) {}
       // Дополнительно: сохраняем timestamp, чтобы при фокусе на index.html проверить свежесть
       try { sessionStorage.setItem('community_notification_ts', Date.now().toString()); } catch(e) {}
+      // Показываем уведомление локально на community.html (кроме уведомлений о своих же действиях)
+      showNotification(message, { type, duration });
     }
 
     // === УВЕДОМЛЕНИЯ ===
