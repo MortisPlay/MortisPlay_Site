@@ -1121,76 +1121,6 @@
       }
     }
 
-    /* Реакции на сообщения в чате */
-    .chat-message .reactions-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.25rem;
-      margin-top: 0.3rem;
-    }
-    .chat-message .reactions-bar .reaction {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.2rem;
-      padding: 0.1rem 0.4rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid transparent;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      user-select: none;
-    }
-    .chat-message .reactions-bar .reaction:hover {
-      background: rgba(255,255,255,0.12);
-      border-color: var(--glass-border);
-    }
-    .chat-message .reactions-bar .reaction.active {
-      background: rgba(99, 102, 241, 0.2);
-      border-color: var(--primary);
-    }
-    .chat-message .reactions-bar .reaction .reaction-emoji {
-      font-size: 0.9rem;
-      line-height: 1;
-    }
-    .chat-message .reactions-bar .reaction .reaction-count {
-      font-size: 0.7rem;
-      color: var(--text-secondary);
-      font-weight: 600;
-    }
-    .chat-message .reactions-bar .reaction.active .reaction-count {
-      color: var(--primary);
-    }
-    /* Панель выбора реакций (появляется при наведении) */
-    .chat-message .reaction-picker {
-      display: none;
-      gap: 0.15rem;
-      padding: 0.2rem 0.4rem;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid var(--glass-border);
-      border-radius: 999px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-      z-index: 10;
-      white-space: nowrap;
-    }
-    .chat-message .reaction-picker.show {
-      display: flex;
-    }
-    .chat-message .reaction-picker .rp-btn {
-      font-size: 1.2rem;
-      padding: 0.2rem 0.3rem;
-      cursor: pointer;
-      border-radius: 50%;
-      transition: all 0.2s ease;
-      background: none;
-      border: none;
-      line-height: 1;
-    }
-    .chat-message .reaction-picker .rp-btn:hover {
-      transform: scale(1.3);
-      background: rgba(255,255,255,0.1);
-    }
     .chat-message {
       position: relative;
     }
@@ -2183,25 +2113,7 @@
           replyHtml = `<div class="reply-indicator"><i class="fas fa-reply-all"></i><span class="reply-author">${escapeHtml(msg.replyTo.username)}</span><span class="reply-text">${escapeHtml(replyText)}</span></div>`;
         }
 
-        // Реакции для этого сообщения
         const msgId = msg._key || '';
-        let reactionsHtml = '';
-        if (msgId && messageReactions[msgId]) {
-          const reactionEntries = Object.entries(messageReactions[msgId]);
-          if (reactionEntries.length > 0) {
-            reactionsHtml = '<div class="reactions-bar">';
-            reactionEntries.forEach(([emoji, data]) => {
-              const isActive = data.users && data.users[currentUsername];
-              reactionsHtml += `<span class="reaction${isActive ? ' active' : ''}" data-msgid="${msgId}" data-emoji="${emoji}"><span class="reaction-emoji">${emoji}</span><span class="reaction-count">${data.count}</span></span>`;
-            });
-            reactionsHtml += '</div>';
-          }
-        }
-
-        // Панель выбора реакций
-        const pickerEmojis = REACTION_EMOJIS.map(e =>
-          `<button class="rp-btn" data-msgid="${msgId}" data-emoji="${e}">${e}</button>`
-        ).join('');
 
         div.innerHTML = `
           ${avatarHtml}
@@ -2210,12 +2122,6 @@
             ${statusHtml}
             ${replyHtml}
             <div class="text">${escapeHtml(msg.text)}</div>
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; margin-top: 0.3rem;">
-              ${reactionsHtml}
-              <div class="reaction-picker" id="rp-${msgId}" style="position: static; display: none; flex-direction: row; gap: 0.15rem; padding: 0.2rem 0.4rem; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--glass-border); border-radius: 999px; backdrop-filter: blur(12px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); white-space: nowrap;">
-                ${pickerEmojis}
-              </div>
-            </div>
             <div class="time">${time} <button class="reply-btn" data-username="${escapeHtml(msg.username || 'Аноним')}" data-text="${escapeHtml(msg.text.slice(0, 80))}" title="Ответить"><i class="fas fa-reply"></i></button>${isOwn ? `<button class="delete-btn" data-msgid="${msgId}" title="Удалить"><i class="fas fa-trash-can"></i></button>` : ''}</div>
           </div>
         `;
@@ -2232,60 +2138,6 @@
         });
       });
 
-      // Обработчики для реакций (клик на существующую реакцию — toggle)
-      container.querySelectorAll('.reactions-bar .reaction').forEach(el => {
-        el.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const msgId = el.dataset.msgid;
-          const emoji = el.dataset.emoji;
-          if (msgId && emoji) toggleReaction(msgId, emoji);
-        });
-      });
-
-      // Обработчики для кнопок выбора реакции
-      container.querySelectorAll('.rp-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const msgId = btn.dataset.msgid;
-          const emoji = btn.dataset.emoji;
-          if (msgId && emoji) {
-            toggleReaction(msgId, emoji);
-            // Скрываем picker после выбора
-            const picker = document.getElementById('rp-' + msgId);
-            if (picker) picker.classList.remove('show');
-          }
-        });
-      });
-
-      // Показываем reaction picker при наведении на bubble (десктоп)
-      container.querySelectorAll('.bubble').forEach(bubble => {
-        let pickerTimer = null;
-        bubble.addEventListener('mouseenter', () => {
-          const picker = bubble.querySelector('.reaction-picker');
-          if (picker) {
-            clearTimeout(pickerTimer);
-            pickerTimer = setTimeout(() => picker.classList.add('show'), 300);
-          }
-        });
-        bubble.addEventListener('mouseleave', () => {
-          const picker = bubble.querySelector('.reaction-picker');
-          if (picker) {
-            clearTimeout(pickerTimer);
-            pickerTimer = setTimeout(() => picker.classList.remove('show'), 500);
-          }
-        });
-        // Также показываем при входе в сам picker
-        const picker = bubble.querySelector('.reaction-picker');
-        if (picker) {
-          picker.addEventListener('mouseenter', () => {
-            clearTimeout(pickerTimer);
-          });
-          picker.addEventListener('mouseleave', () => {
-            pickerTimer = setTimeout(() => picker.classList.remove('show'), 300);
-          });
-        }
-      });
-
       // Обработчики для кнопки удаления (корзина)
       container.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -2295,26 +2147,6 @@
         });
       });
 
-      // === РЕАКЦИИ НА МОБИЛЬНОЙ ВЕРСИИ ===
-      // На мобильных устройствах клик на bubble показывает reaction-picker (toggle)
-      const isMobileOrTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches || window.innerWidth <= 768;
-      if (isMobileOrTouch) {
-        container.querySelectorAll('.bubble').forEach(bubble => {
-          bubble.addEventListener('click', (e) => {
-            // Не срабатываем, если клик по кнопке, реакциям, пикеру, профилю или reply-btn
-            if (e.target.closest('.reply-btn') || e.target.closest('.delete-btn') ||
-                e.target.closest('.rp-btn') || e.target.closest('.reaction-picker') ||
-                e.target.closest('.reaction') || e.target.closest('.clickable-profile')) return;
-
-            // Toggle reaction-picker
-            const picker = bubble.querySelector('.reaction-picker');
-            if (picker) {
-              picker.classList.toggle('show');
-            }
-          });
-        });
-      }
-
       container.scrollTop = container.scrollHeight;
     }
 
@@ -2322,58 +2154,6 @@
       const div = document.createElement('div');
       div.textContent = text;
       return div.innerHTML;
-    }
-
-    // === РЕАКЦИИ НА СООБЩЕНИЯ В ЧАТЕ ===
-    const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '🔥'];
-    let messageReactions = {}; // { messageId: { reaction: { count, users: { [username]: true } } } }
-    let reactionsListenerAttached = false;
-
-    function toggleReaction(messageId, emoji) {
-      if (!firebaseInitialized || !currentUsername) {
-        showNotification('Войдите в профиль, чтобы ставить реакции', { type: 'warning' });
-        return;
-      }
-      const db = firebase.database();
-      const reactionRef = db.ref('message_reactions/' + messageId + '/' + emoji + '/users/' + currentUsername);
-      
-      // Проверяем, есть ли уже такая реакция от пользователя
-      const existing = messageReactions[messageId] && messageReactions[messageId][emoji] && messageReactions[messageId][emoji].users && messageReactions[messageId][emoji].users[currentUsername];
-      
-      if (existing) {
-        // Убираем реакцию (toggle off)
-        reactionRef.remove();
-      } else {
-        // Ставим реакцию (toggle on)
-        reactionRef.set(true);
-      }
-    }
-
-    function attachReactionsListener() {
-      if (reactionsListenerAttached || !firebaseInitialized) return;
-      reactionsListenerAttached = true;
-
-      const db = firebase.database();
-      const reactionsRef = db.ref('message_reactions');
-
-      reactionsRef.on('value', (snapshot) => {
-        messageReactions = {};
-        const data = snapshot.val();
-        if (data) {
-          Object.keys(data).forEach(msgId => {
-            messageReactions[msgId] = {};
-            Object.keys(data[msgId]).forEach(emoji => {
-              const users = data[msgId][emoji].users || {};
-              const count = Object.keys(users).length;
-              messageReactions[msgId][emoji] = { count, users };
-            });
-          });
-        }
-        // Перерисовываем чат, чтобы обновить отображение реакций
-        renderChatMessages();
-      }, (error) => {
-        console.error('[Firebase] Ошибка чтения реакций:', error);
-      });
     }
 
     // Подключаемся к Firebase и слушаем сообщения
@@ -2754,9 +2534,6 @@
         
         // Подключаем индикатор "печатает"
         attachTypingListener();
-        
-        // Подключаем реакции на сообщения
-        attachReactionsListener();
         
         // Проверяем, существует ли аккаунт в Firebase (если удалён — очищаем localStorage)
         verifyProfileInFirebase();
@@ -3322,45 +3099,64 @@
 
       const { icon = '/assets/photo.jpg', tag = 'community-notification', url = '/community.html', silent = false } = options;
 
-      // 1. Пробуем через Service Worker (работает даже когда вкладка не активна)
-      if (swRegistration && swRegistration.active) {
-        try {
-          swRegistration.active.postMessage({
-            type: 'SHOW_NOTIFICATION',
-            payload: { title, body, icon, tag, data: { url } }
-          });
-          return;
-        } catch (err) {
-          console.warn('[Push] Ошибка SW postMessage:', err);
+      // Вспомогательная функция: отправка через Service Worker
+      function trySendViaSW(registration) {
+        if (registration && registration.active) {
+          try {
+            registration.active.postMessage({
+              type: 'SHOW_NOTIFICATION',
+              payload: { title, body, icon, tag, data: { url } }
+            });
+            return true;
+          } catch (err) {
+            console.warn('[Push] Ошибка SW postMessage:', err);
+          }
         }
+        return false;
       }
 
-      // 1.1 Если SW зарегистрирован, но ещё не active — ждать не будем, идём в fallback
+      // 1. Пробуем через сохранённую регистрацию
+      if (trySendViaSW(swRegistration)) return;
 
-      // 2. Fallback: через Notification API напрямую
-      if ('Notification' in window && Notification.permission === 'granted') {
-        try {
-          const notif = new Notification(title, {
-            body: body,
-            icon: icon,
-            badge: '/images/favicon.ico',
-            tag: tag,
-            data: { url },
-            requireInteraction: true,
-            silent: silent
-          });
-          // Обработка клика по уведомлению (fallback)
-          notif.onclick = function(e) {
-            e.preventDefault();
-            window.focus();
-            if (url) window.open(url, '_blank');
-            notif.close();
-          };
-        } catch (err) {
-          console.warn('[Push] Ошибка Notification API:', err);
-        }
+      // 2. Пробуем дождаться готового Service Worker (navigator.serviceWorker.ready)
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then((registration) => {
+          if (trySendViaSW(registration)) return;
+          // Если SW не active — fallback на Notification API
+          sendFallbackNotification();
+        }).catch(() => {
+          sendFallbackNotification();
+        });
       } else {
-        console.log('[Push] Notification не отправлено: permission=' + Notification.permission + ', swRegistration=' + (swRegistration ? 'ok' : 'null'));
+        sendFallbackNotification();
+      }
+
+      function sendFallbackNotification() {
+        // 3. Fallback: через Notification API напрямую
+        if ('Notification' in window && Notification.permission === 'granted') {
+          try {
+            const notif = new Notification(title, {
+              body: body,
+              icon: icon,
+              badge: '/images/favicon.ico',
+              tag: tag,
+              data: { url },
+              requireInteraction: true,
+              silent: silent
+            });
+            // Обработка клика по уведомлению (fallback)
+            notif.onclick = function(e) {
+              e.preventDefault();
+              window.focus();
+              if (url) window.open(url, '_blank');
+              notif.close();
+            };
+          } catch (err) {
+            console.warn('[Push] Ошибка Notification API:', err);
+          }
+        } else {
+          console.log('[Push] Notification не отправлено: permission=' + Notification.permission + ', swRegistration=' + (swRegistration ? 'ok' : 'null'));
+        }
       }
     }
 
