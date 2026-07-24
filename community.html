@@ -1023,6 +1023,32 @@
     }
     .animate-fadeInUp { animation: fadeInUp 0.6s ease forwards; }
 
+    /* ===== ХАКЕРСКИЕ АНИМАЦИИ ДЛЯ БЕЙДЖА ЭЛИТА ===== */
+    @keyframes hackerGlow {
+      0% { box-shadow: 0 0 3px rgba(0, 255, 65, 0.3), 0 0 10px rgba(0, 255, 65, 0.15), inset 0 0 3px rgba(0, 255, 65, 0.05); }
+      15% { box-shadow: 0 0 8px rgba(0, 255, 65, 0.7), 0 0 25px rgba(0, 255, 65, 0.35), inset 0 0 8px rgba(0, 255, 65, 0.2); }
+      30% { box-shadow: 0 0 3px rgba(0, 255, 65, 0.3), 0 0 10px rgba(0, 255, 65, 0.15), inset 0 0 3px rgba(0, 255, 65, 0.05); }
+      45% { box-shadow: 0 0 15px rgba(0, 255, 65, 0.9), 0 0 40px rgba(0, 255, 65, 0.5), 0 0 60px rgba(0, 255, 65, 0.2), inset 0 0 15px rgba(0, 255, 65, 0.3); }
+      60% { box-shadow: 0 0 3px rgba(0, 255, 65, 0.3), 0 0 10px rgba(0, 255, 65, 0.15), inset 0 0 3px rgba(0, 255, 65, 0.05); }
+      75% { box-shadow: 0 0 10px rgba(0, 255, 65, 0.8), 0 0 30px rgba(0, 255, 65, 0.4), inset 0 0 10px rgba(0, 255, 65, 0.25); }
+      90% { box-shadow: 0 0 3px rgba(0, 255, 65, 0.3), 0 0 10px rgba(0, 255, 65, 0.15), inset 0 0 3px rgba(0, 255, 65, 0.05); }
+      100% { box-shadow: 0 0 8px rgba(0, 255, 65, 0.6), 0 0 20px rgba(0, 255, 65, 0.3), inset 0 0 8px rgba(0, 255, 65, 0.15); }
+    }
+    @keyframes hackerFlicker {
+      0% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+      10% { opacity: 0.85; text-shadow: 0 0 2px rgba(0, 255, 65, 0.3), 0 0 6px rgba(0, 255, 65, 0.1); }
+      12% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+      25% { opacity: 0.9; text-shadow: 0 0 6px rgba(0, 255, 65, 0.7), 0 0 18px rgba(0, 255, 65, 0.4); }
+      27% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+      50% { opacity: 0.8; text-shadow: 0 0 2px rgba(0, 255, 65, 0.2), 0 0 4px rgba(0, 255, 65, 0.1); }
+      52% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+      70% { opacity: 0.95; text-shadow: 0 0 8px rgba(0, 255, 65, 0.8), 0 0 20px rgba(0, 255, 65, 0.5); }
+      72% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+      85% { opacity: 0.85; text-shadow: 0 0 2px rgba(0, 255, 65, 0.3), 0 0 6px rgba(0, 255, 65, 0.1); }
+      87% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+      100% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+    }
+
     ::-webkit-scrollbar { width: 10px; }
     ::-webkit-scrollbar-track { background: var(--bg-secondary); }
     ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 5px; }
@@ -1493,6 +1519,10 @@
   <div id="userProfileModal" class="modal-backdrop" onclick="closeUserProfileModal(event)" style="display: none;">
     <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 400px;">
       <button onclick="closeUserProfileModal()" class="modal-close" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; z-index: 10;"><i class="fas fa-times"></i></button>
+      <!-- Баннер профиля -->
+      <div id="userProfileModalBanner" style="width: 100%; height: 100px; border-radius: 0.75rem; overflow: hidden; margin-bottom: 0.75rem; background: linear-gradient(135deg, #6366f1, #4f46e5);">
+        <img id="userProfileModalBannerImg" src="" alt="Баннер" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+      </div>
       <div class="text-center mb-6">
         <div id="userProfileModalAvatar" class="profile-avatar" style="width: 5rem; height: 5rem; margin: 0 auto 1rem; border-radius: 50%; overflow: hidden; background: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; color: white;"></div>
         <div id="userProfileModalName" style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);"></div>
@@ -1933,6 +1963,41 @@
           if (users) {
             const uid = Object.keys(users)[0];
             const fbData = users[uid];
+
+            // Проверка приватности профиля
+            const privacyMode = fbData.privacyMode || 'public';
+            if (privacyMode !== 'public') {
+              const currentAccount = getCurrentUserAccount();
+              const currentNickname = currentAccount ? currentAccount.nickname : null;
+
+              if (privacyMode === 'private') {
+                // Закрытый профиль — показываем заглушку
+                renderPrivateProfileModal(username, msgData);
+                return;
+              }
+
+              if (privacyMode === 'friends') {
+                // Для друзей — проверяем, есть ли текущий пользователь в друзьях
+                if (currentNickname && currentNickname !== username) {
+                  try {
+                    const friendCheck = await db.ref('friends/' + username + '/' + currentNickname).once('value');
+                    if (!friendCheck.exists()) {
+                      renderPrivateProfileModal(username, msgData);
+                      return;
+                    }
+                  } catch(e) {
+                    renderPrivateProfileModal(username, msgData);
+                    return;
+                  }
+                } else if (!currentNickname) {
+                  // Неавторизованный пользователь
+                  renderPrivateProfileModal(username, msgData);
+                  return;
+                }
+                // Если это сам владелец профиля — показываем normally
+              }
+            }
+
             // Объединяем: Firebase данные приоритетнее, но данные из сообщения — для аватара/цвета
             const merged = {
               ...msgData,
@@ -1942,7 +2007,8 @@
               badge: fbData.badge || msgData.badge || '',
               status: fbData.status || msgData.status || '',
               bio: fbData.bio || '',
-              registeredAt: fbData.registeredAt || ''
+              registeredAt: fbData.registeredAt || '',
+              bannerDataUrl: fbData.bannerDataUrl || ''
             };
             renderUserProfileModal(username, merged, true);
           } else {
@@ -1983,6 +2049,17 @@
       }
       avatarEl.style.background = avatarUrl ? 'transparent' : accentColor;
 
+      // Баннер профиля
+      const bannerImg = document.getElementById('userProfileModalBannerImg');
+      if (bannerImg) {
+        if (data.bannerDataUrl) {
+          bannerImg.src = data.bannerDataUrl;
+          bannerImg.style.display = 'block';
+        } else {
+          bannerImg.style.display = 'none';
+        }
+      }
+
       // Имя
       nameEl.textContent = username || 'Аноним';
       nameEl.style.color = accentColor;
@@ -1993,7 +2070,8 @@
         const badgeMap = {
           'official': '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-check-circle"></i> Официально</span>',
           'donater': '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-dollar-sign"></i> Донатер</span>',
-          'beta_tester': '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-flask"></i> Бета-тестер</span>'
+          'beta_tester': '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-flask"></i> Бета-тестер</span>',
+          'beta_tester_elite': '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: #0a0a0a; color: #00ff41; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 4px; border: 1px solid #00ff41; font-family: \'Courier New\', monospace; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 0 8px rgba(0, 255, 65, 0.6), 0 0 20px rgba(0, 255, 65, 0.3), inset 0 0 8px rgba(0, 255, 65, 0.15); animation: hackerGlow 1.5s ease-in-out infinite; background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 65, 0.03) 2px, rgba(0, 255, 65, 0.03) 4px);"><i class="fas fa-shield-hacked" style="filter: drop-shadow(0 0 4px #00ff41); animation: hackerFlicker 2.5s ease-in-out infinite;"></i> <span style="animation: hackerFlicker 2.5s ease-in-out infinite;">Элита</span></span>'
         };
         badgeEl.innerHTML = badgeMap[badgeType] || '';
       } else {
@@ -2006,7 +2084,8 @@
         const descMap = {
           'official': '<div style="padding: 0.6rem 0.75rem; background: rgba(29, 161, 242, 0.1); border: 1px solid rgba(29, 161, 242, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; text-align: left;"><i class="fas fa-check-circle" style="color: #1da1f2; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Официальная синяя галочка</strong> — этот аккаунт подтверждён как официальный представитель Mortis Play. Галочка присваивается только администрацией и означает, что владелец аккаунта является частью команды проекта.</div>',
           'donater': '<div style="padding: 0.6rem 0.75rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; text-align: left;"><i class="fas fa-dollar-sign" style="color: #f59e0b; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Донатер</strong> — этот пользователь поддержал проект финансово. Спасибо за вклад в развитие сообщества! ❤️</div>',
-          'beta_tester': '<div style="padding: 0.6rem 0.75rem; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; text-align: left;"><i class="fas fa-flask" style="color: #8b5cf6; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Бета-тестер</strong> — этот пользователь помогает тестировать новые функции сайта. Спасибо за помощь в улучшении проекта! 🧪</div>'
+          'beta_tester': '<div style="padding: 0.6rem 0.75rem; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; text-align: left;"><i class="fas fa-flask" style="color: #8b5cf6; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Бета-тестер</strong> — этот пользователь помогает тестировать новые функции сайта. Спасибо за помощь в улучшении проекта! 🧪</div>',
+          'beta_tester_elite': '<div style="padding: 0.6rem 0.75rem; background: rgba(0, 255, 65, 0.08); border: 1px solid rgba(0, 255, 65, 0.3); border-radius: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; text-align: left; box-shadow: 0 0 12px rgba(0, 255, 65, 0.15);"><i class="fas fa-shield-hacked" style="color: #00ff41; margin-right: 0.3rem; filter: drop-shadow(0 0 4px #00ff41); animation: hackerFlicker 2.5s ease-in-out infinite;"></i> <strong style="color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.5); animation: hackerFlicker 2.5s ease-in-out infinite;">Бета-тестер Элита</strong> — высший уровень бета-тестирования! Этот пользователь внёс наибольший вклад в развитие проекта, помогал находить критические ошибки и участвовал в закрытых тестах. Настоящий хакер! 🖥️🔥</div>'
         };
         const descHtml = descMap[badgeType];
         if (descHtml) {
@@ -2099,6 +2178,57 @@
           friendBtnContainer.style.display = 'none';
         }
       }
+    }
+
+    function renderPrivateProfileModal(username, msgData) {
+      const avatarEl = document.getElementById('userProfileModalAvatar');
+      const nameEl = document.getElementById('userProfileModalName');
+      const badgeEl = document.getElementById('userProfileModalBadge');
+      const badgeDescEl = document.getElementById('userProfileModalBadgeDescription');
+      const statusEl = document.getElementById('userProfileModalStatus');
+      const bioEl = document.getElementById('userProfileModalBio');
+      const joinedEl = document.getElementById('userProfileModalJoined');
+      const notRegisteredEl = document.getElementById('userProfileModalNotRegistered');
+      const friendBtnContainer = document.getElementById('userProfileModalFriendBtn');
+      const bannerImg = document.getElementById('userProfileModalBannerImg');
+
+      if (!avatarEl || !nameEl) return;
+
+      // Скрываем баннер
+      if (bannerImg) bannerImg.style.display = 'none';
+
+      // Аватар (только буква)
+      const avatarLetter = (username || 'А')[0].toUpperCase();
+      const accentColor = msgData.accentColor || '#6366f1';
+      avatarEl.textContent = avatarLetter;
+      avatarEl.style.background = accentColor;
+
+      // Имя
+      nameEl.textContent = username || 'Аноним';
+      nameEl.style.color = accentColor;
+
+      // Скрываем бейдж и его описание
+      if (badgeEl) badgeEl.innerHTML = '';
+      if (badgeDescEl) badgeDescEl.style.display = 'none';
+
+      // Скрываем статус
+      if (statusEl) statusEl.style.display = 'none';
+
+      // Био — заглушка
+      if (bioEl) {
+        bioEl.innerHTML = '<div style="text-align: center; padding: 1rem; color: var(--text-secondary); opacity: 0.6;"><i class="fas fa-lock" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;"></i>Профиль скрыт настройками приватности</div>';
+        bioEl.style.display = 'block';
+        bioEl.style.opacity = '1';
+      }
+
+      // Дата регистрации
+      if (joinedEl) joinedEl.textContent = '';
+
+      // Скрываем блок "не зарегистрирован"
+      if (notRegisteredEl) notRegisteredEl.style.display = 'none';
+
+      // Скрываем кнопку "Добавить в друзья"
+      if (friendBtnContainer) friendBtnContainer.style.display = 'none';
     }
 
     function closeUserProfileModal(event) {
@@ -2283,7 +2413,8 @@
           const badgeMap = {
             'official': '<span style="display: inline-flex; align-items: center; gap: 0.15rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.25rem;"><i class="fas fa-check-circle" style="font-size: 0.6rem;"></i> Офф.</span>',
             'donater': '<span style="display: inline-flex; align-items: center; gap: 0.15rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.25rem;"><i class="fas fa-dollar-sign" style="font-size: 0.6rem;"></i> Дон.</span>',
-            'beta_tester': '<span style="display: inline-flex; align-items: center; gap: 0.15rem; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.25rem;"><i class="fas fa-flask" style="font-size: 0.6rem;"></i> Бета</span>'
+            'beta_tester': '<span style="display: inline-flex; align-items: center; gap: 0.15rem; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.25rem;"><i class="fas fa-flask" style="font-size: 0.6rem;"></i> Бета</span>',
+            'beta_tester_elite': '<span style="display: inline-flex; align-items: center; gap: 0.15rem; background: #0a0a0a; color: #00ff41; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 3px; vertical-align: middle; margin-left: 0.25rem; border: 1px solid #00ff41; font-family: \'Courier New\', monospace; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 0 6px rgba(0, 255, 65, 0.5), 0 0 15px rgba(0, 255, 65, 0.2), inset 0 0 6px rgba(0, 255, 65, 0.1); animation: hackerGlow 1.5s ease-in-out infinite; background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 65, 0.03) 2px, rgba(0, 255, 65, 0.03) 4px);"><i class="fas fa-shield-hacked" style="font-size: 0.6rem; filter: drop-shadow(0 0 3px #00ff41); animation: hackerFlicker 2.5s ease-in-out infinite;"></i> <span style="animation: hackerFlicker 2.5s ease-in-out infinite;">Элита</span></span>'
           };
           badgeHtml = ' ' + (badgeMap[msgBadge] || '');
         }

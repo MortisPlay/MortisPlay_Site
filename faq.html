@@ -566,7 +566,7 @@
                   </div>
                   <div class="p-3 bg-gradient-to-br from-orange-900/20 to-red-900/20 rounded-lg">
                     <p class="font-semibold text-sm">🧰 Удобства</p>
-                    <p class="text-xs text-gray-300">Настройки, мобильное меню, кнопка наверх, уведомления</p>
+                    <p class="text-xs text-gray-300">Настройки, мобильное меню, кнопка наверх</p>
                   </div>
                 </div>
                 <p class="text-sm text-gray-400">Сайт адаптирован под мобильные устройства и поддерживает современные визуальные эффекты, удобные переходы и быстрый доступ к контенту.</p>
@@ -581,7 +581,7 @@
                   <li>🌙 <strong>Тёмная тема</strong> — включена по умолчанию</li>
                   <li>☀️ <strong>Светлая тема</strong> — можно включить в любой момент</li>
                   <li>✨ <strong>Жидкое стекло</strong> — можно включать и отключать отдельно</li>
-                  <li>⚙️ <strong>Анимации и уведомления</strong> — тоже управляются через настройки</li>
+                  <li>⚙️ <strong>Анимации</strong> — тоже управляются через настройки</li>
                 </ul>
                 <div class="mt-3 p-3 bg-gray-800/50 rounded-lg">
                   <p class="font-mono text-sm">🔧 Кнопка настроек находится в шапке сайта</p>
@@ -659,15 +659,6 @@
             </details>
 
             <details class="faq-item">
-              <summary>Почему иногда появляются уведомления и как их отключить?</summary>
-              <div class="answer">
-                <p>Уведомления показываются, когда сайт сообщает о смене темы, обновлении интерфейса или важных действиях.</p>
-                <p class="mt-2">Их можно выключить в настройках сайта — там есть отдельный переключатель для уведомлений.</p>
-                <p class="mt-3 text-sm text-gray-400">Отключение не влияет на контент и не мешает пользоваться разделами сайта.</p>
-              </div>
-            </details>
-
-            <details class="faq-item">
               <summary>Как переключать тему и где находятся настройки?</summary>
               <div class="answer">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
@@ -677,29 +668,13 @@
                   </div>
                   <div class="p-3 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg">
                     <p class="font-semibold text-sm">⚙️ Настройки</p>
-                    <p class="text-xs text-gray-300">Кнопка с шестерёнкой открывает модальное окно, где можно управлять анимациями, уведомлениями и эффектом "Жидкое стекло".</p>
+                    <p class="text-xs text-gray-300">Кнопка с шестерёнкой открывает модальное окно, где можно управлять анимациями и эффектом "Жидкое стекло".</p>
                   </div>
                 </div>
                 <p class="text-sm text-gray-400">На мобильных устройствах кнопки темы и настроек также доступны в нижней панели навигации.</p>
               </div>
             </details>
 
-            <details class="faq-item">
-              <summary>Откуда берутся уведомления об обновлениях сайта?</summary>
-              <div class="answer">
-                <p>Сайт автоматически проверяет последние изменения через GitHub API. Если появился новый коммит в репозитории — ты получишь уведомление с его названием и датой.</p>
-                <div class="mt-3 p-3 bg-gray-800/50 rounded-lg">
-                  <p class="text-sm">🔔 Как это работает:</p>
-                  <ul class="list-disc list-inside mt-1 space-y-1 text-sm text-gray-300">
-                    <li>При загрузке сайта запрашивается последний коммит через GitHub API</li>
-                    <li>Если SHA коммита отличается от сохранённого — показывается уведомление</li>
-                    <li>Новый SHA сохраняется в браузере, чтобы уведомление не повторялось</li>
-                    <li>В уведомлении есть прямая ссылка на коммит на GitHub</li>
-                  </ul>
-                </div>
-                <p class="mt-2 text-sm text-gray-400">Уведомления можно отключить в настройках сайта — переключатель "Показывать уведомление об обновлениях". Если GitHub API временно недоступен, показывается стандартное уведомление со ссылкой на список коммитов.</p>
-              </div>
-            </details>
           </div>
         </div>
 
@@ -869,55 +844,6 @@
                 </ol>
                 <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
                   <p class="text-sm"><i class="fas fa-trash-alt text-red-400 mr-1"></i> Свой комментарий можно удалить — наведи на него и нажми на корзину. Администратор может удалять любые комментарии</p>
-                </div>
-              </div>
-            </details>
-
-            <details class="faq-item">
-              <summary>Как работают уведомления из Зала комьюнити?</summary>
-              <div class="answer">
-                <p>Когда кто-то пишет в чат, добавляет мем или оставляет комментарий — ты можешь получить уведомление:</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                  <div class="p-3 bg-gradient-to-br from-indigo-900/20 to-cyan-900/20 rounded-lg">
-                    <p class="font-semibold text-sm mb-1">🔔 Типы уведомлений:</p>
-                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
-                      <li>💬 Новое сообщение в чате</li>
-                      <li>🖼️ Новый мем в галерее</li>
-                      <li>💬 Новый комментарий к мему</li>
-                    </ul>
-                  </div>
-                  <div class="p-3 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg">
-                    <p class="font-semibold text-sm mb-1">⚙️ Настройка:</p>
-                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
-                      <li>Открой настройки сайта (шестерёнка в шапке)</li>
-                      <li>Найди блок «Уведомления Зала комьюнити»</li>
-                      <li>Включи/выключи: чат, мемы, комментарии, звук, Push-уведомления</li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
-                  <p class="text-xs text-gray-400"><i class="fas fa-bell mr-1 text-purple-400"></i> Push-уведомления приходят на телефон/ПК, даже если сайт закрыт. Для их работы нужно разрешить уведомления в браузере</p>
-                </div>
-              </div>
-            </details>
-
-            <details class="faq-item">
-              <summary>Что такое Push-уведомления и как их включить?</summary>
-              <div class="answer">
-                <p>Push-уведомления — это всплывающие уведомления на твоём телефоне или компьютере, которые приходят даже когда сайт не открыт.</p>
-                <div class="mt-3 space-y-2">
-                  <div class="p-3 bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-lg">
-                    <p class="font-semibold text-sm mb-1">✅ Как включить:</p>
-                    <ol class="list-decimal list-inside text-xs text-gray-300 space-y-1">
-                      <li>Открой настройки сайта (шестерёнка в шапке)</li>
-                      <li>В блоке «Уведомления Зала комьюнити» включи «Push-уведомления»</li>
-                      <li>Браузер спросит разрешение — нажми «Разрешить»</li>
-                      <li>Готово! Теперь уведомления будут приходить на устройство</li>
-                    </ol>
-                  </div>
-                  <div class="p-3 bg-amber-900/20 rounded-lg">
-                    <p class="text-xs"><i class="fas fa-exclamation-triangle text-amber-400 mr-1"></i> Если ранее ты запретил уведомления — нужно вручную разрешить их в настройках браузера для этого сайта</p>
-                  </div>
                 </div>
               </div>
             </details>

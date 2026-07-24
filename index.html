@@ -1013,6 +1013,39 @@
       animation-play-state: paused;
     }
     
+    /* ===== ХАКЕРСКИЕ АНИМАЦИИ ДЛЯ БЕЙДЖА ЭЛИТА ===== */
+    /* Пульсирующее неоновое свечение (пиксельный хакерский стиль) */
+    @keyframes hackerGlow {
+      0% { box-shadow: 0 0 3px rgba(0, 255, 65, 0.3), 0 0 10px rgba(0, 255, 65, 0.15), inset 0 0 3px rgba(0, 255, 65, 0.05); }
+      15% { box-shadow: 0 0 8px rgba(0, 255, 65, 0.7), 0 0 25px rgba(0, 255, 65, 0.35), inset 0 0 8px rgba(0, 255, 65, 0.2); }
+      30% { box-shadow: 0 0 3px rgba(0, 255, 65, 0.3), 0 0 10px rgba(0, 255, 65, 0.15), inset 0 0 3px rgba(0, 255, 65, 0.05); }
+      45% { box-shadow: 0 0 15px rgba(0, 255, 65, 0.9), 0 0 40px rgba(0, 255, 65, 0.5), 0 0 60px rgba(0, 255, 65, 0.2), inset 0 0 15px rgba(0, 255, 65, 0.3); }
+      60% { box-shadow: 0 0 3px rgba(0, 255, 65, 0.3), 0 0 10px rgba(0, 255, 65, 0.15), inset 0 0 3px rgba(0, 255, 65, 0.05); }
+      75% { box-shadow: 0 0 10px rgba(0, 255, 65, 0.8), 0 0 30px rgba(0, 255, 65, 0.4), inset 0 0 10px rgba(0, 255, 65, 0.25); }
+      90% { box-shadow: 0 0 3px rgba(0, 255, 65, 0.3), 0 0 10px rgba(0, 255, 65, 0.15), inset 0 0 3px rgba(0, 255, 65, 0.05); }
+      100% { box-shadow: 0 0 8px rgba(0, 255, 65, 0.6), 0 0 20px rgba(0, 255, 65, 0.3), inset 0 0 8px rgba(0, 255, 65, 0.15); }
+    }
+    /* Мерцание текста как старый терминал */
+    @keyframes hackerFlicker {
+      0% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+      10% { opacity: 0.85; text-shadow: 0 0 2px rgba(0, 255, 65, 0.3), 0 0 6px rgba(0, 255, 65, 0.1); }
+      12% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+      25% { opacity: 0.9; text-shadow: 0 0 6px rgba(0, 255, 65, 0.7), 0 0 18px rgba(0, 255, 65, 0.4); }
+      27% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+      50% { opacity: 0.8; text-shadow: 0 0 2px rgba(0, 255, 65, 0.2), 0 0 4px rgba(0, 255, 65, 0.1); }
+      52% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+      70% { opacity: 0.95; text-shadow: 0 0 8px rgba(0, 255, 65, 0.8), 0 0 20px rgba(0, 255, 65, 0.5); }
+      72% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+      85% { opacity: 0.85; text-shadow: 0 0 2px rgba(0, 255, 65, 0.3), 0 0 6px rgba(0, 255, 65, 0.1); }
+      87% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+      100% { opacity: 1; text-shadow: 0 0 4px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3); }
+    }
+    /* Пиксельное сканирование (горизонтальная полоска) */
+    @keyframes hackerScan {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 0% 100%; }
+    }
+    
     /* Бета-шапка профиля */
     .profile-beta-header {
       background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -1408,6 +1441,16 @@
         <div id="profileLoggedIn" class="profile-form" style="display: none;">
           <!-- Шапка профиля -->
           <div class="text-center mb-6">
+            <!-- Баннер профиля -->
+            <div id="profileBannerContainer" style="width: 100%; height: 120px; border-radius: 0.75rem; overflow: hidden; margin-bottom: 0.75rem; position: relative; background: linear-gradient(135deg, var(--primary), #4f46e5);">
+              <img id="profileBannerImg" src="" alt="Баннер" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+              <button id="profileBannerChangeBtn" type="button" style="position: absolute; bottom: 0.5rem; right: 0.5rem; width: 2rem; height: 2rem; border-radius: 50%; background: rgba(0,0,0,0.5); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; backdrop-filter: blur(4px); transition: all 0.2s ease;" title="Загрузить баннер">
+                <i class="fas fa-camera"></i>
+              </button>
+              <button id="profileBannerRemoveBtn" type="button" style="position: absolute; bottom: 0.5rem; left: 0.5rem; width: 2rem; height: 2rem; border-radius: 50%; background: rgba(239, 68, 68, 0.7); color: white; border: none; cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 0.8rem; backdrop-filter: blur(4px); transition: all 0.2s ease;" title="Удалить баннер">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
             <div class="profile-avatar" style="width: 5rem; height: 5rem; margin-bottom: 1rem; position: relative; display: inline-block;">
               <img src="/assets/photo.jpg" alt="Аватар" id="profileAvatarImg" onerror="this.onerror=null;this.src='https://placehold.co/120x120/4f46e5/ffffff?text=U'" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
               <button id="profileAvatarChangeBtn" style="position: absolute; bottom: 0; right: 0; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--bg-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
@@ -1477,6 +1520,16 @@
                     </span>
                     <input type="checkbox" id="profilePrivacyShowAvatar" checked style="accent-color: var(--primary); width: 1.1rem; height: 1.1rem; cursor: pointer;" />
                   </label>
+                  <label style="display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.75rem; border-radius: 0.75rem; background: var(--glass-bg); border: 1px solid var(--glass-border); cursor: pointer;">
+                    <span style="font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+                      <i class="fas fa-lock" style="color: var(--primary);"></i> Приватность профиля
+                    </span>
+                    <select id="profilePrivacyMode" style="background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--glass-border); border-radius: 0.5rem; padding: 0.3rem 0.5rem; font-size: 0.8rem; cursor: pointer;">
+                      <option value="public">🌍 Открытый</option>
+                      <option value="friends">👥 Для друзей</option>
+                      <option value="private">🔒 Закрытый</option>
+                    </select>
+                  </label>
                 </div>
               </div>
             </div>
@@ -1533,6 +1586,7 @@
                   <option value="official">🔵 Официально (синяя галочка)</option>
                   <option value="donater">🟡 Донатер</option>
                   <option value="beta_tester">🟣 Бета-тестер</option>
+                  <option value="beta_tester_elite">🟢 Бета-тестер Элита 🖥️</option>
                 </select>
               </div>
               <div style="display: flex; gap: 0.5rem;">
@@ -1547,6 +1601,33 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка профиля друга (из списка друзей) -->
+  <div id="friendProfileModal" class="modal-backdrop" onclick="closeFriendProfileModal(event)" style="display: none;">
+    <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 400px;">
+      <button onclick="closeFriendProfileModal()" class="modal-close" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; z-index: 10;"><i class="fas fa-times"></i></button>
+      <!-- Баннер -->
+      <div id="friendProfileBanner" style="width: 100%; height: 100px; border-radius: 0.75rem; overflow: hidden; margin-bottom: 0.75rem; background: linear-gradient(135deg, #6366f1, #4f46e5);">
+        <img id="friendProfileBannerImg" src="" alt="Баннер" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+      </div>
+      <div class="text-center mb-6">
+        <div id="friendProfileAvatar" class="profile-avatar" style="width: 5rem; height: 5rem; margin: 0 auto 1rem; border-radius: 50%; overflow: hidden; background: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; color: white;"></div>
+        <h3 id="friendProfileName" class="text-2xl font-bold gradient-text"></h3>
+        <div id="friendProfileBadge" style="margin-top: 0.25rem;"></div>
+        <div id="friendProfileBadgeDescription" style="display: none; margin-top: 0.5rem;"></div>
+        <div id="friendProfileStatus" style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);"></div>
+      </div>
+      <div id="friendProfileBio" class="text-sm" style="color: var(--text-secondary); line-height: 1.6; padding: 0.75rem; background: var(--glass-bg); border-radius: 0.75rem; border: 1px solid var(--glass-border);"></div>
+      <div style="margin-top: 1rem; text-align: center; font-size: 0.75rem; color: var(--text-secondary); opacity: 0.6;">
+        <i class="fas fa-calendar-alt"></i> <span id="friendProfileJoined"></span>
+      </div>
+      <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+        <button id="friendProfileRemoveBtn" class="btn-primary w-full" style="background: linear-gradient(135deg, #ef4444, #dc2626); font-size: 0.85rem; padding: 0.6rem 1rem;">
+          <i class="fas fa-user-minus"></i> Удалить из друзей
+        </button>
       </div>
     </div>
   </div>
@@ -2428,7 +2509,9 @@
                 bio: userData.bio || '',
                 accentColor: userData.accentColor || '#6366f1',
                 avatarDataUrl: userData.avatarDataUrl || '',
+                bannerDataUrl: userData.bannerDataUrl || '',
                 privacyShowAvatar: userData.privacyShowAvatar !== false,
+                privacyMode: userData.privacyMode || 'public',
                 registeredAt: userData.registeredAt || Date.now()
             };
             await db.ref('users/' + uid).set(firebaseData);
@@ -2763,6 +2846,8 @@
                 return '<span style="display: inline-flex; align-items: center; gap: 0.2rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; vertical-align: middle;"><i class="fas fa-dollar-sign" style="font-size: 0.7rem;"></i> Донатер</span>';
             case 'beta_tester':
                 return '<span style="display: inline-flex; align-items: center; gap: 0.2rem; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; vertical-align: middle;"><i class="fas fa-flask" style="font-size: 0.7rem;"></i> Бета-тестер</span>';
+            case 'beta_tester_elite':
+                return '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: #0a0a0a; color: #00ff41; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 4px; vertical-align: middle; border: 1px solid #00ff41; font-family: \'Courier New\', monospace; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 0 8px rgba(0, 255, 65, 0.6), 0 0 20px rgba(0, 255, 65, 0.3), inset 0 0 8px rgba(0, 255, 65, 0.15); animation: hackerGlow 1.5s ease-in-out infinite; background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 65, 0.03) 2px, rgba(0, 255, 65, 0.03) 4px);"><i class="fas fa-shield-hacked" style="font-size: 0.7rem; filter: drop-shadow(0 0 4px #00ff41); animation: hackerFlicker 2.5s ease-in-out infinite;"></i> <span style="animation: hackerFlicker 2.5s ease-in-out infinite;">Элита</span></span>';
             default:
                 return '';
         }
@@ -2777,6 +2862,8 @@
                 return '<div style="margin-top: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;"><i class="fas fa-dollar-sign" style="color: #f59e0b; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Донатер</strong> — этот пользователь поддержал проект финансово. Спасибо за вклад в развитие сообщества! ❤️</div>';
             case 'beta_tester':
                 return '<div style="margin-top: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;"><i class="fas fa-flask" style="color: #8b5cf6; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Бета-тестер</strong> — этот пользователь помогает тестировать новые функции сайта. Спасибо за помощь в улучшении проекта! 🧪</div>';
+            case 'beta_tester_elite':
+                return '<div style="margin-top: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(0, 255, 65, 0.08); border: 1px solid rgba(0, 255, 65, 0.3); border-radius: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; box-shadow: 0 0 12px rgba(0, 255, 65, 0.15);"><i class="fas fa-shield-hacked" style="color: #00ff41; margin-right: 0.3rem; filter: drop-shadow(0 0 4px #00ff41); animation: hackerFlicker 2.5s ease-in-out infinite;"></i> <strong style="color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.5); animation: hackerFlicker 2.5s ease-in-out infinite;">Бета-тестер Элита</strong> — высший уровень бета-тестирования! Этот пользователь внёс наибольший вклад в развитие проекта, помогал находить критические ошибки и участвовал в закрытых тестах. Настоящий хакер! 🖥️🔥</div>';
             default:
                 return '';
         }
@@ -2887,6 +2974,10 @@
             
             // Настройки приватности
             document.getElementById('profilePrivacyShowAvatar').checked = currentUser.privacyShowAvatar !== false;
+            const privacyModeEl = document.getElementById('profilePrivacyMode');
+            if (privacyModeEl) {
+                privacyModeEl.value = currentUser.privacyMode || 'public';
+            }
             
             // Применяем сохранённый цвет акцента
             if (currentUser.accentColor) {
@@ -2923,6 +3014,19 @@
                 avatarImg.src = canvas.toDataURL();
                 if (removeBtn) removeBtn.style.display = 'none';
             }
+
+            // Баннер профиля
+            const bannerImg = document.getElementById('profileBannerImg');
+            const bannerRemoveBtn = document.getElementById('profileBannerRemoveBtn');
+            if (currentUser.bannerDataUrl) {
+                bannerImg.src = currentUser.bannerDataUrl;
+                bannerImg.style.display = 'block';
+                if (bannerRemoveBtn) bannerRemoveBtn.style.display = 'flex';
+            } else {
+                bannerImg.style.display = 'none';
+                if (bannerRemoveBtn) bannerRemoveBtn.style.display = 'none';
+            }
+
             // Показываем админ-панель только администратору
             const adminPanel = document.getElementById('adminPanelSection');
             if (adminPanel) {
@@ -3279,11 +3383,20 @@
         let html = '';
         friendNames.forEach(name => {
             html += '<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.4rem 0.6rem; border-radius: 0.5rem; background: var(--glass-bg); border: 1px solid var(--glass-border); font-size: 0.8rem;">' +
-                '<span><i class="fas fa-user" style="color: var(--primary); margin-right: 0.4rem;"></i>' + escapeHtml(name) + '</span>' +
+                '<span class="friend-name-link" data-friend="' + escapeHtml(name) + '" style="cursor: pointer; display: flex; align-items: center; gap: 0.4rem; flex: 1; padding: 0.2rem 0; transition: color 0.2s ease;" title="Посмотреть профиль">' +
+                '<i class="fas fa-user" style="color: var(--primary);"></i>' + escapeHtml(name) + '</span>' +
                 '<button class="friend-remove-btn" data-friend="' + escapeHtml(name) + '" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.75rem; padding: 0.2rem;" title="Удалить из друзей"><i class="fas fa-user-minus"></i></button>' +
                 '</div>';
         });
         container.innerHTML = html;
+
+        // Обработчики клика по имени друга
+        container.querySelectorAll('.friend-name-link').forEach(span => {
+            span.addEventListener('click', function() {
+                const friendName = this.dataset.friend;
+                openFriendProfileModal(friendName);
+            });
+        });
 
         // Обработчики удаления из друзей
         container.querySelectorAll('.friend-remove-btn').forEach(btn => {
@@ -3416,6 +3529,144 @@
         }
     }
 
+    function openFriendProfileModal(friendName) {
+        const modal = document.getElementById('friendProfileModal');
+        if (!modal) return;
+
+        // Очищаем предыдущие данные
+        document.getElementById('friendProfileAvatar').textContent = (friendName || '?')[0].toUpperCase();
+        document.getElementById('friendProfileAvatar').style.background = '#6366f1';
+        document.getElementById('friendProfileName').textContent = friendName || 'Загрузка...';
+        document.getElementById('friendProfileBadge').innerHTML = '';
+        document.getElementById('friendProfileBadgeDescription').style.display = 'none';
+        document.getElementById('friendProfileStatus').style.display = 'none';
+        document.getElementById('friendProfileBio').textContent = 'Загрузка...';
+        document.getElementById('friendProfileBio').style.opacity = '1';
+        document.getElementById('friendProfileJoined').textContent = '';
+        document.getElementById('friendProfileBannerImg').style.display = 'none';
+
+        // Устанавливаем обработчик на кнопку удаления
+        const removeBtn = document.getElementById('friendProfileRemoveBtn');
+        if (removeBtn) {
+            removeBtn.onclick = function() {
+                closeFriendProfileModal();
+                removeFriend(friendName);
+            };
+        }
+
+        modal.classList.add('show');
+        modal.style.display = 'flex';
+
+        // Загружаем данные из Firebase
+        if (firebaseInitialized) {
+            const db = firebase.database();
+            db.ref('users').orderByChild('nickname').equalTo(friendName).once('value')
+                .then(snapshot => {
+                    const users = snapshot.val();
+                    if (!users) {
+                        document.getElementById('friendProfileBio').textContent = 'Пользователь не найден в базе данных';
+                        return;
+                    }
+                    const uid = Object.keys(users)[0];
+                    const data = users[uid];
+
+                    // Аватар
+                    const avatarEl = document.getElementById('friendProfileAvatar');
+                    const avatarLetter = (friendName || '?')[0].toUpperCase();
+                    const accentColor = data.accentColor || '#6366f1';
+                    if (data.avatarDataUrl) {
+                        avatarEl.innerHTML = '<img src="' + data.avatarDataUrl + '" alt="' + escapeHtml(friendName) + '" style="width: 100%; height: 100%; object-fit: cover;">';
+                        avatarEl.style.background = 'transparent';
+                    } else {
+                        avatarEl.textContent = avatarLetter;
+                        avatarEl.style.background = accentColor;
+                    }
+
+                    // Имя
+                    document.getElementById('friendProfileName').textContent = friendName;
+                    document.getElementById('friendProfileName').style.color = accentColor;
+
+                    // Бейдж
+                    const badgeType = getUserBadgeSync(data);
+                    const badgeEl = document.getElementById('friendProfileBadge');
+                    if (badgeType) {
+                        const badgeMap = {
+                            'official': '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-check-circle"></i> Официально</span>',
+                            'donater': '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-dollar-sign"></i> Донатер</span>',
+                            'beta_tester': '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-flask"></i> Бета-тестер</span>'
+                        };
+                        badgeEl.innerHTML = badgeMap[badgeType] || '';
+                    } else {
+                        badgeEl.innerHTML = '';
+                    }
+
+                    // Описание бейджа
+                    const badgeDescEl = document.getElementById('friendProfileBadgeDescription');
+                    if (badgeDescEl) {
+                        const descHtml = getBadgeDescription(badgeType);
+                        if (descHtml) {
+                            badgeDescEl.innerHTML = descHtml;
+                            badgeDescEl.style.display = 'block';
+                        } else {
+                            badgeDescEl.style.display = 'none';
+                        }
+                    }
+
+                    // Статус
+                    const statusEl = document.getElementById('friendProfileStatus');
+                    if (data.status) {
+                        statusEl.textContent = '💬 ' + data.status;
+                        statusEl.style.display = 'block';
+                    } else {
+                        statusEl.style.display = 'none';
+                    }
+
+                    // Био
+                    const bioEl = document.getElementById('friendProfileBio');
+                    if (data.bio) {
+                        bioEl.textContent = data.bio;
+                        bioEl.style.opacity = '1';
+                    } else {
+                        bioEl.textContent = 'Пользователь пока не добавил информацию о себе';
+                        bioEl.style.opacity = '0.5';
+                    }
+
+                    // Дата регистрации
+                    const joinedEl = document.getElementById('friendProfileJoined');
+                    if (data.registeredAt) {
+                        const date = new Date(data.registeredAt);
+                        joinedEl.textContent = 'На сайте с ' + date.toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
+                    } else {
+                        joinedEl.textContent = 'Дата регистрации неизвестна';
+                    }
+
+                    // Баннер
+                    const bannerImg = document.getElementById('friendProfileBannerImg');
+                    if (data.bannerDataUrl) {
+                        bannerImg.src = data.bannerDataUrl;
+                        bannerImg.style.display = 'block';
+                    } else {
+                        bannerImg.style.display = 'none';
+                    }
+                })
+                .catch(e => {
+                    console.warn('[FriendProfile] Ошибка загрузки:', e);
+                    document.getElementById('friendProfileBio').textContent = 'Ошибка загрузки данных';
+                });
+        } else {
+            document.getElementById('friendProfileBio').textContent = 'Firebase недоступен';
+        }
+    }
+
+    function closeFriendProfileModal(event) {
+        if (event && event.target !== document.getElementById('friendProfileModal')) return;
+        const modal = document.getElementById('friendProfileModal');
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+    }
+
     function escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');
@@ -3432,7 +3683,9 @@
         const activeColorBtn = document.querySelector('.profile-color-btn.active');
         const newColor = activeColorBtn ? activeColorBtn.dataset.color : null;
         const privacyShowAvatar = document.getElementById('profilePrivacyShowAvatar').checked;
-        
+        const privacyModeEl = document.getElementById('profilePrivacyMode');
+        const privacyMode = privacyModeEl ? privacyModeEl.value : 'public';
+
         if (!newNickname) {
             showNotification('Никнейм не может быть пустым', { type: 'warning' });
             return;
@@ -3449,6 +3702,7 @@
         currentUser.bio = newBio;
         if (newColor) currentUser.accentColor = newColor;
         currentUser.privacyShowAvatar = privacyShowAvatar;
+        currentUser.privacyMode = privacyMode;
         
         // Сохраняем локально
         saveUserLocally(currentUser, currentUserUid);
@@ -3469,7 +3723,9 @@
                 timestamp: Date.now(),
                 nickname: currentUser.nickname,
                 avatarDataUrl: currentUser.avatarDataUrl || '',
-                accentColor: currentUser.accentColor || '#6366f1'
+                accentColor: currentUser.accentColor || '#6366f1',
+                bannerDataUrl: currentUser.bannerDataUrl || '',
+                privacyMode: currentUser.privacyMode || 'public'
             }));
         } catch(e) {}
         
@@ -3510,6 +3766,53 @@
             reader.readAsDataURL(file);
         };
         input.click();
+    }
+
+    function handleBannerChange() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) {
+                showNotification('Файл слишком большой. Максимум 2 МБ', { type: 'warning' });
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = async function(ev) {
+                const dataUrl = ev.target.result;
+                const bannerImg = document.getElementById('profileBannerImg');
+                const bannerRemoveBtn = document.getElementById('profileBannerRemoveBtn');
+                bannerImg.src = dataUrl;
+                bannerImg.style.display = 'block';
+                if (bannerRemoveBtn) bannerRemoveBtn.style.display = 'flex';
+                if (currentUser) {
+                    currentUser.bannerDataUrl = dataUrl;
+                    saveUserLocally(currentUser, currentUserUid);
+                    if (firebaseInitialized && currentUserUid) {
+                        await saveUserToFirebase(currentUserUid, currentUser);
+                    }
+                    showNotification('Баннер обновлён! 🖼️', { type: 'success', duration: 2500 });
+                }
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    }
+
+    function handleBannerRemove() {
+        if (!currentUser) return;
+        currentUser.bannerDataUrl = '';
+        const bannerImg = document.getElementById('profileBannerImg');
+        const bannerRemoveBtn = document.getElementById('profileBannerRemoveBtn');
+        bannerImg.style.display = 'none';
+        if (bannerRemoveBtn) bannerRemoveBtn.style.display = 'none';
+        saveUserLocally(currentUser, currentUserUid);
+        if (firebaseInitialized && currentUserUid) {
+            saveUserToFirebase(currentUserUid, currentUser);
+        }
+        showNotification('Баннер удалён', { type: 'info', duration: 2000 });
     }
 
     function initProfileColorButtons() {
@@ -4706,11 +5009,15 @@
         const profileAvatarRemoveBtn = document.getElementById('profileAvatarRemoveBtn');
         const profileEmailChangeBtn = document.getElementById('profileEmailChangeBtn');
         const profileResetColorBtn = document.getElementById('profileResetColorBtn');
+        const profileBannerChangeBtn = document.getElementById('profileBannerChangeBtn');
+        const profileBannerRemoveBtn = document.getElementById('profileBannerRemoveBtn');
         if (profileSaveBtn) profileSaveBtn.addEventListener('click', handleSaveProfile);
         if (profileAvatarChangeBtn) profileAvatarChangeBtn.addEventListener('click', handleAvatarChange);
         if (profileAvatarRemoveBtn) profileAvatarRemoveBtn.addEventListener('click', handleAvatarRemove);
         if (profileEmailChangeBtn) profileEmailChangeBtn.addEventListener('click', openEmailChangeModal);
         if (profileResetColorBtn) profileResetColorBtn.addEventListener('click', handleResetColor);
+        if (profileBannerChangeBtn) profileBannerChangeBtn.addEventListener('click', handleBannerChange);
+        if (profileBannerRemoveBtn) profileBannerRemoveBtn.addEventListener('click', handleBannerRemove);
         initProfileColorButtons();
 
         // Таймер беты в профиле
