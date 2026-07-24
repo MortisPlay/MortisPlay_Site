@@ -1777,6 +1777,7 @@
 
     // Проверяет, существует ли пользователь в Firebase Realtime Database
     // Если нет — очищает localStorage профиль (аккаунт удалён из БД)
+    // Также синхронизирует поле badge из Firebase
     async function verifyProfileInFirebase() {
       if (!firebaseInitialized || !currentUserProfile || !currentUserProfile.email) return;
       try {
@@ -1792,6 +1793,23 @@
           localStorage.removeItem('community_username');
           sessionStorage.setItem('profile_logged_out', 'true');
           updateChatAccess();
+        } else {
+          // Пользователь найден — синхронизируем badge из Firebase
+          const uid = Object.keys(users)[0];
+          const fbData = users[uid];
+          if (fbData && fbData.badge !== undefined) {
+            const oldBadge = currentUserProfile.badge;
+            currentUserProfile.badge = fbData.badge;
+            // Если бейдж изменился — сохраняем в localStorage
+            if (oldBadge !== fbData.badge) {
+              localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(currentUserProfile));
+              // Отправляем сигнал в index.html, чтобы там тоже обновилось
+              try {
+                localStorage.setItem('profile_update_signal', JSON.stringify({ timestamp: Date.now() }));
+              } catch(e) {}
+              console.log('[Profile] Бейдж синхронизирован из Firebase:', fbData.badge);
+            }
+          }
         }
       } catch(e) {
         console.warn('[Profile] Ошибка проверки в Firebase:', e);
@@ -2521,8 +2539,12 @@
       startCooldownTimer(input);
 
       // Всегда перезагружаем профиль перед отправкой, чтобы подхватить
-      // свежие аватарку и цвет акцента (даже если username уже известен)
+      // свежие аватарку, цвет акцента и бейдж (даже если username уже известен)
       loadUserProfile();
+      // Синхронизируем бейдж из Firebase (асинхронно, но firebase-and-forget)
+      if (firebaseInitialized && currentUserProfile && currentUserProfile.email) {
+        verifyProfileInFirebase();
+      }
 
       if (!currentUsername) {
         const hasProfile = currentUserProfile && currentUserProfile.nickname;
@@ -2687,7 +2709,8 @@
               // Сравниваем по никнейму — если изменился, обновляем
               if (!currentUserProfile || currentUserProfile.nickname !== parsed.nickname ||
                   currentUserProfile.avatarDataUrl !== parsed.avatarDataUrl ||
-                  currentUserProfile.accentColor !== parsed.accentColor) {
+                  currentUserProfile.accentColor !== parsed.accentColor ||
+                  currentUserProfile.badge !== parsed.badge) {
                 currentUserProfile = parsed;
                 currentUsername = parsed.nickname;
                 localStorage.setItem('community_username', currentUsername);
@@ -2734,6 +2757,30 @@
         
         // Подключаем индикатор "печатает"
         attachTypingListener();
+        
+        // Слушаем изменения бейджа в Firebase (чтобы обновлялось в реальном времени)
+        if (currentUserProfile && currentUserProfile.email) {
+          const db = firebase.database();
+          const badgeRef = db.ref('users').orderByChild('email').equalTo(currentUserProfile.email.toLowerCase());
+          badgeRef.on('value', (snapshot) => {
+            if (!snapshot.exists()) return;
+            snapshot.forEach((child) => {
+              const fbData = child.val();
+              if (fbData && fbData.badge !== undefined) {
+                const oldBadge = currentUserProfile ? currentUserProfile.badge : undefined;
+                if (oldBadge !== fbData.badge) {
+                  console.log('[Badge] Бейдж обновлён в реальном времени:', fbData.badge);
+                  if (currentUserProfile) {
+                    currentUserProfile.badge = fbData.badge;
+                    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(currentUserProfile));
+                    // Перерисовываем сообщения чата, чтобы обновить бейджи
+                    renderChatMessages();
+                  }
+                }
+              }
+            });
+          });
+        }
         
         // Проверяем, существует ли аккаунт в Firebase (если удалён — очищаем localStorage)
         verifyProfileInFirebase();
