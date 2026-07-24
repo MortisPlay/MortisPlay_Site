@@ -3524,6 +3524,12 @@
     window.addEventListener('focus', () => {
         checkPendingCommunityNotification();
     });
+    
+    // Периодически проверяем наличие новых уведомлений (каждые 5 секунд)
+    // Это нужно, чтобы уведомления приходили даже без переключения вкладок
+    setInterval(() => {
+        checkPendingCommunityNotification();
+    }, 5000);
 
     async function showSiteUpdateNotice() {
         const settings = getSiteSettings();

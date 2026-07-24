@@ -2165,7 +2165,7 @@
       const messagesRef = db.ref('chat_messages');
       
       // Флаг: первый загрузка всех сообщений (пропускаем уведомления для них)
-      let isInitialLoad = true;
+      let initialLoadComplete = false;
       let lastKnownTimestamp = 0;
       
       // Слушаем новые сообщения в реальном времени
@@ -2177,15 +2177,15 @@
           chatMessages.push(msg);
           
           // Запоминаем максимальный timestamp при первой загрузке
-          if (isInitialLoad && msg.timestamp > lastKnownTimestamp) {
+          if (!initialLoadComplete && msg.timestamp > lastKnownTimestamp) {
             lastKnownTimestamp = msg.timestamp;
           }
         });
         renderChatMessages();
         
         // После первого рендера снимаем флаг начальной загрузки
-        if (isInitialLoad) {
-          isInitialLoad = false;
+        if (!initialLoadComplete) {
+          initialLoadComplete = true;
         }
       }, (error) => {
         console.error('[Firebase] Ошибка чтения чата:', error);
@@ -2194,11 +2194,12 @@
       // Дополнительно: слушаем только новые добавляемые сообщения (child_added)
       // чтобы отправлять уведомления на index.html и Push-уведомления
       messagesRef.on('child_added', (snapshot) => {
-        // Пропускаем, если ещё идёт начальная загрузка
-        if (isInitialLoad) return;
-        
         const msg = snapshot.val();
         if (!msg || !msg.timestamp) return;
+        
+        // Пропускаем, если ещё идёт начальная загрузка (child_added срабатывает
+        // для каждого существующего сообщения при первой подписке)
+        if (!initialLoadComplete) return;
         
         // Пропускаем, если это сообщение уже было в массиве (старое)
         if (msg.timestamp <= lastKnownTimestamp) return;
@@ -2210,7 +2211,7 @@
         if (msg.username === currentUsername) return;
         
         // Отправляем уведомление на index.html (через localStorage)
-        // и для Push-уведомлений (если пользователь не на community.html)
+        // и Push-уведомление (системное)
         sendCommunityNotification(
           `💬 Новое сообщение в чате от ${msg.username || 'Аноним'}`,
           { type: 'info', duration: 4000, subCategory: 'community-chat' }
@@ -2410,7 +2411,10 @@
           lastMessageText = text;
           // Сбрасываем reply после отправки
           cancelReply();
-          // Уведомление на главную страницу
+          // Показываем всплывающее уведомление, что сообщение отправлено
+          showNotification('✅ Сообщение отправлено', { type: 'success', duration: 2000 });
+          // Уведомление на главную страницу (без локального showNotification и Push —
+          // своё сообщение не нужно дублировать)
           sendCommunityNotification(
             `💬 Новое сообщение в чате от ${currentUsername || 'Аноним'}`,
             { type: 'info', duration: 4000, subCategory: 'community-chat' }
