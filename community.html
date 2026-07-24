@@ -2995,8 +2995,10 @@
       try { sessionStorage.setItem('community_notification_pending', data); } catch(e) {}
       // Дополнительно: сохраняем timestamp, чтобы при фокусе на index.html проверить свежесть
       try { sessionStorage.setItem('community_notification_ts', Date.now().toString()); } catch(e) {}
-      // Показываем уведомление локально на community.html (кроме уведомлений о своих же действиях)
+      // Показываем уведомление локально на community.html
       showNotification(message, { type, duration });
+      // Отправляем Push-уведомление (системное уведомление браузера)
+      sendPushNotification(title, message, { tag: 'community-' + Date.now(), url: '/community.html' });
     }
 
     // === УВЕДОМЛЕНИЯ ===
@@ -3025,6 +3027,88 @@
       document.getElementById('notification').classList.remove('show');
     }
 
+    // === PUSH-УВЕДОМЛЕНИЯ (Notification API) ===
+    let swRegistration = null;
+
+    async function registerServiceWorker() {
+      if (!('serviceWorker' in navigator)) {
+        console.log('[SW] Service Worker не поддерживается');
+        return null;
+      }
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        swRegistration = registration;
+        console.log('[SW] Service Worker зарегистрирован');
+        return registration;
+      } catch (err) {
+        console.warn('[SW] Ошибка регистрации:', err);
+        return null;
+      }
+    }
+
+    async function requestNotificationPermission() {
+      if (!('Notification' in window)) {
+        console.log('[Push] Notification API не поддерживается');
+        return false;
+      }
+      if (Notification.permission === 'granted') return true;
+      if (Notification.permission === 'denied') return false;
+      try {
+        const permission = await Notification.requestPermission();
+        return permission === 'granted';
+      } catch (err) {
+        console.warn('[Push] Ошибка запроса разрешения:', err);
+        return false;
+      }
+    }
+
+    function sendPushNotification(title, body, options = {}) {
+      const settings = getSiteSettings();
+      if (settings.communityNotifications === false) return;
+      if (settings.communityNotifyPush === false) return;
+
+      const { icon = '/assets/photo.jpg', tag = 'community-notification', url = '/community.html', silent = false } = options;
+
+      // 1. Пробуем через Service Worker
+      if (swRegistration && swRegistration.active) {
+        try {
+          swRegistration.active.postMessage({
+            type: 'SHOW_NOTIFICATION',
+            payload: { title, body, icon, tag, data: { url } }
+          });
+          return;
+        } catch (err) {
+          console.warn('[Push] Ошибка SW postMessage:', err);
+        }
+      }
+
+      // 2. Fallback: через Notification API напрямую
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification(title, {
+            body: body,
+            icon: icon,
+            badge: '/images/favicon.ico',
+            tag: tag,
+            data: { url },
+            requireInteraction: true,
+            silent: silent
+          });
+        } catch (err) {
+          console.warn('[Push] Ошибка Notification API:', err);
+        }
+      }
+    }
+
+    function getSiteSettings() {
+      const saved = localStorage.getItem('site-settings');
+      let settings = { communityNotifications: true, communityNotifyPush: true, communityNotifySound: true };
+      try {
+        if (saved) settings = { ...settings, ...JSON.parse(saved) };
+      } catch (e) {}
+      return settings;
+    }
+
     // При загрузке community.html — устанавливаем флаг, что пользователь БЫЛ в зале комьюнити
     // Это нужно, чтобы на index.html не показывались уведомления из чата/мемов/комментариев,
     // если пользователь уже открывал community.html в текущей сессии
@@ -3035,6 +3119,13 @@
       const saved = localStorage.getItem('theme');
       const shouldUseDark = saved === 'dark' || saved === null || saved === undefined;
       document.body.classList.toggle('light-theme', !shouldUseDark);
+
+      // Регистрируем Service Worker для Push-уведомлений
+      registerServiceWorker();
+      // Запрашиваем разрешение на уведомления (не блокируем инициализацию)
+      requestNotificationPermission().then(granted => {
+        if (granted) console.log('[Push] Разрешение на уведомления получено');
+      });
     });
 
     // === АНИМИРОВАННЫЕ ЧАСТИЦЫ НА ФОНЕ ===
