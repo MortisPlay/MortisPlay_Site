@@ -1450,6 +1450,8 @@
             <div style="margin-top: 0.5rem; display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(34, 197, 94, 0.15); color: #22c55e; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">
               <i class="fas fa-circle" style="font-size: 0.5rem;"></i> Аккаунт активен
             </div>
+            <!-- Описание бейджа (синяя галочка / донатер) -->
+            <div id="profileBadgeDescription" style="display: none;"></div>
           </div>
 
           <!-- Настройки профиля -->
@@ -2756,6 +2758,20 @@
                 statusEl.style.display = 'block';
             } else {
                 statusEl.style.display = 'none';
+            }
+            
+            // Описание синей галочки "Официально"
+            const badgeDescEl = document.getElementById('profileBadgeDescription');
+            if (badgeDescEl) {
+                if (isOfficial) {
+                    badgeDescEl.innerHTML = '<div style="margin-top: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(29, 161, 242, 0.1); border: 1px solid rgba(29, 161, 242, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;"><i class="fas fa-check-circle" style="color: #1da1f2; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Официальная синяя галочка</strong> — этот аккаунт подтверждён как официальный представитель Mortis Play. Галочка присваивается только администрацией и означает, что владелец аккаунта является частью команды проекта.</div>';
+                    badgeDescEl.style.display = 'block';
+                } else if (isDonaterUser) {
+                    badgeDescEl.innerHTML = '<div style="margin-top: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;"><i class="fas fa-dollar-sign" style="color: #f59e0b; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Донатер</strong> — этот пользователь поддержал проект финансово. Спасибо за вклад в развитие сообщества! ❤️</div>';
+                    badgeDescEl.style.display = 'block';
+                } else {
+                    badgeDescEl.style.display = 'none';
+                }
             }
             
             document.getElementById('profileEditNickname').value = currentUser.nickname || '';
