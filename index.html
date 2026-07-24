@@ -2421,24 +2421,31 @@
         }, 10 * 60 * 1000);
 
         try {
-            const templateParams = {
-                to_email: email,
-                verification_code: code,
-                nickname: nickname || 'Пользователь',
-                time: new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Vladivostok' })
-            };
+            // Отправляем код через FormSubmit (бесплатно, без настроек)
+            const timeStr = new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Vladivostok' });
+            const formData = new FormData();
+            formData.append('_to', email);
+            formData.append('_subject', '🔐 Код подтверждения — Mortis Play');
+            formData.append('_template', 'table');
+            formData.append('_autoresponse', 'Ваш код подтверждения: ' + code);
+            formData.append('Тип', 'Код подтверждения входа');
+            formData.append('Пользователь', nickname || 'Пользователь');
+            formData.append('Код подтверждения', code);
+            formData.append('Время запроса', timeStr);
 
-            await emailjs.send(
-                'service_htws14a',
-                'template_jw8t4ik',
-                templateParams,
-                '_VoyQ3LeHKQ2XJzgt'
-            );
+            const response = await fetch('https://formsubmit.co/ajax/mortisplay@mail.ru', {
+                method: 'POST',
+                body: formData
+            });
 
-            console.log('[EmailJS] Код подтверждения отправлен на', email);
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            const result = await response.json();
+            if (result.success !== true) throw new Error('FormSubmit error');
+
+            console.log('[Email] Код подтверждения отправлен на', email);
             return true;
         } catch (err) {
-            console.error('[EmailJS] Ошибка отправки кода:', err);
+            console.error('[Email] Ошибка отправки кода:', err);
             return false;
         }
     }
@@ -3122,20 +3129,27 @@
         }, 10 * 60 * 1000);
 
         try {
-            const templateParams = {
-                to_email: newEmail,
-                verification_code: code,
-                nickname: currentUser.nickname || 'Пользователь',
-                new_email: newEmail,
-                time: new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Vladivostok' })
-            };
+            // Отправляем код через FormSubmit
+            const timeStr = new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Vladivostok' });
+            const formData = new FormData();
+            formData.append('_to', newEmail);
+            formData.append('_subject', '🔐 Код подтверждения смены email — Mortis Play');
+            formData.append('_template', 'table');
+            formData.append('_autoresponse', 'Ваш код подтверждения: ' + code);
+            formData.append('Тип', 'Код подтверждения смены email');
+            formData.append('Пользователь', currentUser.nickname || 'Пользователь');
+            formData.append('Новый email', newEmail);
+            formData.append('Код подтверждения', code);
+            formData.append('Время запроса', timeStr);
 
-            await emailjs.send(
-                'service_htws14a',
-                'template_jw8t4ik',
-                templateParams,
-                '_VoyQ3LeHKQ2XJzgt'
-            );
+            const response = await fetch('https://formsubmit.co/ajax/mortisplay@mail.ru', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            const result = await response.json();
+            if (result.success !== true) throw new Error('FormSubmit error');
 
             document.getElementById('emailChangeStep1').style.display = 'none';
             document.getElementById('emailChangeStep2').style.display = 'block';
@@ -3143,7 +3157,7 @@
 
             showNotification('Код отправлен на ' + newEmail + ' 📧', { type: 'success', duration: 4000 });
         } catch (err) {
-            console.error('[EmailJS] Ошибка отправки:', err);
+            console.error('[Email] Ошибка отправки:', err);
             showNotification('Ошибка отправки кода. Попробуйте позже.', { type: 'error' });
         }
     }
