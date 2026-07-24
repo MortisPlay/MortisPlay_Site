@@ -703,6 +703,475 @@
           </div>
         </div>
 
+        <!-- Бета-тест сообщества -->
+        <div class="glass-card p-6 md:p-8 fade-in">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-3 h-8 bg-gradient-to-b from-amber-500 to-orange-500 rounded-full"></div>
+            <h2 class="text-3xl md:text-4xl font-bold flex items-center gap-3">
+              <i class="fas fa-flask text-amber-400"></i>
+              Бета-тест сообщества
+            </h2>
+          </div>
+          
+          <div class="space-y-4">
+            <details class="faq-item">
+              <summary>Что такое бета-тест сообщества?</summary>
+              <div class="answer">
+                <p>Бета-тест — это пробный период работы <strong>«Зала комьюнити»</strong> — нового раздела сайта, где ты можешь:</p>
+                <ul class="list-disc list-inside mt-3 space-y-1 text-gray-300">
+                  <li>💬 Общаться в <strong>общем чате</strong> с другими посетителями</li>
+                  <li>🖼️ Добавлять и смотреть <strong>мемы в галерее</strong></li>
+                  <li>💬 Оставлять <strong>комментарии</strong> к мемам</li>
+                </ul>
+                <div class="mt-3 p-3 bg-gradient-to-r from-amber-900/20 to-orange-900/20 rounded-lg">
+                  <p class="text-sm"><i class="fas fa-clock text-amber-400 mr-1"></i> Бета-тест длится <strong>14 дней</strong> с момента запуска. Таймер обратного отсчёта виден в шапке страницы community.html</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как попасть в Зал комьюнити?</summary>
+              <div class="answer">
+                <p>Перейди на страницу <a href="community.html" class="text-purple-400 hover:text-purple-300">community.html</a> — она доступна из главного меню сайта.</p>
+                <div class="mt-3 space-y-2">
+                  <div class="p-3 bg-gray-800/40 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🔐 Для чата нужна авторизация</p>
+                    <p class="text-xs text-gray-300">Чат доступен только авторизованным пользователям. Нажми «Войти / Регистрация» — откроется профиль на главной странице</p>
+                  </div>
+                  <div class="p-3 bg-gray-800/40 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🖼️ Галерея открыта всем</p>
+                    <p class="text-xs text-gray-300">Смотреть мемы и комментарии можно без авторизации. Добавлять мемы и писать комментарии могут все желающие</p>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как зарегистрироваться и войти в профиль?</summary>
+              <div class="answer">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                  <div class="p-3 bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">📝 Регистрация</p>
+                    <ol class="list-decimal list-inside text-xs text-gray-300 space-y-1">
+                      <li>Нажми на аватарку или кнопку «Профиль» в шапке сайта</li>
+                      <li>Перейди на вкладку «Регистрация»</li>
+                      <li>Введи никнейм, email и пароль</li>
+                      <li>Подтверди email через код из письма</li>
+                      <li>Готово! Ты в профиле</li>
+                    </ol>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🔑 Вход</p>
+                    <ol class="list-decimal list-inside text-xs text-gray-300 space-y-1">
+                      <li>Нажми на аватарку или кнопку «Профиль»</li>
+                      <li>Перейди на вкладку «Вход»</li>
+                      <li>Введи email и пароль</li>
+                      <li>Подтверди вход через код из письма</li>
+                      <li>Готово! Чат разблокирован</li>
+                    </ol>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-400"><i class="fas fa-shield-alt mr-1 text-green-400"></i> Все данные защищены и хранятся в Firebase. Пароль не хранится в открытом виде</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как работает подтверждение по email?</summary>
+              <div class="answer">
+                <p>Для входа и регистрации используется двухэтапная проверка через email:</p>
+                <div class="mt-3 space-y-2">
+                  <div class="p-3 bg-gray-800/40 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">📧 Как это работает:</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>После ввода email и пароля на почту приходит <strong>6-значный код</strong></li>
+                      <li>Введи этот код в появившемся окне на сайте</li>
+                      <li>Код действует <strong>5 минут</strong></li>
+                      <li>Если письмо не пришло — проверь папку «Спам» или нажми «Отправить снова»</li>
+                    </ul>
+                  </div>
+                  <div class="p-3 bg-amber-900/20 rounded-lg">
+                    <p class="text-xs"><i class="fas fa-exclamation-triangle text-amber-400 mr-1"></i> Если письмо не приходит долго — попробуй другой email или напиши в Telegram</p>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как работает общий чат?</summary>
+              <div class="answer">
+                <p>Чат работает в реальном времени через Firebase Realtime Database:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                  <div class="p-3 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">💬 Возможности чата:</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Отправка сообщений в реальном времени</li>
+                      <li>Ответы на сообщения (reply) — наведи на сообщение и нажми «Ответить»</li>
+                      <li>Автоматическая подгрузка аватарки и цвета из профиля</li>
+                      <li>Защита от спама: cooldown 3 секунды, макс. 500 символов</li>
+                      <li>Счётчик онлайн-пользователей</li>
+                    </ul>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">👤 Кто видит сообщения:</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Все сообщения видны всем посетителям сайта</li>
+                      <li>Рядом с сообщением отображается никнейм, аватар и время</li>
+                      <li>Официальные пользователи (Mortis Play) отмечены синей галочкой</li>
+                      <li>Донатеры отмечены значком $</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как отвечать на сообщения в чате?</summary>
+              <div class="answer">
+                <p>В чате есть функция ответа (reply):</p>
+                <ol class="list-decimal list-inside mt-2 space-y-1 text-gray-300">
+                  <li>Наведи курсор на любое сообщение</li>
+                  <li>Рядом с временем появится кнопка <i class="fas fa-reply text-purple-400"></i></li>
+                  <li>Нажми её — над полем ввода появится панель «Ответ на: Имя: текст...»</li>
+                  <li>Напиши свой ответ и отправь</li>
+                  <li>В сообщении будет показано, на кого и какое сообщение ты ответил</li>
+                </ol>
+                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                  <p class="text-xs text-gray-400"><i class="fas fa-times-circle mr-1 text-red-400"></i> Чтобы отменить reply, нажми крестик на панели ответа</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как добавить мем в галерею?</summary>
+              <div class="answer">
+                <p>Добавить мем может любой желающий — авторизация не требуется:</p>
+                <ol class="list-decimal list-inside mt-2 space-y-1 text-gray-300">
+                  <li>В разделе «Галерея мемов» заполни поля «Ваше имя» и «Название мема»</li>
+                  <li>Выбери файл (изображение, GIF или видео)</li>
+                  <li>Нажми «Загрузить мем»</li>
+                  <li>Мем появится в галерее после загрузки в Firebase</li>
+                </ol>
+                <div class="mt-3 p-3 bg-amber-900/20 rounded-lg">
+                  <p class="text-sm"><i class="fas fa-info-circle text-amber-400 mr-1"></i> Лимиты: фото/GIF — до 5 МБ, видео — до 100 МБ</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как комментировать мемы?</summary>
+              <div class="answer">
+                <p>Комментарии доступны всем — авторизация не нужна:</p>
+                <ol class="list-decimal list-inside mt-2 space-y-1 text-gray-300">
+                  <li>Нажми на любой мем в галерее — откроется модальное окно</li>
+                  <li>Под изображением находится блок комментариев</li>
+                  <li>Напиши текст в поле «Написать комментарий...» и нажми Enter или кнопку отправки</li>
+                  <li>Комментарий появится сразу у всех</li>
+                </ol>
+                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                  <p class="text-sm"><i class="fas fa-trash-alt text-red-400 mr-1"></i> Свой комментарий можно удалить — наведи на него и нажми на корзину. Администратор может удалять любые комментарии</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как работают уведомления из Зала комьюнити?</summary>
+              <div class="answer">
+                <p>Когда кто-то пишет в чат, добавляет мем или оставляет комментарий — ты можешь получить уведомление:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                  <div class="p-3 bg-gradient-to-br from-indigo-900/20 to-cyan-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🔔 Типы уведомлений:</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>💬 Новое сообщение в чате</li>
+                      <li>🖼️ Новый мем в галерее</li>
+                      <li>💬 Новый комментарий к мему</li>
+                    </ul>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">⚙️ Настройка:</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Открой настройки сайта (шестерёнка в шапке)</li>
+                      <li>Найди блок «Уведомления Зала комьюнити»</li>
+                      <li>Включи/выключи: чат, мемы, комментарии, звук, Push-уведомления</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                  <p class="text-xs text-gray-400"><i class="fas fa-bell mr-1 text-purple-400"></i> Push-уведомления приходят на телефон/ПК, даже если сайт закрыт. Для их работы нужно разрешить уведомления в браузере</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Что такое Push-уведомления и как их включить?</summary>
+              <div class="answer">
+                <p>Push-уведомления — это всплывающие уведомления на твоём телефоне или компьютере, которые приходят даже когда сайт не открыт.</p>
+                <div class="mt-3 space-y-2">
+                  <div class="p-3 bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">✅ Как включить:</p>
+                    <ol class="list-decimal list-inside text-xs text-gray-300 space-y-1">
+                      <li>Открой настройки сайта (шестерёнка в шапке)</li>
+                      <li>В блоке «Уведомления Зала комьюнити» включи «Push-уведомления»</li>
+                      <li>Браузер спросит разрешение — нажми «Разрешить»</li>
+                      <li>Готово! Теперь уведомления будут приходить на устройство</li>
+                    </ol>
+                  </div>
+                  <div class="p-3 bg-amber-900/20 rounded-lg">
+                    <p class="text-xs"><i class="fas fa-exclamation-triangle text-amber-400 mr-1"></i> Если ранее ты запретил уведомления — нужно вручную разрешить их в настройках браузера для этого сайта</p>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Почему я не вижу чат, хотя зарегистрировался?</summary>
+              <div class="answer">
+                <p>Если ты зарегистрировался на главной странице, а в community.html чат всё ещё не отображается — попробуй следующее:</p>
+                <ol class="list-decimal list-inside mt-2 space-y-1 text-gray-300">
+                  <li><strong>Обнови страницу</strong> community.html (F5)</li>
+                  <li><strong>Переключись на вкладку</strong> с community.html — профиль подхватится автоматически</li>
+                  <li>Если ты регистрировался в другой вкладке — просто вернись на вкладку с community.html</li>
+                  <li>Проверь, что ты не вышел из аккаунта (кнопка «Выйти» в профиле)</li>
+                </ol>
+                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                  <p class="text-xs text-gray-400"><i class="fas fa-sync mr-1 text-purple-400"></i> Синхронизация профиля между вкладками происходит автоматически каждые 3 секунды и при фокусе вкладки</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как работает онлайн-счётчик?</summary>
+              <div class="answer">
+                <p>Счётчик показывает, сколько человек сейчас на странице community.html:</p>
+                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-300">
+                  <li>Каждые 10 секунд отправляется «сигнал» (heartbeat) в Firebase</li>
+                  <li>Если сигнала нет больше 15 секунд — пользователь считается офлайн</li>
+                  <li>При закрытии вкладки сигнал сразу удаляется</li>
+                  <li>Счётчик обновляется в реальном времени</li>
+                </ul>
+                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                  <p class="text-xs text-gray-400"><i class="fas fa-users mr-1 text-green-400"></i> Зелёное число рядом с надписью «Онлайн:» — это количество активных пользователей прямо сейчас</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Что означают синяя галочка и значок $ в чате?</summary>
+              <div class="answer">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  <div class="p-3 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1 flex items-center gap-1">🔵 Синяя галочка «Офф.»</p>
+                    <p class="text-xs text-gray-300">Официальный пользователь — сам Mortis Play. Такие сообщения отмечены синим значком с галочкой</p>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-yellow-900/20 to-orange-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1 flex items-center gap-1">💰 Значок «Дон.»</p>
+                    <p class="text-xs text-gray-300">Донатер — пользователь, который поддержал проект. Отмечен золотым значком с долларом</p>
+                  </div>
+                </div>
+                <p class="mt-3 text-sm text-gray-400">Статусы присваиваются автоматически на основе данных профиля</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как пожаловаться на нарушение в чате или галерее?</summary>
+              <div class="answer">
+                <p>Если ты заметил спам, оскорбления или неуместный контент:</p>
+                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-300">
+                  <li>Напиши в Telegram — <a href="https://t.me/agentplay_bot" target="_blank" class="text-purple-400 hover:text-purple-300">@agentplay_bot</a></li>
+                  <li>Или напиши на email: <a href="mailto:mortisplay@mail.ru" class="text-purple-400 hover:text-purple-300">mortisplay@mail.ru</a></li>
+                  <li>Укажи, что именно нарушает правила и где это находится</li>
+                </ul>
+                <div class="mt-3 p-3 bg-amber-900/20 rounded-lg">
+                  <p class="text-xs"><i class="fas fa-gavel text-amber-400 mr-1"></i> Администрация оставляет за собой право удалять любой контент без предупреждения</p>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <!-- Профиль и авторизация -->
+        <div class="glass-card p-6 md:p-8 fade-in">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-3 h-8 bg-gradient-to-b from-green-500 to-emerald-500 rounded-full"></div>
+            <h2 class="text-3xl md:text-4xl font-bold flex items-center gap-3">
+              <i class="fas fa-user-circle text-green-400"></i>
+              Профиль и авторизация
+            </h2>
+          </div>
+          
+          <div class="space-y-4">
+            <details class="faq-item">
+              <summary>Зачем нужен профиль на сайте?</summary>
+              <div class="answer">
+                <p>Профиль даёт доступ к дополнительным возможностям:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                  <div class="p-3 bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🔐 Что открывается:</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Общий чат в Зале комьюнити</li>
+                      <li>Персональный никнейм и аватар</li>
+                      <li>Цвет акцента в сообщениях</li>
+                      <li>Возможность удалять свои комментарии</li>
+                    </ul>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🎨 Кастомизация:</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Аватарка (можно загрузить свою)</li>
+                      <li>Цвет акцента для ника в чате</li>
+                      <li>Настройка приватности (показывать ли аватар в чате)</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как изменить никнейм или аватар?</summary>
+              <div class="answer">
+                <p>После входа в профиль:</p>
+                <ol class="list-decimal list-inside mt-2 space-y-1 text-gray-300">
+                  <li>Открой профиль (нажми на аватарку в шапке)</li>
+                  <li>В блоке «Мой профиль» ты увидишь свой никнейм, email и аватар</li>
+                  <li>Нажми на аватарку, чтобы загрузить новую (до 2 МБ)</li>
+                  <li>Выбери цвет акцента из предложенных</li>
+                  <li>Нажми «Сохранить изменения»</li>
+                </ol>
+                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                  <p class="text-xs text-gray-400"><i class="fas fa-info-circle mr-1 text-blue-400"></i> Никнейм и аватар автоматически подтягиваются в чат community.html</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как сменить email в профиле?</summary>
+              <div class="answer">
+                <p>Смена email происходит с подтверждением нового адреса:</p>
+                <ol class="list-decimal list-inside mt-2 space-y-1 text-gray-300">
+                  <li>Открой профиль и нажми «Сменить email»</li>
+                  <li>Введи новый email</li>
+                  <li>На новый email придёт 6-значный код подтверждения</li>
+                  <li>Введи код — email изменится</li>
+                </ol>
+                <div class="mt-3 p-3 bg-amber-900/20 rounded-lg">
+                  <p class="text-xs"><i class="fas fa-exclamation-triangle text-amber-400 mr-1"></i> Старый email не используется для подтверждения — код приходит только на новый</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как выйти из аккаунта?</summary>
+              <div class="answer">
+                <p>Выйти из профиля можно в два клика:</p>
+                <ol class="list-decimal list-inside mt-2 space-y-1 text-gray-300">
+                  <li>Открой профиль (аватарка в шапке сайта)</li>
+                  <li>В блоке «Мой профиль» нажми кнопку «Выйти»</li>
+                  <li>Профиль будет очищен, чат в community.html станет недоступен</li>
+                </ol>
+                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                  <p class="text-xs text-gray-400"><i class="fas fa-history mr-1 text-purple-400"></i> Если ты вышел из аккаунта в одной вкладке, в другой вкладке это подхватится автоматически в течение 3 секунд</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Что такое «Запомнить меня» при входе?</summary>
+              <div class="answer">
+                <p>Если поставить галочку «Запомнить меня» при входе — твой никнейм сохранится в браузере и будет автоматически подставляться при следующем открытии формы входа.</p>
+                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                  <p class="text-xs text-gray-400"><i class="fas fa-shield-alt mr-1 text-green-400"></i> Это безопасно — сохраняется только никнейм, не пароль</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как работает приватность аватара в чате?</summary>
+              <div class="answer">
+                <p>В настройках профиля есть переключатель «Показывать аватар в чате»:</p>
+                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-300">
+                  <li><strong>Включено</strong> — в чате рядом с твоими сообщениями будет отображаться твоя аватарка</li>
+                  <li><strong>Выключено</strong> — вместо аватарки будет показываться первая буква никнейма на цветном фоне</li>
+                </ul>
+                <p class="mt-2 text-sm text-gray-400">Настройка применяется сразу после сохранения профиля</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Можно ли зарегистрироваться без email?</summary>
+              <div class="answer">
+                <p>Нет, email обязателен — он используется для:</p>
+                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-300">
+                  <li>📧 Подтверждения входа/регистрации через код</li>
+                  <li>🔐 Восстановления доступа к аккаунту</li>
+                  <li>🆔 Уникальной идентификации пользователя</li>
+                </ul>
+                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                  <p class="text-xs text-gray-400"><i class="fas fa-envelope mr-1 text-purple-400"></i> Email нигде не публикуется и не виден другим пользователям</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Что делать, если не приходит код подтверждения?</summary>
+              <div class="answer">
+                <div class="space-y-2">
+                  <div class="p-3 bg-gradient-to-br from-amber-900/20 to-orange-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🔍 Проверь:</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Папку «Спам» или «Промоакции» — письмо могло попасть туда</li>
+                      <li>Правильно ли введён email</li>
+                      <li>Не истекло ли время (код действует 5 минут)</li>
+                    </ul>
+                  </div>
+                  <div class="p-3 bg-gray-800/40 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🔄 Что делать:</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Нажми «Отправить снова» — новый код придёт на почту</li>
+                      <li>Попробуй другой email, если проблема повторяется</li>
+                      <li>Напиши в Telegram — <a href="https://t.me/agentplay_bot" target="_blank" class="text-purple-400 hover:text-purple-300">@agentplay_bot</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Мои данные в безопасности?</summary>
+              <div class="answer">
+                <p>Да, мы серьёзно относимся к безопасности:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                  <div class="p-3 bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🔒 Что защищено:</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Пароль хранится в зашифрованном виде (Firebase Auth)</li>
+                      <li>Email используется только для входа и подтверждений</li>
+                      <li>Данные профиля хранятся в Firebase Realtime Database</li>
+                      <li>Код подтверждения действует 5 минут и одноразовый</li>
+                    </ul>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-blue-900/20 to-cyan-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">👁️ Кто видит данные:</p>
+                    <ul class="list-disc list-inside text-xs text-gray-300 space-y-1">
+                      <li>Никнейм и аватар — видят все в чате</li>
+                      <li>Email — не публикуется и не виден другим</li>
+                      <li>Пароль — известен только тебе</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Можно ли удалить свой аккаунт?</summary>
+              <div class="answer">
+                <p>На данный момент удаление аккаунта через интерфейс не предусмотрено. Если ты хочешь удалить свои данные — напиши в Telegram <a href="https://t.me/agentplay_bot" target="_blank" class="text-purple-400 hover:text-purple-300">@agentplay_bot</a> с запросом на удаление.</p>
+                <div class="mt-3 p-3 bg-gray-800/40 rounded-lg">
+                  <p class="text-xs text-gray-400"><i class="fas fa-info-circle mr-1 text-blue-400"></i> При удалении аккаунта будут удалены: профиль, никнейм, аватар, email. Сообщения в чате и мемы в галерее останутся (без привязки к профилю)</p>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+
         <!-- Video Section (UPDATED with new info) -->
         <div class="glass-card p-6 md:p-8 fade-in">
           <div class="flex items-center gap-3 mb-8">

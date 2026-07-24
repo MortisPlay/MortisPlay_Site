@@ -1279,6 +1279,40 @@
         <div class="rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
           <label class="flex items-center justify-between">
             <div>
+              <div class="font-medium">
+                <i class="fas fa-users" style="color: var(--primary);"></i>
+                Уведомления из Зала комьюнити
+              </div>
+              <div class="text-sm mt-1" style="color: var(--text-secondary);">События в чате, мемах и комментариях</div>
+            </div>
+            <input id="communityNotificationsToggle" type="checkbox" class="w-5 h-5 accent-indigo-500" checked>
+          </label>
+          <div class="mt-3 space-y-2 pl-1" id="communitySubSettings">
+            <label class="flex items-center justify-between rounded-lg px-3 py-2 text-sm" style="background: rgba(255,255,255,0.05);">
+              <span><i class="fas fa-comment-dots" style="color: var(--primary);"></i> Новые сообщения в чате</span>
+              <input id="communityNotifyChat" type="checkbox" class="w-4 h-4 accent-indigo-500" checked>
+            </label>
+            <label class="flex items-center justify-between rounded-lg px-3 py-2 text-sm" style="background: rgba(255,255,255,0.05);">
+              <span><i class="fas fa-image" style="color: #22c55e;"></i> Новые мемы в галерее</span>
+              <input id="communityNotifyMemes" type="checkbox" class="w-4 h-4 accent-indigo-500" checked>
+            </label>
+            <label class="flex items-center justify-between rounded-lg px-3 py-2 text-sm" style="background: rgba(255,255,255,0.05);">
+              <span><i class="fas fa-comments" style="color: #f59e0b;"></i> Новые комментарии к мемам</span>
+              <input id="communityNotifyComments" type="checkbox" class="w-4 h-4 accent-indigo-500" checked>
+            </label>
+            <label class="flex items-center justify-between rounded-lg px-3 py-2 text-sm" style="background: rgba(255,255,255,0.05);">
+              <span><i class="fas fa-bell" style="color: #ec4899;"></i> Push-уведомления (на телефон/ПК)</span>
+              <input id="communityNotifyPush" type="checkbox" class="w-4 h-4 accent-indigo-500" checked>
+            </label>
+            <label class="flex items-center justify-between rounded-lg px-3 py-2 text-sm" style="background: rgba(255,255,255,0.05);">
+              <span><i class="fas fa-volume-up" style="color: #8b5cf6;"></i> Звук уведомления</span>
+              <input id="communityNotifySound" type="checkbox" class="w-4 h-4 accent-indigo-500" checked>
+            </label>
+          </div>
+        </div>
+        <div class="rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
+          <label class="flex items-center justify-between">
+            <div>
               <div class="font-medium">Персональные уведомления</div>
               <div class="text-sm mt-1" style="color: var(--text-secondary);">Более точные напоминания и подборки.</div>
             </div>
@@ -1350,9 +1384,6 @@
             </div>
             <button id="profileLoginBtn" class="btn-primary w-full" style="margin-bottom: 0.75rem;">
               <i class="fas fa-sign-in-alt"></i> Войти
-            </button>
-            <button id="profileDiagnosticBtn" type="button" style="font-size: 0.75rem; color: var(--text-secondary); background: none; border: none; cursor: pointer; margin-bottom: 0.5rem; width: 100%; text-align: center; padding: 0.25rem; text-decoration: underline; opacity: 0.6;" onclick="diagnoseProfile()">
-              🔍 Диагностика
             </button>
             <p style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">
               Нет аккаунта? <a href="#" id="profileSwitchToRegister" style="color: var(--primary); font-weight: 600;">Зарегистрироваться</a>
@@ -2044,6 +2075,11 @@
         if (category === 'channel-video' && settings.notifyNewVideos === false) return false;
         if (category === 'site-update' && settings.personalNotifications === false) return false;
         if (category === 'site-update' && settings.notifySiteUpdates === false) return false;
+        if (category === 'community' && settings.communityNotifications === false) return false;
+        // Под-категории уведомлений из Зала комьюнити
+        if (category === 'community-chat' && settings.communityNotifyChat === false) return false;
+        if (category === 'community-memes' && settings.communityNotifyMemes === false) return false;
+        if (category === 'community-comments' && settings.communityNotifyComments === false) return false;
         return true;
     }
 
@@ -2082,6 +2118,109 @@
     
     function hideNotification() { document.getElementById('notification').classList.remove('show'); }
 
+    // === SERVICE WORKER И PUSH-УВЕДОМЛЕНИЯ ===
+    let swRegistration = null;
+
+    async function registerServiceWorker() {
+        if (!('serviceWorker' in navigator)) {
+            console.log('[SW] Service Worker не поддерживается');
+            return null;
+        }
+        try {
+            const registration = await navigator.serviceWorker.register('/sw.js');
+            swRegistration = registration;
+            console.log('[SW] Service Worker зарегистрирован');
+            return registration;
+        } catch (err) {
+            console.warn('[SW] Ошибка регистрации:', err);
+            return null;
+        }
+    }
+
+    async function requestNotificationPermission() {
+        if (!('Notification' in window)) {
+            console.log('[Push] Notification API не поддерживается');
+            return false;
+        }
+        if (Notification.permission === 'granted') return true;
+        if (Notification.permission === 'denied') return false;
+        
+        try {
+            const permission = await Notification.requestPermission();
+            return permission === 'granted';
+        } catch (err) {
+            console.warn('[Push] Ошибка запроса разрешения:', err);
+            return false;
+        }
+    }
+
+    function sendPushNotification(title, body, options = {}) {
+        const settings = getSiteSettings();
+        if (settings.communityNotifications === false) return;
+        if (settings.communityNotifyPush === false) return; // Push-уведомления отключены в настройках
+        
+        const { icon = '/assets/photo.jpg', tag = 'community-notification', url = '/community.html', silent = false } = options;
+        
+        // 1. Пробуем через Service Worker (работает даже когда вкладка не активна)
+        if (swRegistration && swRegistration.active) {
+            try {
+                swRegistration.active.postMessage({
+                    type: 'SHOW_NOTIFICATION',
+                    payload: { title, body, icon, tag, data: { url } }
+                });
+                return;
+            } catch (err) {
+                console.warn('[Push] Ошибка SW postMessage:', err);
+            }
+        }
+        
+        // 2. Fallback: через Notification API напрямую
+        if ('Notification' in window && Notification.permission === 'granted') {
+            try {
+                new Notification(title, {
+                    body: body,
+                    icon: icon,
+                    badge: '/images/favicon.ico',
+                    tag: tag,
+                    data: { url },
+                    requireInteraction: true,
+                    silent: silent
+                });
+            } catch (err) {
+                console.warn('[Push] Ошибка Notification API:', err);
+            }
+        }
+    }
+
+    // Воспроизведение звука уведомления
+    function playNotificationSound() {
+        const settings = getSiteSettings();
+        if (settings.communityNotifySound === false) return;
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            // Приятный двухтональный звук
+            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+            oscillator.frequency.setValueAtTime(1100, audioCtx.currentTime + 0.1);
+            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.3);
+        } catch (err) {
+            // AudioContext может быть заблокирован браузером — игнорируем
+        }
+    }
+
+    // Слушаем клики по уведомлениям (для fallback через Notification API)
+    document.addEventListener('click', (e) => {
+        // Обработка будет в SW, но на случай если SW не активен
+    });
+
     function openSettingsModal() {
         const modal = document.getElementById('settingsModal');
         modal.classList.add('show');
@@ -2108,63 +2247,11 @@
         document.body.style.overflow = '';
     }
     
-    // === ПРОФИЛЬ (Регистрация / Вход) ===
+    // === ПРОФИЛЬ (Регистрация / Вход) — Firebase + Email подтверждение ===
     const PROFILE_STORAGE_KEY = 'site_user_account';
+    const PROFILE_UID_KEY = 'site_user_uid';
     let currentUser = null;
-
-    function loadUserAccount() {
-        try {
-            // Проверяем флаг выхода из аккаунта
-            const loggedOut = sessionStorage.getItem('profile_logged_out');
-            if (loggedOut === 'true') {
-                console.log('[loadUserAccount] Пользователь вышел из аккаунта — пропускаем загрузку');
-                return;
-            }
-            
-            // Сначала пробуем localStorage
-            let stored = localStorage.getItem(PROFILE_STORAGE_KEY);
-            
-            // Если нет — пробуем sessionStorage (fallback)
-            if (!stored) {
-                stored = sessionStorage.getItem(PROFILE_STORAGE_KEY);
-                if (stored) {
-                    console.log('[loadUserAccount] Восстановлено из sessionStorage');
-                    // Пытаемся восстановить в localStorage
-                    try {
-                        localStorage.setItem(PROFILE_STORAGE_KEY, stored);
-                    } catch(e) {
-                        console.warn('[loadUserAccount] Не удалось восстановить в localStorage:', e.message);
-                    }
-                }
-            }
-            
-            if (stored) {
-                const data = JSON.parse(stored);
-                if (data && data.nickname && data.email) {
-                    // Проверка целостности данных (защита от подмены)
-                    if (data.integrityHash) {
-                        const calculatedHash = calculateIntegrityHash(data);
-                        if (calculatedHash !== data.integrityHash) {
-                            console.error('[loadUserAccount] ❌ Нарушение целостности данных! Профиль мог быть изменён.');
-                            showNotification('Обнаружено нарушение целостности профиля. Данные сброшены.', { type: 'warning', duration: 5000 });
-                            localStorage.removeItem(PROFILE_STORAGE_KEY);
-                            sessionStorage.removeItem(PROFILE_STORAGE_KEY);
-                            return;
-                        }
-                        console.log('[loadUserAccount] ✅ Целостность данных подтверждена');
-                    }
-                    
-                    currentUser = data;
-                    console.log('[loadUserAccount] Профиль загружен:', data.nickname);
-                    return;
-                }
-            }
-            
-            console.log('[loadUserAccount] Профиль не найден');
-        } catch(e) {
-            console.error('[loadUserAccount] Ошибка:', e);
-        }
-    }
+    let currentUserUid = null;
 
     // Хеширование пароля с помощью SHA-256
     async function hashPassword(password) {
@@ -2175,33 +2262,335 @@
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // Вычисление хеша целостности данных профиля
-    function calculateIntegrityHash(data) {
-        const integrityData = {
-            nickname: data.nickname,
-            email: data.email,
-            password: data.password,
-            status: data.status || '',
-            bio: data.bio || '',
-            accentColor: data.accentColor || '#6366f1',
-            privacyShowAvatar: data.privacyShowAvatar !== false
-        };
-        const json = JSON.stringify(integrityData) + 'MortisPlay_Integrity_2026';
-        let hash = 0;
-        for (let i = 0; i < json.length; i++) {
-            const char = json.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash;
+    // === КОДОВОЕ СЛОВО для mortisplay@mail.ru ===
+    const SECRET_CODE_WORD = 'Банан'; // Секретное кодовое слово для защиты аккаунта
+    const PROTECTED_EMAIL = 'mortisplay@mail.ru';
+
+    // === ЗАГРУЗКА ПОЛЬЗОВАТЕЛЯ ИЗ FIREBASE ПО UID ===
+    async function loadUserAccount() {
+        try {
+            // Проверяем флаг выхода из аккаунта
+            const loggedOut = sessionStorage.getItem('profile_logged_out');
+            if (loggedOut === 'true') {
+                console.log('[loadUserAccount] Пользователь вышел из аккаунта — пропускаем загрузку');
+                return;
+            }
+
+            // Сначала пробуем загрузить по UID из Firebase
+            const savedUid = localStorage.getItem(PROFILE_UID_KEY);
+            if (savedUid && firebaseInitialized) {
+                try {
+                    const db = firebase.database();
+                    const snapshot = await db.ref('users/' + savedUid).once('value');
+                    const userData = snapshot.val();
+                    if (userData && userData.nickname && userData.email) {
+                        userData.uid = savedUid;
+                        currentUser = userData;
+                        currentUserUid = savedUid;
+                        console.log('[loadUserAccount] Загружен из Firebase по UID:', savedUid, userData.nickname);
+                        // Синхронизируем в localStorage для быстрого доступа
+                        localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(userData));
+                        return;
+                    } else {
+                        // Пользователь удалён из БД — очищаем
+                        console.warn('[loadUserAccount] Пользователь не найден в Firebase, очищаем UID');
+                        localStorage.removeItem(PROFILE_UID_KEY);
+                        localStorage.removeItem(PROFILE_STORAGE_KEY);
+                    }
+                } catch(e) {
+                    console.warn('[loadUserAccount] Ошибка загрузки из Firebase:', e);
+                }
+            }
+
+            // Fallback: загружаем из localStorage (для обратной совместимости)
+            let stored = localStorage.getItem(PROFILE_STORAGE_KEY);
+            if (!stored) {
+                stored = sessionStorage.getItem(PROFILE_STORAGE_KEY);
+                if (stored) {
+                    try { localStorage.setItem(PROFILE_STORAGE_KEY, stored); } catch(e) {}
+                }
+            }
+            
+            if (stored) {
+                const data = JSON.parse(stored);
+                if (data && data.nickname && data.email) {
+                    currentUser = data;
+                    currentUserUid = data.uid || null;
+                    console.log('[loadUserAccount] Загружен из localStorage:', data.nickname);
+                    return;
+                }
+            }
+            
+            console.log('[loadUserAccount] Профиль не найден');
+        } catch(e) {
+            console.error('[loadUserAccount] Ошибка:', e);
         }
-        return 'hash_' + Math.abs(hash).toString(36);
     }
 
-    // Список официальных пользователей (только Mortis Play — синяя галочка)
+    // === СОХРАНЕНИЕ ПОЛЬЗОВАТЕЛЯ В FIREBASE ===
+    async function saveUserToFirebase(uid, userData) {
+        if (!firebaseInitialized) return false;
+        try {
+            const db = firebase.database();
+            // Сохраняем только нужные поля (без лишних временных данных)
+            const firebaseData = {
+                nickname: userData.nickname,
+                email: userData.email,
+                password: userData.password,
+                status: userData.status || '',
+                bio: userData.bio || '',
+                accentColor: userData.accentColor || '#6366f1',
+                avatarDataUrl: userData.avatarDataUrl || '',
+                privacyShowAvatar: userData.privacyShowAvatar !== false,
+                registeredAt: userData.registeredAt || Date.now()
+            };
+            await db.ref('users/' + uid).set(firebaseData);
+            console.log('[Firebase] Пользователь сохранён:', uid);
+            return true;
+        } catch(e) {
+            console.error('[Firebase] Ошибка сохранения пользователя:', e);
+            return false;
+        }
+    }
+
+    // === ГЕНЕРАЦИЯ УНИКАЛЬНОГО UID ===
+    function generateUserUid() {
+        return 'user_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+    }
+
+    // === СОХРАНЕНИЕ В ЛОКАЛЬНОЕ ХРАНИЛИЩЕ ===
+    function saveUserLocally(userData, uid) {
+        const data = { ...userData, uid: uid };
+        const json = JSON.stringify(data);
+        localStorage.setItem(PROFILE_STORAGE_KEY, json);
+        localStorage.setItem(PROFILE_UID_KEY, uid);
+        sessionStorage.setItem(PROFILE_STORAGE_KEY, json);
+        currentUser = data;
+        currentUserUid = uid;
+    }
+
+    function clearUserAccount() {
+        localStorage.removeItem(PROFILE_STORAGE_KEY);
+        localStorage.removeItem(PROFILE_UID_KEY);
+        sessionStorage.removeItem(PROFILE_STORAGE_KEY);
+        currentUser = null;
+        currentUserUid = null;
+    }
+
+    // === ОТПРАВКА КОДА ПОДТВЕРЖДЕНИЯ НА EMAIL ===
+    let pendingLoginCode = null;
+    let pendingLoginEmail = null;
+    let pendingLoginData = null; // данные пользователя после подтверждения
+
+    async function sendLoginCode(email, nickname) {
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        pendingLoginCode = code;
+        pendingLoginEmail = email;
+
+        // Авто-очистка через 10 минут
+        setTimeout(() => {
+            if (pendingLoginCode === code) {
+                pendingLoginCode = null;
+                pendingLoginEmail = null;
+                pendingLoginData = null;
+            }
+        }, 10 * 60 * 1000);
+
+        try {
+            const templateParams = {
+                to_email: email,
+                verification_code: code,
+                nickname: nickname || 'Пользователь',
+                time: new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Vladivostok' })
+            };
+
+            await emailjs.send(
+                'service_htws14a',
+                'template_jw8t4ik',
+                templateParams,
+                '_VoyQ3LeHKQ2XJzgt'
+            );
+
+            console.log('[EmailJS] Код подтверждения отправлен на', email);
+            return true;
+        } catch (err) {
+            console.error('[EmailJS] Ошибка отправки кода:', err);
+            return false;
+        }
+    }
+
+    // === ПОКАЗ МОДАЛКИ ПОДТВЕРЖДЕНИЯ ВХОДА ===
+    function showLoginConfirmModal(email, onConfirm) {
+        // Создаём модалку динамически
+        const existing = document.getElementById('loginConfirmModal');
+        if (existing) existing.remove();
+
+        const modal = document.createElement('div');
+        modal.id = 'loginConfirmModal';
+        modal.className = 'modal-backdrop show';
+        modal.innerHTML = `
+            <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 420px;">
+                <div class="text-center mb-4">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📧</div>
+                    <h3 style="font-size: 1.2rem; font-weight: 700;">Подтверждение входа</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.3rem;">
+                        Код отправлен на <strong style="color: var(--primary);">${escapeHtml(email)}</strong>
+                    </p>
+                    <p style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 0.2rem;">
+                        Введите 6-значный код из письма
+                    </p>
+                </div>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <input type="text" id="loginConfirmCode" class="profile-input" placeholder="000000" maxlength="6" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; font-family: 'Courier New', monospace; max-width: 200px; margin: 0 auto;" />
+                </div>
+                <div id="loginConfirmError" style="color: #ef4444; font-size: 0.8rem; text-align: center; margin-bottom: 0.5rem; display: none;"></div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button id="loginConfirmBtn" class="btn-primary" style="flex: 1;">
+                        <i class="fas fa-check"></i> Подтвердить
+                    </button>
+                    <button id="loginConfirmCancelBtn" class="btn-primary" style="flex: 0 0 auto; background: linear-gradient(135deg, #6b7280, #4b5563);">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div style="text-align: center; margin-top: 0.75rem;">
+                    <button id="loginConfirmResendBtn" style="background: none; border: none; color: var(--primary); cursor: pointer; font-size: 0.8rem; text-decoration: underline;">
+                        <i class="fas fa-redo"></i> Отправить код повторно
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
+
+        // Фокус на поле ввода
+        setTimeout(() => {
+            const input = document.getElementById('loginConfirmCode');
+            if (input) input.focus();
+        }, 100);
+
+        // Обработчики
+        document.getElementById('loginConfirmBtn').addEventListener('click', () => {
+            const code = document.getElementById('loginConfirmCode').value.trim();
+            const errorEl = document.getElementById('loginConfirmError');
+            if (!code || code.length !== 6) {
+                errorEl.textContent = 'Введите 6-значный код из письма';
+                errorEl.style.display = 'block';
+                return;
+            }
+            if (code !== pendingLoginCode) {
+                errorEl.textContent = 'Неверный код. Проверьте письмо.';
+                errorEl.style.display = 'block';
+                return;
+            }
+            errorEl.style.display = 'none';
+            modal.remove();
+            document.body.style.overflow = '';
+            pendingLoginCode = null;
+            pendingLoginEmail = null;
+            if (onConfirm) onConfirm();
+        });
+
+        document.getElementById('loginConfirmCancelBtn').addEventListener('click', () => {
+            modal.remove();
+            document.body.style.overflow = '';
+            pendingLoginCode = null;
+            pendingLoginEmail = null;
+            pendingLoginData = null;
+        });
+
+        document.getElementById('loginConfirmResendBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('loginConfirmResendBtn');
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            if (pendingLoginEmail) {
+                await sendLoginCode(pendingLoginEmail, 'Пользователь');
+                showNotification('Код отправлен повторно 📧', { type: 'success', duration: 3000 });
+            }
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }, 5000);
+        });
+
+        document.getElementById('loginConfirmCode').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('loginConfirmBtn').click();
+            }
+        });
+    }
+
+    // === ПОИСК ПОЛЬЗОВАТЕЛЯ В FIREBASE ===
+    async function findUserByEmailOrNickname(query) {
+        if (!firebaseInitialized) return null;
+        try {
+            const db = firebase.database();
+            const snapshot = await db.ref('users').once('value');
+            const users = snapshot.val();
+            if (!users) return null;
+
+            const lowerQuery = query.toLowerCase();
+            for (const uid of Object.keys(users)) {
+                const user = users[uid];
+                if (user.email && user.email.toLowerCase() === lowerQuery) {
+                    return { ...user, uid };
+                }
+                if (user.nickname && user.nickname.toLowerCase() === lowerQuery) {
+                    return { ...user, uid };
+                }
+            }
+            return null;
+        } catch(e) {
+            console.error('[Firebase] Ошибка поиска пользователя:', e);
+            return null;
+        }
+    }
+
+    // === ПРОВЕРКА НИКНЕЙМА/EMAIL НА УНИКАЛЬНОСТЬ ===
+    async function isNicknameTaken(nickname) {
+        if (!firebaseInitialized) return false;
+        try {
+            const db = firebase.database();
+            const snapshot = await db.ref('users').once('value');
+            const users = snapshot.val();
+            if (!users) return false;
+            const lowerNick = nickname.toLowerCase();
+            for (const uid of Object.keys(users)) {
+                if (users[uid].nickname && users[uid].nickname.toLowerCase() === lowerNick) {
+                    return true;
+                }
+            }
+            return false;
+        } catch(e) {
+            console.error('[Firebase] Ошибка проверки никнейма:', e);
+            return false;
+        }
+    }
+
+    async function isEmailTaken(email) {
+        if (!firebaseInitialized) return false;
+        try {
+            const db = firebase.database();
+            const snapshot = await db.ref('users').once('value');
+            const users = snapshot.val();
+            if (!users) return false;
+            const lowerEmail = email.toLowerCase();
+            for (const uid of Object.keys(users)) {
+                if (users[uid].email && users[uid].email.toLowerCase() === lowerEmail) {
+                    return true;
+                }
+            }
+            return false;
+        } catch(e) {
+            console.error('[Firebase] Ошибка проверки email:', e);
+            return false;
+        }
+    }
+
+    // === СПИСОК ОФИЦИАЛЬНЫХ ПОЛЬЗОВАТЕЛЕЙ ===
     const OFFICIAL_USERS = [
         { nickname: 'MortisPlay', email: 'mortisplay@mail.ru' }
     ];
 
-    // Синяя галочка "Официально" — только из статического массива
     function isOfficialUser(data) {
         if (!data || !data.nickname || !data.email) return false;
         return OFFICIAL_USERS.some(u =>
@@ -2210,7 +2599,6 @@
         );
     }
 
-    // Статус "Донатер" ($) — только из статического массива (проверка по email)
     const DONATER_EMAILS = [
         'johnnydrillbato554@gmail.com'
     ];
@@ -2222,90 +2610,16 @@
         );
     }
 
-    function diagnoseProfile() {
-        console.log('=== ДИАГНОСТИКА ПРОФИЛЯ ===');
-        console.log('PROFILE_STORAGE_KEY:', PROFILE_STORAGE_KEY);
-        console.log('window.location.protocol:', window.location.protocol);
-        console.log('window.location.href:', window.location.href);
-        
-        // Проверяем, доступен ли localStorage
-        let localStorageAvailable = false;
-        try {
-            const testKey = '_test_storage_';
-            localStorage.setItem(testKey, 'test');
-            localStorage.removeItem(testKey);
-            localStorageAvailable = true;
-        } catch(e) {
-            console.error('localStorage НЕДОСТУПЕН:', e);
-        }
-        console.log('localStorage доступен:', localStorageAvailable);
-        
-        const stored = localStorage.getItem(PROFILE_STORAGE_KEY);
-        console.log('stored value:', stored);
-        if (stored) {
-            try {
-                const data = JSON.parse(stored);
-                console.log('parsed data:', data);
-                console.log('nickname:', data.nickname);
-                console.log('email:', data.email);
-                console.log('password:', data.password);
-            } catch(e) {
-                console.error('parse error:', e);
-            }
-        } else {
-            console.log('❌ Ключ site_user_account НЕ НАЙДЕН в localStorage');
-            // Проверяем sessionStorage
-            const sessionStored = sessionStorage.getItem(PROFILE_STORAGE_KEY);
-            console.log('sessionStorage fallback:', sessionStored);
-            console.log('Все ключи localStorage:');
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                console.log(`  [${i}] ${key}:`, localStorage.getItem(key));
-            }
-        }
-        console.log('currentUser:', currentUser);
-        console.log('=== КОНЕЦ ДИАГНОСТИКИ ===');
-        showNotification('Диагностика в консоли (F12 → Console)', { type: 'info', duration: 4000 });
-    }
-
-    function saveUserAccount(data) {
-        // Вычисляем хеш целостности перед сохранением
-        data.integrityHash = calculateIntegrityHash(data);
-        
-        const json = JSON.stringify(data);
-        console.log('[saveUserAccount] Сохраняю:', PROFILE_STORAGE_KEY, json);
-        
-        // Сохраняем в sessionStorage в первую очередь (он надёжнее)
-        sessionStorage.setItem(PROFILE_STORAGE_KEY, json);
-        console.log('[saveUserAccount] sessionStorage: OK');
-        
-        // Пробуем localStorage
-        try {
-            localStorage.setItem(PROFILE_STORAGE_KEY, json);
-            console.log('[saveUserAccount] localStorage: OK');
-        } catch(e) {
-            console.warn('[saveUserAccount] localStorage ОШИБКА:', e.message);
-        }
-        
-        currentUser = data;
-    }
-
-    function clearUserAccount() {
-        localStorage.removeItem(PROFILE_STORAGE_KEY);
-        sessionStorage.removeItem(PROFILE_STORAGE_KEY);
-        currentUser = null;
-    }
-
-    function openProfileModal() {
+    async function openProfileModal() {
         const modal = document.getElementById('profileModal');
         if (!modal) return;
         modal.classList.add('show');
         document.body.style.overflow = 'hidden';
         updateProfileBetaCountdown();
         
-        // Fallback: загружаем профиль из localStorage, если ещё не загружен
+        // Fallback: загружаем профиль из Firebase/localStorage, если ещё не загружен
         if (!currentUser) {
-            loadUserAccount();
+            await loadUserAccount();
         }
         
         // Показываем нужный экран
@@ -2414,38 +2728,79 @@
             return;
         }
 
-        // Проверяем, есть ли такой пользователь
-        const stored = localStorage.getItem(PROFILE_STORAGE_KEY);
-        if (stored) {
-            try {
-                const data = JSON.parse(stored);
-                if (data.email === email || data.nickname === email) {
-                    // Хешируем введённый пароль и сравниваем с сохранённым хешем
-                    const hashedInput = await hashPassword(password);
-                    if (data.password === hashedInput) {
-                        currentUser = data;
-                        
-                        // "Запомнить меня" — сохраняем email/никнейм для автоподстановки
-                        if (remember) {
-                            localStorage.setItem('profile_remembered_login', data.nickname);
-                        } else {
-                            localStorage.removeItem('profile_remembered_login');
-                        }
-                        
-                        showProfileLoggedIn();
-                        showNotification('Вы успешно вошли! 🎉', { type: 'success', duration: 3000 });
-                        return;
-                    } else {
-                        showNotification('Неверный пароль', { type: 'warning' });
-                        return;
+        // Ищем пользователя в Firebase
+        let userData = null;
+        let foundInFirebase = false;
+        if (firebaseInitialized) {
+            userData = await findUserByEmailOrNickname(email);
+            if (userData) foundInFirebase = true;
+        }
+
+        // Если не нашли в Firebase — проверяем localStorage (обратная совместимость)
+        if (!userData) {
+            const stored = localStorage.getItem(PROFILE_STORAGE_KEY);
+            if (stored) {
+                try {
+                    const data = JSON.parse(stored);
+                    if (data.email === email || data.nickname === email) {
+                        userData = data;
                     }
-                }
-            } catch(e) {
-                console.error('[handleLogin] Ошибка парсинга данных профиля:', e);
+                } catch(e) {}
             }
         }
-        
-        showNotification('Пользователь не найден. Зарегистрируйтесь!', { type: 'warning' });
+
+        if (!userData) {
+            showNotification('Пользователь не найден. Зарегистрируйтесь!', { type: 'warning' });
+            return;
+        }
+
+        // Проверяем пароль
+        const hashedInput = await hashPassword(password);
+        if (userData.password !== hashedInput) {
+            showNotification('Неверный пароль', { type: 'warning' });
+            return;
+        }
+
+        // === ПРОВЕРКА КОДОВОГО СЛОВА для mortisplay@mail.ru ===
+        if (userData.email && userData.email.toLowerCase() === PROTECTED_EMAIL.toLowerCase()) {
+            const secretWord = prompt('🔐 Введите кодовое слово для защиты аккаунта MortisPlay:');
+            if (!secretWord || secretWord.toLowerCase() !== SECRET_CODE_WORD.toLowerCase()) {
+                showNotification('Неверное кодовое слово! Доступ запрещён.', { type: 'warning', duration: 4000 });
+                return;
+            }
+        }
+
+        // === ПОДТВЕРЖДЕНИЕ ВХОДА ПО EMAIL ===
+        const emailSent = await sendLoginCode(userData.email, userData.nickname);
+        if (!emailSent) {
+            showNotification('Ошибка отправки кода подтверждения. Попробуйте позже.', { type: 'warning' });
+            return;
+        }
+
+        // Показываем модалку подтверждения
+        showLoginConfirmModal(userData.email, async () => {
+            const uid = userData.uid || generateUserUid();
+            userData.uid = uid;
+            
+            saveUserLocally(userData, uid);
+            
+            // Если пользователь из localStorage — сохраняем в Firebase
+            if (firebaseInitialized && !foundInFirebase) {
+                await saveUserToFirebase(uid, userData);
+            }
+
+            if (remember) {
+                localStorage.setItem('profile_remembered_login', userData.nickname);
+            } else {
+                localStorage.removeItem('profile_remembered_login');
+            }
+
+            sessionStorage.removeItem('profile_logged_out');
+            showProfileLoggedIn();
+            showNotification('Вы успешно вошли! 🎉', { type: 'success', duration: 3000 });
+        });
+
+        showNotification('Код подтверждения отправлен на почту 📧', { type: 'info', duration: 4000 });
     }
 
     async function handleRegister() {
@@ -2485,22 +2840,37 @@
             return;
         }
 
-        // Проверяем, не занят ли никнейм или email
-        const stored = localStorage.getItem(PROFILE_STORAGE_KEY);
-        if (stored) {
-            const data = JSON.parse(stored);
-            if (data.nickname === nickname) {
+        // Проверяем уникальность в Firebase
+        if (firebaseInitialized) {
+            const nickTaken = await isNicknameTaken(nickname);
+            if (nickTaken) {
                 showNotification('Этот никнейм уже занят', { type: 'warning' });
                 return;
             }
-            if (data.email === email) {
+            const emailTaken = await isEmailTaken(email);
+            if (emailTaken) {
                 showNotification('Этот email уже зарегистрирован', { type: 'warning' });
                 return;
             }
+        } else {
+            // Fallback: проверяем в localStorage
+            const stored = localStorage.getItem(PROFILE_STORAGE_KEY);
+            if (stored) {
+                const data = JSON.parse(stored);
+                if (data.nickname === nickname) {
+                    showNotification('Этот никнейм уже занят', { type: 'warning' });
+                    return;
+                }
+                if (data.email === email) {
+                    showNotification('Этот email уже зарегистрирован', { type: 'warning' });
+                    return;
+                }
+            }
         }
 
-        // Хешируем пароль перед сохранением
+        // Хешируем пароль
         const hashedPassword = await hashPassword(password);
+        const uid = generateUserUid();
 
         const userData = {
             nickname,
@@ -2511,28 +2881,30 @@
             accentColor: '#6366f1',
             avatarDataUrl: '',
             privacyShowAvatar: true,
-            registeredAt: Date.now()
+            registeredAt: Date.now(),
+            uid: uid
         };
-        console.log('[handleRegister] Данные для сохранения:', userData);
-        saveUserAccount(userData);
-        
-        // Автоматически запоминаем при регистрации
+
+        // Сохраняем в Firebase
+        if (firebaseInitialized) {
+            const saved = await saveUserToFirebase(uid, userData);
+            if (!saved) {
+                showNotification('Ошибка сохранения аккаунта. Попробуйте позже.', { type: 'warning' });
+                return;
+            }
+        }
+
+        // Сохраняем локально
+        saveUserLocally(userData, uid);
         localStorage.setItem('profile_remembered_login', nickname);
-        
-        // Проверка: сразу читаем обратно
-        const check = localStorage.getItem(PROFILE_STORAGE_KEY);
-        console.log('[handleRegister] Проверка после сохранения:', check);
-        
+
         showProfileLoggedIn();
         showNotification('Аккаунт создан! Добро пожаловать! 🎉', { type: 'success', duration: 4000 });
     }
 
     function handleLogout() {
-        // Не удаляем данные из localStorage/sessionStorage —
-        // пользователь может захотеть войти снова!
-        // Но ставим флаг в sessionStorage, чтобы при перезагрузке
-        // не подхватить старый профиль автоматически
         currentUser = null;
+        currentUserUid = null;
         try {
             sessionStorage.setItem('profile_logged_out', 'true');
         } catch(e) {}
@@ -2540,7 +2912,7 @@
         showNotification('Вы вышли из аккаунта', { type: 'info', duration: 2500 });
     }
 
-    function handleSaveProfile() {
+    async function handleSaveProfile() {
         if (!currentUser) return;
         
         const newNickname = document.getElementById('profileEditNickname').value.trim();
@@ -2548,8 +2920,6 @@
         const newBio = document.getElementById('profileEditBio').value.trim();
         const activeColorBtn = document.querySelector('.profile-color-btn.active');
         const newColor = activeColorBtn ? activeColorBtn.dataset.color : null;
-        
-        // Настройки приватности
         const privacyShowAvatar = document.getElementById('profilePrivacyShowAvatar').checked;
         
         if (!newNickname) {
@@ -2569,10 +2939,16 @@
         if (newColor) currentUser.accentColor = newColor;
         currentUser.privacyShowAvatar = privacyShowAvatar;
         
-        saveUserAccount(currentUser);
+        // Сохраняем локально
+        saveUserLocally(currentUser, currentUserUid);
+        
+        // Сохраняем в Firebase
+        if (firebaseInitialized && currentUserUid) {
+            await saveUserToFirebase(currentUserUid, currentUser);
+        }
         
         // Обновляем отображение
-        document.getElementById('profileDisplayName').textContent = newNickname;
+        showProfileLoggedIn();
         
         if (newColor) applyProfileAccentColor(newColor);
         
@@ -2598,12 +2974,15 @@
                 return;
             }
             const reader = new FileReader();
-            reader.onload = function(ev) {
+            reader.onload = async function(ev) {
                 const dataUrl = ev.target.result;
                 document.getElementById('profileAvatarImg').src = dataUrl;
                 if (currentUser) {
                     currentUser.avatarDataUrl = dataUrl;
-                    saveUserAccount(currentUser);
+                    saveUserLocally(currentUser, currentUserUid);
+                    if (firebaseInitialized && currentUserUid) {
+                        await saveUserToFirebase(currentUserUid, currentUser);
+                    }
                     showNotification('Аватар обновлён! 📸', { type: 'success', duration: 2500 });
                 }
             };
@@ -2763,7 +3142,10 @@
         }
 
         currentUser.email = pendingNewEmail;
-        saveUserAccount(currentUser);
+        saveUserLocally(currentUser, currentUserUid);
+        if (firebaseInitialized && currentUserUid) {
+            await saveUserToFirebase(currentUserUid, currentUser);
+        }
 
         document.getElementById('profileDisplayEmail').textContent = pendingNewEmail;
 
@@ -2805,7 +3187,7 @@
     function getSiteSettings() {
         const saved = localStorage.getItem('site-settings');
         const isMobileViewport = () => window.matchMedia('(max-width: 768px)').matches;
-        let settings = { animations: true, notifications: true, glass: !isMobileViewport(), updateNotice: true, personalNotifications: true, notifyNewVideos: true, notifySiteUpdates: true };
+        let settings = { animations: true, notifications: true, glass: !isMobileViewport(), updateNotice: true, personalNotifications: true, notifyNewVideos: true, notifySiteUpdates: true, communityNotifications: true, communityNotifyChat: true, communityNotifyMemes: true, communityNotifyComments: true, communityNotifyPush: true, communityNotifySound: true };
         try {
             if (saved) settings = { ...settings, ...JSON.parse(saved) };
         } catch (e) {}
@@ -2819,6 +3201,7 @@
         document.body.classList.toggle('notifications-off', settings.notifications === false);
         document.body.classList.toggle('reduced-glass', settings.glass === false);
         document.body.classList.toggle('personal-notifications-off', settings.personalNotifications === false);
+        document.body.classList.toggle('community-notifications-off', settings.communityNotifications === false);
 
         const animationsToggle = document.getElementById('animationsToggle');
         const notificationsToggle = document.getElementById('notificationsToggle');
@@ -2827,6 +3210,12 @@
         const personalNotificationsToggle = document.getElementById('personalNotificationsToggle');
         const newVideoNotificationsToggle = document.getElementById('newVideoNotificationsToggle');
         const siteUpdateNotificationsToggle = document.getElementById('siteUpdateNotificationsToggle');
+        const communityNotificationsToggle = document.getElementById('communityNotificationsToggle');
+        const communityNotifyChat = document.getElementById('communityNotifyChat');
+        const communityNotifyMemes = document.getElementById('communityNotifyMemes');
+        const communityNotifyComments = document.getElementById('communityNotifyComments');
+        const communityNotifyPush = document.getElementById('communityNotifyPush');
+        const communityNotifySound = document.getElementById('communityNotifySound');
         if (animationsToggle) animationsToggle.checked = settings.animations !== false;
         if (notificationsToggle) notificationsToggle.checked = settings.notifications !== false;
         if (glassToggle) glassToggle.checked = settings.glass !== false;
@@ -2834,7 +3223,18 @@
         if (personalNotificationsToggle) personalNotificationsToggle.checked = settings.personalNotifications !== false;
         if (newVideoNotificationsToggle) newVideoNotificationsToggle.checked = settings.notifyNewVideos !== false;
         if (siteUpdateNotificationsToggle) siteUpdateNotificationsToggle.checked = settings.notifySiteUpdates !== false;
+        if (communityNotificationsToggle) communityNotificationsToggle.checked = settings.communityNotifications !== false;
+        if (communityNotifyChat) communityNotifyChat.checked = settings.communityNotifyChat !== false;
+        if (communityNotifyMemes) communityNotifyMemes.checked = settings.communityNotifyMemes !== false;
+        if (communityNotifyComments) communityNotifyComments.checked = settings.communityNotifyComments !== false;
+        if (communityNotifyPush) communityNotifyPush.checked = settings.communityNotifyPush !== false;
+        if (communityNotifySound) communityNotifySound.checked = settings.communityNotifySound !== false;
         
+        // Показываем/скрываем под-настройки в зависимости от основного переключателя
+        const subSettings = document.getElementById('communitySubSettings');
+        if (subSettings) {
+            subSettings.style.display = settings.communityNotifications !== false ? 'block' : 'none';
+        }
     }
 
     function initSettings() {
@@ -2847,6 +3247,12 @@
         const personalNotificationsToggle = document.getElementById('personalNotificationsToggle');
         const newVideoNotificationsToggle = document.getElementById('newVideoNotificationsToggle');
         const siteUpdateNotificationsToggle = document.getElementById('siteUpdateNotificationsToggle');
+        const communityNotificationsToggle = document.getElementById('communityNotificationsToggle');
+        const communityNotifyChat = document.getElementById('communityNotifyChat');
+        const communityNotifyMemes = document.getElementById('communityNotifyMemes');
+        const communityNotifyComments = document.getElementById('communityNotifyComments');
+        const communityNotifyPush = document.getElementById('communityNotifyPush');
+        const communityNotifySound = document.getElementById('communityNotifySound');
         const saveButton = document.querySelector('#settingsModal .btn-primary');
 
         const handleSettingsClick = () => openSettingsModal();
@@ -2861,7 +3267,13 @@
                 updateNotice: updateNoticeToggle?.checked !== false,
                 personalNotifications: personalNotificationsToggle?.checked !== false,
                 notifyNewVideos: newVideoNotificationsToggle?.checked !== false,
-                notifySiteUpdates: siteUpdateNotificationsToggle?.checked !== false
+                notifySiteUpdates: siteUpdateNotificationsToggle?.checked !== false,
+                communityNotifications: communityNotificationsToggle?.checked !== false,
+                communityNotifyChat: communityNotifyChat?.checked !== false,
+                communityNotifyMemes: communityNotifyMemes?.checked !== false,
+                communityNotifyComments: communityNotifyComments?.checked !== false,
+                communityNotifyPush: communityNotifyPush?.checked !== false,
+                communityNotifySound: communityNotifySound?.checked !== false
             };
             localStorage.setItem('site-settings', JSON.stringify(settings));
             applySettings();
@@ -2876,11 +3288,75 @@
         personalNotificationsToggle?.addEventListener('change', () => saveSettings(false));
         newVideoNotificationsToggle?.addEventListener('change', () => saveSettings(false));
         siteUpdateNotificationsToggle?.addEventListener('change', () => saveSettings(false));
+        communityNotificationsToggle?.addEventListener('change', () => saveSettings(false));
+        communityNotifyChat?.addEventListener('change', () => saveSettings(false));
+        communityNotifyMemes?.addEventListener('change', () => saveSettings(false));
+        communityNotifyComments?.addEventListener('change', () => saveSettings(false));
+        communityNotifyPush?.addEventListener('change', () => saveSettings(false));
+        communityNotifySound?.addEventListener('change', () => saveSettings(false));
         saveButton?.addEventListener('click', () => {
             saveSettings(true);
             closeSettingsModal();
         });
         applySettings();
+    }
+
+    // Слушаем уведомления из Зала комьюнити (community.html) через localStorage
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'community_notification' && e.newValue) {
+            try {
+                const data = JSON.parse(e.newValue);
+                if (data && data.message) {
+                    const subCategory = data.subCategory || 'community';
+                    showNotification(data.message, {
+                        type: data.type || 'info',
+                        duration: data.duration || 4000,
+                        category: subCategory,
+                        title: data.title || 'Зал комьюнити'
+                    });
+                    // Воспроизводим звук уведомления
+                    playNotificationSound();
+                    // Отправляем Push-уведомление (даже если вкладка не активна)
+                    sendPushNotification(
+                        data.title || 'Зал комьюнити',
+                        data.message,
+                        { tag: 'community-' + Date.now(), url: '/community.html' }
+                    );
+                }
+            } catch (err) {
+                console.warn('[Community Notification] Ошибка парсинга:', err);
+            }
+        }
+    });
+
+    // Также проверяем при загрузке страницы, не было ли уведомления
+    function checkPendingCommunityNotification() {
+        try {
+            const pending = sessionStorage.getItem('community_notification_pending');
+            if (pending) {
+                const data = JSON.parse(pending);
+                if (data && data.message) {
+                    const subCategory = data.subCategory || 'community';
+                    showNotification(data.message, {
+                        type: data.type || 'info',
+                        duration: data.duration || 4000,
+                        category: subCategory,
+                        title: data.title || 'Зал комьюнити'
+                    });
+                    // Воспроизводим звук уведомления
+                    playNotificationSound();
+                    // Отправляем Push-уведомление
+                    sendPushNotification(
+                        data.title || 'Зал комьюнити',
+                        data.message,
+                        { tag: 'community-' + Date.now(), url: '/community.html' }
+                    );
+                }
+                sessionStorage.removeItem('community_notification_pending');
+            }
+        } catch (err) {
+            console.warn('[Community Notification] Ошибка парсинга pending:', err);
+        }
     }
 
     async function showSiteUpdateNotice() {
@@ -3391,6 +3867,13 @@
         // Показываем бета-шапку
         showBetaNotice();
         
+        // Регистрируем Service Worker для Push-уведомлений
+        await registerServiceWorker();
+        // Запрашиваем разрешение на уведомления (не блокируем инициализацию)
+        requestNotificationPermission().then(granted => {
+            if (granted) console.log('[Push] Разрешение на уведомления получено');
+        });
+        
         // Устанавливаем динамический год в футере
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
@@ -3419,6 +3902,7 @@
         initTemporaryFeatures();
         initTheme();
         initSettings();
+        checkPendingCommunityNotification();
         await showSiteUpdateNotice();
         initNavigation();
         initAnalyticsTracking();
@@ -3431,6 +3915,15 @@
         
         // Инициализация профиля
         loadUserAccount();
+        
+        // Обработка хэша #profile — открываем модалку профиля автоматически
+        if (window.location.hash === '#profile') {
+          setTimeout(() => {
+            openProfileModal();
+            // Очищаем хэш, чтобы при обновлении страницы не открывалось снова
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+          }, 500);
+        }
         
         const profileNavBtn = document.getElementById('profileNavBtn');
         const mobileMenuProfileBtn = document.getElementById('mobileMenuProfileBtn');
