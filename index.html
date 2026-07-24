@@ -1447,6 +1447,9 @@
               <button id="profileAvatarChangeBtn" style="position: absolute; bottom: 0; right: 0; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: var(--primary); color: white; border: 2px solid var(--bg-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">
                 <i class="fas fa-pen"></i>
               </button>
+              <button id="profileAvatarRemoveBtn" style="position: absolute; bottom: 0; left: 0; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: #ef4444; color: white; border: 2px solid var(--bg-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; display: none;" title="Удалить аватарку">
+                <i class="fas fa-times"></i>
+              </button>
             </div>
             <h3 class="text-2xl font-bold gradient-text" id="profileDisplayName">Пользователь</h3>
             <p style="color: var(--text-secondary); font-size: 0.85rem;" id="profileDisplayEmail">email@example.com</p>
@@ -1485,7 +1488,17 @@
                   <button class="profile-color-btn" data-color="#ef4444" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #ef4444; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;"></button>
                   <button class="profile-color-btn" data-color="#ec4899" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #ec4899; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;"></button>
                   <button class="profile-color-btn" data-color="#8b5cf6" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #8b5cf6; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;"></button>
+                  <!-- Новые цвета -->
+                  <button class="profile-color-btn" data-color="#06b6d4" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #06b6d4; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;" title="Циан"></button>
+                  <button class="profile-color-btn" data-color="#14b8a6" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #14b8a6; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;" title="Бирюзовый"></button>
+                  <button class="profile-color-btn" data-color="#f97316" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #f97316; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;" title="Оранжевый"></button>
+                  <button class="profile-color-btn" data-color="#a855f7" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #a855f7; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;" title="Пурпурный"></button>
+                  <button class="profile-color-btn" data-color="#e11d48" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #e11d48; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;" title="Малиновый"></button>
+                  <button class="profile-color-btn" data-color="#0ea5e9" style="width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #0ea5e9; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease;" title="Голубой"></button>
                 </div>
+                <button id="profileResetColorBtn" style="margin-top: 0.5rem; font-size: 0.75rem; padding: 0.3rem 0.75rem; border-radius: 0.5rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; cursor: pointer; transition: all 0.2s ease;">
+                  <i class="fas fa-undo"></i> Сбросить цвет
+                </button>
               </div>
               <div>
                 <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">
@@ -1500,6 +1513,23 @@
                   </label>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Друзья и запросы в друзья -->
+          <div style="margin-bottom: 1.5rem; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+            <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">
+              <i class="fas fa-users"></i> Друзья
+            </h4>
+            <div id="profileFriendsList" style="display: flex; flex-direction: column; gap: 0.4rem; max-height: 150px; overflow-y: auto; margin-bottom: 0.75rem;">
+              <div style="text-align: center; font-size: 0.8rem; color: var(--text-secondary); opacity: 0.6; padding: 0.5rem;">Загрузка...</div>
+            </div>
+            <div id="profileFriendRequests" style="display: none;">
+              <h5 style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                <i class="fas fa-user-clock"></i> Заявки в друзья
+                <span id="profileFriendRequestsBadge" style="display: none; background: #ef4444; color: white; font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.3rem;">0</span>
+              </h5>
+              <div id="profileFriendRequestsList" style="display: flex; flex-direction: column; gap: 0.4rem; max-height: 150px; overflow-y: auto;"></div>
             </div>
           </div>
 
@@ -1668,8 +1698,9 @@
           <a href="news-archive.html" target="_blank" rel="noopener noreferrer" class="nav-link external">Архив Новостей</a>
           <a href="#twitch-clips" class="nav-link">Twitch</a>
           <a href="#contact" class="nav-link">Сотрудничество</a>
-          <button id="profileNavBtn" class="nav-link" style="background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(217,119,6,0.15)); border: 1px solid rgba(245,158,11,0.3); cursor: pointer;">
+          <button id="profileNavBtn" class="nav-link" style="background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(217,119,6,0.15)); border: 1px solid rgba(245,158,11,0.3); cursor: pointer; position: relative;">
             <i class="fas fa-user-circle"></i> Профиль
+            <span id="profileNavBadge" style="display: none; position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 0.6rem; font-weight: 700; min-width: 1.1rem; height: 1.1rem; border-radius: 999px; align-items: center; justify-content: center; padding: 0 0.25rem; box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);">0</span>
           </button>
         </div>
         <div class="flex items-center gap-3">
@@ -2749,6 +2780,9 @@
         if (rememberedLogin && loginEmailInput) {
             loginEmailInput.value = rememberedLogin;
         }
+        // Сбрасываем бейдж друзей при выходе
+        const badge = document.getElementById('profileNavBadge');
+        if (badge) badge.style.display = 'none';
     }
 
     function showProfileRegister() {
@@ -2822,11 +2856,36 @@
                 });
             }
             
-            // Применяем сохранённый аватар
+            // Применяем сохранённый аватар или показываем букву
+            const avatarImg = document.getElementById('profileAvatarImg');
+            const removeBtn = document.getElementById('profileAvatarRemoveBtn');
             if (currentUser.avatarDataUrl) {
-                document.getElementById('profileAvatarImg').src = currentUser.avatarDataUrl;
+                avatarImg.src = currentUser.avatarDataUrl;
+                if (removeBtn) removeBtn.style.display = 'flex';
+            } else {
+                // Показываем букву никнейма на canvas
+                const nickname = currentUser.nickname || 'Пользователь';
+                const letter = nickname[0].toUpperCase();
+                const color = currentUser.accentColor || '#6366f1';
+                const canvas = document.createElement('canvas');
+                canvas.width = 120;
+                canvas.height = 120;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(60, 60, 60, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 56px Arial, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(letter, 60, 60);
+                avatarImg.src = canvas.toDataURL();
+                if (removeBtn) removeBtn.style.display = 'none';
             }
         }
+        // Запускаем слушатели друзей
+        startFriendsListeners();
     }
 
     async function handleLogin() {
@@ -3019,6 +3078,7 @@
     }
 
     function handleLogout() {
+        stopFriendsListeners();
         currentUser = null;
         currentUserUid = null;
         try {
@@ -3026,6 +3086,201 @@
         } catch(e) {}
         showProfileLogin();
         showNotification('Вы вышли из аккаунта', { type: 'info', duration: 2500 });
+    }
+
+    // === СИСТЕМА ДРУЗЕЙ ===
+    let friendsListener = null;
+    let friendRequestsListener = null;
+
+    function startFriendsListeners() {
+        if (!firebaseInitialized || !currentUser || !currentUser.nickname) return;
+        
+        const db = firebase.database();
+        const nickname = currentUser.nickname;
+
+        // Слушаем список друзей
+        if (friendsListener) friendsListener();
+        const friendsRef = db.ref('friends/' + nickname);
+        friendsListener = friendsRef.on('value', (snapshot) => {
+            renderFriendsList(snapshot);
+        });
+
+        // Слушаем входящие заявки
+        if (friendRequestsListener) friendRequestsListener();
+        const requestsRef = db.ref('friend_requests').orderByChild('to').equalTo(nickname);
+        friendRequestsListener = requestsRef.on('value', (snapshot) => {
+            renderFriendRequests(snapshot);
+            updateFriendRequestBadge(snapshot);
+        });
+    }
+
+    function stopFriendsListeners() {
+        if (friendsListener && firebaseInitialized) {
+            firebase.database().ref('friends/' + (currentUser ? currentUser.nickname : '')).off('value', friendsListener);
+            friendsListener = null;
+        }
+        if (friendRequestsListener && firebaseInitialized) {
+            firebase.database().ref('friend_requests').off('value', friendRequestsListener);
+            friendRequestsListener = null;
+        }
+    }
+
+    function renderFriendsList(snapshot) {
+        const container = document.getElementById('profileFriendsList');
+        if (!container) return;
+        
+        const friends = snapshot.val();
+        if (!friends) {
+            container.innerHTML = '<div style="text-align: center; font-size: 0.8rem; color: var(--text-secondary); opacity: 0.6; padding: 0.5rem;">У вас пока нет друзей</div>';
+            return;
+        }
+
+        const friendNames = Object.keys(friends);
+        let html = '';
+        friendNames.forEach(name => {
+            html += '<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.4rem 0.6rem; border-radius: 0.5rem; background: var(--glass-bg); border: 1px solid var(--glass-border); font-size: 0.8rem;">' +
+                '<span><i class="fas fa-user" style="color: var(--primary); margin-right: 0.4rem;"></i>' + escapeHtml(name) + '</span>' +
+                '<button class="friend-remove-btn" data-friend="' + escapeHtml(name) + '" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.75rem; padding: 0.2rem;" title="Удалить из друзей"><i class="fas fa-user-minus"></i></button>' +
+                '</div>';
+        });
+        container.innerHTML = html;
+
+        // Обработчики удаления из друзей
+        container.querySelectorAll('.friend-remove-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const friendName = this.dataset.friend;
+                removeFriend(friendName);
+            });
+        });
+    }
+
+    function renderFriendRequests(snapshot) {
+        const container = document.getElementById('profileFriendRequestsList');
+        const section = document.getElementById('profileFriendRequests');
+        if (!container || !section) return;
+
+        const requests = snapshot.val();
+        if (!requests) {
+            section.style.display = 'none';
+            return;
+        }
+
+        const pendingRequests = {};
+        Object.keys(requests).forEach(key => {
+            const req = requests[key];
+            if (req.status === 'pending' && req.to === currentUser.nickname) {
+                pendingRequests[key] = req;
+            }
+        });
+
+        const requestKeys = Object.keys(pendingRequests);
+        if (requestKeys.length === 0) {
+            section.style.display = 'none';
+            return;
+        }
+
+        section.style.display = 'block';
+        let html = '';
+        requestKeys.forEach(key => {
+            const req = pendingRequests[key];
+            html += '<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.4rem 0.6rem; border-radius: 0.5rem; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); font-size: 0.8rem;">' +
+                '<span><i class="fas fa-user-plus" style="color: #3b82f6; margin-right: 0.4rem;"></i>' + escapeHtml(req.from) + '</span>' +
+                '<div style="display: flex; gap: 0.3rem;">' +
+                '<button class="friend-accept-btn" data-request-key="' + escapeHtml(key) + '" data-from="' + escapeHtml(req.from) + '" style="background: #22c55e; border: none; color: white; cursor: pointer; font-size: 0.7rem; padding: 0.25rem 0.5rem; border-radius: 0.4rem;"><i class="fas fa-check"></i></button>' +
+                '<button class="friend-reject-btn" data-request-key="' + escapeHtml(key) + '" data-from="' + escapeHtml(req.from) + '" style="background: #ef4444; border: none; color: white; cursor: pointer; font-size: 0.7rem; padding: 0.25rem 0.5rem; border-radius: 0.4rem;"><i class="fas fa-times"></i></button>' +
+                '</div></div>';
+        });
+        container.innerHTML = html;
+
+        // Обработчики принятия/отклонения
+        container.querySelectorAll('.friend-accept-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                acceptFriendRequest(this.dataset.requestKey, this.dataset.from);
+            });
+        });
+        container.querySelectorAll('.friend-reject-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                rejectFriendRequest(this.dataset.requestKey, this.dataset.from);
+            });
+        });
+    }
+
+    function updateFriendRequestBadge(snapshot) {
+        const badge = document.getElementById('profileNavBadge');
+        const requestsBadge = document.getElementById('profileFriendRequestsBadge');
+        if (!badge || !requestsBadge) return;
+
+        const requests = snapshot.val();
+        if (!requests) {
+            badge.style.display = 'none';
+            requestsBadge.style.display = 'none';
+            return;
+        }
+
+        let count = 0;
+        Object.keys(requests).forEach(key => {
+            if (requests[key].status === 'pending' && requests[key].to === currentUser.nickname) {
+                count++;
+            }
+        });
+
+        if (count > 0) {
+            badge.style.display = 'flex';
+            badge.textContent = count > 99 ? '99+' : count;
+            requestsBadge.style.display = 'inline';
+            requestsBadge.textContent = count;
+        } else {
+            badge.style.display = 'none';
+            requestsBadge.style.display = 'none';
+        }
+    }
+
+    async function acceptFriendRequest(requestKey, fromNickname) {
+        if (!firebaseInitialized || !currentUser) return;
+        try {
+            const db = firebase.database();
+            // Обновляем статус заявки
+            await db.ref('friend_requests/' + requestKey + '/status').set('accepted');
+            // Добавляем в друзья обоим
+            await db.ref('friends/' + currentUser.nickname + '/' + fromNickname).set({ addedAt: Date.now() });
+            await db.ref('friends/' + fromNickname + '/' + currentUser.nickname).set({ addedAt: Date.now() });
+            showNotification('Вы приняли заявку в друзья от ' + fromNickname + ' 🎉', { type: 'success', duration: 3000 });
+        } catch(e) {
+            console.error('[Friends] Ошибка принятия заявки:', e);
+            showNotification('Ошибка принятия заявки', { type: 'warning' });
+        }
+    }
+
+    async function rejectFriendRequest(requestKey, fromNickname) {
+        if (!firebaseInitialized || !currentUser) return;
+        try {
+            const db = firebase.database();
+            await db.ref('friend_requests/' + requestKey + '/status').set('rejected');
+            showNotification('Заявка отклонена', { type: 'info', duration: 2000 });
+        } catch(e) {
+            console.error('[Friends] Ошибка отклонения заявки:', e);
+            showNotification('Ошибка отклонения заявки', { type: 'warning' });
+        }
+    }
+
+    async function removeFriend(friendName) {
+        if (!firebaseInitialized || !currentUser) return;
+        try {
+            const db = firebase.database();
+            await db.ref('friends/' + currentUser.nickname + '/' + friendName).remove();
+            await db.ref('friends/' + friendName + '/' + currentUser.nickname).remove();
+            showNotification('Пользователь ' + friendName + ' удалён из друзей', { type: 'info', duration: 2500 });
+        } catch(e) {
+            console.error('[Friends] Ошибка удаления из друзей:', e);
+            showNotification('Ошибка удаления из друзей', { type: 'warning' });
+        }
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     async function handleSaveProfile() {
@@ -3124,6 +3379,57 @@
                 this.classList.add('active');
             });
         });
+    }
+
+    function handleAvatarRemove() {
+        if (!currentUser) return;
+        // Сбрасываем аватар
+        currentUser.avatarDataUrl = '';
+        saveUserLocally(currentUser, currentUserUid);
+        if (firebaseInitialized && currentUserUid) {
+            saveUserToFirebase(currentUserUid, currentUser);
+        }
+        // Показываем букву вместо картинки
+        const avatarImg = document.getElementById('profileAvatarImg');
+        const nickname = currentUser.nickname || 'Пользователь';
+        const letter = nickname[0].toUpperCase();
+        const color = currentUser.accentColor || '#6366f1';
+        // Создаём canvas с буквой
+        const canvas = document.createElement('canvas');
+        canvas.width = 120;
+        canvas.height = 120;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(60, 60, 60, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 56px Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(letter, 60, 60);
+        avatarImg.src = canvas.toDataURL();
+        // Прячем кнопку удаления
+        const removeBtn = document.getElementById('profileAvatarRemoveBtn');
+        if (removeBtn) removeBtn.style.display = 'none';
+        showNotification('Аватар удалён', { type: 'info', duration: 2500 });
+    }
+
+    function handleResetColor() {
+        if (!currentUser) return;
+        // Сбрасываем цвет на стандартный
+        const defaultColor = '#6366f1';
+        currentUser.accentColor = defaultColor;
+        saveUserLocally(currentUser, currentUserUid);
+        if (firebaseInitialized && currentUserUid) {
+            saveUserToFirebase(currentUserUid, currentUser);
+        }
+        // Обновляем UI
+        document.querySelectorAll('.profile-color-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.color === defaultColor);
+        });
+        applyProfileAccentColor(defaultColor);
+        showNotification('Цвет сброшен на стандартный', { type: 'info', duration: 2500 });
     }
     
     // === Модальные окна: Условия использования и Политика конфиденциальности ===
@@ -4181,10 +4487,14 @@
         // Кнопки кастомизации профиля
         const profileSaveBtn = document.getElementById('profileSaveBtn');
         const profileAvatarChangeBtn = document.getElementById('profileAvatarChangeBtn');
+        const profileAvatarRemoveBtn = document.getElementById('profileAvatarRemoveBtn');
         const profileEmailChangeBtn = document.getElementById('profileEmailChangeBtn');
+        const profileResetColorBtn = document.getElementById('profileResetColorBtn');
         if (profileSaveBtn) profileSaveBtn.addEventListener('click', handleSaveProfile);
         if (profileAvatarChangeBtn) profileAvatarChangeBtn.addEventListener('click', handleAvatarChange);
+        if (profileAvatarRemoveBtn) profileAvatarRemoveBtn.addEventListener('click', handleAvatarRemove);
         if (profileEmailChangeBtn) profileEmailChangeBtn.addEventListener('click', openEmailChangeModal);
+        if (profileResetColorBtn) profileResetColorBtn.addEventListener('click', handleResetColor);
         initProfileColorButtons();
 
         // Таймер беты в профиле

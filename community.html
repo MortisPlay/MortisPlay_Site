@@ -1505,6 +1505,18 @@
       <div style="margin-top: 1rem; text-align: center; font-size: 0.75rem; color: var(--text-secondary); opacity: 0.6;">
         <i class="fas fa-calendar-alt"></i> <span id="userProfileModalJoined"></span>
       </div>
+      <!-- Блок для незарегистрированных пользователей -->
+      <div id="userProfileModalNotRegistered" style="display: none; margin-top: 1rem; padding: 0.75rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 0.75rem; text-align: center; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+        <i class="fas fa-info-circle" style="color: #f59e0b; margin-right: 0.3rem;"></i>
+        <strong style="color: var(--text-primary);">Аккаунт не зарегистрирован</strong><br>
+        <span style="font-size: 0.75rem;">Этот пользователь не зарегистрирован в базе данных. Данные могут быть неполными или устаревшими.</span>
+      </div>
+      <!-- Кнопка "Добавить в друзья" -->
+      <div id="userProfileModalFriendBtn" style="margin-top: 1rem; display: none;">
+        <button id="userProfileAddFriendBtn" class="btn-primary w-full" style="background: linear-gradient(135deg, #3b82f6, #2563eb); font-size: 0.85rem; padding: 0.6rem 1rem;">
+          <i class="fas fa-user-plus"></i> Добавить в друзья
+        </button>
+      </div>
     </div>
   </div>
 
@@ -2000,13 +2012,68 @@
       }
 
       // Дата регистрации — показываем только если пользователь найден в Firebase (БД) и есть registeredAt
+      const notRegisteredEl = document.getElementById('userProfileModalNotRegistered');
       if (isFromFirebase && data.registeredAt) {
         const date = new Date(data.registeredAt);
         joinedEl.textContent = 'В сообществе с ' + date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
         joinedEl.parentElement.style.display = 'block';
+        if (notRegisteredEl) notRegisteredEl.style.display = 'none';
       } else {
         joinedEl.textContent = '';
         joinedEl.parentElement.style.display = 'none';
+        // Если пользователь не в БД — показываем информационную иконку
+        if (notRegisteredEl) {
+          notRegisteredEl.style.display = 'block';
+        }
+      }
+
+      // Кнопка "Добавить в друзья" — показываем только если пользователь в БД и это не мы
+      const friendBtnContainer = document.getElementById('userProfileModalFriendBtn');
+      const addFriendBtn = document.getElementById('userProfileAddFriendBtn');
+      if (friendBtnContainer && addFriendBtn) {
+        const account = getCurrentUserAccount();
+        if (isFromFirebase && account && account.nickname && account.nickname !== username) {
+          // Проверяем, не отправлена ли уже заявка
+          const checkFriendStatus = async () => {
+            try {
+              const db = firebase.database();
+              const requestId = account.nickname + '_to_' + username;
+              const requestSnap = await db.ref('friend_requests/' + requestId).once('value');
+              const friendSnap = await db.ref('friends/' + account.nickname + '/' + username).once('value');
+
+              if (friendSnap.exists()) {
+                addFriendBtn.innerHTML = '<i class="fas fa-check"></i> Уже в друзьях';
+                addFriendBtn.disabled = true;
+                addFriendBtn.style.opacity = '0.6';
+                addFriendBtn.style.cursor = 'not-allowed';
+                addFriendBtn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+              } else if (requestSnap.exists() && requestSnap.val().status === 'pending') {
+                addFriendBtn.innerHTML = '<i class="fas fa-clock"></i> Заявка отправлена';
+                addFriendBtn.disabled = true;
+                addFriendBtn.style.opacity = '0.6';
+                addFriendBtn.style.cursor = 'not-allowed';
+              } else {
+                addFriendBtn.innerHTML = '<i class="fas fa-user-plus"></i> Добавить в друзья';
+                addFriendBtn.disabled = false;
+                addFriendBtn.style.opacity = '1';
+                addFriendBtn.style.cursor = 'pointer';
+                addFriendBtn.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+                addFriendBtn.onclick = function() { sendFriendRequest(username); };
+              }
+            } catch(e) {
+              console.warn('[FriendStatus] Ошибка проверки:', e);
+              addFriendBtn.innerHTML = '<i class="fas fa-user-plus"></i> Добавить в друзья';
+              addFriendBtn.disabled = false;
+              addFriendBtn.style.opacity = '1';
+              addFriendBtn.style.cursor = 'pointer';
+              addFriendBtn.onclick = function() { sendFriendRequest(username); };
+            }
+          };
+          checkFriendStatus();
+          friendBtnContainer.style.display = 'block';
+        } else {
+          friendBtnContainer.style.display = 'none';
+        }
       }
     }
 
@@ -2017,6 +2084,85 @@
         modal.classList.remove('show');
         setTimeout(() => { modal.style.display = 'none'; }, 300);
       }
+    }
+
+    // === СИСТЕМА ДРУЗЕЙ ===
+    let currentProfileUsername = ''; // никнейм текущего открытого профиля
+
+    async function sendFriendRequest(targetUsername) {
+      // Проверяем, авторизован ли текущий пользователь
+      const account = getCurrentUserAccount();
+      if (!account || !account.nickname) {
+        showNotification('Войдите в аккаунт, чтобы добавлять в друзья', { type: 'warning' });
+        return;
+      }
+
+      if (account.nickname === targetUsername) {
+        showNotification('Нельзя добавить себя в друзья', { type: 'warning' });
+        return;
+      }
+
+      if (!firebaseInitialized) {
+        showNotification('База данных недоступна', { type: 'warning' });
+        return;
+      }
+
+      try {
+        const db = firebase.database();
+        const requestId = account.nickname + '_to_' + targetUsername;
+        const requestRef = db.ref('friend_requests/' + requestId);
+
+        // Проверяем, не отправлена ли уже заявка
+        const existingSnap = await requestRef.once('value');
+        if (existingSnap.exists()) {
+          const existing = existingSnap.val();
+          if (existing.status === 'pending') {
+            showNotification('Заявка уже отправлена ⏳', { type: 'info' });
+            return;
+          }
+        }
+
+        // Проверяем, не друзья ли уже
+        const friendsRef = db.ref('friends/' + account.nickname + '/' + targetUsername);
+        const friendSnap = await friendsRef.once('value');
+        if (friendSnap.exists()) {
+          showNotification('Вы уже друзья 🎉', { type: 'info' });
+          return;
+        }
+
+        // Отправляем заявку
+        await requestRef.set({
+          from: account.nickname,
+          to: targetUsername,
+          fromEmail: account.email || '',
+          timestamp: Date.now(),
+          status: 'pending'
+        });
+
+        showNotification('Заявка в друзья отправлена! ✅', { type: 'success', duration: 3000 });
+
+        // Обновляем кнопку
+        const btn = document.getElementById('userProfileAddFriendBtn');
+        if (btn) {
+          btn.innerHTML = '<i class="fas fa-clock"></i> Заявка отправлена';
+          btn.disabled = true;
+          btn.style.opacity = '0.6';
+          btn.style.cursor = 'not-allowed';
+        }
+      } catch(e) {
+        console.error('[FriendRequest] Ошибка:', e);
+        showNotification('Ошибка отправки заявки', { type: 'warning' });
+      }
+    }
+
+    function getCurrentUserAccount() {
+      try {
+        const stored = localStorage.getItem('site_user_account');
+        if (stored) return JSON.parse(stored);
+        const session = sessionStorage.getItem('site_user_account');
+        if (session) return JSON.parse(session);
+      } catch(e) {}
+      return null;
     }
 
     // Список официальных email-адресов (только Mortis Play — синяя галочка)
