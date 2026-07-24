@@ -2397,7 +2397,8 @@
           avatarDataUrl: msgAvatar,
           accentColor: msgColor,
           badge: msgBadge,
-          status: msgStatus
+          status: msgStatus,
+          bannerDataUrl: msg.bannerDataUrl || ''
         }).replace(/'/g, "\\'").replace(/"/g, '"');
 
         let avatarHtml;
@@ -2434,6 +2435,8 @@
 
         const msgId = msg._key || '';
 
+        // Показываем кнопку удаления: для своих сообщений ИЛИ для official-аккаунтов
+        const canDeleteMsg = isOwn || isOfficialUser(currentUserProfile);
         div.innerHTML = `
           ${avatarHtml}
           <div class="bubble" ${msgColor ? `style="background: ${msgColor}22; border-color: ${msgColor}44;"` : ''}>
@@ -2441,7 +2444,7 @@
             ${statusHtml}
             ${replyHtml}
             <div class="text">${escapeHtml(msg.text)}</div>
-            <div class="time">${time} <button class="reply-btn" data-username="${escapeHtml(msg.username || 'Аноним')}" data-text="${escapeHtml(msg.text.slice(0, 80))}" title="Ответить"><i class="fas fa-reply"></i></button>${isOwn ? `<button class="delete-btn" data-msgid="${msgId}" title="Удалить"><i class="fas fa-trash-can"></i></button>` : ''}</div>
+            <div class="time">${time} <button class="reply-btn" data-username="${escapeHtml(msg.username || 'Аноним')}" data-text="${escapeHtml(msg.text.slice(0, 80))}" title="Ответить"><i class="fas fa-reply"></i></button>${canDeleteMsg ? `<button class="delete-btn" data-msgid="${msgId}" title="Удалить"><i class="fas fa-trash-can"></i></button>` : ''}</div>
           </div>
         `;
         container.appendChild(div);
@@ -2583,14 +2586,15 @@
         if (!confirmed) return;
 
         const db = firebase.database();
-        // Проверяем, что сообщение принадлежит текущему пользователю
         db.ref('chat_messages/' + messageId).once('value', (snapshot) => {
           const msg = snapshot.val();
           if (!msg) {
             showNotification('Сообщение не найдено', { type: 'warning' });
             return;
           }
-          if (msg.username !== currentUsername) {
+          // Разрешаем удаление: свои сообщения ИЛИ если у пользователя есть official-бейдж
+          const canDelete = msg.username === currentUsername || isOfficialUser(currentUserProfile);
+          if (!canDelete) {
             showNotification('Вы можете удалять только свои сообщения', { type: 'warning' });
             return;
           }
@@ -2707,7 +2711,8 @@
         avatarDataUrl: privacyShowAvatar ? (getProfileAvatar() || '') : '',
         accentColor: getProfileAccentColor() || '',
         badge: getUserBadgeSync(currentUserProfile),
-        status: currentUserProfile ? (currentUserProfile.status || '') : ''
+        status: currentUserProfile ? (currentUserProfile.status || '') : '',
+        bannerDataUrl: currentUserProfile ? (currentUserProfile.bannerDataUrl || '') : ''
       };
 
       // Добавляем replyTo, если есть активный reply
@@ -3001,22 +3006,57 @@
           } catch(e) {}
         }
         
+        // Проверяем, является ли текущий пользователь автором мема
+        const currentNickname = currentUserProfile ? currentUserProfile.nickname : (localStorage.getItem('community_username') || '');
+        const isMemeAuthor = currentNickname && meme.author === currentNickname;
+        
         if (isVideo) {
           item.innerHTML = `
             <video src="${displayUrl}" muted loop preload="metadata" style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;"></video>
             <div class="video-badge"><i class="fas fa-play"></i></div>
             <div class="author-tag"><i class="fas fa-user"></i> ${escapeHtml(meme.author)}</div>
             <div class="overlay">${escapeHtml(meme.title)}</div>
+            ${isMemeAuthor ? `<div style="position: absolute; top: 0.5rem; right: 0.5rem; display: flex; gap: 0.3rem; z-index: 2;">
+              <button class="meme-edit-btn" data-key="${escapeHtml(meme._key)}" data-title="${escapeHtml(meme.title)}" title="Редактировать" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.15); color: white; width: 2rem; height: 2rem; border-radius: 50%; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;"><i class="fas fa-pen"></i></button>
+              <button class="meme-delete-btn" data-key="${escapeHtml(meme._key)}" title="Удалить" style="background: rgba(239,68,68,0.7); backdrop-filter: blur(4px); border: 1px solid rgba(239,68,68,0.3); color: white; width: 2rem; height: 2rem; border-radius: 50%; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;"><i class="fas fa-trash-can"></i></button>
+            </div>` : ''}
           `;
         } else {
           item.innerHTML = `
             <img src="${displayUrl}" alt="${escapeHtml(meme.title)}" loading="lazy" />
             <div class="author-tag"><i class="fas fa-user"></i> ${escapeHtml(meme.author)}</div>
             <div class="overlay">${escapeHtml(meme.title)}</div>
+            ${isMemeAuthor ? `<div style="position: absolute; top: 0.5rem; right: 0.5rem; display: flex; gap: 0.3rem; z-index: 2;">
+              <button class="meme-edit-btn" data-key="${escapeHtml(meme._key)}" data-title="${escapeHtml(meme.title)}" title="Редактировать" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.15); color: white; width: 2rem; height: 2rem; border-radius: 50%; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;"><i class="fas fa-pen"></i></button>
+              <button class="meme-delete-btn" data-key="${escapeHtml(meme._key)}" title="Удалить" style="background: rgba(239,68,68,0.7); backdrop-filter: blur(4px); border: 1px solid rgba(239,68,68,0.3); color: white; width: 2rem; height: 2rem; border-radius: 50%; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;"><i class="fas fa-trash-can"></i></button>
+            </div>` : ''}
           `;
         }
-        item.addEventListener('click', () => openGalleryModal(displayUrl, meme.title, isVideo, meme._key));
+        item.addEventListener('click', (e) => {
+          // Не открываем модалку, если клик по кнопке управления
+          if (e.target.closest('.meme-edit-btn') || e.target.closest('.meme-delete-btn')) return;
+          openGalleryModal(displayUrl, meme.title, isVideo, meme._key);
+        });
         grid.appendChild(item);
+      });
+
+      // Обработчики для кнопок редактирования мема
+      grid.querySelectorAll('.meme-edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const memeKey = btn.dataset.key;
+          const currentTitle = btn.dataset.title;
+          if (memeKey) editMeme(memeKey, currentTitle);
+        });
+      });
+
+      // Обработчики для кнопок удаления мема
+      grid.querySelectorAll('.meme-delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const memeKey = btn.dataset.key;
+          if (memeKey) deleteMeme(memeKey);
+        });
       });
     }
 
@@ -3473,6 +3513,51 @@
             uploadBtn.style.cursor = '';
           }, 2000);
         });
+    }
+
+    // === УПРАВЛЕНИЕ СВОИМИ МЕМАМИ ===
+    function editMeme(memeKey, currentTitle) {
+      if (!firebaseInitialized || !memeKey) return;
+      
+      // Просим пользователя ввести новый заголовок
+      const newTitle = prompt('Введите новое название для мема:', currentTitle || '');
+      if (!newTitle || newTitle.trim() === '') return;
+      if (newTitle.trim() === currentTitle) return;
+      
+      const db = firebase.database();
+      db.ref('gallery_memes/' + memeKey + '/title').set(newTitle.trim())
+        .then(() => {
+          showNotification('Название мема обновлено! ✅', { type: 'success', duration: 3000 });
+        })
+        .catch((error) => {
+          console.error('[Firebase] Ошибка редактирования мема:', error);
+          showNotification('Ошибка при редактировании мема', { type: 'warning' });
+        });
+    }
+
+    function deleteMeme(memeKey) {
+      if (!firebaseInitialized || !memeKey) return;
+      
+      showConfirmDialog(
+        'Удалить мем?',
+        'Это действие нельзя отменить. Мем и все его комментарии будут удалены навсегда.',
+        'Удалить'
+      ).then((confirmed) => {
+        if (!confirmed) return;
+        
+        const db = firebase.database();
+        // Удаляем сам мем
+        db.ref('gallery_memes/' + memeKey).remove()
+          .then(() => {
+            // Удаляем комментарии к этому мему
+            db.ref('gallery_comments/' + memeKey).remove().catch(() => {});
+            showNotification('Мем удалён 🗑️', { type: 'success', duration: 3000 });
+          })
+          .catch((error) => {
+            console.error('[Firebase] Ошибка удаления мема:', error);
+            showNotification('Ошибка при удалении мема', { type: 'warning' });
+          });
+      });
     }
 
     // Тема
