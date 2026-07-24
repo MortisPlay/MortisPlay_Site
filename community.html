@@ -449,6 +449,49 @@
       color: var(--primary);
     }
 
+    /* Индикатор "печатает" */
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 1rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--glass-border);
+      background: rgba(0,0,0,0.15);
+      flex-shrink: 0;
+      min-height: 2rem;
+    }
+    .typing-indicator.show {
+      display: flex;
+    }
+    .typing-indicator .typing-dots {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+    .typing-indicator .typing-dots span {
+      width: 0.4rem;
+      height: 0.4rem;
+      border-radius: 50%;
+      background: var(--primary);
+      animation: typingBounce 1.4s ease-in-out infinite;
+    }
+    .typing-indicator .typing-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .typing-indicator .typing-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-0.3rem); opacity: 1; }
+    }
+    .typing-indicator .typing-name {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
     /* Галерея */
     .gallery-grid {
       display: grid;
@@ -785,6 +828,99 @@
       transform: none;
       box-shadow: none;
     }
+    /* Reply bar для комментариев */
+    .gallery-modal .comment-reply-bar {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      max-width: min(90vw, 700px);
+      padding: 0.3rem 0.75rem;
+      background: rgba(99, 102, 241, 0.12);
+      border-radius: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+    .gallery-modal .comment-reply-bar.show {
+      display: flex;
+    }
+    .gallery-modal .comment-reply-bar .reply-to-label {
+      font-weight: 600;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .gallery-modal .comment-reply-bar .reply-to-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+      min-width: 0;
+    }
+    .gallery-modal .comment-reply-bar .cancel-reply-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0.1rem 0.3rem;
+      border-radius: 0.3rem;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    .gallery-modal .comment-reply-bar .cancel-reply-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: #ef4444;
+    }
+    /* Reply индикатор в комментарии */
+    .gallery-modal .comments-section .comment .comment-reply-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.15rem 0.4rem;
+      margin-bottom: 0.2rem;
+      background: rgba(255,255,255,0.06);
+      border-radius: 0.4rem;
+      border-left: 2px solid var(--primary);
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+    }
+    .gallery-modal .comments-section .comment .comment-reply-indicator i {
+      font-size: 0.5rem;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .gallery-modal .comments-section .comment .comment-reply-indicator .reply-author {
+      font-weight: 600;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .gallery-modal .comments-section .comment .comment-reply-indicator .reply-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
+    .gallery-modal .comments-section .comment .comment-reply-btn {
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      padding: 0.1rem 0.25rem;
+      border-radius: 0.3rem;
+      flex-shrink: 0;
+      margin-left: 0.2rem;
+    }
+    .gallery-modal .comments-section .comment:hover .comment-reply-btn {
+      opacity: 0.6;
+    }
+    .gallery-modal .comments-section .comment .comment-reply-btn:hover {
+      opacity: 1;
+      background: rgba(99, 102, 241, 0.15);
+    }
 
     /* Форма добавления мема */
     .upload-form {
@@ -938,6 +1074,84 @@
       }
     }
 
+    /* Реакции на сообщения в чате */
+    .chat-message .reactions-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      margin-top: 0.3rem;
+      margin-left: 3.25rem;
+    }
+    .chat-message .reactions-bar .reaction {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .chat-message .reactions-bar .reaction:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: var(--glass-border);
+    }
+    .chat-message .reactions-bar .reaction.active {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--primary);
+    }
+    .chat-message .reactions-bar .reaction .reaction-emoji {
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+    .chat-message .reactions-bar .reaction .reaction-count {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .chat-message .reactions-bar .reaction.active .reaction-count {
+      color: var(--primary);
+    }
+    /* Панель выбора реакций (появляется при наведении) */
+    .chat-message .reaction-picker {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      display: none;
+      gap: 0.15rem;
+      padding: 0.3rem 0.5rem;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      z-index: 10;
+      white-space: nowrap;
+    }
+    .chat-message .reaction-picker.show {
+      display: flex;
+    }
+    .chat-message .reaction-picker .rp-btn {
+      font-size: 1.2rem;
+      padding: 0.2rem 0.3rem;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+      background: none;
+      border: none;
+      line-height: 1;
+    }
+    .chat-message .reaction-picker .rp-btn:hover {
+      transform: scale(1.3);
+      background: rgba(255,255,255,0.1);
+    }
+    .chat-message {
+      position: relative;
+    }
+
     .notification {
       position: fixed; bottom: 1rem; left: 50%; transform: translate(-50%, 120%);
       background: linear-gradient(135deg, rgba(15,23,42,0.92), rgba(30,41,59,0.88));
@@ -1069,6 +1283,10 @@
                 <p>Напиши что-нибудь, чтобы начать общение</p>
               </div>
             </div>
+            <div class="typing-indicator" id="typingIndicator">
+              <div class="typing-dots"><span></span><span></span><span></span></div>
+              <span><span class="typing-name" id="typingName"></span> печатает...</span>
+            </div>
             <div id="chatReplyBar">
               <i class="fas fa-reply-all" style="color: var(--primary);"></i>
               <span class="reply-to-label">Ответ на</span>
@@ -1186,6 +1404,12 @@
       </div>
       <div class="comments-section" id="galleryCommentsSection">
         <div class="no-comments" id="galleryNoComments">Нет комментариев. Будьте первым!</div>
+      </div>
+      <div class="comment-reply-bar" id="commentReplyBar">
+        <i class="fas fa-reply-all" style="color: var(--primary);"></i>
+        <span class="reply-to-label">Ответ на</span>
+        <span class="reply-to-text" id="commentReplyText"></span>
+        <button class="cancel-reply-btn" id="commentCancelReply" title="Отменить"><i class="fas fa-times"></i></button>
       </div>
       <div class="comment-input-area">
         <input type="text" id="galleryCommentInput" placeholder="Написать комментарий..." maxlength="200" />
@@ -1325,6 +1549,94 @@
       replyingTo = null;
       const bar = document.getElementById('chatReplyBar');
       if (bar) bar.style.display = 'none';
+    }
+
+    // === ИНДИКАТОР "ПЕЧАТАЕТ" (TYPING INDICATOR) ===
+    let typingTimeout = null;
+    let typingHeartbeatInterval = null;
+    const TYPING_TIMEOUT_MS = 3000;
+    const TYPING_HEARTBEAT_MS = 2000;
+
+    function sendTypingIndicator() {
+      if (!firebaseInitialized || !currentUsername) return;
+      const db = firebase.database();
+      db.ref('typing_indicator/' + currentUsername).set({
+        username: currentUsername,
+        timestamp: Date.now()
+      });
+    }
+
+    function startTypingHeartbeat() {
+      stopTypingHeartbeat();
+      sendTypingIndicator();
+      typingHeartbeatInterval = setInterval(sendTypingIndicator, TYPING_HEARTBEAT_MS);
+    }
+
+    function stopTypingHeartbeat() {
+      if (typingHeartbeatInterval) {
+        clearInterval(typingHeartbeatInterval);
+        typingHeartbeatInterval = null;
+      }
+      if (firebaseInitialized && currentUsername) {
+        const db = firebase.database();
+        db.ref('typing_indicator/' + currentUsername).remove();
+      }
+    }
+
+    function onChatInput() {
+      const input = document.getElementById('chatInput');
+      if (!input) return;
+      const text = input.value.trim();
+      if (text.length > 0) {
+        startTypingHeartbeat();
+        // Сбрасываем таймер автопрятания
+        if (typingTimeout) clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+          stopTypingHeartbeat();
+        }, TYPING_TIMEOUT_MS);
+      } else {
+        stopTypingHeartbeat();
+      }
+    }
+
+    function attachTypingListener() {
+      if (!firebaseInitialized) return;
+      const db = firebase.database();
+      const typingRef = db.ref('typing_indicator');
+
+      typingRef.on('value', (snapshot) => {
+        const indicator = document.getElementById('typingIndicator');
+        const nameEl = document.getElementById('typingName');
+        if (!indicator || !nameEl) return;
+
+        const now = Date.now();
+        let typingUsers = [];
+
+        snapshot.forEach((child) => {
+          const data = child.val();
+          if (data && data.username && data.timestamp) {
+            // Не показываем "печатает" для самого себя
+            if (data.username === currentUsername) return;
+            if (now - data.timestamp < TYPING_TIMEOUT_MS + 1000) {
+              typingUsers.push(data.username);
+            }
+          }
+        });
+
+        if (typingUsers.length > 0) {
+          const names = [...new Set(typingUsers)];
+          if (names.length === 1) {
+            nameEl.textContent = names[0];
+          } else if (names.length === 2) {
+            nameEl.textContent = names[0] + ' и ' + names[1];
+          } else {
+            nameEl.textContent = names[0] + ' и ещё ' + (names.length - 1);
+          }
+          indicator.classList.add('show');
+        } else {
+          indicator.classList.remove('show');
+        }
+      });
     }
 
     // Бета-шапка с предупреждением о багах
@@ -1704,6 +2016,26 @@
           replyHtml = `<div class="reply-indicator"><i class="fas fa-reply-all"></i><span class="reply-author">${escapeHtml(msg.replyTo.username)}</span><span class="reply-text">${escapeHtml(replyText)}</span></div>`;
         }
 
+        // Реакции для этого сообщения
+        const msgId = msg._key || '';
+        let reactionsHtml = '';
+        if (msgId && messageReactions[msgId]) {
+          const reactionEntries = Object.entries(messageReactions[msgId]);
+          if (reactionEntries.length > 0) {
+            reactionsHtml = '<div class="reactions-bar">';
+            reactionEntries.forEach(([emoji, data]) => {
+              const isActive = data.users && data.users[currentUsername];
+              reactionsHtml += `<span class="reaction${isActive ? ' active' : ''}" data-msgid="${msgId}" data-emoji="${emoji}"><span class="reaction-emoji">${emoji}</span><span class="reaction-count">${data.count}</span></span>`;
+            });
+            reactionsHtml += '</div>';
+          }
+        }
+
+        // Панель выбора реакций
+        const pickerEmojis = REACTION_EMOJIS.map(e =>
+          `<button class="rp-btn" data-msgid="${msgId}" data-emoji="${e}">${e}</button>`
+        ).join('');
+
         div.innerHTML = `
           ${avatarHtml}
           <div class="bubble" ${msgColor ? `style="background: ${msgColor}22; border-color: ${msgColor}44;"` : ''}>
@@ -1712,7 +2044,11 @@
             ${replyHtml}
             <div class="text">${escapeHtml(msg.text)}</div>
             <div class="time">${time} <button class="reply-btn" data-username="${escapeHtml(msg.username || 'Аноним')}" data-text="${escapeHtml(msg.text.slice(0, 80))}" title="Ответить"><i class="fas fa-reply"></i></button></div>
+            <div class="reaction-picker" id="rp-${msgId}">
+              ${pickerEmojis}
+            </div>
           </div>
+          ${reactionsHtml}
         `;
         container.appendChild(div);
       });
@@ -1727,6 +2063,60 @@
         });
       });
 
+      // Обработчики для реакций (клик на существующую реакцию — toggle)
+      container.querySelectorAll('.reactions-bar .reaction').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const msgId = el.dataset.msgid;
+          const emoji = el.dataset.emoji;
+          if (msgId && emoji) toggleReaction(msgId, emoji);
+        });
+      });
+
+      // Обработчики для кнопок выбора реакции
+      container.querySelectorAll('.rp-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const msgId = btn.dataset.msgid;
+          const emoji = btn.dataset.emoji;
+          if (msgId && emoji) {
+            toggleReaction(msgId, emoji);
+            // Скрываем picker после выбора
+            const picker = document.getElementById('rp-' + msgId);
+            if (picker) picker.classList.remove('show');
+          }
+        });
+      });
+
+      // Показываем reaction picker при наведении на bubble
+      container.querySelectorAll('.bubble').forEach(bubble => {
+        let pickerTimer = null;
+        bubble.addEventListener('mouseenter', () => {
+          const picker = bubble.querySelector('.reaction-picker');
+          if (picker) {
+            clearTimeout(pickerTimer);
+            pickerTimer = setTimeout(() => picker.classList.add('show'), 300);
+          }
+        });
+        bubble.addEventListener('mouseleave', () => {
+          const picker = bubble.querySelector('.reaction-picker');
+          if (picker) {
+            clearTimeout(pickerTimer);
+            pickerTimer = setTimeout(() => picker.classList.remove('show'), 500);
+          }
+        });
+        // Также показываем при входе в сам picker
+        const picker = bubble.querySelector('.reaction-picker');
+        if (picker) {
+          picker.addEventListener('mouseenter', () => {
+            clearTimeout(pickerTimer);
+          });
+          picker.addEventListener('mouseleave', () => {
+            pickerTimer = setTimeout(() => picker.classList.remove('show'), 300);
+          });
+        }
+      });
+
       container.scrollTop = container.scrollHeight;
     }
 
@@ -1734,6 +2124,58 @@
       const div = document.createElement('div');
       div.textContent = text;
       return div.innerHTML;
+    }
+
+    // === РЕАКЦИИ НА СООБЩЕНИЯ В ЧАТЕ ===
+    const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '🔥'];
+    let messageReactions = {}; // { messageId: { reaction: { count, users: { [username]: true } } } }
+    let reactionsListenerAttached = false;
+
+    function toggleReaction(messageId, emoji) {
+      if (!firebaseInitialized || !currentUsername) {
+        showNotification('Войдите в профиль, чтобы ставить реакции', { type: 'warning' });
+        return;
+      }
+      const db = firebase.database();
+      const reactionRef = db.ref('message_reactions/' + messageId + '/' + emoji + '/users/' + currentUsername);
+      
+      // Проверяем, есть ли уже такая реакция от пользователя
+      const existing = messageReactions[messageId] && messageReactions[messageId][emoji] && messageReactions[messageId][emoji].users && messageReactions[messageId][emoji].users[currentUsername];
+      
+      if (existing) {
+        // Убираем реакцию (toggle off)
+        reactionRef.remove();
+      } else {
+        // Ставим реакцию (toggle on)
+        reactionRef.set(true);
+      }
+    }
+
+    function attachReactionsListener() {
+      if (reactionsListenerAttached || !firebaseInitialized) return;
+      reactionsListenerAttached = true;
+
+      const db = firebase.database();
+      const reactionsRef = db.ref('message_reactions');
+
+      reactionsRef.on('value', (snapshot) => {
+        messageReactions = {};
+        const data = snapshot.val();
+        if (data) {
+          Object.keys(data).forEach(msgId => {
+            messageReactions[msgId] = {};
+            Object.keys(data[msgId]).forEach(emoji => {
+              const users = data[msgId][emoji].users || {};
+              const count = Object.keys(users).length;
+              messageReactions[msgId][emoji] = { count, users };
+            });
+          });
+        }
+        // Перерисовываем чат, чтобы обновить отображение реакций
+        renderChatMessages();
+      }, (error) => {
+        console.error('[Firebase] Ошибка чтения реакций:', error);
+      });
     }
 
     // Подключаемся к Firebase и слушаем сообщения
@@ -1748,7 +2190,9 @@
       messagesRef.orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
         chatMessages = [];
         snapshot.forEach((child) => {
-          chatMessages.push(child.val());
+          const msg = child.val();
+          msg._key = child.key; // Сохраняем ключ для реакций
+          chatMessages.push(msg);
         });
         renderChatMessages();
       }, (error) => {
@@ -2031,6 +2475,12 @@
         
         // Подключаем галерею
         attachGalleryListener();
+        
+        // Подключаем индикатор "печатает"
+        attachTypingListener();
+        
+        // Подключаем реакции на сообщения
+        attachReactionsListener();
       }
       
       if (firebaseInitialized) {
@@ -2053,8 +2503,13 @@
 
       sendBtn.addEventListener('click', sendMessage);
       chatInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') sendMessage();
+        if (e.key === 'Enter') {
+          sendMessage();
+          stopTypingHeartbeat();
+        }
       });
+      chatInput.addEventListener('input', onChatInput);
+      chatInput.addEventListener('blur', stopTypingHeartbeat);
       
       // Кнопка отмены reply
       document.getElementById('chatCancelReply')?.addEventListener('click', cancelReply);
@@ -2073,6 +2528,8 @@
           if (e.key === 'Enter') sendComment();
         });
       }
+      // Кнопка отмены reply в комментариях
+      document.getElementById('commentCancelReply')?.addEventListener('click', cancelCommentReply);
     });
 
     // === ГАЛЕРЕЯ МЕМОВ (Firebase) ===
@@ -2141,6 +2598,26 @@
     }
 
     // === КОММЕНТАРИИ К МЕМАМ ===
+    let commentReplyingTo = null; // { author, text } для reply в комментариях
+
+    function setCommentReply(c) {
+      commentReplyingTo = {
+        author: c.author || 'Аноним',
+        text: (c.text || '').slice(0, 80)
+      };
+      const bar = document.getElementById('commentReplyBar');
+      const textEl = document.getElementById('commentReplyText');
+      if (bar) bar.classList.add('show');
+      if (textEl) textEl.textContent = `${commentReplyingTo.author}: ${commentReplyingTo.text}`;
+      document.getElementById('galleryCommentInput')?.focus();
+    }
+
+    function cancelCommentReply() {
+      commentReplyingTo = null;
+      const bar = document.getElementById('commentReplyBar');
+      if (bar) bar.classList.remove('show');
+    }
+
     function renderComments(comments) {
       const section = document.getElementById('galleryCommentsSection');
       const countEl = document.getElementById('commentCount');
@@ -2171,6 +2648,17 @@
           currentUserProfile.nickname === c.author ||
           isOfficialUser(currentUserProfile)
         );
+
+        // Reply-индикатор (если комментарий является ответом)
+        let replyHtml = '';
+        if (c.replyTo && c.replyTo.author) {
+          const replyText = (c.replyTo.text || '').slice(0, 60);
+          replyHtml = `<div class="comment-reply-indicator"><i class="fas fa-reply-all"></i><span class="reply-author">${escapeHtml(c.replyTo.author)}</span><span class="reply-text">${escapeHtml(replyText)}</span></div>`;
+        }
+
+        // Данные для reply (экранированные)
+        const replyAuthor = escapeHtml(c.author || 'Аноним');
+        const replyText = escapeHtml((c.text || '').slice(0, 80));
         
         div.innerHTML = `
           <div class="comment-avatar">${escapeHtml(avatarLetter)}</div>
@@ -2179,9 +2667,11 @@
               <span class="comment-author">${escapeHtml(c.author || 'Аноним')}</span>
               <span class="comment-text">${escapeHtml(c.text)}</span>
             </div>
+            ${replyHtml}
             <div class="comment-meta">
               <span class="comment-time">${time}</span>
               <span class="comment-date">${date}</span>
+              <button class="comment-reply-btn" data-author="${replyAuthor}" data-text="${replyText}" title="Ответить"><i class="fas fa-reply"></i></button>
             </div>
           </div>
           ${canDelete ? `<button class="comment-delete-btn" data-key="${key}" title="Удалить комментарий"><i class="fas fa-trash-can"></i></button>` : ''}
@@ -2198,6 +2688,16 @@
           if (commentKey && confirm('Удалить комментарий?')) {
             deleteComment(commentKey);
           }
+        });
+      });
+
+      // Обработчики для кнопок "Ответить" в комментариях
+      section.querySelectorAll('.comment-reply-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const author = btn.dataset.author || 'Аноним';
+          const text = btn.dataset.text || '';
+          setCommentReply({ author, text });
         });
       });
     }
@@ -2248,10 +2748,19 @@
         timestamp: Date.now()
       };
 
+      // Добавляем replyTo, если есть активный reply
+      if (commentReplyingTo) {
+        comment.replyTo = {
+          author: commentReplyingTo.author,
+          text: commentReplyingTo.text
+        };
+      }
+
       const db = firebase.database();
       db.ref('gallery_comments/' + currentMemeId + '/comments').push(comment)
         .then(() => {
           input.value = '';
+          cancelCommentReply();
           // Уведомление на главную страницу
           sendCommunityNotification(
             `💬 Новый комментарий к мему от ${author}`,
@@ -2460,6 +2969,9 @@
       try { sessionStorage.setItem('community_notification_pending', data); } catch(e) {}
       // Дополнительно: сохраняем timestamp, чтобы при фокусе на index.html проверить свежесть
       try { sessionStorage.setItem('community_notification_ts', Date.now().toString()); } catch(e) {}
+      // Показываем уведомление локально на community.html (т.к. localStorage.setItem
+      // не триггерит событие 'storage' в той же вкладке)
+      showNotification(message, { type, duration });
     }
 
     // === УВЕДОМЛЕНИЯ ===
