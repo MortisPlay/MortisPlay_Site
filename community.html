@@ -2355,13 +2355,6 @@
         
         // Пропускаем уведомления для своих же сообщений
         if (msg.username === currentUsername) return;
-        
-        // Отправляем уведомление на index.html (через localStorage)
-        // и Push-уведомление (системное)
-        sendCommunityNotification(
-          `💬 Новое сообщение в чате от ${msg.username || 'Аноним'}`,
-          { type: 'info', duration: 4000, subCategory: 'community-chat' }
-        );
       });
     }
 
@@ -2559,12 +2552,6 @@
           cancelReply();
           // Показываем всплывающее уведомление, что сообщение отправлено
           showNotification('✅ Сообщение отправлено', { type: 'success', duration: 2000 });
-          // Уведомление на главную страницу (без локального showNotification и Push —
-          // своё сообщение не нужно дублировать)
-          sendCommunityNotification(
-            `💬 Новое сообщение в чате от ${currentUsername || 'Аноним'}`,
-            { type: 'info', duration: 4000, subCategory: 'community-chat' }
-          );
         })
         .catch((error) => {
           console.error('[Firebase] Ошибка отправки:', error);
@@ -3016,11 +3003,6 @@
         .then(() => {
           input.value = '';
           cancelCommentReply();
-          // Уведомление на главную страницу
-          sendCommunityNotification(
-            `💬 Новый комментарий к мему от ${author}`,
-            { type: 'info', duration: 4000, subCategory: 'community-comments' }
-          );
         })
         .catch((error) => {
           console.error('[Firebase] Ошибка отправки комментария:', error);
@@ -3267,10 +3249,6 @@
             titleInput.value = '';
             authorInput.value = '';
             showNotification('Мем добавлен в галерею! 🎉', { type: 'success', duration: 3000 });
-            sendCommunityNotification(
-              `🖼️ Новый мем в галерее: "${title}" от ${author}`,
-              { type: 'info', duration: 5000, subCategory: 'community-memes' }
-            );
             uploadBtn.disabled = false;
             uploadBtn.style.opacity = '';
             uploadBtn.style.cursor = '';
@@ -3296,31 +3274,12 @@
         });
     }
 
-    // === ОТПРАВКА УВЕДОМЛЕНИЙ НА ГЛАВНУЮ СТРАНИЦУ (index.html) И ЛОКАЛЬНО ===
-    function sendCommunityNotification(message, options = {}) {
-      const { type = 'info', duration = 4000, title = 'Зал комьюнити', subCategory = 'community' } = options;
-      const data = JSON.stringify({ message, type, duration, title, subCategory });
-      // Для кросс-вкладочной синхронизации (когда index.html открыт в другой вкладке)
-      try { localStorage.setItem('community_notification', data); } catch(e) {}
-      // Для случая, когда index.html загрузится позже — сохраняем в sessionStorage
-      try { sessionStorage.setItem('community_notification_pending', data); } catch(e) {}
-      // Дополнительно: сохраняем timestamp, чтобы при фокусе на index.html проверить свежесть
-      try { sessionStorage.setItem('community_notification_ts', Date.now().toString()); } catch(e) {}
-      
-      // Для новых сообщений чата — не показываем всплывающее уведомление на странице
-      // (сообщения и так видны в реальном времени в чате).
-      // Но Push-уведомление (системное) отправляем всегда, чтобы оно пришло,
-      // даже если пользователь свернул окно или переключился на другую вкладку.
-      if (subCategory !== 'community-chat') {
-        // Показываем уведомление локально на community.html (для комментариев и новых мемов)
-        showNotification(message, { type, duration });
-      }
-      
-      // Отправляем Push-уведомление (системное уведомление браузера) ВСЕГДА,
-      // включая новые сообщения чата — чтобы уведомление пришло, даже если
-      // пользователь свернул окно или находится на другой вкладке
-      sendPushNotification(title, message, { tag: 'community-' + Date.now(), url: '/community.html' });
-    }
+    // Тема
+    document.addEventListener('DOMContentLoaded', async () => {
+      const saved = localStorage.getItem('theme');
+      const shouldUseDark = saved === 'dark' || saved === null || saved === undefined;
+      document.body.classList.toggle('light-theme', !shouldUseDark);
+    });
 
     // === УВЕДОМЛЕНИЯ ===
     function showNotification(message, options = {}) {
@@ -3347,137 +3306,6 @@
     function hideNotification() {
       document.getElementById('notification').classList.remove('show');
     }
-
-    // === PUSH-УВЕДОМЛЕНИЯ (Notification API) ===
-    let swRegistration = null;
-
-    async function registerServiceWorker() {
-      if (!('serviceWorker' in navigator)) {
-        console.log('[SW] Service Worker не поддерживается');
-        return null;
-      }
-      try {
-        const registration = await navigator.serviceWorker.register('/sw.js');
-        swRegistration = registration;
-        console.log('[SW] Service Worker зарегистрирован');
-        return registration;
-      } catch (err) {
-        console.warn('[SW] Ошибка регистрации:', err);
-        return null;
-      }
-    }
-
-    async function requestNotificationPermission() {
-      if (!('Notification' in window)) {
-        console.log('[Push] Notification API не поддерживается');
-        return false;
-      }
-      if (Notification.permission === 'granted') return true;
-      if (Notification.permission === 'denied') return false;
-      try {
-        const permission = await Notification.requestPermission();
-        return permission === 'granted';
-      } catch (err) {
-        console.warn('[Push] Ошибка запроса разрешения:', err);
-        return false;
-      }
-    }
-
-    function sendPushNotification(title, body, options = {}) {
-      const settings = getSiteSettings();
-      if (settings.communityNotifications === false) return;
-      if (settings.communityNotifyPush === false) return;
-
-      const { icon = '/assets/photo.jpg', tag = 'community-notification', url = '/community.html', silent = false } = options;
-
-      // Вспомогательная функция: отправка через Service Worker
-      function trySendViaSW(registration) {
-        if (registration && registration.active) {
-          try {
-            registration.active.postMessage({
-              type: 'SHOW_NOTIFICATION',
-              payload: { title, body, icon, tag, data: { url } }
-            });
-            return true;
-          } catch (err) {
-            console.warn('[Push] Ошибка SW postMessage:', err);
-          }
-        }
-        return false;
-      }
-
-      // 1. Пробуем через сохранённую регистрацию
-      if (trySendViaSW(swRegistration)) return;
-
-      // 2. Пробуем дождаться готового Service Worker (navigator.serviceWorker.ready)
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.ready.then((registration) => {
-          if (trySendViaSW(registration)) return;
-          // Если SW не active — fallback на Notification API
-          sendFallbackNotification();
-        }).catch(() => {
-          sendFallbackNotification();
-        });
-      } else {
-        sendFallbackNotification();
-      }
-
-      function sendFallbackNotification() {
-        // 3. Fallback: через Notification API напрямую
-        if ('Notification' in window && Notification.permission === 'granted') {
-          try {
-            const notif = new Notification(title, {
-              body: body,
-              icon: icon,
-              badge: '/images/favicon.ico',
-              tag: tag,
-              data: { url },
-              requireInteraction: true,
-              silent: silent
-            });
-            // Обработка клика по уведомлению (fallback)
-            notif.onclick = function(e) {
-              e.preventDefault();
-              window.focus();
-              if (url) window.open(url, '_blank');
-              notif.close();
-            };
-          } catch (err) {
-            console.warn('[Push] Ошибка Notification API:', err);
-          }
-        } else {
-          console.log('[Push] Notification не отправлено: permission=' + Notification.permission + ', swRegistration=' + (swRegistration ? 'ok' : 'null'));
-        }
-      }
-    }
-
-    function getSiteSettings() {
-      const saved = localStorage.getItem('site-settings');
-      let settings = { communityNotifications: true, communityNotifyPush: true, communityNotifySound: true };
-      try {
-        if (saved) settings = { ...settings, ...JSON.parse(saved) };
-      } catch (e) {}
-      return settings;
-    }
-
-    // При загрузке community.html — устанавливаем флаг, что пользователь БЫЛ в зале комьюнити
-    // Это нужно, чтобы на index.html не показывались уведомления из чата/мемов/комментариев,
-    // если пользователь уже открывал community.html в текущей сессии
-    sessionStorage.setItem('community_visited', 'true');
-
-    // Тема
-    document.addEventListener('DOMContentLoaded', async () => {
-      const saved = localStorage.getItem('theme');
-      const shouldUseDark = saved === 'dark' || saved === null || saved === undefined;
-      document.body.classList.toggle('light-theme', !shouldUseDark);
-
-      // Регистрируем Service Worker для Push-уведомлений (с await, чтобы swRegistration был готов)
-      await registerServiceWorker();
-      // Запрашиваем разрешение на уведомления (не блокируем инициализацию)
-      requestNotificationPermission().then(granted => {
-        if (granted) console.log('[Push] Разрешение на уведомления получено');
-      });
-    });
 
     // === АНИМИРОВАННЫЕ ЧАСТИЦЫ НА ФОНЕ ===
     function initParticles() {

@@ -1283,40 +1283,6 @@
         <div class="rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
           <label class="flex items-center justify-between">
             <div>
-              <div class="font-medium">
-                <i class="fas fa-users" style="color: var(--primary);"></i>
-                Уведомления из Зала комьюнити
-              </div>
-              <div class="text-sm mt-1" style="color: var(--text-secondary);">События в чате, мемах и комментариях</div>
-            </div>
-            <input id="communityNotificationsToggle" type="checkbox" class="w-5 h-5 accent-indigo-500" checked>
-          </label>
-          <div class="mt-3 space-y-2 pl-1" id="communitySubSettings">
-            <label class="flex items-center justify-between rounded-lg px-3 py-2 text-sm" style="background: rgba(255,255,255,0.05);">
-              <span><i class="fas fa-comment-dots" style="color: var(--primary);"></i> Новые сообщения в чате</span>
-              <input id="communityNotifyChat" type="checkbox" class="w-4 h-4 accent-indigo-500" checked>
-            </label>
-            <label class="flex items-center justify-between rounded-lg px-3 py-2 text-sm" style="background: rgba(255,255,255,0.05);">
-              <span><i class="fas fa-image" style="color: #22c55e;"></i> Новые мемы в галерее</span>
-              <input id="communityNotifyMemes" type="checkbox" class="w-4 h-4 accent-indigo-500" checked>
-            </label>
-            <label class="flex items-center justify-between rounded-lg px-3 py-2 text-sm" style="background: rgba(255,255,255,0.05);">
-              <span><i class="fas fa-comments" style="color: #f59e0b;"></i> Новые комментарии к мемам</span>
-              <input id="communityNotifyComments" type="checkbox" class="w-4 h-4 accent-indigo-500" checked>
-            </label>
-            <label class="flex items-center justify-between rounded-lg px-3 py-2 text-sm" style="background: rgba(255,255,255,0.05);">
-              <span><i class="fas fa-bell" style="color: #ec4899;"></i> Push-уведомления (на телефон/ПК)</span>
-              <input id="communityNotifyPush" type="checkbox" class="w-4 h-4 accent-indigo-500" checked>
-            </label>
-            <label class="flex items-center justify-between rounded-lg px-3 py-2 text-sm" style="background: rgba(255,255,255,0.05);">
-              <span><i class="fas fa-volume-up" style="color: #8b5cf6;"></i> Звук уведомления</span>
-              <input id="communityNotifySound" type="checkbox" class="w-4 h-4 accent-indigo-500" checked>
-            </label>
-          </div>
-        </div>
-        <div class="rounded-xl p-3 border" style="border-color: var(--glass-border); background: rgba(255,255,255,0.08);">
-          <label class="flex items-center justify-between">
-            <div>
               <div class="font-medium">Персональные уведомления</div>
               <div class="text-sm mt-1" style="color: var(--text-secondary);">Более точные напоминания и подборки.</div>
             </div>
@@ -1677,13 +1643,10 @@
         <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">4. EmailJS</h4>
         <p>Для отправки кодов подтверждения при регистрации, смене email и восстановлении пароля мы используем сервис EmailJS. При отправке письма передаются: ваш email, никнейм и код подтверждения. EmailJS не хранит эти данные и использует их только для доставки письма.</p>
         
-        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">5. Push-уведомления и Service Worker</h4>
-        <p>Сайт использует Service Worker (<code>/sw.js</code>) для отправки push-уведомлений о новых сообщениях в чате. Уведомления отправляются только при активном разрешении браузера. Вы можете отключить уведомления в настройках Сайта или браузера.</p>
-        
-        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">6. Cookie и аналитика</h4>
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">5. Cookie и аналитика</h4>
         <p>Мы используем Google Analytics для сбора анонимной статистики посещений (просмотры страниц, время на сайте, действия). Google Analytics может использовать cookie для идентификации уникальных посетителей. Вы можете отключить cookie в настройках браузера или использовать режим инкогнито.</p>
         
-        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">7. Передача данных третьим лицам</h4>
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">6. Передача данных третьим лицам</h4>
         <p>Мы не продаём и не передаём ваши персональные данные третьим лицам, за исключением:</p>
         <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
           <li><strong>Google (Firebase)</strong> — для хранения и синхронизации данных</li>
@@ -1691,7 +1654,7 @@
           <li><strong>Google Analytics</strong> — для анонимной статистики</li>
         </ul>
         
-        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">8. Ваши права</h4>
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">7. Ваши права</h4>
         <p>Вы имеете право:</p>
         <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
           <li>Запросить удаление ваших данных из Firebase, написав на <a href="mailto:mortisplay@mail.ru" style="color: var(--primary);">mortisplay@mail.ru</a></li>
@@ -2252,11 +2215,6 @@
         if (category === 'channel-video' && settings.notifyNewVideos === false) return false;
         if (category === 'site-update' && settings.personalNotifications === false) return false;
         if (category === 'site-update' && settings.notifySiteUpdates === false) return false;
-        if (category === 'community' && settings.communityNotifications === false) return false;
-        // Под-категории уведомлений из Зала комьюнити
-        if (category === 'community-chat' && settings.communityNotifyChat === false) return false;
-        if (category === 'community-memes' && settings.communityNotifyMemes === false) return false;
-        if (category === 'community-comments' && settings.communityNotifyComments === false) return false;
         return true;
     }
 
@@ -2293,141 +2251,6 @@
         notification._hideTimer = window.setTimeout(() => notification.classList.remove('show'), duration);
     }
     
-    function hideNotification() { document.getElementById('notification').classList.remove('show'); }
-
-    // === SERVICE WORKER И PUSH-УВЕДОМЛЕНИЯ ===
-    let swRegistration = null;
-
-    async function registerServiceWorker() {
-        if (!('serviceWorker' in navigator)) {
-            console.log('[SW] Service Worker не поддерживается');
-            return null;
-        }
-        try {
-            const registration = await navigator.serviceWorker.register('/sw.js');
-            swRegistration = registration;
-            console.log('[SW] Service Worker зарегистрирован');
-            return registration;
-        } catch (err) {
-            console.warn('[SW] Ошибка регистрации:', err);
-            return null;
-        }
-    }
-
-    async function requestNotificationPermission() {
-        if (!('Notification' in window)) {
-            console.log('[Push] Notification API не поддерживается');
-            return false;
-        }
-        if (Notification.permission === 'granted') return true;
-        if (Notification.permission === 'denied') return false;
-        
-        try {
-            const permission = await Notification.requestPermission();
-            return permission === 'granted';
-        } catch (err) {
-            console.warn('[Push] Ошибка запроса разрешения:', err);
-            return false;
-        }
-    }
-
-    function sendPushNotification(title, body, options = {}) {
-        const settings = getSiteSettings();
-        if (settings.communityNotifications === false) return;
-        if (settings.communityNotifyPush === false) return; // Push-уведомления отключены в настройках
-        
-        const { icon = '/assets/photo.jpg', tag = 'community-notification', url = '/community.html', silent = false } = options;
-        
-        // Вспомогательная функция: отправка через Service Worker
-        function trySendViaSW(registration) {
-            if (registration && registration.active) {
-                try {
-                    registration.active.postMessage({
-                        type: 'SHOW_NOTIFICATION',
-                        payload: { title, body, icon, tag, data: { url } }
-                    });
-                    return true;
-                } catch (err) {
-                    console.warn('[Push] Ошибка SW postMessage:', err);
-                }
-            }
-            return false;
-        }
-        
-        // 1. Пробуем через сохранённую регистрацию
-        if (trySendViaSW(swRegistration)) return;
-        
-        // 2. Пробуем дождаться готового Service Worker (navigator.serviceWorker.ready)
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.ready.then((registration) => {
-                if (trySendViaSW(registration)) return;
-                // Если SW не active — fallback на Notification API
-                sendFallbackNotification();
-            }).catch(() => {
-                sendFallbackNotification();
-            });
-        } else {
-            sendFallbackNotification();
-        }
-        
-        function sendFallbackNotification() {
-            // 3. Fallback: через Notification API напрямую
-            if ('Notification' in window && Notification.permission === 'granted') {
-                try {
-                    const notif = new Notification(title, {
-                        body: body,
-                        icon: icon,
-                        badge: '/images/favicon.ico',
-                        tag: tag,
-                        data: { url },
-                        requireInteraction: true,
-                        silent: silent
-                    });
-                    // Обработка клика по уведомлению (fallback)
-                    notif.onclick = function(e) {
-                        e.preventDefault();
-                        window.focus();
-                        if (url) window.open(url, '_blank');
-                        notif.close();
-                    };
-                } catch (err) {
-                    console.warn('[Push] Ошибка Notification API:', err);
-                }
-            } else {
-                console.log('[Push] Notification не отправлено: permission=' + Notification.permission + ', swRegistration=' + (swRegistration ? 'ok' : 'null'));
-            }
-        }
-    }
-
-    // Воспроизведение звука уведомления
-    function playNotificationSound() {
-        const settings = getSiteSettings();
-        if (settings.communityNotifySound === false) return;
-        try {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            // Приятный двухтональный звук
-            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
-            oscillator.frequency.setValueAtTime(1100, audioCtx.currentTime + 0.1);
-            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            
-            oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + 0.3);
-        } catch (err) {
-            // AudioContext может быть заблокирован браузером — игнорируем
-        }
-    }
-
-    // Слушаем клики по уведомлениям (для fallback через Notification API)
-    document.addEventListener('click', (e) => {
-        // Обработка будет в SW, но на случай если SW не активен
-    });
-
     function openSettingsModal() {
         const modal = document.getElementById('settingsModal');
         modal.classList.add('show');
@@ -3981,7 +3804,7 @@
     function getSiteSettings() {
         const saved = localStorage.getItem('site-settings');
         const isMobileViewport = () => window.matchMedia('(max-width: 768px)').matches;
-        let settings = { animations: true, notifications: true, glass: !isMobileViewport(), updateNotice: true, personalNotifications: true, notifyNewVideos: true, notifySiteUpdates: true, communityNotifications: true, communityNotifyChat: true, communityNotifyMemes: true, communityNotifyComments: true, communityNotifyPush: true, communityNotifySound: true };
+        let settings = { animations: true, notifications: true, glass: !isMobileViewport(), updateNotice: true, personalNotifications: true, notifyNewVideos: true, notifySiteUpdates: true };
         try {
             if (saved) settings = { ...settings, ...JSON.parse(saved) };
         } catch (e) {}
@@ -3995,7 +3818,6 @@
         document.body.classList.toggle('notifications-off', settings.notifications === false);
         document.body.classList.toggle('reduced-glass', settings.glass === false);
         document.body.classList.toggle('personal-notifications-off', settings.personalNotifications === false);
-        document.body.classList.toggle('community-notifications-off', settings.communityNotifications === false);
 
         const animationsToggle = document.getElementById('animationsToggle');
         const notificationsToggle = document.getElementById('notificationsToggle');
@@ -4004,12 +3826,6 @@
         const personalNotificationsToggle = document.getElementById('personalNotificationsToggle');
         const newVideoNotificationsToggle = document.getElementById('newVideoNotificationsToggle');
         const siteUpdateNotificationsToggle = document.getElementById('siteUpdateNotificationsToggle');
-        const communityNotificationsToggle = document.getElementById('communityNotificationsToggle');
-        const communityNotifyChat = document.getElementById('communityNotifyChat');
-        const communityNotifyMemes = document.getElementById('communityNotifyMemes');
-        const communityNotifyComments = document.getElementById('communityNotifyComments');
-        const communityNotifyPush = document.getElementById('communityNotifyPush');
-        const communityNotifySound = document.getElementById('communityNotifySound');
         if (animationsToggle) animationsToggle.checked = settings.animations !== false;
         if (notificationsToggle) notificationsToggle.checked = settings.notifications !== false;
         if (glassToggle) glassToggle.checked = settings.glass !== false;
@@ -4017,18 +3833,6 @@
         if (personalNotificationsToggle) personalNotificationsToggle.checked = settings.personalNotifications !== false;
         if (newVideoNotificationsToggle) newVideoNotificationsToggle.checked = settings.notifyNewVideos !== false;
         if (siteUpdateNotificationsToggle) siteUpdateNotificationsToggle.checked = settings.notifySiteUpdates !== false;
-        if (communityNotificationsToggle) communityNotificationsToggle.checked = settings.communityNotifications !== false;
-        if (communityNotifyChat) communityNotifyChat.checked = settings.communityNotifyChat !== false;
-        if (communityNotifyMemes) communityNotifyMemes.checked = settings.communityNotifyMemes !== false;
-        if (communityNotifyComments) communityNotifyComments.checked = settings.communityNotifyComments !== false;
-        if (communityNotifyPush) communityNotifyPush.checked = settings.communityNotifyPush !== false;
-        if (communityNotifySound) communityNotifySound.checked = settings.communityNotifySound !== false;
-        
-        // Показываем/скрываем под-настройки в зависимости от основного переключателя
-        const subSettings = document.getElementById('communitySubSettings');
-        if (subSettings) {
-            subSettings.style.display = settings.communityNotifications !== false ? 'block' : 'none';
-        }
     }
 
     function initSettings() {
@@ -4041,12 +3845,6 @@
         const personalNotificationsToggle = document.getElementById('personalNotificationsToggle');
         const newVideoNotificationsToggle = document.getElementById('newVideoNotificationsToggle');
         const siteUpdateNotificationsToggle = document.getElementById('siteUpdateNotificationsToggle');
-        const communityNotificationsToggle = document.getElementById('communityNotificationsToggle');
-        const communityNotifyChat = document.getElementById('communityNotifyChat');
-        const communityNotifyMemes = document.getElementById('communityNotifyMemes');
-        const communityNotifyComments = document.getElementById('communityNotifyComments');
-        const communityNotifyPush = document.getElementById('communityNotifyPush');
-        const communityNotifySound = document.getElementById('communityNotifySound');
         const saveButton = document.querySelector('#settingsModal .btn-primary');
 
         const handleSettingsClick = () => openSettingsModal();
@@ -4061,13 +3859,7 @@
                 updateNotice: updateNoticeToggle?.checked !== false,
                 personalNotifications: personalNotificationsToggle?.checked !== false,
                 notifyNewVideos: newVideoNotificationsToggle?.checked !== false,
-                notifySiteUpdates: siteUpdateNotificationsToggle?.checked !== false,
-                communityNotifications: communityNotificationsToggle?.checked !== false,
-                communityNotifyChat: communityNotifyChat?.checked !== false,
-                communityNotifyMemes: communityNotifyMemes?.checked !== false,
-                communityNotifyComments: communityNotifyComments?.checked !== false,
-                communityNotifyPush: communityNotifyPush?.checked !== false,
-                communityNotifySound: communityNotifySound?.checked !== false
+                notifySiteUpdates: siteUpdateNotificationsToggle?.checked !== false
             };
             localStorage.setItem('site-settings', JSON.stringify(settings));
             applySettings();
@@ -4082,87 +3874,12 @@
         personalNotificationsToggle?.addEventListener('change', () => saveSettings(false));
         newVideoNotificationsToggle?.addEventListener('change', () => saveSettings(false));
         siteUpdateNotificationsToggle?.addEventListener('change', () => saveSettings(false));
-        communityNotificationsToggle?.addEventListener('change', () => saveSettings(false));
-        communityNotifyChat?.addEventListener('change', () => saveSettings(false));
-        communityNotifyMemes?.addEventListener('change', () => saveSettings(false));
-        communityNotifyComments?.addEventListener('change', () => saveSettings(false));
-        communityNotifyPush?.addEventListener('change', () => saveSettings(false));
-        communityNotifySound?.addEventListener('change', () => saveSettings(false));
         saveButton?.addEventListener('click', () => {
             saveSettings(true);
             closeSettingsModal();
         });
         applySettings();
     }
-
-    // Слушаем уведомления из Зала комьюнити (community.html) через localStorage
-    window.addEventListener('storage', (e) => {
-        if (e.key === 'community_notification' && e.newValue) {
-            try {
-                const data = JSON.parse(e.newValue);
-                if (data && data.message) {
-                    const subCategory = data.subCategory || 'community';
-                    showNotification(data.message, {
-                        type: data.type || 'info',
-                        duration: data.duration || 4000,
-                        category: subCategory,
-                        title: data.title || 'Зал комьюнити'
-                    });
-                    // Воспроизводим звук уведомления
-                    playNotificationSound();
-                    // Отправляем Push-уведомление (даже если вкладка не активна)
-                    sendPushNotification(
-                        data.title || 'Зал комьюнити',
-                        data.message,
-                        { tag: 'community-' + Date.now(), url: '/community.html' }
-                    );
-                }
-            } catch (err) {
-                console.warn('[Community Notification] Ошибка парсинга:', err);
-            }
-        }
-    });
-
-    // Также проверяем при загрузке страницы, не было ли уведомления
-    function checkPendingCommunityNotification() {
-        try {
-            const pending = sessionStorage.getItem('community_notification_pending');
-            if (pending) {
-                const data = JSON.parse(pending);
-                if (data && data.message) {
-                    const subCategory = data.subCategory || 'community';
-                    showNotification(data.message, {
-                        type: data.type || 'info',
-                        duration: data.duration || 4000,
-                        category: subCategory,
-                        title: data.title || 'Зал комьюнити'
-                    });
-                    // Воспроизводим звук уведомления
-                    playNotificationSound();
-                    // Отправляем Push-уведомление
-                    sendPushNotification(
-                        data.title || 'Зал комьюнити',
-                        data.message,
-                        { tag: 'community-' + Date.now(), url: '/community.html' }
-                    );
-                }
-                sessionStorage.removeItem('community_notification_pending');
-            }
-        } catch (err) {
-            console.warn('[Community Notification] Ошибка парсинга pending:', err);
-        }
-    }
-
-    // Проверяем уведомления при фокусе вкладки (если пользователь вернулся на index.html)
-    window.addEventListener('focus', () => {
-        checkPendingCommunityNotification();
-    });
-    
-    // Периодически проверяем наличие новых уведомлений (каждые 5 секунд)
-    // Это нужно, чтобы уведомления приходили даже без переключения вкладок
-    setInterval(() => {
-        checkPendingCommunityNotification();
-    }, 5000);
 
     async function showSiteUpdateNotice() {
         const settings = getSiteSettings();
@@ -4675,13 +4392,6 @@
         // Показываем бета-шапку
         showBetaNotice();
         
-        // Регистрируем Service Worker для Push-уведомлений
-        await registerServiceWorker();
-        // Запрашиваем разрешение на уведомления (не блокируем инициализацию)
-        requestNotificationPermission().then(granted => {
-            if (granted) console.log('[Push] Разрешение на уведомления получено');
-        });
-        
         // Устанавливаем динамический год в футере
         document.getElementById('currentYear').textContent = new Date().getFullYear();
 
@@ -4710,7 +4420,6 @@
         initTemporaryFeatures();
         initTheme();
         initSettings();
-        checkPendingCommunityNotification();
         await showSiteUpdateNotice();
         initNavigation();
         initAnalyticsTracking();
