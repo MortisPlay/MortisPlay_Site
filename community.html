@@ -1610,19 +1610,16 @@
       }
     }
 
-    // Список официальных пользователей (только Mortis Play — синяя галочка)
-    const OFFICIAL_USERS = [
-      { nickname: 'Mortis Play', email: 'mortis@mortisplay.com' },
-      { nickname: 'Mortis', email: 'mortis@example.com' },
-      { nickname: 'MortisPlay', email: 'mortisplay@mail.ru' }
+    // Список официальных email-адресов (только Mortis Play — синяя галочка)
+    const OFFICIAL_EMAILS = [
+      'mortisplay@mail.ru'
     ];
 
-    // Синяя галочка "Официально" — только из статического массива
+    // Синяя галочка "Официально" — проверка только по email (никнейм может меняться)
     function isOfficialUser(data) {
-      if (!data || !data.nickname || !data.email) return false;
-      return OFFICIAL_USERS.some(u =>
-        u.nickname.toLowerCase() === data.nickname.toLowerCase() &&
-        u.email.toLowerCase() === data.email.toLowerCase()
+      if (!data || !data.email) return false;
+      return OFFICIAL_EMAILS.some(email =>
+        email.toLowerCase() === data.email.toLowerCase()
       );
     }
 

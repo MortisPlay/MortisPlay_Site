@@ -2651,15 +2651,14 @@
     }
 
     // === СПИСОК ОФИЦИАЛЬНЫХ ПОЛЬЗОВАТЕЛЕЙ ===
-    const OFFICIAL_USERS = [
-        { nickname: 'MortisPlay', email: 'mortisplay@mail.ru' }
+    const OFFICIAL_EMAILS = [
+        'mortisplay@mail.ru'
     ];
 
     function isOfficialUser(data) {
-        if (!data || !data.nickname || !data.email) return false;
-        return OFFICIAL_USERS.some(u =>
-            u.nickname.toLowerCase() === data.nickname.toLowerCase() &&
-            u.email.toLowerCase() === data.email.toLowerCase()
+        if (!data || !data.email) return false;
+        return OFFICIAL_EMAILS.some(email =>
+            email.toLowerCase() === data.email.toLowerCase()
         );
     }
 
