@@ -3990,9 +3990,12 @@
     function showBetaNotice() {
         const bar = document.getElementById('betaNoticeBar');
         if (!bar) return;
-        const dismissed = localStorage.getItem('betaNoticeDismissed');
-        if (dismissed === 'true') return;
+        // Одноразовое напоминание: показываем только один раз за всё время
+        const shown = localStorage.getItem('betaNoticeShown');
+        if (shown === 'true') return;
         bar.style.display = 'block';
+        // Автоматически помечаем как показанное, чтобы больше не показывать
+        try { localStorage.setItem('betaNoticeShown', 'true'); } catch(e) {}
     }
     
     document.addEventListener('DOMContentLoaded', async () => {

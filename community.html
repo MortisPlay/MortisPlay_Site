@@ -124,6 +124,31 @@
       justify-content: center;
       gap: 0.75rem;
       flex-wrap: wrap;
+      overflow: hidden;
+    }
+    /* Анимированные чёрно-жёлтые ленты на бета-шапке */
+    .beta-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 20px,
+        rgba(0,0,0,0.12) 20px,
+        rgba(0,0,0,0.12) 40px
+      );
+      animation: betaStripeMove 3s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes betaStripeMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 56px 0; }
+    }
+    .beta-header > * {
+      position: relative;
+      z-index: 1;
     }
     .beta-header i {
       font-size: 1.2rem;
@@ -1149,6 +1174,94 @@
       position: relative;
     }
 
+    /* Кнопка "три точки" для мобильного меню сообщений */
+    .chat-message .msg-mobile-menu-btn {
+      display: none;
+      position: absolute;
+      top: 0.25rem;
+      right: 0.25rem;
+      width: 1.8rem;
+      height: 1.8rem;
+      border-radius: 50%;
+      border: none;
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text-secondary);
+      font-size: 1rem;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+    }
+    .chat-message .msg-mobile-menu-btn:hover {
+      background: rgba(99, 102, 241, 0.3);
+      color: #fff;
+    }
+    @media (hover: none) and (pointer: coarse) {
+      .chat-message .msg-mobile-menu-btn {
+        display: flex;
+      }
+    }
+    @media (max-width: 768px) {
+      .chat-message .msg-mobile-menu-btn {
+        display: flex;
+      }
+    }
+
+    /* Мобильное контекстное меню сообщения */
+    .msg-context-menu {
+      display: none;
+      position: absolute;
+      top: 2.2rem;
+      right: 0.25rem;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid var(--glass-border);
+      border-radius: 0.75rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      z-index: 20;
+      min-width: 160px;
+      overflow: hidden;
+      padding: 0.3rem;
+    }
+    .msg-context-menu.show {
+      display: block;
+    }
+    .msg-context-menu .ctx-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      border: none;
+      background: none;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: background 0.15s ease;
+    }
+    .msg-context-menu .ctx-item:hover {
+      background: rgba(255,255,255,0.08);
+    }
+    .msg-context-menu .ctx-item.ctx-danger {
+      color: #ef4444;
+    }
+    .msg-context-menu .ctx-item.ctx-danger:hover {
+      background: rgba(239, 68, 68, 0.15);
+    }
+    .msg-context-menu .ctx-item i {
+      width: 1.2rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    .light-theme .msg-context-menu {
+      background: rgba(255, 255, 255, 0.96);
+    }
+
     .notification {
       position: fixed; bottom: 1rem; left: 50%; transform: translate(-50%, 120%);
       background: linear-gradient(135deg, rgba(15,23,42,0.92), rgba(30,41,59,0.88));
@@ -1651,9 +1764,12 @@
     function showBetaNotice() {
         const bar = document.getElementById('betaNoticeBar');
         if (!bar) return;
-        const dismissed = localStorage.getItem('betaNoticeDismissed');
-        if (dismissed === 'true') return;
+        // Одноразовое напоминание: показываем только один раз за всё время
+        const shown = localStorage.getItem('betaNoticeShown');
+        if (shown === 'true') return;
         bar.style.display = 'block';
+        // Автоматически помечаем как показанное, чтобы больше не показывать
+        try { localStorage.setItem('betaNoticeShown', 'true'); } catch(e) {}
     }
 
     function loadUserProfile() {
@@ -2057,6 +2173,25 @@
           `<button class="rp-btn" data-msgid="${msgId}" data-emoji="${e}">${e}</button>`
         ).join('');
 
+        // Кнопка "три точки" для мобильного меню
+        const mobileMenuHtml = `
+          <button class="msg-mobile-menu-btn" data-msgid="${msgId}" data-username="${escapeHtml(msg.username || 'Аноним')}" data-text="${escapeHtml(msg.text.slice(0, 80))}" data-isown="${isOwn}" title="Ещё">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <div class="msg-context-menu" id="ctxmenu-${msgId}">
+            <button class="ctx-item ctx-reactions" data-msgid="${msgId}">
+              <i class="fas fa-smile"></i> Реакции
+            </button>
+            <button class="ctx-item ctx-reply" data-username="${escapeHtml(msg.username || 'Аноним')}" data-text="${escapeHtml(msg.text.slice(0, 80))}">
+              <i class="fas fa-reply"></i> Ответить
+            </button>
+            ${isOwn ? `
+            <button class="ctx-item ctx-danger ctx-delete" data-msgid="${msgId}">
+              <i class="fas fa-trash-can"></i> Удалить
+            </button>` : ''}
+          </div>
+        `;
+
         div.innerHTML = `
           ${avatarHtml}
           <div class="bubble" ${msgColor ? `style="background: ${msgColor}22; border-color: ${msgColor}44;"` : ''}>
@@ -2071,6 +2206,7 @@
               </div>
             </div>
             <div class="time">${time} <button class="reply-btn" data-username="${escapeHtml(msg.username || 'Аноним')}" data-text="${escapeHtml(msg.text.slice(0, 80))}" title="Ответить"><i class="fas fa-reply"></i></button></div>
+            ${mobileMenuHtml}
           </div>
         `;
         container.appendChild(div);
@@ -2137,6 +2273,67 @@
           picker.addEventListener('mouseleave', () => {
             pickerTimer = setTimeout(() => picker.classList.remove('show'), 300);
           });
+        }
+      });
+
+      // Обработчики для кнопки "три точки" (мобильное меню)
+      container.querySelectorAll('.msg-mobile-menu-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const msgId = btn.dataset.msgid;
+          // Закрываем все другие меню
+          container.querySelectorAll('.msg-context-menu.show').forEach(m => {
+            if (m.id !== 'ctxmenu-' + msgId) m.classList.remove('show');
+          });
+          const menu = document.getElementById('ctxmenu-' + msgId);
+          if (menu) menu.classList.toggle('show');
+        });
+      });
+
+      // Обработчики для пункта "Реакции" в контекстном меню
+      container.querySelectorAll('.ctx-reactions').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const msgId = item.dataset.msgid;
+          const picker = document.getElementById('rp-' + msgId);
+          if (picker) {
+            picker.classList.toggle('show');
+            // Закрываем контекстное меню
+            const menu = document.getElementById('ctxmenu-' + msgId);
+            if (menu) menu.classList.remove('show');
+          }
+        });
+      });
+
+      // Обработчики для пункта "Ответить" в контекстном меню
+      container.querySelectorAll('.ctx-reply').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const username = item.dataset.username || 'Аноним';
+          const text = item.dataset.text || '';
+          setReply({ username, text });
+          // Закрываем контекстное меню
+          const menu = item.closest('.msg-context-menu');
+          if (menu) menu.classList.remove('show');
+        });
+      });
+
+      // Обработчики для пункта "Удалить" в контекстном меню
+      container.querySelectorAll('.ctx-delete').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const msgId = item.dataset.msgid;
+          if (msgId) deleteMessage(msgId);
+          // Закрываем контекстное меню
+          const menu = item.closest('.msg-context-menu');
+          if (menu) menu.classList.remove('show');
+        });
+      });
+
+      // Закрываем контекстное меню при клике вне его
+      document.addEventListener('click', function closeCtxMenus(e) {
+        if (!e.target.closest('.msg-context-menu') && !e.target.closest('.msg-mobile-menu-btn')) {
+          container.querySelectorAll('.msg-context-menu.show').forEach(m => m.classList.remove('show'));
         }
       });
 
@@ -2220,6 +2417,41 @@
         renderChatMessages();
       }, (error) => {
         console.error('[Firebase] Ошибка чтения чата:', error);
+      });
+    }
+
+    // === УДАЛЕНИЕ СООБЩЕНИЯ ===
+    function deleteMessage(messageId) {
+      if (!firebaseInitialized || !currentUsername) {
+        showNotification('Войдите в профиль, чтобы удалять сообщения', { type: 'warning' });
+        return;
+      }
+      if (!messageId) return;
+      if (!confirm('Вы уверены, что хотите удалить это сообщение?')) return;
+
+      const db = firebase.database();
+      // Проверяем, что сообщение принадлежит текущему пользователю
+      db.ref('chat_messages/' + messageId).once('value', (snapshot) => {
+        const msg = snapshot.val();
+        if (!msg) {
+          showNotification('Сообщение не найдено', { type: 'warning' });
+          return;
+        }
+        if (msg.username !== currentUsername) {
+          showNotification('Вы можете удалять только свои сообщения', { type: 'warning' });
+          return;
+        }
+        // Удаляем сообщение
+        snapshot.ref.remove()
+          .then(() => {
+            showNotification('Сообщение удалено', { type: 'success' });
+            // Также удаляем реакции к этому сообщению
+            db.ref('message_reactions/' + messageId).remove().catch(() => {});
+          })
+          .catch((error) => {
+            console.error('[Firebase] Ошибка удаления:', error);
+            showNotification('Ошибка удаления сообщения', { type: 'warning' });
+          });
       });
     }
 
@@ -3069,7 +3301,7 @@
 
       const { icon = '/assets/photo.jpg', tag = 'community-notification', url = '/community.html', silent = false } = options;
 
-      // 1. Пробуем через Service Worker
+      // 1. Пробуем через Service Worker (работает даже когда вкладка не активна)
       if (swRegistration && swRegistration.active) {
         try {
           swRegistration.active.postMessage({
@@ -3082,10 +3314,12 @@
         }
       }
 
+      // 1.1 Если SW зарегистрирован, но ещё не active — ждать не будем, идём в fallback
+
       // 2. Fallback: через Notification API напрямую
       if ('Notification' in window && Notification.permission === 'granted') {
         try {
-          new Notification(title, {
+          const notif = new Notification(title, {
             body: body,
             icon: icon,
             badge: '/images/favicon.ico',
@@ -3094,9 +3328,18 @@
             requireInteraction: true,
             silent: silent
           });
+          // Обработка клика по уведомлению (fallback)
+          notif.onclick = function(e) {
+            e.preventDefault();
+            window.focus();
+            if (url) window.open(url, '_blank');
+            notif.close();
+          };
         } catch (err) {
           console.warn('[Push] Ошибка Notification API:', err);
         }
+      } else {
+        console.log('[Push] Notification не отправлено: permission=' + Notification.permission + ', swRegistration=' + (swRegistration ? 'ok' : 'null'));
       }
     }
 
@@ -3115,13 +3358,13 @@
     sessionStorage.setItem('community_visited', 'true');
 
     // Тема
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       const saved = localStorage.getItem('theme');
       const shouldUseDark = saved === 'dark' || saved === null || saved === undefined;
       document.body.classList.toggle('light-theme', !shouldUseDark);
 
-      // Регистрируем Service Worker для Push-уведомлений
-      registerServiceWorker();
+      // Регистрируем Service Worker для Push-уведомлений (с await, чтобы swRegistration был готов)
+      await registerServiceWorker();
       // Запрашиваем разрешение на уведомления (не блокируем инициализацию)
       requestNotificationPermission().then(granted => {
         if (granted) console.log('[Push] Разрешение на уведомления получено');
