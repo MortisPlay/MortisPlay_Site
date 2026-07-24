@@ -1080,7 +1080,6 @@
       flex-wrap: wrap;
       gap: 0.25rem;
       margin-top: 0.3rem;
-      margin-left: 3.25rem;
     }
     .chat-message .reactions-bar .reaction {
       display: inline-flex;
@@ -1356,7 +1355,7 @@
               </button>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.4rem;">
                 <i class="fas fa-info-circle" style="color: var(--primary);"></i>
-                Лимит: фото/GIF — 5 МБ · видео — 100 МБ
+                Лимит: фото/GIF — 5 МБ · видео — 50 МБ
               </span>
             </div>
             <!-- Индикатор загрузки -->
@@ -1567,7 +1566,8 @@
     }
 
     function startTypingHeartbeat() {
-      stopTypingHeartbeat();
+      // Если heartbeat уже активен — не перезапускаем (чтобы избежать мерцания)
+      if (typingHeartbeatInterval) return;
       sendTypingIndicator();
       typingHeartbeatInterval = setInterval(sendTypingIndicator, TYPING_HEARTBEAT_MS);
     }
@@ -1588,8 +1588,12 @@
       if (!input) return;
       const text = input.value.trim();
       if (text.length > 0) {
-        startTypingHeartbeat();
-        // Сбрасываем таймер автопрятания
+        // Запускаем heartbeat только если он ещё не активен
+        if (!typingHeartbeatInterval) {
+          sendTypingIndicator();
+          typingHeartbeatInterval = setInterval(sendTypingIndicator, TYPING_HEARTBEAT_MS);
+        }
+        // Сбрасываем таймер автопрятания (только таймер, не heartbeat)
         if (typingTimeout) clearTimeout(typingTimeout);
         typingTimeout = setTimeout(() => {
           stopTypingHeartbeat();
@@ -1670,10 +1674,6 @@
           if (currentUserProfile && currentUserProfile.nickname) {
             currentUsername = currentUserProfile.nickname;
             localStorage.setItem('community_username', currentUsername);
-            
-            // Синхронизируем аватар и цвет акцента для чата
-            // Если в профиле есть avatarDataUrl — используем его
-            // Если есть accentColor — используем его
             return true;
           }
         }
@@ -1687,6 +1687,29 @@
       }
       currentUserProfile = null;
       return false;
+    }
+
+    // Проверяет, существует ли пользователь в Firebase Realtime Database
+    // Если нет — очищает localStorage профиль (аккаунт удалён из БД)
+    async function verifyProfileInFirebase() {
+      if (!firebaseInitialized || !currentUserProfile || !currentUserProfile.email) return;
+      try {
+        const db = firebase.database();
+        const snapshot = await db.ref('users').orderByChild('email').equalTo(currentUserProfile.email).once('value');
+        const users = snapshot.val();
+        if (!users) {
+          // Пользователь не найден в Firebase — аккаунт удалён
+          console.log('[Profile] Аккаунт не найден в Firebase — очищаем локальный профиль');
+          currentUserProfile = null;
+          currentUsername = '';
+          localStorage.removeItem(PROFILE_STORAGE_KEY);
+          localStorage.removeItem('community_username');
+          sessionStorage.setItem('profile_logged_out', 'true');
+          updateChatAccess();
+        }
+      } catch(e) {
+        console.warn('[Profile] Ошибка проверки в Firebase:', e);
+      }
     }
 
     // Переключает видимость чата в зависимости от наличия профиля
@@ -2043,12 +2066,12 @@
             ${statusHtml}
             ${replyHtml}
             <div class="text">${escapeHtml(msg.text)}</div>
+            ${reactionsHtml}
             <div class="time">${time} <button class="reply-btn" data-username="${escapeHtml(msg.username || 'Аноним')}" data-text="${escapeHtml(msg.text.slice(0, 80))}" title="Ответить"><i class="fas fa-reply"></i></button></div>
             <div class="reaction-picker" id="rp-${msgId}">
               ${pickerEmojis}
             </div>
           </div>
-          ${reactionsHtml}
         `;
         container.appendChild(div);
       });
@@ -2481,6 +2504,9 @@
         
         // Подключаем реакции на сообщения
         attachReactionsListener();
+        
+        // Проверяем, существует ли аккаунт в Firebase (если удалён — очищаем localStorage)
+        verifyProfileInFirebase();
       }
       
       if (firebaseInitialized) {
@@ -2874,8 +2900,8 @@
         return;
       }
 
-      if (file.size > 100 * 1024 * 1024) {
-        showNotification('Файл слишком большой. Максимум 100 МБ', { type: 'warning' });
+      if (file.size > 50 * 1024 * 1024) {
+        showNotification('Файл слишком большой. Максимум 50 МБ', { type: 'warning' });
         return;
       }
 
@@ -2969,9 +2995,6 @@
       try { sessionStorage.setItem('community_notification_pending', data); } catch(e) {}
       // Дополнительно: сохраняем timestamp, чтобы при фокусе на index.html проверить свежесть
       try { sessionStorage.setItem('community_notification_ts', Date.now().toString()); } catch(e) {}
-      // Показываем уведомление локально на community.html (т.к. localStorage.setItem
-      // не триггерит событие 'storage' в той же вкладке)
-      showNotification(message, { type, duration });
     }
 
     // === УВЕДОМЛЕНИЯ ===
