@@ -952,6 +952,45 @@
       width: 2.2rem; height: 2.2rem; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
       background: linear-gradient(135deg, rgba(99,102,241,0.28), rgba(14,165,233,0.2)); margin-right: 0.75rem;
     }
+
+    /* Модальное окно профиля пользователя (кликабельный профиль в чате) */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+      z-index: 5000; display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    }
+    .modal-backdrop.show { opacity: 1; visibility: visible; }
+    .modal-backdrop .modal-content {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid var(--glass-border); border-radius: 1.25rem;
+      padding: 2rem; width: 90%; max-width: 400px; position: relative;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+    }
+    .light-theme .modal-backdrop .modal-content {
+      background: linear-gradient(135deg, #ffffff, #f8fafc);
+    }
+    .modal-backdrop .profile-avatar {
+      border-radius: 50%; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: white;
+    }
+    .modal-backdrop .profile-avatar img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    /* Кликабельные элементы в чате */
+    .chat-message .clickable-profile {
+      cursor: pointer; transition: opacity 0.2s ease;
+    }
+    .chat-message .clickable-profile:hover {
+      opacity: 0.8;
+    }
+    .chat-message .user-status {
+      font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.15rem;
+      display: flex; align-items: center; gap: 0.25rem;
+    }
+    .chat-message .user-status i {
+      font-size: 0.6rem;
+    }
   </style>
 </head>
 <body>
@@ -1166,6 +1205,23 @@
         </div>
       </div>
       <button onclick="hideNotification()" class="ml-2 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0" style="color: var(--text-primary); background: rgba(255,255,255,0.16);"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
+
+  <!-- Модальное окно профиля пользователя (кликабельный профиль в чате) -->
+  <div id="userProfileModal" class="modal-backdrop" onclick="closeUserProfileModal(event)" style="display: none;">
+    <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 400px;">
+      <button onclick="closeUserProfileModal()" class="modal-close" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; z-index: 10;"><i class="fas fa-times"></i></button>
+      <div class="text-center mb-6">
+        <div id="userProfileModalAvatar" class="profile-avatar" style="width: 5rem; height: 5rem; margin: 0 auto 1rem; border-radius: 50%; overflow: hidden; background: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; color: white;"></div>
+        <div id="userProfileModalName" style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);"></div>
+        <div id="userProfileModalBadge" style="margin-top: 0.25rem;"></div>
+        <div id="userProfileModalStatus" style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);"></div>
+      </div>
+      <div id="userProfileModalBio" class="text-sm" style="color: var(--text-secondary); line-height: 1.6; padding: 0.75rem; background: var(--glass-bg); border-radius: 0.75rem; border: 1px solid var(--glass-border);"></div>
+      <div style="margin-top: 1rem; text-align: center; font-size: 0.75rem; color: var(--text-secondary); opacity: 0.6;">
+        <i class="fas fa-calendar-alt"></i> <span id="userProfileModalJoined"></span>
+      </div>
     </div>
   </div>
 
@@ -1418,6 +1474,123 @@
       return null;
     }
 
+    // === МОДАЛЬНОЕ ОКНО ПРОФИЛЯ ПОЛЬЗОВАТЕЛЯ (кликабельный профиль в чате) ===
+    function openUserProfile(username, msgData) {
+      const modal = document.getElementById('userProfileModal');
+      if (!modal) return;
+
+      // Пытаемся получить полные данные пользователя из Firebase
+      const loadProfileFromFirebase = async () => {
+        if (!firebaseInitialized) {
+          renderUserProfileModal(username, msgData);
+          return;
+        }
+        try {
+          const db = firebase.database();
+          const snapshot = await db.ref('users').orderByChild('nickname').equalTo(username).once('value');
+          const users = snapshot.val();
+          if (users) {
+            const uid = Object.keys(users)[0];
+            const fbData = users[uid];
+            // Объединяем: Firebase данные приоритетнее, но данные из сообщения — для аватара/цвета
+            const merged = {
+              ...msgData,
+              ...fbData,
+              avatarDataUrl: msgData.avatarDataUrl || fbData.avatarDataUrl || '',
+              accentColor: msgData.accentColor || fbData.accentColor || '',
+              status: fbData.status || msgData.status || '',
+              bio: fbData.bio || '',
+              registeredAt: fbData.registeredAt || ''
+            };
+            renderUserProfileModal(username, merged);
+          } else {
+            renderUserProfileModal(username, msgData);
+          }
+        } catch(e) {
+          console.warn('[UserProfile] Ошибка загрузки из Firebase:', e);
+          renderUserProfileModal(username, msgData);
+        }
+      };
+
+      loadProfileFromFirebase();
+      modal.classList.add('show');
+      modal.style.display = 'flex';
+    }
+
+    function renderUserProfileModal(username, data) {
+      const avatarEl = document.getElementById('userProfileModalAvatar');
+      const nameEl = document.getElementById('userProfileModalName');
+      const badgeEl = document.getElementById('userProfileModalBadge');
+      const statusEl = document.getElementById('userProfileModalStatus');
+      const bioEl = document.getElementById('userProfileModalBio');
+      const joinedEl = document.getElementById('userProfileModalJoined');
+
+      if (!avatarEl || !nameEl) return;
+
+      // Аватар
+      const avatarLetter = (username || 'А')[0].toUpperCase();
+      const avatarUrl = data.avatarDataUrl || '';
+      const accentColor = data.accentColor || '#6366f1';
+
+      if (avatarUrl) {
+        avatarEl.innerHTML = `<img src="${avatarUrl}" alt="${escapeHtml(username)}" style="width: 100%; height: 100%; object-fit: cover;">`;
+      } else {
+        avatarEl.textContent = avatarLetter;
+        avatarEl.style.background = accentColor;
+      }
+      avatarEl.style.background = avatarUrl ? 'transparent' : accentColor;
+
+      // Имя
+      nameEl.textContent = username || 'Аноним';
+      nameEl.style.color = accentColor;
+
+      // Бейдж
+      const isOfficial = isOfficialUser(data);
+      const isDonaterUser = isDonater(data);
+      if (isOfficial) {
+        badgeEl.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-check-circle"></i> Официально</span>';
+      } else if (isDonaterUser) {
+        badgeEl.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-dollar-sign"></i> Донатер</span>';
+      } else {
+        badgeEl.innerHTML = '';
+      }
+
+      // Статус
+      if (data.status) {
+        statusEl.textContent = '💬 ' + data.status;
+        statusEl.style.display = 'block';
+      } else {
+        statusEl.style.display = 'none';
+      }
+
+      // Био
+      if (data.bio) {
+        bioEl.textContent = data.bio;
+        bioEl.style.display = 'block';
+      } else {
+        bioEl.textContent = 'Пользователь пока не добавил информацию о себе';
+        bioEl.style.display = 'block';
+        bioEl.style.opacity = '0.5';
+      }
+
+      // Дата регистрации
+      if (data.registeredAt) {
+        const date = new Date(data.registeredAt);
+        joinedEl.textContent = 'В сообществе с ' + date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+      } else {
+        joinedEl.textContent = '';
+      }
+    }
+
+    function closeUserProfileModal(event) {
+      if (event && event.target !== document.getElementById('userProfileModal')) return;
+      const modal = document.getElementById('userProfileModal');
+      if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => { modal.style.display = 'none'; }, 300);
+      }
+    }
+
     // Список официальных пользователей (только Mortis Play — синяя галочка)
     const OFFICIAL_USERS = [
       { nickname: 'Mortis Play', email: 'mortis@mortisplay.com' },
@@ -1475,12 +1648,23 @@
         const msgColor = msg.accentColor || '';
         const msgIsOfficial = msg.isOfficial === true;
         const msgIsDonater = msg.isDonater === true;
+        const msgStatus = msg.status || '';
+
+        // Данные для модального окна профиля (кликабельный профиль)
+        const profileData = JSON.stringify({
+          username: msg.username || 'Аноним',
+          avatarDataUrl: msgAvatar,
+          accentColor: msgColor,
+          isOfficial: msgIsOfficial,
+          isDonater: msgIsDonater,
+          status: msgStatus
+        }).replace(/'/g, "\\'").replace(/"/g, '"');
 
         let avatarHtml;
         if (msgAvatar) {
-          avatarHtml = `<div class="avatar" style="background: transparent; overflow: hidden;"><img src="${msgAvatar}" alt="" style="width: 100%; height: 100%; object-fit: cover;"></div>`;
+          avatarHtml = `<div class="avatar clickable-profile" onclick='openUserProfile("${escapeHtml(msg.username || 'Аноним')}", ${profileData})' style="background: transparent; overflow: hidden; cursor: pointer;"><img src="${msgAvatar}" alt="" style="width: 100%; height: 100%; object-fit: cover;"></div>`;
         } else {
-          avatarHtml = `<div class="avatar" style="background: ${msgColor || '#6366f1'};">${avatarLetter}</div>`;
+          avatarHtml = `<div class="avatar clickable-profile" onclick='openUserProfile("${escapeHtml(msg.username || 'Аноним')}", ${profileData})' style="background: ${msgColor || '#6366f1'}; cursor: pointer;">${avatarLetter}</div>`;
         }
 
         // Бейдж: синяя галочка "Официально" или значок "Донатер" ($)
@@ -1489,6 +1673,12 @@
           badgeHtml = ` <span style="display: inline-flex; align-items: center; gap: 0.15rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.25rem;"><i class="fas fa-check-circle" style="font-size: 0.6rem;"></i> Офф.</span>`;
         } else if (msgIsDonater) {
           badgeHtml = ` <span style="display: inline-flex; align-items: center; gap: 0.15rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.25rem;"><i class="fas fa-dollar-sign" style="font-size: 0.6rem;"></i> Дон.</span>`;
+        }
+
+        // Статус пользователя (если есть)
+        let statusHtml = '';
+        if (msgStatus) {
+          statusHtml = `<div class="user-status"><i class="fas fa-circle" style="font-size: 0.4rem; color: #22c55e;"></i> ${escapeHtml(msgStatus)}</div>`;
         }
 
         // Reply-индикатор (если сообщение является ответом)
@@ -1501,7 +1691,8 @@
         div.innerHTML = `
           ${avatarHtml}
           <div class="bubble" ${msgColor ? `style="background: ${msgColor}22; border-color: ${msgColor}44;"` : ''}>
-            <div class="username" ${msgColor ? `style="color: ${msgColor};"` : ''}>${escapeHtml(msg.username || 'Аноним')}${badgeHtml}</div>
+            <div class="username clickable-profile" onclick='openUserProfile("${escapeHtml(msg.username || 'Аноним')}", ${profileData})' ${msgColor ? `style="color: ${msgColor};"` : ''}>${escapeHtml(msg.username || 'Аноним')}${badgeHtml}</div>
+            ${statusHtml}
             ${replyHtml}
             <div class="text">${escapeHtml(msg.text)}</div>
             <div class="time">${time} <button class="reply-btn" data-username="${escapeHtml(msg.username || 'Аноним')}" data-text="${escapeHtml(msg.text.slice(0, 80))}" title="Ответить"><i class="fas fa-reply"></i></button></div>
@@ -1643,7 +1834,8 @@
         avatarDataUrl: privacyShowAvatar ? (getProfileAvatar() || '') : '',
         accentColor: getProfileAccentColor() || '',
         isOfficial: isOfficialUser(currentUserProfile),
-        isDonater: isDonater(currentUserProfile)
+        isDonater: isDonater(currentUserProfile),
+        status: currentUserProfile ? (currentUserProfile.status || '') : ''
       };
 
       // Добавляем replyTo, если есть активный reply
@@ -2279,6 +2471,11 @@
     function hideNotification() {
       document.getElementById('notification').classList.remove('show');
     }
+
+    // При загрузке community.html — устанавливаем флаг, что пользователь БЫЛ в зале комьюнити
+    // Это нужно, чтобы на index.html не показывались уведомления из чата/мемов/комментариев,
+    // если пользователь уже открывал community.html в текущей сессии
+    sessionStorage.setItem('community_visited', 'true');
 
     // Тема
     document.addEventListener('DOMContentLoaded', () => {

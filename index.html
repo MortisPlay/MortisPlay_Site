@@ -2262,10 +2262,6 @@
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // === КОДОВОЕ СЛОВО для mortisplay@mail.ru ===
-    const SECRET_CODE_WORD = 'Банан'; // Секретное кодовое слово для защиты аккаунта
-    const PROTECTED_EMAIL = 'mortisplay@mail.ru';
-
     // === ЗАГРУЗКА ПОЛЬЗОВАТЕЛЯ ИЗ FIREBASE ПО UID ===
     async function loadUserAccount() {
         try {
@@ -2789,52 +2785,7 @@
             return;
         }
 
-        // === ПРОВЕРКА КОДОВОГО СЛОВА для mortisplay@mail.ru ===
-        if (userData.email && userData.email.toLowerCase() === PROTECTED_EMAIL.toLowerCase()) {
-            const secretWord = prompt('🔐 Введите кодовое слово для защиты аккаунта MortisPlay:');
-            if (!secretWord || secretWord.toLowerCase() !== SECRET_CODE_WORD.toLowerCase()) {
-                showNotification('Неверное кодовое слово! Доступ запрещён.', { type: 'warning', duration: 4000 });
-                return;
-            }
-            // Если кодовое слово верное — пропускаем подтверждение по email,
-            // чтобы избежать ошибок при входе с других платформ, где почта может быть недоступна
-            const uid = userData.uid || generateUserUid();
-            userData.uid = uid;
-            
-            // Синхронизируем данные из Firebase перед сохранением (если пользователь уже был в БД)
-            if (firebaseInitialized && foundInFirebase) {
-                try {
-                    const db = firebase.database();
-                    const snapshot = await db.ref('users/' + uid).once('value');
-                    const fbData = snapshot.val();
-                    if (fbData) {
-                        // Объединяем: Firebase данные приоритетнее для статуса/био/цвета
-                        userData = { ...userData, ...fbData, uid: uid, password: userData.password };
-                    }
-                } catch(e) {
-                    console.warn('[handleLogin] Ошибка синхронизации с Firebase:', e);
-                }
-            }
-            
-            saveUserLocally(userData, uid);
-            
-            if (firebaseInitialized && !foundInFirebase) {
-                await saveUserToFirebase(uid, userData);
-            }
-
-            if (remember) {
-                localStorage.setItem('profile_remembered_login', userData.nickname);
-            } else {
-                localStorage.removeItem('profile_remembered_login');
-            }
-
-            sessionStorage.removeItem('profile_logged_out');
-            showProfileLoggedIn();
-            showNotification('Кодовое слово принято! Добро пожаловать, MortisPlay! 🎉', { type: 'success', duration: 4000 });
-            return;
-        }
-
-        // === ПОДТВЕРЖДЕНИЕ ВХОДА ПО EMAIL (только для обычных пользователей) ===
+        // === ПОДТВЕРЖДЕНИЕ ВХОДА ПО EMAIL ===
         const emailSent = await sendLoginCode(userData.email, userData.nickname);
         if (!emailSent) {
             showNotification('Ошибка отправки кода подтверждения. Попробуйте позже.', { type: 'warning' });
@@ -3392,6 +3343,11 @@
     // Слушаем уведомления из Зала комьюнити (community.html) через localStorage
     window.addEventListener('storage', (e) => {
         if (e.key === 'community_notification' && e.newValue) {
+            // Если пользователь уже был в community.html в этой сессии — НЕ показываем уведомления
+            if (sessionStorage.getItem('community_visited') === 'true') {
+                console.log('[Community Notification] Пользователь уже был в зале комьюнити — уведомление скрыто');
+                return;
+            }
             try {
                 const data = JSON.parse(e.newValue);
                 if (data && data.message) {
@@ -3419,6 +3375,13 @@
 
     // Также проверяем при загрузке страницы, не было ли уведомления
     function checkPendingCommunityNotification() {
+        // Если пользователь уже был в community.html в этой сессии — НЕ показываем уведомления
+        if (sessionStorage.getItem('community_visited') === 'true') {
+            console.log('[Community Notification] Пользователь уже был в зале комьюнити — pending уведомление скрыто');
+            // Всё равно очищаем pending, чтобы не накапливался
+            sessionStorage.removeItem('community_notification_pending');
+            return;
+        }
         try {
             const pending = sessionStorage.getItem('community_notification_pending');
             if (pending) {
