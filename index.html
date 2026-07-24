@@ -1384,7 +1384,7 @@
               <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); cursor: pointer;">
                 <input type="checkbox" id="loginRemember" checked style="accent-color: var(--primary);" /> Запомнить меня
               </label>
-              <a href="#" style="font-size: 0.8rem; color: var(--primary);">Забыли пароль?</a>
+              <a href="#" onclick="openForgotPasswordModal(); return false;" style="font-size: 0.8rem; color: var(--primary);">Забыли пароль?</a>
             </div>
             <button id="profileLoginBtn" class="btn-primary w-full" style="margin-bottom: 0.75rem;">
               <i class="fas fa-sign-in-alt"></i> Войти
@@ -1563,25 +1563,60 @@
         <h3 class="text-2xl font-bold gradient-text">Условия использования</h3>
       </div>
       <div class="modal-text" style="max-height: 50vh; overflow-y: auto; padding-right: 0.5rem;">
-        <p>Последнее обновление: 23 июля 2026 г.</p>
+        <p>Последнее обновление: 24 июля 2026 г.</p>
         
         <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">1. Общие положения</h4>
-        <p>Регистрируясь на сайте Mortis Play, вы соглашаетесь с настоящими условиями использования. Если вы не согласны с каким-либо пунктом, пожалуйста, не используйте наш сайт.</p>
+        <p>Регистрируясь и используя сайт Mortis Play (далее — «Сайт»), вы соглашаетесь с настоящими Условиями использования. Если вы не согласны с каким-либо пунктом, пожалуйста, не используйте Сайт. Сайт предоставляется «как есть» для развлекательных и коммуникационных целей.</p>
         
-        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">2. Правила поведения в чате</h4>
-        <p>Запрещается:</p>
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">2. Регистрация и аккаунт</h4>
+        <p>Для доступа к чату, галерее и системе друзей требуется регистрация. При регистрации вы предоставляете: никнейм, email и пароль. Вы обязуетесь:</p>
         <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
-          <li>Оскорбление других участников</li>
-          <li>Спам и реклама</li>
-          <li>Распространение запрещённого контента</li>
-          <li>Выдача себя за других пользователей</li>
+          <li>Не использовать чужие email-адреса без разрешения</li>
+          <li>Не создавать несколько аккаунтов с целью обхода правил</li>
+          <li>Не передавать свой аккаунт третьим лицам</li>
+          <li>Сохранять конфиденциальность пароля</li>
+        </ul>
+        <p>Администрация не несёт ответственности за утерю доступа к аккаунту. Вы можете восстановить пароль через форму восстановления на Сайте.</p>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">3. Правила поведения в чате и комментариях</h4>
+        <p>Все пользователи обязаны соблюдать уважительное общение. Запрещается:</p>
+        <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+          <li>Оскорбление, унижение, дискриминация участников</li>
+          <li>Спам, флуд, реклама сторонних ресурсов</li>
+          <li>Распространение запрещённого, порнографического или насильственного контента</li>
+          <li>Выдача себя за других пользователей, включая администрацию</li>
+          <li>Публикация личных данных других лиц без их согласия</li>
+          <li>Использование нецензурной лексики в чрезмерном количестве</li>
+        </ul>
+        <p>Администрация оставляет за собой право удалять сообщения и блокировать пользователей без предупреждения.</p>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">4. Галерея мемов</h4>
+        <p>Загружая изображения или видео в галерею, вы подтверждаете, что:</p>
+        <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+          <li>Имеете права на загружаемый контент</li>
+          <li>Контент не нарушает авторские права третьих лиц</li>
+          <li>Контент не содержит оскорбительных, экстремистских или запрещённых материалов</li>
+        </ul>
+        <p>Максимальный размер загружаемого файла — 20 МБ. Изображения могут быть сжаты для оптимизации хранения. Файлы, превышающие лимит Firebase (10 МБ), сохраняются в localStorage вашего браузера.</p>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">5. Система друзей</h4>
+        <p>Вы можете отправлять заявки в друзья другим пользователям. Отправляя заявку, вы соглашаетесь, что:</p>
+        <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+          <li>Заявки обрабатываются вручную получателем</li>
+          <li>Вы не будете злоупотреблять системой (массовая рассылка заявок)</li>
+          <li>Вы можете удалить пользователя из друзей в любой момент</li>
         </ul>
         
-        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">3. Аккаунт</h4>
-        <p>Вы несёте ответственность за сохранность своих данных для входа. Администрация сайта не несёт ответственности за утерю доступа к аккаунту.</p>
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">6. Ответственность</h4>
+        <p>Сайт использует Firebase Realtime Database (Google) для хранения данных чата, галереи, профилей и системы друзей. Администрация не несёт ответственности за:</p>
+        <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+          <li>Временную недоступность Сайта по техническим причинам</li>
+          <li>Действия других пользователей</li>
+          <li>Утерю данных вследствие форс-мажорных обстоятельств</li>
+        </ul>
         
-        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">4. Изменение условий</h4>
-        <p>Мы оставляем за собой право изменять условия использования в любое время. Продолжая использовать сайт после изменений, вы принимаете новые условия.</p>
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">7. Изменение условий</h4>
+        <p>Мы оставляем за собой право изменять настоящие Условия в любое время. Актуальная версия всегда доступна в данном окне. Продолжая использовать Сайт после изменений, вы принимаете новые условия.</p>
       </div>
       <div style="text-align: center; margin-top: 1.5rem;">
         <button class="btn-primary" onclick="closeTermsModal()">
@@ -1602,24 +1637,129 @@
         <h3 class="text-2xl font-bold gradient-text">Политика конфиденциальности</h3>
       </div>
       <div class="modal-text" style="max-height: 50vh; overflow-y: auto; padding-right: 0.5rem;">
-        <p>Последнее обновление: 23 июля 2026 г.</p>
+        <p>Последнее обновление: 24 июля 2026 г.</p>
         
         <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">1. Какие данные мы собираем</h4>
-        <p>При регистрации вы предоставляете: никнейм, email и пароль. Эти данные хранятся локально в вашем браузере (localStorage) и не передаются на сторонние серверы, за исключением Firebase Realtime Database для работы чата.</p>
+        <p>При регистрации вы предоставляете следующие данные:</p>
+        <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+          <li><strong>Никнейм</strong> — отображается другим пользователям в чате, галерее и системе друзей</li>
+          <li><strong>Email</strong> — используется для входа, восстановления пароля и смены email</li>
+          <li><strong>Пароль</strong> — хранится в зашифрованном виде в Firebase Realtime Database</li>
+          <li><strong>Аватар</strong> — изображение профиля (опционально, хранится как Data URL)</li>
+          <li><strong>Цвет акцента</strong> — выбранный вами цвет для персонализации профиля</li>
+          <li><strong>Статус и био</strong> — информация о себе (опционально)</li>
+        </ul>
+        <p>Данные хранятся локально в вашем браузере (localStorage) и в Firebase Realtime Database для обеспечения работы всех функций Сайта.</p>
         
-        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">2. Firebase</h4>
-        <p>Для работы общего чата и галереи мемов мы используем Firebase Realtime Database (Google). В Firebase передаются: никнейм, текст сообщения, аватар (если загружен), цвет акцента. Эти данные видны другим пользователям сайта.</p>
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">2. Firebase Realtime Database</h4>
+        <p>Для работы чата, галереи мемов, системы друзей, онлайн-счётчика и индикатора «печатает» мы используем Firebase Realtime Database (Google Cloud). В Firebase передаются и хранятся:</p>
+        <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+          <li>Никнейм, email, пароль, аватар, цвет акцента, статус, био — в узле <code>users/{uid}</code></li>
+          <li>Сообщения чата с никнеймом, текстом, временем и reply-ссылками — в узле <code>chat_messages</code></li>
+          <li>Мемы (изображения/видео) с подписями и автором — в узле <code>gallery_memes</code></li>
+          <li>Комментарии к мемам — в узле <code>gallery_comments/{memeId}/comments</code></li>
+          <li>Заявки в друзья и список друзей — в узлах <code>friend_requests</code> и <code>friends/{username}</code></li>
+          <li>Индикатор «печатает» — в узле <code>typing_indicator/{username}</code></li>
+          <li>Онлайн-статус — в узле <code>online_users</code></li>
+        </ul>
+        <p>Все данные, кроме пароля, видны другим пользователям Сайта. Firebase работает на серверах Google, которые могут находиться за пределами вашей страны.</p>
         
-        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">3. Cookie и аналитика</h4>
-        <p>Мы используем Google Analytics для сбора анонимной статистики посещений. Вы можете отключить cookie в настройках браузера.</p>
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">3. Локальное хранение (localStorage)</h4>
+        <p>Для улучшения производительности и офлайн-доступа некоторые данные хранятся в вашем браузере:</p>
+        <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+          <li><strong>Профиль пользователя</strong> (<code>site_user_account</code>) — никнейм, email, пароль, настройки</li>
+          <li><strong>Большие файлы галереи</strong> (<code>gallery_meme_data_{timestamp}</code>) — мемы размером более 10 МБ, которые не могут быть загружены в Firebase напрямую</li>
+          <li><strong>Настройки темы и уведомлений</strong></li>
+          <li><strong>Сохранённый логин</strong> для функции «Запомнить меня»</li>
+        </ul>
+        <p>Вы можете очистить localStorage в любой момент через настройки браузера. Это может привести к потере локально сохранённых данных.</p>
         
-        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">4. Ваши права</h4>
-        <p>Вы можете в любой момент удалить свои данные, очистив localStorage в настройках браузера. Данные из Firebase удаляются по запросу.</p>
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">4. EmailJS</h4>
+        <p>Для отправки кодов подтверждения при регистрации, смене email и восстановлении пароля мы используем сервис EmailJS. При отправке письма передаются: ваш email, никнейм и код подтверждения. EmailJS не хранит эти данные и использует их только для доставки письма.</p>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">5. Push-уведомления и Service Worker</h4>
+        <p>Сайт использует Service Worker (<code>/sw.js</code>) для отправки push-уведомлений о новых сообщениях в чате. Уведомления отправляются только при активном разрешении браузера. Вы можете отключить уведомления в настройках Сайта или браузера.</p>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">6. Cookie и аналитика</h4>
+        <p>Мы используем Google Analytics для сбора анонимной статистики посещений (просмотры страниц, время на сайте, действия). Google Analytics может использовать cookie для идентификации уникальных посетителей. Вы можете отключить cookie в настройках браузера или использовать режим инкогнито.</p>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">7. Передача данных третьим лицам</h4>
+        <p>Мы не продаём и не передаём ваши персональные данные третьим лицам, за исключением:</p>
+        <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+          <li><strong>Google (Firebase)</strong> — для хранения и синхронизации данных</li>
+          <li><strong>EmailJS</strong> — для отправки писем с кодами подтверждения</li>
+          <li><strong>Google Analytics</strong> — для анонимной статистики</li>
+        </ul>
+        
+        <h4 style="font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary);">8. Ваши права</h4>
+        <p>Вы имеете право:</p>
+        <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+          <li>Запросить удаление ваших данных из Firebase, написав на <a href="mailto:mortisplay@mail.ru" style="color: var(--primary);">mortisplay@mail.ru</a></li>
+          <li>Очистить localStorage в настройках браузера</li>
+          <li>Отключить cookie и уведомления в настройках браузера</li>
+          <li>Изменить или удалить свой аккаунт в любой момент</li>
+        </ul>
+        <p>После удаления аккаунта ваши сообщения в чате и комментарии могут остаться видимыми, но без привязки к вашему профилю.</p>
       </div>
       <div style="text-align: center; margin-top: 1.5rem;">
         <button class="btn-primary" onclick="closePrivacyModal()">
           <i class="fas fa-check"></i> Закрыть
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно: Восстановление пароля -->
+  <div id="forgotPasswordModal" class="modal-backdrop" onclick="closeForgotPasswordModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 480px;">
+      <button class="modal-close" onclick="closeForgotPasswordModal()"><i class="fas fa-times"></i></button>
+      <div class="text-center mb-6">
+        <div style="width: 3.5rem; height: 3.5rem; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+          <i class="fas fa-key text-white" style="font-size: 1.5rem;"></i>
+        </div>
+        <h3 class="text-2xl font-bold gradient-text">Восстановление пароля</h3>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.5rem;">
+          Введите email, указанный при регистрации. Мы отправим код для сброса пароля.
+        </p>
+      </div>
+      <div id="forgotPasswordStep1">
+        <div class="profile-form-group">
+          <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-secondary);">
+            <i class="fas fa-envelope"></i> Email
+          </label>
+          <input type="email" id="forgotPasswordEmail" class="profile-input" placeholder="Введите ваш email" autocomplete="email" />
+        </div>
+        <div id="forgotPasswordError" style="color: #ef4444; font-size: 0.8rem; margin-bottom: 0.75rem; display: none;"></div>
+        <button id="forgotPasswordSendBtn" class="btn-primary w-full" onclick="sendPasswordResetCode()" style="margin-bottom: 0.75rem;">
+          <i class="fas fa-paper-plane"></i> Отправить код
+        </button>
+        <p style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">
+          <a href="#" onclick="closeForgotPasswordModal(); return false;" style="color: var(--primary);">Вернуться ко входу</a>
+        </p>
+      </div>
+      <div id="forgotPasswordStep2" style="display: none;">
+        <div style="text-align: center; margin-bottom: 1rem;">
+          <p style="font-size: 0.85rem; color: var(--text-secondary);">Код отправлен на <strong id="forgotPasswordEmailDisplay" style="color: var(--text-primary);"></strong></p>
+        </div>
+        <div class="profile-form-group">
+          <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-secondary);">
+            <i class="fas fa-shield-alt"></i> Код подтверждения
+          </label>
+          <input type="text" id="forgotPasswordCode" class="profile-input" placeholder="Введите код из письма" maxlength="6" />
+        </div>
+        <div class="profile-form-group">
+          <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-secondary);">
+            <i class="fas fa-lock"></i> Новый пароль
+          </label>
+          <input type="password" id="forgotPasswordNew" class="profile-input" placeholder="Введите новый пароль (мин. 6 символов)" autocomplete="new-password" />
+        </div>
+        <div id="forgotPasswordStep2Error" style="color: #ef4444; font-size: 0.8rem; margin-bottom: 0.75rem; display: none;"></div>
+        <button id="forgotPasswordResetBtn" class="btn-primary w-full" onclick="confirmPasswordReset()" style="margin-bottom: 0.75rem;">
+          <i class="fas fa-check"></i> Сбросить пароль
+        </button>
+        <p style="text-align: center; font-size: 0.8rem; color: var(--text-secondary);">
+          <a href="#" onclick="backToForgotStep1(); return false;" style="color: var(--text-secondary);">← Назад</a>
+        </p>
       </div>
     </div>
   </div>
@@ -3621,6 +3761,193 @@
         pendingNewEmail = null;
 
         showNotification('Email успешно изменён! ✅', { type: 'success', duration: 3000 });
+    }
+
+    // === Восстановление пароля ===
+    let pendingResetCode = null;
+    let pendingResetEmail = null;
+
+    function openForgotPasswordModal() {
+        const modal = document.getElementById('forgotPasswordModal');
+        if (!modal) return;
+        document.getElementById('forgotPasswordStep1').style.display = 'block';
+        document.getElementById('forgotPasswordStep2').style.display = 'none';
+        document.getElementById('forgotPasswordEmail').value = '';
+        document.getElementById('forgotPasswordCode').value = '';
+        document.getElementById('forgotPasswordNew').value = '';
+        document.getElementById('forgotPasswordError').style.display = 'none';
+        document.getElementById('forgotPasswordStep2Error').style.display = 'none';
+        pendingResetCode = null;
+        pendingResetEmail = null;
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeForgotPasswordModal(event) {
+        if (event && event.target.id !== 'forgotPasswordModal') return;
+        const modal = document.getElementById('forgotPasswordModal');
+        if (!modal) return;
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+        pendingResetCode = null;
+        pendingResetEmail = null;
+    }
+
+    function backToForgotStep1() {
+        document.getElementById('forgotPasswordStep1').style.display = 'block';
+        document.getElementById('forgotPasswordStep2').style.display = 'none';
+        document.getElementById('forgotPasswordStep2Error').style.display = 'none';
+    }
+
+    async function sendPasswordResetCode() {
+        const email = document.getElementById('forgotPasswordEmail').value.trim();
+        const errorEl = document.getElementById('forgotPasswordError');
+
+        if (!email || !email.includes('@') || !email.includes('.')) {
+            errorEl.textContent = 'Введите корректный email';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        errorEl.style.display = 'none';
+
+        // Проверяем, есть ли пользователь с таким email в Firebase
+        if (!firebaseInitialized) {
+            errorEl.textContent = 'Сервис временно недоступен. Попробуйте позже.';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        try {
+            const db = firebase.database();
+            const snapshot = await db.ref('users').orderByChild('email').equalTo(email).once('value');
+            const users = snapshot.val();
+
+            if (!users) {
+                errorEl.textContent = 'Пользователь с таким email не найден';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // Нашли пользователя
+            let foundUid = null;
+            let foundNickname = '';
+            Object.keys(users).forEach(uid => {
+                foundUid = uid;
+                foundNickname = users[uid].nickname || 'Пользователь';
+            });
+
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            pendingResetCode = code;
+            pendingResetEmail = email;
+
+            setTimeout(() => {
+                if (pendingResetCode === code) {
+                    pendingResetCode = null;
+                    pendingResetEmail = null;
+                }
+            }, 10 * 60 * 1000);
+
+            const timeStr = new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Vladivostok' });
+
+            const templateParams = {
+                to_email: email,
+                verification_code: code,
+                nickname: foundNickname,
+                new_email: email,
+                time: timeStr
+            };
+
+            await emailjs.send(
+                'service_htws14a',
+                'template_jw8t4ik',
+                templateParams,
+                '_VoyQ3LeHKQ2XJzgt'
+            );
+
+            document.getElementById('forgotPasswordStep1').style.display = 'none';
+            document.getElementById('forgotPasswordStep2').style.display = 'block';
+            document.getElementById('forgotPasswordEmailDisplay').textContent = email;
+
+            showNotification('Код отправлен на ' + email + ' 📧', { type: 'success', duration: 4000 });
+        } catch (err) {
+            console.error('[PasswordReset] Ошибка:', err);
+            errorEl.textContent = 'Ошибка отправки. Попробуйте позже.';
+            errorEl.style.display = 'block';
+        }
+    }
+
+    async function confirmPasswordReset() {
+        const code = document.getElementById('forgotPasswordCode').value.trim();
+        const newPassword = document.getElementById('forgotPasswordNew').value;
+        const errorEl = document.getElementById('forgotPasswordStep2Error');
+
+        if (!code || code.length !== 6) {
+            errorEl.textContent = 'Введите 6-значный код из письма';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        if (!newPassword || newPassword.length < 6) {
+            errorEl.textContent = 'Пароль должен быть минимум 6 символов';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        if (!pendingResetCode || !pendingResetEmail) {
+            errorEl.textContent = 'Код устарел. Запросите новый код.';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        if (code !== pendingResetCode) {
+            errorEl.textContent = 'Неверный код. Проверьте письмо.';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        errorEl.style.display = 'none';
+
+        try {
+            // Ищем пользователя в Firebase по email и обновляем пароль
+            const db = firebase.database();
+            const snapshot = await db.ref('users').orderByChild('email').equalTo(pendingResetEmail).once('value');
+            const users = snapshot.val();
+
+            if (!users) {
+                showNotification('Пользователь не найден', { type: 'error' });
+                return;
+            }
+
+            let foundUid = null;
+            Object.keys(users).forEach(uid => {
+                foundUid = uid;
+            });
+
+            if (!foundUid) {
+                showNotification('Ошибка: пользователь не найден', { type: 'error' });
+                return;
+            }
+
+            // Обновляем пароль в Firebase
+            await db.ref('users/' + foundUid + '/password').set(newPassword);
+
+            // Если это текущий пользователь — обновляем и локально
+            if (currentUser && currentUser.email === pendingResetEmail) {
+                currentUser.password = newPassword;
+                saveUserLocally(currentUser, currentUserUid);
+            }
+
+            closeForgotPasswordModal();
+            pendingResetCode = null;
+            pendingResetEmail = null;
+
+            showNotification('Пароль успешно изменён! ✅', { type: 'success', duration: 3000 });
+        } catch (err) {
+            console.error('[PasswordReset] Ошибка сброса:', err);
+            errorEl.textContent = 'Ошибка при сбросе пароля. Попробуйте позже.';
+            errorEl.style.display = 'block';
+        }
     }
 
     function updateProfileBetaCountdown() {

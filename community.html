@@ -1413,7 +1413,7 @@
               </button>
               <span style="font-size: 0.75rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.4rem;">
                 <i class="fas fa-info-circle" style="color: var(--primary);"></i>
-                Лимит: фото/GIF — 5 МБ · видео — 50 МБ
+                Лимит: фото/GIF — 5 МБ · видео — 20 МБ
               </span>
             </div>
             <!-- Индикатор загрузки -->
@@ -2804,21 +2804,30 @@
         item.className = 'gallery-item';
         const isVideo = meme.fileType === 'video';
         
+        // Получаем dataUrl: из localStorage если isLocalData, иначе из Firebase
+        let displayUrl = meme.dataUrl;
+        if (meme.isLocalData && meme.localDataKey) {
+          try {
+            const localData = localStorage.getItem(meme.localDataKey);
+            if (localData) displayUrl = localData;
+          } catch(e) {}
+        }
+        
         if (isVideo) {
           item.innerHTML = `
-            <video src="${meme.dataUrl}" muted loop preload="metadata" style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;"></video>
+            <video src="${displayUrl}" muted loop preload="metadata" style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;"></video>
             <div class="video-badge"><i class="fas fa-play"></i></div>
             <div class="author-tag"><i class="fas fa-user"></i> ${escapeHtml(meme.author)}</div>
             <div class="overlay">${escapeHtml(meme.title)}</div>
           `;
         } else {
           item.innerHTML = `
-            <img src="${meme.dataUrl}" alt="${escapeHtml(meme.title)}" loading="lazy" />
+            <img src="${displayUrl}" alt="${escapeHtml(meme.title)}" loading="lazy" />
             <div class="author-tag"><i class="fas fa-user"></i> ${escapeHtml(meme.author)}</div>
             <div class="overlay">${escapeHtml(meme.title)}</div>
           `;
         }
-        item.addEventListener('click', () => openGalleryModal(meme.dataUrl, meme.title, isVideo, meme._key));
+        item.addEventListener('click', () => openGalleryModal(displayUrl, meme.title, isVideo, meme._key));
         grid.appendChild(item);
       });
     }
@@ -3120,8 +3129,8 @@
         return;
       }
 
-      if (file.size > 50 * 1024 * 1024) {
-        showNotification('Файл слишком большой. Максимум 50 МБ', { type: 'warning' });
+      if (file.size > 20 * 1024 * 1024) {
+        showNotification('Файл слишком большой. Максимум 20 МБ', { type: 'warning' });
         return;
       }
 
@@ -3149,49 +3158,63 @@
         showUploadProgress(50, 'Отправка в галерею...', true);
         
         const isVideo = file.type.startsWith('video/');
-        const meme = {
-          title: title,
-          author: author,
-          dataUrl: e.target.result,
-          fileType: isVideo ? 'video' : 'image',
-          timestamp: Date.now()
-        };
-
-        // Отправляем в Firebase
-        const db = firebase.database();
-        db.ref('gallery_memes').push(meme)
-          .then(() => {
-            showUploadProgress(100, 'Готово! ✓', false);
-            setTimeout(() => {
-              hideUploadProgress();
-              fileInput.value = '';
-              titleInput.value = '';
-              authorInput.value = '';
-              showNotification('Мем добавлен в галерею! 🎉', { type: 'success', duration: 3000 });
-              // Уведомление на главную страницу
-              sendCommunityNotification(
-                `🖼️ Новый мем в галерее: "${title}" от ${author}`,
-                { type: 'info', duration: 5000, subCategory: 'community-memes' }
-              );
-              // Разблокируем кнопку
-              uploadBtn.disabled = false;
-              uploadBtn.style.opacity = '';
-              uploadBtn.style.cursor = '';
-            }, 500);
-          })
-          .catch((error) => {
-            console.error('[Firebase] Ошибка загрузки мема:', error);
-            showUploadProgress(0, 'Ошибка!', false);
-            document.getElementById('uploadProgressBar').style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
-            setTimeout(() => {
-              hideUploadProgress();
-              document.getElementById('uploadProgressBar').style.background = '';
-              showNotification('Ошибка загрузки мема', { type: 'warning' });
-              uploadBtn.disabled = false;
-              uploadBtn.style.opacity = '';
-              uploadBtn.style.cursor = '';
-            }, 2000);
-          });
+        const dataUrl = e.target.result;
+        
+        // Проверяем размер dataUrl — Firebase не принимает строки > 10 MB (10485760 байт)
+        const dataUrlSize = new Blob([dataUrl]).size;
+        const FIREBASE_LIMIT = 9000000; // 9 MB — оставляем запас
+        
+        let isLocalData = false;
+        let finalDataUrl = dataUrl;
+        
+        if (dataUrlSize > FIREBASE_LIMIT) {
+          // Если файл слишком большой для Firebase — будем хранить dataUrl в localStorage
+          isLocalData = true;
+          // Для localStorage тоже есть лимит (~5-10 MB), поэтому предупреждаем
+          if (dataUrlSize > 4 * 1024 * 1024) {
+            showNotification('Файл слишком большой. Данные будут сохранены локально (могут быть потеряны при очистке кэша)', { type: 'warning', duration: 5000 });
+          }
+        }
+        
+        // Для изображений пытаемся сжать, если dataUrl большой
+        if (!isVideo && dataUrlSize > FIREBASE_LIMIT) {
+          // Сжимаем изображение через canvas
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let w = img.width;
+            let h = img.height;
+            // Уменьшаем размер, сохраняя пропорции
+            const maxDim = 1200;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) { h = h * maxDim / w; w = maxDim; }
+              else { w = w * maxDim / h; h = maxDim; }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            // Пробуем с качеством 0.7, потом уменьшаем
+            let quality = 0.7;
+            let compressed = canvas.toDataURL('image/jpeg', quality);
+            while (new Blob([compressed]).size > FIREBASE_LIMIT && quality > 0.1) {
+              quality -= 0.1;
+              compressed = canvas.toDataURL('image/jpeg', quality);
+            }
+            if (new Blob([compressed]).size > FIREBASE_LIMIT) {
+              isLocalData = true;
+              finalDataUrl = compressed;
+              showNotification('Изображение сжато, но всё ещё большое. Данные сохранены локально', { type: 'warning', duration: 4000 });
+            } else {
+              finalDataUrl = compressed;
+            }
+            finishUpload(finalDataUrl, isLocalData, isVideo, title, author, uploadBtn, fileInput, titleInput, authorInput);
+          };
+          img.src = dataUrl;
+          return;
+        }
+        
+        finishUpload(finalDataUrl, isLocalData, isVideo, title, author, uploadBtn, fileInput, titleInput, authorInput);
       };
 
       reader.onerror = function() {
@@ -3203,6 +3226,74 @@
       };
 
       reader.readAsDataURL(file);
+    }
+
+    function finishUpload(dataUrl, isLocalData, isVideo, title, author, uploadBtn, fileInput, titleInput, authorInput) {
+      const meme = {
+        title: title,
+        author: author,
+        fileType: isVideo ? 'video' : 'image',
+        timestamp: Date.now(),
+        isLocalData: isLocalData
+      };
+
+      if (isLocalData) {
+        // Сохраняем dataUrl в localStorage, в Firebase кладём только метаданные
+        const localKey = 'gallery_meme_data_' + Date.now();
+        try {
+          localStorage.setItem(localKey, dataUrl);
+        } catch(e) {
+          console.error('[Upload] localStorage full, cannot store large file');
+          showNotification('Недостаточно места в хранилище для этого файла', { type: 'warning' });
+          uploadBtn.disabled = false;
+          uploadBtn.style.opacity = '';
+          uploadBtn.style.cursor = '';
+          hideUploadProgress();
+          return;
+        }
+        meme.localDataKey = localKey;
+        meme.dataUrl = ''; // Пустая строка, чтобы Firebase не ругался
+      } else {
+        meme.dataUrl = dataUrl;
+      }
+
+      const db = firebase.database();
+      db.ref('gallery_memes').push(meme)
+        .then(() => {
+          showUploadProgress(100, 'Готово! ✓', false);
+          setTimeout(() => {
+            hideUploadProgress();
+            fileInput.value = '';
+            titleInput.value = '';
+            authorInput.value = '';
+            showNotification('Мем добавлен в галерею! 🎉', { type: 'success', duration: 3000 });
+            sendCommunityNotification(
+              `🖼️ Новый мем в галерее: "${title}" от ${author}`,
+              { type: 'info', duration: 5000, subCategory: 'community-memes' }
+            );
+            uploadBtn.disabled = false;
+            uploadBtn.style.opacity = '';
+            uploadBtn.style.cursor = '';
+          }, 500);
+        })
+        .catch((error) => {
+          console.error('[Firebase] Ошибка загрузки мема:', error);
+          // Если ошибка из-за размера — пробуем сохранить локально
+          if (error.message && error.message.includes('string greater than')) {
+            showNotification('Файл слишком большой для базы данных. Попробуйте другое видео', { type: 'warning' });
+          } else {
+            showNotification('Ошибка загрузки мема', { type: 'warning' });
+          }
+          showUploadProgress(0, 'Ошибка!', false);
+          document.getElementById('uploadProgressBar').style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+          setTimeout(() => {
+            hideUploadProgress();
+            document.getElementById('uploadProgressBar').style.background = '';
+            uploadBtn.disabled = false;
+            uploadBtn.style.opacity = '';
+            uploadBtn.style.cursor = '';
+          }, 2000);
+        });
     }
 
     // === ОТПРАВКА УВЕДОМЛЕНИЙ НА ГЛАВНУЮ СТРАНИЦУ (index.html) И ЛОКАЛЬНО ===
