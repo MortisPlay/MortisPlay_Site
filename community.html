@@ -1921,6 +1921,7 @@
               ...fbData,
               avatarDataUrl: msgData.avatarDataUrl || fbData.avatarDataUrl || '',
               accentColor: msgData.accentColor || fbData.accentColor || '',
+              badge: fbData.badge || msgData.badge || '',
               status: fbData.status || msgData.status || '',
               bio: fbData.bio || '',
               registeredAt: fbData.registeredAt || ''
@@ -1968,25 +1969,30 @@
       nameEl.textContent = username || 'Аноним';
       nameEl.style.color = accentColor;
 
-      // Бейдж
-      const isOfficial = isOfficialUser(data);
-      const isDonaterUser = isDonater(data);
-      if (isOfficial) {
-        badgeEl.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-check-circle"></i> Официально</span>';
-      } else if (isDonaterUser) {
-        badgeEl.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-dollar-sign"></i> Донатер</span>';
+      // Бейдж из Firebase
+      const badgeType = getUserBadgeSync(data);
+      if (badgeType) {
+        const badgeMap = {
+          'official': '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-check-circle"></i> Официально</span>',
+          'donater': '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-dollar-sign"></i> Донатер</span>',
+          'beta_tester': '<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 999px;"><i class="fas fa-flask"></i> Бета-тестер</span>'
+        };
+        badgeEl.innerHTML = badgeMap[badgeType] || '';
       } else {
         badgeEl.innerHTML = '';
       }
 
-      // Описание бейджа (синяя галочка / донатер)
+      // Описание бейджа
       const badgeDescEl = document.getElementById('userProfileModalBadgeDescription');
       if (badgeDescEl) {
-        if (isOfficial) {
-          badgeDescEl.innerHTML = '<div style="padding: 0.6rem 0.75rem; background: rgba(29, 161, 242, 0.1); border: 1px solid rgba(29, 161, 242, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; text-align: left;"><i class="fas fa-check-circle" style="color: #1da1f2; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Официальная синяя галочка</strong> — этот аккаунт подтверждён как официальный представитель Mortis Play. Галочка присваивается только администрацией и означает, что владелец аккаунта является частью команды проекта.</div>';
-          badgeDescEl.style.display = 'block';
-        } else if (isDonaterUser) {
-          badgeDescEl.innerHTML = '<div style="padding: 0.6rem 0.75rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; text-align: left;"><i class="fas fa-dollar-sign" style="color: #f59e0b; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Донатер</strong> — этот пользователь поддержал проект финансово. Спасибо за вклад в развитие сообщества! ❤️</div>';
+        const descMap = {
+          'official': '<div style="padding: 0.6rem 0.75rem; background: rgba(29, 161, 242, 0.1); border: 1px solid rgba(29, 161, 242, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; text-align: left;"><i class="fas fa-check-circle" style="color: #1da1f2; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Официальная синяя галочка</strong> — этот аккаунт подтверждён как официальный представитель Mortis Play. Галочка присваивается только администрацией и означает, что владелец аккаунта является частью команды проекта.</div>',
+          'donater': '<div style="padding: 0.6rem 0.75rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; text-align: left;"><i class="fas fa-dollar-sign" style="color: #f59e0b; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Донатер</strong> — этот пользователь поддержал проект финансово. Спасибо за вклад в развитие сообщества! ❤️</div>',
+          'beta_tester': '<div style="padding: 0.6rem 0.75rem; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; text-align: left;"><i class="fas fa-flask" style="color: #8b5cf6; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Бета-тестер</strong> — этот пользователь помогает тестировать новые функции сайта. Спасибо за помощь в улучшении проекта! 🧪</div>'
+        };
+        const descHtml = descMap[badgeType];
+        if (descHtml) {
+          badgeDescEl.innerHTML = descHtml;
           badgeDescEl.style.display = 'block';
         } else {
           badgeDescEl.style.display = 'none';
@@ -2165,29 +2171,41 @@
       return null;
     }
 
-    // Список официальных email-адресов (только Mortis Play — синяя галочка)
-    const OFFICIAL_EMAILS = [
-      'mortisplay@mail.ru'
-    ];
+    // === СИСТЕМА БЕЙДЖЕЙ (через Firebase) ===
+    const ADMIN_EMAIL = 'mortisplay@mail.ru';
 
-    // Синяя галочка "Официально" — проверка только по email (никнейм может меняться)
-    function isOfficialUser(data) {
-      if (!data || !data.email) return false;
-      return OFFICIAL_EMAILS.some(email =>
-        email.toLowerCase() === data.email.toLowerCase()
-      );
+    // Получить бейдж пользователя (синхронно из данных профиля)
+    function getUserBadgeSync(userData) {
+      if (!userData) return '';
+      // Администратор всегда official
+      if (userData.email && userData.email.toLowerCase() === ADMIN_EMAIL) return 'official';
+      return userData.badge || '';
     }
 
-    // Статус "Донатер" ($) — только из статического массива (проверка по email)
-    const DONATER_EMAILS = [
-      'johnnydrillbato554@gmail.com'
-    ];
+    function isOfficialUser(data) {
+      return getUserBadgeSync(data) === 'official';
+    }
 
     function isDonater(data) {
-      if (!data || !data.email) return false;
-      return DONATER_EMAILS.some(email =>
-        email.toLowerCase() === data.email.toLowerCase()
-      );
+      return getUserBadgeSync(data) === 'donater';
+    }
+
+    function isBetaTester(data) {
+      return getUserBadgeSync(data) === 'beta_tester';
+    }
+
+    // Получить HTML для бейджа по его типу
+    function getBadgeHtml(badgeType) {
+      switch (badgeType) {
+        case 'official':
+          return '<span style="display: inline-flex; align-items: center; gap: 0.2rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; vertical-align: middle;"><i class="fas fa-check-circle" style="font-size: 0.7rem;"></i> Официально</span>';
+        case 'donater':
+          return '<span style="display: inline-flex; align-items: center; gap: 0.2rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; vertical-align: middle;"><i class="fas fa-dollar-sign" style="font-size: 0.7rem;"></i> Донатер</span>';
+        case 'beta_tester':
+          return '<span style="display: inline-flex; align-items: center; gap: 0.2rem; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; vertical-align: middle;"><i class="fas fa-flask" style="font-size: 0.7rem;"></i> Бета-тестер</span>';
+        default:
+          return '';
+      }
     }
 
     function renderChatMessages() {
@@ -2217,8 +2235,12 @@
         // Данные профиля из сообщения (приходят от других пользователей)
         const msgAvatar = msg.avatarDataUrl || '';
         const msgColor = msg.accentColor || '';
-        const msgIsOfficial = msg.isOfficial === true;
-        const msgIsDonater = msg.isDonater === true;
+        // Обратная совместимость: старые сообщения используют isOfficial/isDonater
+        let msgBadge = msg.badge || '';
+        if (!msgBadge) {
+          if (msg.isOfficial === true) msgBadge = 'official';
+          else if (msg.isDonater === true) msgBadge = 'donater';
+        }
         const msgStatus = msg.status || '';
 
         // Данные для модального окна профиля (кликабельный профиль)
@@ -2226,8 +2248,7 @@
           username: msg.username || 'Аноним',
           avatarDataUrl: msgAvatar,
           accentColor: msgColor,
-          isOfficial: msgIsOfficial,
-          isDonater: msgIsDonater,
+          badge: msgBadge,
           status: msgStatus
         }).replace(/'/g, "\\'").replace(/"/g, '"');
 
@@ -2238,12 +2259,15 @@
           avatarHtml = `<div class="avatar clickable-profile" onclick='openUserProfile("${escapeHtml(msg.username || 'Аноним')}", ${profileData})' style="background: ${msgColor || '#6366f1'}; cursor: pointer;">${avatarLetter}</div>`;
         }
 
-        // Бейдж: синяя галочка "Официально" или значок "Донатер" ($)
+        // Бейдж из Firebase
         let badgeHtml = '';
-        if (msgIsOfficial) {
-          badgeHtml = ` <span style="display: inline-flex; align-items: center; gap: 0.15rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.25rem;"><i class="fas fa-check-circle" style="font-size: 0.6rem;"></i> Офф.</span>`;
-        } else if (msgIsDonater) {
-          badgeHtml = ` <span style="display: inline-flex; align-items: center; gap: 0.15rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.25rem;"><i class="fas fa-dollar-sign" style="font-size: 0.6rem;"></i> Дон.</span>`;
+        if (msgBadge) {
+          const badgeMap = {
+            'official': '<span style="display: inline-flex; align-items: center; gap: 0.15rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.25rem;"><i class="fas fa-check-circle" style="font-size: 0.6rem;"></i> Офф.</span>',
+            'donater': '<span style="display: inline-flex; align-items: center; gap: 0.15rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.25rem;"><i class="fas fa-dollar-sign" style="font-size: 0.6rem;"></i> Дон.</span>',
+            'beta_tester': '<span style="display: inline-flex; align-items: center; gap: 0.15rem; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-size: 0.6rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 999px; vertical-align: middle; margin-left: 0.25rem;"><i class="fas fa-flask" style="font-size: 0.6rem;"></i> Бета</span>'
+          };
+          badgeHtml = ' ' + (badgeMap[msgBadge] || '');
         }
 
         // Статус пользователя (если есть)
@@ -2529,8 +2553,7 @@
         timestamp: Date.now(),
         avatarDataUrl: privacyShowAvatar ? (getProfileAvatar() || '') : '',
         accentColor: getProfileAccentColor() || '',
-        isOfficial: isOfficialUser(currentUserProfile),
-        isDonater: isDonater(currentUserProfile),
+        badge: getUserBadgeSync(currentUserProfile),
         status: currentUserProfile ? (currentUserProfile.status || '') : ''
       };
 

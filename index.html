@@ -1512,7 +1512,40 @@
             </button>
           </div>
 
-          <!-- Админ-панель (видна только тем, у кого есть галочка) -->
+          <!-- Админ-панель (видна только администратору) -->
+          <div id="adminPanelSection" style="display: none; margin-top: 1.5rem; border-top: 2px solid var(--primary); padding-top: 1rem;">
+            <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">
+              <i class="fas fa-shield-alt"></i> Админ-панель
+            </h4>
+            <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 0.75rem; padding: 1rem;">
+              <div class="profile-form-group">
+                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">
+                  <i class="fas fa-envelope"></i> Email пользователя
+                </label>
+                <input type="email" id="adminBadgeEmail" class="profile-input" placeholder="email@example.com" />
+              </div>
+              <div class="profile-form-group">
+                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 0.3rem;">
+                  <i class="fas fa-award"></i> Тип бейджа
+                </label>
+                <select id="adminBadgeType" class="profile-input" style="cursor: pointer;">
+                  <option value="">— Нет бейджа —</option>
+                  <option value="official">🔵 Официально (синяя галочка)</option>
+                  <option value="donater">🟡 Донатер</option>
+                  <option value="beta_tester">🟣 Бета-тестер</option>
+                </select>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button id="adminSetBadgeBtn" class="btn-primary" style="flex: 1; font-size: 0.8rem; padding: 0.6rem 1rem;">
+                  <i class="fas fa-check"></i> Выдать бейдж
+                </button>
+                <button id="adminRemoveBadgeBtn" class="btn-primary" style="flex: 0 0 auto; font-size: 0.8rem; padding: 0.6rem 1rem; background: linear-gradient(135deg, #ef4444, #dc2626);">
+                  <i class="fas fa-times"></i> Забрать
+                </button>
+              </div>
+              <div id="adminBadgeResult" style="margin-top: 0.5rem; font-size: 0.8rem; display: none;"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2678,27 +2711,75 @@
         }
     }
 
-    // === СПИСОК ОФИЦИАЛЬНЫХ ПОЛЬЗОВАТЕЛЕЙ ===
-    const OFFICIAL_EMAILS = [
-        'mortisplay@mail.ru'
-    ];
+    // === СИСТЕМА БЕЙДЖЕЙ (через Firebase) ===
+    // Администратор (владелец сайта) — всегда официальный
+    const ADMIN_EMAIL = 'mortisplay@mail.ru';
 
-    function isOfficialUser(data) {
-        if (!data || !data.email) return false;
-        return OFFICIAL_EMAILS.some(email =>
-            email.toLowerCase() === data.email.toLowerCase()
-        );
+    // Получить бейдж пользователя из Firebase по email
+    async function getUserBadgeFromDB(email) {
+        if (!email || !firebaseInitialized) return '';
+        try {
+            const db = firebase.database();
+            const snapshot = await db.ref('users').orderByChild('email').equalTo(email.toLowerCase()).once('value');
+            if (!snapshot.exists()) return '';
+            let badge = '';
+            snapshot.forEach(child => {
+                const userData = child.val();
+                if (userData.badge) badge = userData.badge;
+            });
+            return badge;
+        } catch (err) {
+            console.error('[Badge] Ошибка чтения бейджа:', err);
+            return '';
+        }
     }
 
-    const DONATER_EMAILS = [
-        'johnnydrillbato554@gmail.com'
-    ];
+    // Получить бейдж пользователя (синхронно из кэша currentUser)
+    function getUserBadgeSync(userData) {
+        if (!userData) return '';
+        // Администратор всегда official
+        if (userData.email && userData.email.toLowerCase() === ADMIN_EMAIL) return 'official';
+        return userData.badge || '';
+    }
+
+    function isOfficialUser(data) {
+        return getUserBadgeSync(data) === 'official';
+    }
 
     function isDonater(data) {
-        if (!data || !data.email) return false;
-        return DONATER_EMAILS.some(email =>
-            email.toLowerCase() === data.email.toLowerCase()
-        );
+        return getUserBadgeSync(data) === 'donater';
+    }
+
+    function isBetaTester(data) {
+        return getUserBadgeSync(data) === 'beta_tester';
+    }
+
+    // Получить HTML для бейджа по его типу
+    function getBadgeHtml(badgeType) {
+        switch (badgeType) {
+            case 'official':
+                return '<span style="display: inline-flex; align-items: center; gap: 0.2rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; vertical-align: middle;"><i class="fas fa-check-circle" style="font-size: 0.7rem;"></i> Официально</span>';
+            case 'donater':
+                return '<span style="display: inline-flex; align-items: center; gap: 0.2rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; vertical-align: middle;"><i class="fas fa-dollar-sign" style="font-size: 0.7rem;"></i> Донатер</span>';
+            case 'beta_tester':
+                return '<span style="display: inline-flex; align-items: center; gap: 0.2rem; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; vertical-align: middle;"><i class="fas fa-flask" style="font-size: 0.7rem;"></i> Бета-тестер</span>';
+            default:
+                return '';
+        }
+    }
+
+    // Получить описание бейджа
+    function getBadgeDescription(badgeType) {
+        switch (badgeType) {
+            case 'official':
+                return '<div style="margin-top: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(29, 161, 242, 0.1); border: 1px solid rgba(29, 161, 242, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;"><i class="fas fa-check-circle" style="color: #1da1f2; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Официальная синяя галочка</strong> — этот аккаунт подтверждён как официальный представитель Mortis Play. Галочка присваивается только администрацией и означает, что владелец аккаунта является частью команды проекта.</div>';
+            case 'donater':
+                return '<div style="margin-top: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;"><i class="fas fa-dollar-sign" style="color: #f59e0b; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Донатер</strong> — этот пользователь поддержал проект финансово. Спасибо за вклад в развитие сообщества! ❤️</div>';
+            case 'beta_tester':
+                return '<div style="margin-top: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;"><i class="fas fa-flask" style="color: #8b5cf6; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Бета-тестер</strong> — этот пользователь помогает тестировать новые функции сайта. Спасибо за помощь в улучшении проекта! 🧪</div>';
+            default:
+                return '';
+        }
     }
 
     async function openProfileModal() {
@@ -2767,16 +2848,14 @@
         } catch(e) {}
         
         if (currentUser) {
-            // Отображаем имя с бейджем: синяя галочка "Официально" или значок "Донатер"
-            const isOfficial = isOfficialUser(currentUser);
-            const isDonaterUser = isDonater(currentUser);
+            // Отображаем имя с бейджем из Firebase
+            const badgeType = getUserBadgeSync(currentUser);
             const nameEl = document.getElementById('profileDisplayName');
-            if (isOfficial) {
-                nameEl.innerHTML = currentUser.nickname + ' <span style="display: inline-flex; align-items: center; gap: 0.2rem; background: linear-gradient(135deg, #1da1f2, #0d8bd9); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; vertical-align: middle;"><i class="fas fa-check-circle" style="font-size: 0.7rem;"></i> Официально</span>';
-            } else if (isDonaterUser) {
-                nameEl.innerHTML = currentUser.nickname + ' <span style="display: inline-flex; align-items: center; gap: 0.2rem; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999px; vertical-align: middle;"><i class="fas fa-dollar-sign" style="font-size: 0.7rem;"></i> Донатер</span>';
+            const badgeHtml = getBadgeHtml(badgeType);
+            if (badgeHtml) {
+                nameEl.innerHTML = (currentUser.nickname || 'Пользователь') + ' ' + badgeHtml;
             } else {
-                nameEl.textContent = currentUser.nickname;
+                nameEl.textContent = currentUser.nickname || 'Пользователь';
             }
             
             document.getElementById('profileDisplayEmail').textContent = currentUser.email;
@@ -2790,14 +2869,12 @@
                 statusEl.style.display = 'none';
             }
             
-            // Описание синей галочки "Официально"
+            // Описание бейджа
             const badgeDescEl = document.getElementById('profileBadgeDescription');
             if (badgeDescEl) {
-                if (isOfficial) {
-                    badgeDescEl.innerHTML = '<div style="margin-top: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(29, 161, 242, 0.1); border: 1px solid rgba(29, 161, 242, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;"><i class="fas fa-check-circle" style="color: #1da1f2; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Официальная синяя галочка</strong> — этот аккаунт подтверждён как официальный представитель Mortis Play. Галочка присваивается только администрацией и означает, что владелец аккаунта является частью команды проекта.</div>';
-                    badgeDescEl.style.display = 'block';
-                } else if (isDonaterUser) {
-                    badgeDescEl.innerHTML = '<div style="margin-top: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;"><i class="fas fa-dollar-sign" style="color: #f59e0b; margin-right: 0.3rem;"></i> <strong style="color: var(--text-primary);">Донатер</strong> — этот пользователь поддержал проект финансово. Спасибо за вклад в развитие сообщества! ❤️</div>';
+                const descHtml = getBadgeDescription(badgeType);
+                if (descHtml) {
+                    badgeDescEl.innerHTML = descHtml;
                     badgeDescEl.style.display = 'block';
                 } else {
                     badgeDescEl.style.display = 'none';
@@ -2846,9 +2923,109 @@
                 avatarImg.src = canvas.toDataURL();
                 if (removeBtn) removeBtn.style.display = 'none';
             }
+            // Показываем админ-панель только администратору
+            const adminPanel = document.getElementById('adminPanelSection');
+            if (adminPanel) {
+                if (currentUser.email && currentUser.email.toLowerCase() === ADMIN_EMAIL) {
+                    adminPanel.style.display = 'block';
+                } else {
+                    adminPanel.style.display = 'none';
+                }
+            }
         }
         // Запускаем слушатели друзей
         startFriendsListeners();
+    }
+
+    // === АДМИН-ПАНЕЛЬ: УПРАВЛЕНИЕ БЕЙДЖАМИ ===
+    async function setUserBadge(email, badgeType) {
+        const resultEl = document.getElementById('adminBadgeResult');
+        if (!resultEl) return;
+        
+        if (!firebaseInitialized) {
+            resultEl.innerHTML = '<span style="color: #ef4444;">❌ Firebase не инициализирован</span>';
+            resultEl.style.display = 'block';
+            return;
+        }
+
+        try {
+            const db = firebase.database();
+            const snapshot = await db.ref('users').orderByChild('email').equalTo(email.toLowerCase()).once('value');
+            
+            if (!snapshot.exists()) {
+                resultEl.innerHTML = '<span style="color: #ef4444;">❌ Пользователь с таким email не найден</span>';
+                resultEl.style.display = 'block';
+                return;
+            }
+
+            let uid = null;
+            snapshot.forEach(child => {
+                uid = child.key;
+            });
+
+            if (!uid) {
+                resultEl.innerHTML = '<span style="color: #ef4444;">❌ Ошибка: UID не найден</span>';
+                resultEl.style.display = 'block';
+                return;
+            }
+
+            if (badgeType) {
+                await db.ref('users/' + uid + '/badge').set(badgeType);
+                resultEl.innerHTML = '<span style="color: #22c55e;">✅ Бейдж <strong>' + badgeType + '</strong> успешно выдан пользователю <strong>' + escapeHtml(email) + '</strong></span>';
+            } else {
+                await db.ref('users/' + uid + '/badge').remove();
+                resultEl.innerHTML = '<span style="color: #22c55e;">✅ Бейдж удалён у пользователя <strong>' + escapeHtml(email) + '</strong></span>';
+            }
+            resultEl.style.display = 'block';
+
+            // Если изменили бейдж текущего пользователя — обновляем кэш
+            if (currentUser && currentUser.email && currentUser.email.toLowerCase() === email.toLowerCase()) {
+                currentUser.badge = badgeType || '';
+                saveUserLocally(currentUser, currentUserUid);
+                showProfileLoggedIn();
+            }
+        } catch (err) {
+            console.error('[Admin] Ошибка:', err);
+            resultEl.innerHTML = '<span style="color: #ef4444;">❌ Ошибка: ' + escapeHtml(err.message) + '</span>';
+            resultEl.style.display = 'block';
+        }
+    }
+
+    // Инициализация кнопок админ-панели
+    function initAdminPanel() {
+        const setBtn = document.getElementById('adminSetBadgeBtn');
+        const removeBtn = document.getElementById('adminRemoveBadgeBtn');
+        
+        if (setBtn) {
+            setBtn.addEventListener('click', async function() {
+                const email = document.getElementById('adminBadgeEmail').value.trim();
+                const badgeType = document.getElementById('adminBadgeType').value;
+                if (!email) {
+                    const resultEl = document.getElementById('adminBadgeResult');
+                    if (resultEl) {
+                        resultEl.innerHTML = '<span style="color: #ef4444;">❌ Введите email пользователя</span>';
+                        resultEl.style.display = 'block';
+                    }
+                    return;
+                }
+                await setUserBadge(email, badgeType);
+            });
+        }
+
+        if (removeBtn) {
+            removeBtn.addEventListener('click', async function() {
+                const email = document.getElementById('adminBadgeEmail').value.trim();
+                if (!email) {
+                    const resultEl = document.getElementById('adminBadgeResult');
+                    if (resultEl) {
+                        resultEl.innerHTML = '<span style="color: #ef4444;">❌ Введите email пользователя</span>';
+                        resultEl.style.display = 'block';
+                    }
+                    return;
+                }
+                await setUserBadge(email, '');
+            });
+        }
     }
 
     async function handleLogin() {
@@ -4432,6 +4609,9 @@
         
         // Инициализация профиля
         loadUserAccount();
+        
+        // Инициализация админ-панели
+        initAdminPanel();
         
         // Обработка хэша #profile — открываем модалку профиля автоматически
         if (window.location.hash === '#profile') {
