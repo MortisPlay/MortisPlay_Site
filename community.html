@@ -1102,7 +1102,23 @@
                 Лимит: фото/GIF — 5 МБ · видео — 100 МБ
               </span>
             </div>
+            <!-- Индикатор загрузки -->
+            <div id="uploadProgressContainer" style="display: none; margin-top: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="flex: 1; height: 0.5rem; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden;">
+                  <div id="uploadProgressBar" style="width: 0%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 999px; transition: width 0.3s ease;"></div>
+                </div>
+                <span id="uploadProgressText" style="font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap;">0%</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem;">
+                <div class="spinner" style="width: 1rem; height: 1rem; border: 2px solid var(--glass-border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; display: none;" id="uploadSpinner"></div>
+                <span id="uploadStatusText" style="font-size: 0.75rem; color: var(--text-secondary);">Подготовка...</span>
+              </div>
+            </div>
           </div>
+          <style>
+            @keyframes spin { 100% { transform: rotate(360deg); } }
+          </style>
         </div>
 
         <!-- Сетка галереи -->
@@ -1284,6 +1300,10 @@
           if (currentUserProfile && currentUserProfile.nickname) {
             currentUsername = currentUserProfile.nickname;
             localStorage.setItem('community_username', currentUsername);
+            
+            // Синхронизируем аватар и цвет акцента для чата
+            // Если в профиле есть avatarDataUrl — используем его
+            // Если есть accentColor — используем его
             return true;
           }
         }
@@ -1332,6 +1352,27 @@
         }
         // Обновляем видимость чата при изменении профиля в другой вкладке
         updateChatAccess();
+      }
+      
+      // Слушаем сигнал обновления профиля из index.html
+      if (e.key === 'profile_update_signal' && e.newValue) {
+        try {
+          const signal = JSON.parse(e.newValue);
+          if (signal && signal.timestamp) {
+            // Перезагружаем профиль из localStorage
+            const stored = localStorage.getItem(PROFILE_STORAGE_KEY);
+            if (stored) {
+              const parsed = JSON.parse(stored);
+              if (parsed && parsed.nickname) {
+                currentUserProfile = parsed;
+                currentUsername = parsed.nickname;
+                localStorage.setItem('community_username', currentUsername);
+                updateChatAccess();
+                console.log('[Profile] Обновлён по сигналу из index.html');
+              }
+            }
+          }
+        } catch(e) {}
       }
     });
 
@@ -2069,11 +2110,35 @@
       }
     }
 
+    // === ИНДИКАТОР ЗАГРУЗКИ МЕМА ===
+    function showUploadProgress(percent, statusText, showSpinner) {
+      const container = document.getElementById('uploadProgressContainer');
+      const bar = document.getElementById('uploadProgressBar');
+      const text = document.getElementById('uploadProgressText');
+      const statusEl = document.getElementById('uploadStatusText');
+      const spinner = document.getElementById('uploadSpinner');
+      if (!container) return;
+      
+      container.style.display = 'flex';
+      container.style.flexDirection = 'column';
+      
+      if (bar) bar.style.width = percent + '%';
+      if (text) text.textContent = percent + '%';
+      if (statusEl && statusText) statusEl.textContent = statusText;
+      if (spinner) spinner.style.display = showSpinner ? 'inline-block' : 'none';
+    }
+
+    function hideUploadProgress() {
+      const container = document.getElementById('uploadProgressContainer');
+      if (container) container.style.display = 'none';
+    }
+
     // Загрузка мема
     function uploadMeme() {
       const fileInput = document.getElementById('memeFile');
       const titleInput = document.getElementById('memeTitle');
       const authorInput = document.getElementById('memeAuthor');
+      const uploadBtn = document.getElementById('uploadMemeBtn');
 
       const file = fileInput.files[0];
       const title = titleInput.value.trim() || 'Мем';
@@ -2102,8 +2167,24 @@
         return;
       }
 
+      // Блокируем кнопку и показываем индикатор
+      uploadBtn.disabled = true;
+      uploadBtn.style.opacity = '0.5';
+      uploadBtn.style.cursor = 'not-allowed';
+      showUploadProgress(0, 'Подготовка...', true);
+
       const reader = new FileReader();
+      
+      reader.onprogress = function(e) {
+        if (e.lengthComputable) {
+          const percent = Math.round((e.loaded / e.total) * 50); // 0-50% на чтение файла
+          showUploadProgress(percent, 'Чтение файла...', true);
+        }
+      };
+
       reader.onload = function(e) {
+        showUploadProgress(50, 'Отправка в галерею...', true);
+        
         const isVideo = file.type.startsWith('video/');
         const meme = {
           title: title,
@@ -2117,21 +2198,47 @@
         const db = firebase.database();
         db.ref('gallery_memes').push(meme)
           .then(() => {
-            fileInput.value = '';
-            titleInput.value = '';
-            authorInput.value = '';
-            showNotification('Мем добавлен в галерею! 🎉', { type: 'success', duration: 3000 });
-            // Уведомление на главную страницу
-            sendCommunityNotification(
-              `🖼️ Новый мем в галерее: "${title}" от ${author}`,
-              { type: 'info', duration: 5000, subCategory: 'community-memes' }
-            );
+            showUploadProgress(100, 'Готово! ✓', false);
+            setTimeout(() => {
+              hideUploadProgress();
+              fileInput.value = '';
+              titleInput.value = '';
+              authorInput.value = '';
+              showNotification('Мем добавлен в галерею! 🎉', { type: 'success', duration: 3000 });
+              // Уведомление на главную страницу
+              sendCommunityNotification(
+                `🖼️ Новый мем в галерее: "${title}" от ${author}`,
+                { type: 'info', duration: 5000, subCategory: 'community-memes' }
+              );
+              // Разблокируем кнопку
+              uploadBtn.disabled = false;
+              uploadBtn.style.opacity = '';
+              uploadBtn.style.cursor = '';
+            }, 500);
           })
           .catch((error) => {
             console.error('[Firebase] Ошибка загрузки мема:', error);
-            showNotification('Ошибка загрузки мема', { type: 'warning' });
+            showUploadProgress(0, 'Ошибка!', false);
+            document.getElementById('uploadProgressBar').style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+            setTimeout(() => {
+              hideUploadProgress();
+              document.getElementById('uploadProgressBar').style.background = '';
+              showNotification('Ошибка загрузки мема', { type: 'warning' });
+              uploadBtn.disabled = false;
+              uploadBtn.style.opacity = '';
+              uploadBtn.style.cursor = '';
+            }, 2000);
           });
       };
+
+      reader.onerror = function() {
+        hideUploadProgress();
+        showNotification('Ошибка чтения файла', { type: 'warning' });
+        uploadBtn.disabled = false;
+        uploadBtn.style.opacity = '';
+        uploadBtn.style.cursor = '';
+      };
+
       reader.readAsDataURL(file);
     }
 
@@ -2143,6 +2250,8 @@
       try { localStorage.setItem('community_notification', data); } catch(e) {}
       // Для случая, когда index.html загрузится позже — сохраняем в sessionStorage
       try { sessionStorage.setItem('community_notification_pending', data); } catch(e) {}
+      // Дополнительно: сохраняем timestamp, чтобы при фокусе на index.html проверить свежесть
+      try { sessionStorage.setItem('community_notification_ts', Date.now().toString()); } catch(e) {}
     }
 
     // === УВЕДОМЛЕНИЯ ===

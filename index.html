@@ -2317,6 +2317,34 @@
                     currentUser = data;
                     currentUserUid = data.uid || null;
                     console.log('[loadUserAccount] Загружен из localStorage:', data.nickname);
+                    
+                    // Если есть UID и Firebase доступен — синхронизируем данные из Firebase
+                    if (currentUserUid && firebaseInitialized) {
+                        try {
+                            const db = firebase.database();
+                            const snapshot = await db.ref('users/' + currentUserUid).once('value');
+                            const fbData = snapshot.val();
+                            if (fbData && fbData.nickname) {
+                                // Объединяем: Firebase данные приоритетнее для статуса/био/цвета
+                                // но локальные изменения (аватар) тоже сохраняем
+                                const merged = {
+                                    ...currentUser,
+                                    ...fbData,
+                                    uid: currentUserUid,
+                                    // Локальный аватар приоритетнее, если он есть
+                                    avatarDataUrl: currentUser.avatarDataUrl || fbData.avatarDataUrl || '',
+                                    // Локальный пароль приоритетнее (может быть изменён)
+                                    password: currentUser.password || fbData.password
+                                };
+                                currentUser = merged;
+                                localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(merged));
+                                console.log('[loadUserAccount] Данные синхронизированы с Firebase');
+                            }
+                        } catch(e) {
+                            console.warn('[loadUserAccount] Ошибка синхронизации с Firebase:', e);
+                        }
+                    }
+                    
                     return;
                 }
             }
@@ -2768,9 +2796,45 @@
                 showNotification('Неверное кодовое слово! Доступ запрещён.', { type: 'warning', duration: 4000 });
                 return;
             }
+            // Если кодовое слово верное — пропускаем подтверждение по email,
+            // чтобы избежать ошибок при входе с других платформ, где почта может быть недоступна
+            const uid = userData.uid || generateUserUid();
+            userData.uid = uid;
+            
+            // Синхронизируем данные из Firebase перед сохранением (если пользователь уже был в БД)
+            if (firebaseInitialized && foundInFirebase) {
+                try {
+                    const db = firebase.database();
+                    const snapshot = await db.ref('users/' + uid).once('value');
+                    const fbData = snapshot.val();
+                    if (fbData) {
+                        // Объединяем: Firebase данные приоритетнее для статуса/био/цвета
+                        userData = { ...userData, ...fbData, uid: uid, password: userData.password };
+                    }
+                } catch(e) {
+                    console.warn('[handleLogin] Ошибка синхронизации с Firebase:', e);
+                }
+            }
+            
+            saveUserLocally(userData, uid);
+            
+            if (firebaseInitialized && !foundInFirebase) {
+                await saveUserToFirebase(uid, userData);
+            }
+
+            if (remember) {
+                localStorage.setItem('profile_remembered_login', userData.nickname);
+            } else {
+                localStorage.removeItem('profile_remembered_login');
+            }
+
+            sessionStorage.removeItem('profile_logged_out');
+            showProfileLoggedIn();
+            showNotification('Кодовое слово принято! Добро пожаловать, MortisPlay! 🎉', { type: 'success', duration: 4000 });
+            return;
         }
 
-        // === ПОДТВЕРЖДЕНИЕ ВХОДА ПО EMAIL ===
+        // === ПОДТВЕРЖДЕНИЕ ВХОДА ПО EMAIL (только для обычных пользователей) ===
         const emailSent = await sendLoginCode(userData.email, userData.nickname);
         if (!emailSent) {
             showNotification('Ошибка отправки кода подтверждения. Попробуйте позже.', { type: 'warning' });
@@ -2781,6 +2845,20 @@
         showLoginConfirmModal(userData.email, async () => {
             const uid = userData.uid || generateUserUid();
             userData.uid = uid;
+            
+            // Синхронизируем данные из Firebase перед сохранением
+            if (firebaseInitialized && foundInFirebase) {
+                try {
+                    const db = firebase.database();
+                    const snapshot = await db.ref('users/' + uid).once('value');
+                    const fbData = snapshot.val();
+                    if (fbData) {
+                        userData = { ...userData, ...fbData, uid: uid, password: userData.password };
+                    }
+                } catch(e) {
+                    console.warn('[handleLogin] Ошибка синхронизации с Firebase:', e);
+                }
+            }
             
             saveUserLocally(userData, uid);
             
@@ -2951,6 +3029,16 @@
         showProfileLoggedIn();
         
         if (newColor) applyProfileAccentColor(newColor);
+        
+        // Отправляем сигнал в community.html (если открыт) об обновлении профиля
+        try {
+            localStorage.setItem('profile_update_signal', JSON.stringify({
+                timestamp: Date.now(),
+                nickname: currentUser.nickname,
+                avatarDataUrl: currentUser.avatarDataUrl || '',
+                accentColor: currentUser.accentColor || '#6366f1'
+            }));
+        } catch(e) {}
         
         showNotification('Профиль сохранён! ✅', { type: 'success', duration: 2500 });
     }
@@ -3358,6 +3446,11 @@
             console.warn('[Community Notification] Ошибка парсинга pending:', err);
         }
     }
+
+    // Проверяем уведомления при фокусе вкладки (если пользователь вернулся на index.html)
+    window.addEventListener('focus', () => {
+        checkPendingCommunityNotification();
+    });
 
     async function showSiteUpdateNotice() {
         const settings = getSiteSettings();
