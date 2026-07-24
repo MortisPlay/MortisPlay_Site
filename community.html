@@ -3025,6 +3025,16 @@
       try { sessionStorage.setItem('community_notification_pending', data); } catch(e) {}
       // Дополнительно: сохраняем timestamp, чтобы при фокусе на index.html проверить свежесть
       try { sessionStorage.setItem('community_notification_ts', Date.now().toString()); } catch(e) {}
+      
+      // Если пользователь находится на community.html — не показываем всплывающие и Push-уведомления
+      // для новых сообщений в чате (они видны и так в реальном времени).
+      // Комментарии и новые мемы всё равно показываем, т.к. они требуют внимания.
+      if (subCategory === 'community-chat') {
+        // Для сообщений чата — только сохраняем в storage для index.html,
+        // без локального showNotification и без Push-уведомления
+        return;
+      }
+      
       // Показываем уведомление локально на community.html
       showNotification(message, { type, duration });
       // Отправляем Push-уведомление (системное уведомление браузера)
