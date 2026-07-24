@@ -2164,17 +2164,57 @@
       const db = firebase.database();
       const messagesRef = db.ref('chat_messages');
       
+      // Флаг: первый загрузка всех сообщений (пропускаем уведомления для них)
+      let isInitialLoad = true;
+      let lastKnownTimestamp = 0;
+      
       // Слушаем новые сообщения в реальном времени
       messagesRef.orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
         chatMessages = [];
         snapshot.forEach((child) => {
           const msg = child.val();
-          msg._key = child.key; // Сохраняем ключ для реакций
+          msg._key = child.key;
           chatMessages.push(msg);
+          
+          // Запоминаем максимальный timestamp при первой загрузке
+          if (isInitialLoad && msg.timestamp > lastKnownTimestamp) {
+            lastKnownTimestamp = msg.timestamp;
+          }
         });
         renderChatMessages();
+        
+        // После первого рендера снимаем флаг начальной загрузки
+        if (isInitialLoad) {
+          isInitialLoad = false;
+        }
       }, (error) => {
         console.error('[Firebase] Ошибка чтения чата:', error);
+      });
+      
+      // Дополнительно: слушаем только новые добавляемые сообщения (child_added)
+      // чтобы отправлять уведомления на index.html и Push-уведомления
+      messagesRef.on('child_added', (snapshot) => {
+        // Пропускаем, если ещё идёт начальная загрузка
+        if (isInitialLoad) return;
+        
+        const msg = snapshot.val();
+        if (!msg || !msg.timestamp) return;
+        
+        // Пропускаем, если это сообщение уже было в массиве (старое)
+        if (msg.timestamp <= lastKnownTimestamp) return;
+        
+        // Обновляем lastKnownTimestamp
+        lastKnownTimestamp = msg.timestamp;
+        
+        // Пропускаем уведомления для своих же сообщений
+        if (msg.username === currentUsername) return;
+        
+        // Отправляем уведомление на index.html (через localStorage)
+        // и для Push-уведомлений (если пользователь не на community.html)
+        sendCommunityNotification(
+          `💬 Новое сообщение в чате от ${msg.username || 'Аноним'}`,
+          { type: 'info', duration: 4000, subCategory: 'community-chat' }
+        );
       });
     }
 
@@ -3026,18 +3066,18 @@
       // Дополнительно: сохраняем timestamp, чтобы при фокусе на index.html проверить свежесть
       try { sessionStorage.setItem('community_notification_ts', Date.now().toString()); } catch(e) {}
       
-      // Если пользователь находится на community.html — не показываем всплывающие и Push-уведомления
-      // для новых сообщений в чате (они видны и так в реальном времени).
-      // Комментарии и новые мемы всё равно показываем, т.к. они требуют внимания.
-      if (subCategory === 'community-chat') {
-        // Для сообщений чата — только сохраняем в storage для index.html,
-        // без локального showNotification и без Push-уведомления
-        return;
+      // Для новых сообщений чата — не показываем всплывающее уведомление на странице
+      // (сообщения и так видны в реальном времени в чате).
+      // Но Push-уведомление (системное) отправляем всегда, чтобы оно пришло,
+      // даже если пользователь свернул окно или переключился на другую вкладку.
+      if (subCategory !== 'community-chat') {
+        // Показываем уведомление локально на community.html (для комментариев и новых мемов)
+        showNotification(message, { type, duration });
       }
       
-      // Показываем уведомление локально на community.html
-      showNotification(message, { type, duration });
-      // Отправляем Push-уведомление (системное уведомление браузера)
+      // Отправляем Push-уведомление (системное уведомление браузера) ВСЕГДА,
+      // включая новые сообщения чата — чтобы уведомление пришло, даже если
+      // пользователь свернул окно или находится на другой вкладке
       sendPushNotification(title, message, { tag: 'community-' + Date.now(), url: '/community.html' });
     }
 

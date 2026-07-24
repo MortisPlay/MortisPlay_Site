@@ -2167,33 +2167,63 @@
         
         const { icon = '/assets/photo.jpg', tag = 'community-notification', url = '/community.html', silent = false } = options;
         
-        // 1. Пробуем через Service Worker (работает даже когда вкладка не активна)
-        if (swRegistration && swRegistration.active) {
-            try {
-                swRegistration.active.postMessage({
-                    type: 'SHOW_NOTIFICATION',
-                    payload: { title, body, icon, tag, data: { url } }
-                });
-                return;
-            } catch (err) {
-                console.warn('[Push] Ошибка SW postMessage:', err);
+        // Вспомогательная функция: отправка через Service Worker
+        function trySendViaSW(registration) {
+            if (registration && registration.active) {
+                try {
+                    registration.active.postMessage({
+                        type: 'SHOW_NOTIFICATION',
+                        payload: { title, body, icon, tag, data: { url } }
+                    });
+                    return true;
+                } catch (err) {
+                    console.warn('[Push] Ошибка SW postMessage:', err);
+                }
             }
+            return false;
         }
         
-        // 2. Fallback: через Notification API напрямую
-        if ('Notification' in window && Notification.permission === 'granted') {
-            try {
-                new Notification(title, {
-                    body: body,
-                    icon: icon,
-                    badge: '/images/favicon.ico',
-                    tag: tag,
-                    data: { url },
-                    requireInteraction: true,
-                    silent: silent
-                });
-            } catch (err) {
-                console.warn('[Push] Ошибка Notification API:', err);
+        // 1. Пробуем через сохранённую регистрацию
+        if (trySendViaSW(swRegistration)) return;
+        
+        // 2. Пробуем дождаться готового Service Worker (navigator.serviceWorker.ready)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then((registration) => {
+                if (trySendViaSW(registration)) return;
+                // Если SW не active — fallback на Notification API
+                sendFallbackNotification();
+            }).catch(() => {
+                sendFallbackNotification();
+            });
+        } else {
+            sendFallbackNotification();
+        }
+        
+        function sendFallbackNotification() {
+            // 3. Fallback: через Notification API напрямую
+            if ('Notification' in window && Notification.permission === 'granted') {
+                try {
+                    const notif = new Notification(title, {
+                        body: body,
+                        icon: icon,
+                        badge: '/images/favicon.ico',
+                        tag: tag,
+                        data: { url },
+                        requireInteraction: true,
+                        silent: silent
+                    });
+                    // Обработка клика по уведомлению (fallback)
+                    notif.onclick = function(e) {
+                        e.preventDefault();
+                        window.focus();
+                        if (url) window.open(url, '_blank');
+                        notif.close();
+                    };
+                } catch (err) {
+                    console.warn('[Push] Ошибка Notification API:', err);
+                }
+            } else {
+                console.log('[Push] Notification не отправлено: permission=' + Notification.permission + ', swRegistration=' + (swRegistration ? 'ok' : 'null'));
             }
         }
     }
