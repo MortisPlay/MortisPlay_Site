@@ -166,7 +166,7 @@
     }
 
     .section,
-    section[id] {
+    section[id]:not(#siteTourCard) {
       position: relative;
       padding: 5rem 0;
       background: linear-gradient(135deg, rgba(255,255,255,0.035), rgba(99,102,241,0.05));
@@ -174,7 +174,7 @@
     }
 
     .section::before,
-    section[id]::before {
+    section[id]:not(#siteTourCard)::before {
       content: '';
       position: absolute;
       inset: 0;
@@ -184,12 +184,12 @@
     }
 
     .light-theme .section::before,
-    .light-theme section[id]::before {
+    .light-theme section[id]:not(#siteTourCard)::before {
       background: linear-gradient(135deg, rgba(79, 70, 229, 0.06), transparent 60%);
     }
 
     .section > *,
-    section[id] > * {
+    section[id]:not(#siteTourCard) > * {
       position: relative;
       z-index: 1;
     }
@@ -573,6 +573,69 @@
       line-height: 1;
     }
 
+    .welcome-banner {
+      position: relative;
+      isolation: isolate;
+      height: 180px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 9999px;
+      overflow: hidden;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.35);
+      background: var(--bg-secondary);
+    }
+
+    .welcome-banner img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center;
+      opacity: 0.72;
+    }
+
+    .welcome-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(90deg, rgba(2, 6, 23, 0.82), rgba(2, 6, 23, 0.18) 65%, rgba(2, 6, 23, 0.55));
+      pointer-events: none;
+    }
+
+    .welcome-banner-content {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      padding: 1.5rem 3.5rem;
+      text-align: left;
+    }
+
+    .welcome-banner-title {
+      color: #fff;
+      font-size: clamp(1.25rem, 3vw, 2rem);
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .welcome-banner-copy {
+      max-width: 34rem;
+      margin-top: 0.5rem;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    @media (max-width: 640px) {
+      .welcome-banner {
+        height: 220px;
+        border-radius: 4rem;
+      }
+
+      .welcome-banner-content { padding: 1.5rem 2rem; }
+    }
+
     .search-input, .sort-select, .date-filter-btn {
       background: var(--card-bg);
       border: 1px solid var(--glass-border);
@@ -753,7 +816,7 @@
         transform: translate(-50%, 120%);
       }
       .notification.show { transform: translate(-50%, 0); }
-      .section, section[id] { padding: 4rem 0; }
+      .section, section[id]:not(#siteTourCard) { padding: 4rem 0; }
       header { top: 0.7rem; left: 0.6rem; right: 0.6rem; border-radius: 1rem; }
       .topbar-shell { padding: 0.4rem 0.45rem; min-height: 3.45rem; border-radius: 1rem; }
       .topbar-shell a:first-child .font-bold { font-size: 0.95rem; }
@@ -1002,6 +1065,57 @@
     .pulse-btn:hover {
       animation-play-state: paused;
     }
+
+    .site-tour {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+    .site-tour.show { opacity: 1; visibility: visible; pointer-events: none; }
+    .site-tour-backdrop { position: absolute; inset: 0; pointer-events: none; }
+    .site-tour-shade {
+      position: fixed;
+      background: rgba(2, 6, 23, 0.72);
+      backdrop-filter: blur(3px);
+      pointer-events: auto;
+    }
+    .site-tour-spotlight {
+      position: fixed;
+      border: 2px solid #7dd3fc;
+      border-radius: 1rem;
+      box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.2), 0 0 28px rgba(125, 211, 252, 0.7);
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+    .site-tour-card {
+      position: fixed;
+      width: min(25rem, calc(100vw - 2rem));
+      padding: 1.35rem;
+      color: var(--text-primary);
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.98));
+      border: 1px solid rgba(125, 211, 252, 0.35);
+      border-radius: 1rem;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+      transition: top 0.3s ease, left 0.3s ease;
+      pointer-events: auto;
+    }
+    .light-theme .site-tour-card { background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(239,246,255,0.98)); }
+    .site-tour-step { color: #7dd3fc; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+    .site-tour-card h2 { margin: 0.45rem 0 0.55rem; font-size: 1.35rem; line-height: 1.25; }
+    .site-tour-card p { margin: 0; color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
+    .site-tour-actions { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 1.2rem; }
+    .site-tour-actions button { border: 0; cursor: pointer; }
+    .site-tour-skip { color: var(--text-secondary); background: transparent; padding: 0.65rem 0.25rem; }
+    .site-tour-next { padding: 0.7rem 1.05rem; border-radius: 0.7rem; color: white; background: linear-gradient(135deg, var(--primary), var(--secondary)); font-weight: 700; }
+    @media (max-width: 480px) {
+      .site-tour-card { padding: 1.1rem; }
+      .site-tour-card h2 { font-size: 1.18rem; }
+      .site-tour-card p { font-size: 0.88rem; }
+    }
     
   </style>
 </head>
@@ -1124,7 +1238,30 @@
         </label>
       </div>
       <button onclick="closeSettingsModal()" class="btn-primary mt-6 w-full">Сохранить</button>
+      <button id="restartSiteTour" class="btn-secondary mt-3 w-full" type="button"><i class="fas fa-compass"></i> Пройти гид по сайту</button>
     </div>
+  </div>
+
+  <div id="siteTour" class="site-tour" aria-hidden="true">
+    <div class="site-tour-backdrop">
+      <div class="site-tour-shade site-tour-shade-top"></div>
+      <div class="site-tour-shade site-tour-shade-right"></div>
+      <div class="site-tour-shade site-tour-shade-bottom"></div>
+      <div class="site-tour-shade site-tour-shade-left"></div>
+    </div>
+    <div id="siteTourSpotlight" class="site-tour-spotlight"></div>
+    <section id="siteTourCard" class="site-tour-card" role="dialog" aria-modal="true" aria-labelledby="siteTourTitle" aria-describedby="siteTourText">
+      <div id="siteTourStep" class="site-tour-step"></div>
+      <h2 id="siteTourTitle"></h2>
+      <p id="siteTourText"></p>
+      <div class="site-tour-actions">
+        <button id="siteTourSkip" class="site-tour-skip" type="button">Пропустить</button>
+        <div class="flex items-center gap-2">
+          <button id="siteTourBack" class="btn-secondary" type="button"><i class="fas fa-arrow-left"></i> Назад</button>
+          <button id="siteTourNext" class="site-tour-next" type="button">Далее <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
   </div>
 
   <header>
@@ -1160,13 +1297,24 @@
           <h1 class="gradient-text text-5xl md:text-7xl font-bold mb-6 animate-fadeInUp">Mortis Play</h1>
           <p class="text-xl max-w-3xl mx-auto mb-8 animate-fadeInUp" style="animation-delay: 0.2s; color: var(--text-secondary);">Видео, клипы и контент от Mortis Play</p>
           <div class="max-w-2xl mx-auto mb-12">
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 stagger-delay">
+            <div id="quickLinks" class="grid grid-cols-2 md:grid-cols-3 gap-3 stagger-delay">
               <a href="#contact" class="btn-primary btn-action-contact animate-fadeInUp"><i class="fas fa-envelope"></i> Связаться</a>
               <a href="biography.html" target="_blank" class="btn-primary btn-action-bio animate-fadeInUp"><i class="fas fa-user"></i> Биография</a>
               <a href="qa.html" target="_blank" class="btn-primary btn-action-qa animate-fadeInUp"><i class="fas fa-question-circle"></i> Q&A</a>
               <a href="faq.html" target="_blank" class="btn-primary btn-action-faq animate-fadeInUp"><i class="fas fa-circle-question"></i> FAQ</a>
               <a href="year-review.html" target="_blank" class="btn-primary btn-action-year animate-fadeInUp"><i class="fas fa-calendar-days"></i> Итоги года</a>
               <a href="news-archive.html" target="_blank" rel="noopener noreferrer" class="btn-primary btn-action-contact animate-fadeInUp"><i class="fas fa-box-archive"></i> Архив Новостей</a>
+            </div>
+          </div>
+          <div class="max-w-5xl mx-auto mb-12 animate-fadeInUp" style="animation-delay: 0.4s">
+            <div class="welcome-banner">
+              <img src="assets/banner.jpg" alt="Mortis Play в игровом мире">
+              <div class="welcome-banner-content">
+                <div>
+                  <div class="welcome-banner-title">Разработчик делает всё, чтобы порадовать вас:3</div>
+                  <p class="welcome-banner-copy"><a href="https://www.donationalerts.com/r/mortis32" target="_blank" rel="noopener noreferrer">Поддержать автора</a></p>
+                </div>
+              </div>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto animate-fadeInUp" style="animation-delay: 0.5s">
@@ -1254,7 +1402,7 @@
           <h2 class="gradient-text text-4xl md:text-5xl font-bold mb-4"><i class="fab fa-twitch mr-2"></i> Twitch</h2>
           <p style="color: var(--text-secondary); max-width: 2xl; margin: 0 auto;">Смотри лучшие моменты, свежие хайлайты и прямые эфиры с моего канала — всё в одном месте, с удобной навигацией и быстрым доступом.</p>
         </div>
-        <div class="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-6 mb-8">
+        <div id="twitchFeatured" class="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-6 mb-8">
           <div class="modern-card p-4 md:p-5">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
               <div>
@@ -1358,7 +1506,7 @@
   <script>
     // === КОНФИГУРАЦИЯ YOUTUBE API ===
     const YOUTUBE_CONFIG = {
-        apiKey: 'AIzaSyCHwEhu5s69hx9RgMyYsOrkmBkBW2TZ7fA',
+        apiKey: 'AIzaSyB9yZgPxWUiLGcuikS6QXTrsrfNlMJ9O0Q',
         channelId: 'UC2VwlrbzSa8UGLHAYmbuEZA',
         maxResults: 50
     };
@@ -1650,6 +1798,141 @@
         applySettings();
     }
 
+      const siteTourSteps = [
+        { selector: '#siteContent', title: 'Добро пожаловать в Mortis Play', text: 'Это домашняя страница проекта: здесь собраны видео, стримы, новости и быстрые ссылки на полезные разделы.' },
+        { selector: '#quickLinks', title: 'Быстрые разделы', text: 'Здесь можно сразу открыть биографию, Q&A, FAQ, итоги года или архив новостей, не разыскивая их по странице.' },
+        { selector: '#video', title: 'Раздел YouTube', text: 'Здесь появляются свежие ролики канала. Используй поиск, сортировку и фильтры по дате, а по нажатию на превью включай видео прямо на сайте.' },
+        { selector: '#videoSearch', title: 'Найди нужный момент', text: 'Поиск работает по названиям роликов, а кнопка «Загрузить ещё» показывает следующую порцию видео.' },
+        { selector: '#twitchFeatured', scrollBlock: 'start', title: 'Twitch и клипы', text: 'Смотри трансляцию и лучшие моменты Mortis Play. Кнопка канала и управление плеером остаются доступными прямо в этой подсвеченной области.' },
+        { selector: '#contact', title: 'Связь и соцсети', text: 'В разделе «Сотрудничество» собраны контакты, Telegram, YouTube, Twitch, TikTok, Discord и поддержка проекта.' },
+        { selector: '#settingsToggle', mobileSelector: '#mobileSettingsToggle', title: 'Настрой сайт под себя', text: 'В настройках можно управлять анимациями, уведомлениями, эффектом стекла и снова запустить этот гид в любой момент.' }
+      ];
+
+      function initSiteTour() {
+        const tour = document.getElementById('siteTour');
+        const spotlight = document.getElementById('siteTourSpotlight');
+        const card = document.getElementById('siteTourCard');
+        const shades = [...tour.querySelectorAll('.site-tour-shade')];
+        const stepLabel = document.getElementById('siteTourStep');
+        const title = document.getElementById('siteTourTitle');
+        const text = document.getElementById('siteTourText');
+        const back = document.getElementById('siteTourBack');
+        const next = document.getElementById('siteTourNext');
+        const skip = document.getElementById('siteTourSkip');
+        const restart = document.getElementById('restartSiteTour');
+        let currentStep = 0;
+        let previousOverflow = '';
+
+        function getTarget(step) {
+          const selector = window.matchMedia('(max-width: 768px)').matches && step.mobileSelector ? step.mobileSelector : step.selector;
+          return document.querySelector(selector) || document.querySelector(step.selector);
+        }
+
+        function positionCard(rect, centered = false) {
+          const margin = 16;
+            if (centered) {
+              card.style.top = '50%';
+              card.style.left = '50%';
+              card.style.transform = 'translate(-50%, -50%)';
+              return;
+            }
+            card.style.transform = '';
+          const cardRect = card.getBoundingClientRect();
+          const belowTop = rect.bottom + 18;
+          const aboveTop = rect.top - cardRect.height - 18;
+            const top = belowTop + cardRect.height <= window.innerHeight - margin ? belowTop : aboveTop >= margin ? aboveTop : margin;
+          const left = Math.max(margin, Math.min(rect.left, window.innerWidth - cardRect.width - margin));
+          card.style.top = `${Math.max(margin, top)}px`;
+          card.style.left = `${left}px`;
+        }
+
+        function renderStep() {
+          const step = siteTourSteps[currentStep];
+          const target = getTarget(step);
+          if (!target) return;
+          target.scrollIntoView({ behavior: 'auto', block: step.scrollBlock || 'center' });
+          const updateSpotlight = (attempt = 0) => {
+            const rawRect = target.getBoundingClientRect();
+            if ((rawRect.width < 2 || rawRect.height < 2) && attempt < 12) {
+              window.setTimeout(() => updateSpotlight(attempt + 1), 150);
+              return;
+            }
+            const rect = {
+              top: Math.max(0, rawRect.top - 8),
+              left: Math.max(0, rawRect.left - 8),
+              right: Math.min(window.innerWidth, rawRect.right + 8),
+              bottom: Math.min(window.innerHeight, rawRect.bottom + 8)
+            };
+            rect.width = Math.max(0, rect.right - rect.left);
+            rect.height = Math.max(0, rect.bottom - rect.top);
+            const isIntroStep = currentStep === 0;
+            spotlight.style.top = `${rect.top}px`;
+            spotlight.style.left = `${rect.left}px`;
+            spotlight.style.width = `${rect.width}px`;
+            spotlight.style.height = `${rect.height}px`;
+            const shadeStyles = isIntroStep ? [
+              { top: 0, left: 0, width: '100%', height: window.innerHeight },
+              { top: 0, left: 0, width: 0, height: 0 },
+              { top: 0, left: 0, width: 0, height: 0 },
+              { top: 0, left: 0, width: 0, height: 0 }
+            ] : [
+              { top: 0, left: 0, width: '100%', height: rect.top },
+              { top: rect.top, left: rect.right, width: window.innerWidth - rect.right, height: rect.height },
+              { top: rect.bottom, left: 0, width: '100%', height: window.innerHeight - rect.bottom },
+              { top: rect.top, left: 0, width: rect.left, height: rect.height }
+            ];
+            shades.forEach((shade, index) => {
+              const style = shadeStyles[index];
+              shade.style.top = `${style.top}px`;
+              shade.style.left = `${style.left}px`;
+              shade.style.width = typeof style.width === 'number' ? `${Math.max(0, style.width)}px` : style.width;
+              shade.style.height = `${Math.max(0, style.height)}px`;
+            });
+            positionCard(rect, isIntroStep);
+          };
+          window.setTimeout(() => updateSpotlight(), 80);
+          stepLabel.textContent = `Шаг ${currentStep + 1} из ${siteTourSteps.length}`;
+          title.textContent = step.title;
+          text.textContent = step.text;
+          back.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+          next.innerHTML = currentStep === siteTourSteps.length - 1 ? 'Готово <i class="fas fa-check"></i>' : 'Далее <i class="fas fa-arrow-right"></i>';
+        }
+
+        function closeTour(markComplete = true) {
+          tour.classList.remove('show');
+          tour.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = previousOverflow;
+          if (markComplete) localStorage.setItem('site-tour-completed', '1');
+        }
+
+        function openTour() {
+          currentStep = 0;
+          previousOverflow = document.body.style.overflow;
+          document.body.style.overflow = 'hidden';
+          tour.classList.add('show');
+          tour.setAttribute('aria-hidden', 'false');
+          renderStep();
+        }
+
+        next.addEventListener('click', () => {
+          if (currentStep === siteTourSteps.length - 1) closeTour();
+          else { currentStep += 1; renderStep(); }
+        });
+        back.addEventListener('click', () => { if (currentStep > 0) { currentStep -= 1; renderStep(); } });
+        skip.addEventListener('click', () => closeTour());
+        shades.forEach(shade => shade.addEventListener('click', () => closeTour()));
+        restart?.addEventListener('click', () => { closeSettingsModal(); openTour(); });
+        document.addEventListener('keydown', (event) => {
+          if (!tour.classList.contains('show')) return;
+          if (event.key === 'Escape') closeTour();
+          if (event.key === 'ArrowRight') next.click();
+          if (event.key === 'ArrowLeft') back.click();
+        });
+        window.addEventListener('resize', debounce(() => { if (tour.classList.contains('show')) renderStep(); }, 250));
+
+        if (!localStorage.getItem('site-tour-completed')) window.setTimeout(openTour, 1500);
+      }
+
     async function showSiteUpdateNotice() {
         const settings = getSiteSettings();
         if (settings.updateNotice === false) return;
@@ -1705,19 +1988,12 @@
             secretButton.remove();
         }
         
-        // Кнопка с вопросительным знаком — пульсация до 23.07.2026 10:00, затем исчезновение
+        // Кнопка FAQ доступна всегда, когда видео не загрузились
         const questionBtn = document.getElementById('videoFaqBtn');
-        const deadline = new Date('2026-07-23T10:00:00+10:00'); // 23.07.2026 10:00 по Владивостоку (UTC+10)
-        const now = new Date();
-        
+
         if (questionBtn) {
-            if (now >= deadline) {
-                // После дедлайна — кнопка исчезает
-                questionBtn.style.display = 'none';
-            } else {
-                // До дедлайна — пульсация включена
-                questionBtn.classList.add('pulse-btn');
-            }
+          questionBtn.style.display = 'inline-flex';
+          questionBtn.classList.add('pulse-btn');
         }
     }
 
@@ -1776,7 +2052,7 @@
         backdrop?.addEventListener('click', closeMobileMenu);
         document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', closeMobileMenu));
         window.addEventListener('scroll', debounce(() => {
-            const sections = document.querySelectorAll('section[id]');
+            const sections = document.querySelectorAll('section[id]:not(#siteTourCard)');
             const scrollPos = window.scrollY + 100;
             sections.forEach(section => {
                 if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.clientHeight) {
@@ -2158,6 +2434,7 @@
         initTemporaryFeatures();
         initTheme();
         initSettings();
+        initSiteTour();
         await showSiteUpdateNotice();
         initNavigation();
         initAnalyticsTracking();
