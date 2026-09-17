@@ -2,6 +2,39 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+<!-- Telegram WebApp: полный экран -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+(function () {
+  var tg = window.Telegram && window.Telegram.WebApp;
+  if (!tg) return; // сайт открыт вне Telegram — ничего не делаем
+  tg.ready();
+  // Разворачиваем на всю доступную высоту (работает всегда)
+  tg.expand();
+  // Полноэкранный режим (скрывает шапку Telegram), если поддерживается
+  function goFullscreen() {
+    try {
+      if (typeof tg.requestFullscreen === 'function') {
+        var p = tg.requestFullscreen();
+        if (p && typeof p.catch === 'function') p.catch(function () {});
+      }
+    } catch (e) {}
+  }
+  goFullscreen();
+  // На некоторых платформах нужен жест пользователя — пробуем ещё раз при первом тапе/клике
+  var done = false;
+  function onGesture() {
+    if (done) return;
+    done = true;
+    goFullscreen();
+    document.removeEventListener('touchstart', onGesture);
+    document.removeEventListener('click', onGesture);
+  }
+  document.addEventListener('touchstart', onGesture);
+  document.addEventListener('click', onGesture);
+})();
+</script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
   <title>Итоги года — 2023-2025 | Mortis Play</title>
   <meta name="description" content="Итоги 2023, 2024, 2025: реальный путь роста, достижения и ключевые события" />
