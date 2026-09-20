@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Магазин — Mortis Play</title>
+  <meta name="description" content="Магазин от Mortis Play. Эксклюзивные аватары и рамки для твоего профиля." />
+  <meta name="robots" content="index,follow" />
+  <link rel="icon" href="images/favicon.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #8b5cf6;
+      --primary-dark: #7c3aed;
+      --secondary: #22d3ee;
+      --accent: #f59e0b;
+      --text-primary: #f8fafc;
+      --text-secondary: #a5b4d0;
+      --card-bg: rgba(18, 21, 43, 0.75);
+      --glass-border: rgba(139, 92, 246, 0.28);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 8% 6%, rgba(139,92,246,0.26), transparent 30%),
+        radial-gradient(circle at 90% 5%, rgba(34,211,238,0.2), transparent 28%),
+        radial-gradient(circle at 12% 92%, rgba(244,63,94,0.2), transparent 30%),
+        linear-gradient(135deg, #04040c 0%, #07091a 38%, #0b1026 70%, #04040c 100%);
+      display: flex;
+      flex-direction: column;
+    }
+    body.light-theme {
+      color: #1e293b;
+      background:
+        radial-gradient(circle at 8% 6%, rgba(139,92,246,0.14), transparent 28%),
+        linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --card-bg: rgba(255,255,255,0.92);
+      --glass-border: rgba(109,40,217,0.25);
+    }
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 1.25rem; width: 100%; }
+
+    /* ---- Шапка ---- */
+    .header { position: sticky; top: 0; z-index: 50; padding-top: 0.7rem; }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      height: 4rem; padding: 0 1rem; border: 1px solid var(--glass-border);
+      border-radius: 1rem; background: rgba(10,12,24,0.6);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    }
+    body.light-theme .header-inner { background: rgba(255,255,255,0.9); }
+    .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit; }
+    .logo-avatar {
+      width: 2.5rem; height: 2.5rem; border-radius: 9999px; overflow: hidden;
+      border: 2px solid var(--primary); flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+    .logo-avatar img, .logo-avatar video { width: 100%; height: 100%; object-fit: cover; }
+    .logo-name { font-weight: 800; font-size: 1.1rem; line-height: 1.2; }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary), var(--secondary) 50%, var(--accent));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .logo-sub { font-size: 0.7rem; color: var(--text-secondary); }
+    .nav { display: none; gap: 0.5rem; align-items: center; }
+    @media (min-width: 768px) { .nav { display: flex; } }
+    .nav a {
+      text-decoration: none; color: var(--text-secondary); font-weight: 500;
+      padding: 0.6rem 0.95rem; border-radius: 0.75rem; transition: all 0.3s ease;
+    }
+    .nav a:hover { color: var(--text-primary); background: rgba(139,92,246,0.14); }
+    .nav a.active { color: var(--text-primary); background: rgba(139,92,246,0.18); }
+
+    /* Баланс монет */
+    .balance {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(245,158,11,0.16); color: #fbbf24;
+      border-radius: 9999px; padding: 0.4rem 0.9rem; font-weight: 700; font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    .balance i { font-size: 1rem; }
+
+    /* ---- Контент ---- */
+    .main { flex: 1; padding: 4rem 0 5rem; }
+    .title-main {
+      font-size: clamp(2.2rem, 6vw, 3.25rem); font-weight: 800; text-align: center; margin-bottom: 0.75rem;
+    }
+    .subtitle { text-align: center; color: var(--text-secondary); font-size: 1.1rem; max-width: 44rem; margin: 0 auto 2.5rem; }
+
+    /* Заглушка "нужен вход" */
+    .notice-card {
+      max-width: 34rem; margin: 0 auto; text-align: center;
+      background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 1.5rem;
+      padding: 2.5rem; backdrop-filter: blur(14px);
+    }
+    .notice-card h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.75rem; }
+    .notice-card p { color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6; }
+
+    /* Сетка витрины */
+    .shop-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.25rem;
+    }
+    .shop-card {
+      background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 1.25rem;
+      padding: 1.5rem 1.25rem; text-align: center; display: flex; flex-direction: column;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .shop-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0,0,0,0.35); }
+    .shop-card.equipped-card { border-color: rgba(16,185,129,0.7); box-shadow: 0 0 22px rgba(16,185,129,0.25); }
+
+    /* Превью ауры: круглый аватар в контейнере-кольце */
+    .aura-preview {
+      width: 6.5rem; height: 6.5rem; border-radius: 9999px; position: relative;
+      margin: 0 auto 1rem;
+    }
+    .aura-preview .inner {
+      width: 100%; height: 100%; border-radius: 9999px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(16,185,129,0.3));
+      border: 3px solid rgba(255,255,255,0.18); position: relative; z-index: 1;
+    }
+    .aura-preview .inner i { font-size: 2rem; color: rgba(255,255,255,0.75); }
+    .aura-preview.avatar-preview .inner { border: 0; background: #2a2d29; }
+    .aura-preview.avatar-preview .inner img { width: 100%; height: 100%; object-fit: cover; border-radius: 9999px; }
+
+    /* Лимитированные аватарки: сильное скругление (squircle), кадр остаётся целиком */
+    .aura-preview.preview-rect { border-radius: 34%; }
+    .aura-preview.preview-rect .inner { border-radius: 34%; }
+    .aura-preview.preview-rect::before { border-radius: 31%; }
+
+    /* Коробка кейса на карточке (не рамка и не аватар) */
+    .lootbox-preview {
+      width: 6.5rem; height: 6.5rem; border-radius: 1.1rem; margin: 0 auto 1rem;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, rgba(240,195,106,0.18), rgba(228,87,46,0.14));
+      border: 2px solid rgba(240,195,106,0.55);
+      box-shadow: 0 0 24px rgba(240,195,106,0.35), inset 0 0 18px rgba(240,195,106,0.12);
+      animation: auraGold 2.8s ease-in-out infinite;
+    }
+    .lootbox-preview .inner i { font-size: 2.6rem; color: #f0c36a; text-shadow: 0 0 16px rgba(240,195,106,0.6); }
+
+    /* Эффекты ауры вокруг превью (одинаковая механика с профилем) */
+    .aura-preview::before {
+      content: ''; position: absolute; inset: -14px; border-radius: 9999px; z-index: 0; pointer-events: none;
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .aura-preview.aura-gold::before {
+      opacity: 1; background: radial-gradient(circle, transparent 52%, rgba(245,158,11,0.9) 58%, transparent 72%);
+      box-shadow: 0 0 24px 6px rgba(245,158,11,0.55); animation: auraGold 3s ease-in-out infinite;
+    }
+    .aura-preview.aura-neon::before {
+      opacity: 1; background: conic-gradient(from 0deg, #22d3ee, #8b5cf6, #ec4899, #22d3ee);
+      -webkit-mask: radial-gradient(circle, transparent 52%, #000 58%, transparent 72%);
+      mask: radial-gradient(circle, transparent 52%, #000 58%, transparent 72%);
+      animation: auraSpin 3.5s linear infinite;
+    }
+    .aura-preview.aura-fire::before {
+      opacity: 1; background: radial-gradient(circle, transparent 48%, rgba(239,68,68,0.9) 62%, rgba(245,158,11,0.5) 75%, transparent 85%);
+      box-shadow: 0 0 30px 8px rgba(239,68,68,0.6); animation: auraFire 1.6s ease-in-out infinite;
+    }
+    .aura-preview.aura-cosmic::before {
+      opacity: 1;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95) 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 65%, rgba(255,255,255,0.8) 0 2px, transparent 3px),
+        radial-gradient(circle at 50% 85%, rgba(255,255,255,0.6) 0 1px, transparent 2px),
+        radial-gradient(circle, transparent 50%, rgba(139,92,246,0.95) 62%, rgba(59,130,246,0.5) 76%, transparent 88%);
+      box-shadow: 0 0 30px 6px rgba(139,92,246,0.5); animation: auraCosmic 5s ease-in-out infinite;
+    }
+    .aura-preview.aura-crystal::before {
+      opacity: 1; border: 4px solid rgba(45,212,191,0.85);
+      box-shadow: 0 0 22px 4px rgba(45,212,191,0.55), inset 0 0 14px rgba(45,212,191,0.4);
+      animation: auraCrystal 4s ease-in-out infinite;
+    }
+    .aura-preview.aura-royal::before {
+      opacity: 1; background: radial-gradient(circle, transparent 50%, rgba(251,191,36,0.95) 60%, rgba(217,119,6,0.6) 74%, transparent 86%);
+      box-shadow: 0 0 40px 10px rgba(251,191,36,0.65); animation: auraRoyal 2.4s ease-in-out infinite;
+    }
+    .aura-preview.aura-royal::after {
+      content: '👑';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -120%);
+      z-index: 1;
+      font-size: 1.3rem;
+      filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.9));
+      animation: crownPulse 2.2s ease-in-out infinite;
+    }
+    @keyframes auraGold { 0%,100%{opacity:.75;transform:scale(1);} 50%{opacity:1;transform:scale(1.05);} }
+    @keyframes auraSpin { to { transform: rotate(360deg); } }
+    @keyframes auraFire { 0%,100%{opacity:.7;transform:scale(1);} 50%{opacity:1;transform:scale(1.08);} }
+    @keyframes auraCosmic { 0%,100%{opacity:.8;transform:scale(1);} 50%{opacity:1;transform:scale(1.04);} }
+    @keyframes auraCrystal {
+      0%,100%{box-shadow:0 0 22px 4px rgba(45,212,191,.55), inset 0 0 14px rgba(45,212,191,.4);}
+      50%{box-shadow:0 0 32px 8px rgba(45,212,191,.8), inset 0 0 20px rgba(45,212,191,.6);}
+    }
+    @keyframes auraRoyal {
+      0%,100%{opacity:.8;transform:scale(1);box-shadow:0 0 40px 10px rgba(251,191,36,.65);}
+      50%{opacity:1;transform:scale(1.06);box-shadow:0 0 50px 16px rgba(251,191,36,.8);}
+    }
+    @keyframes crownPulse {
+      0%,100% { transform: translate(-50%, -120%) scale(1); opacity: 0.9; }
+      50% { transform: translate(-50%, -126%) scale(1.08); opacity: 1; }
+    }
+
+    .card-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .card-rarity { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .rarity-Редкая { color: #34d399; }
+    .rarity-Эпическая { color: #a78bfa; }
+    .rarity-Легендарная { color: #fbbf24; }
+    .rarity-Мифическая { color: #f472b6; }
+    .rarity-in-dev { color: #fbbf24; }
+    .card-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem; flex-grow: 1; }
+
+    .card-footer { display: flex; flex-direction: column; gap: 0.5rem; }
+    .price-row { display: flex; align-items: center; justify-content: center; gap: 0.4rem; font-weight: 700; font-size: 1rem; }
+    .price-row i { color: #f59e0b; }
+    .owned-label { display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; color: #34d399; font-size: 0.85rem; font-weight: 700; }
+    .owned-label i { color: #34d399; }
+    .equipped-label { display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; color: #34d399; font-size: 0.85rem; font-weight: 700; }
+    .equipped-label i { color: #34d399; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      padding: 0.7rem 1rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.9rem;
+      cursor: pointer; border: none; transition: transform 0.15s ease, opacity 0.15s ease;
+      text-decoration: none; color: #fff;
+    }
+
+    /* ---- Категории (вкладки) ---- */
+    .shop-tabs {
+      display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2.25rem;
+    }
+    .shop-tab {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      padding: 0.7rem 1.25rem; border-radius: 9999px; font-weight: 700; font-size: 0.95rem;
+      cursor: pointer; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.06);
+      color: var(--text-secondary); transition: all 0.25s ease; user-select: none;
+    }
+    body.light-theme .shop-tab { background: rgba(0,0,0,0.04); }
+    .shop-tab:hover { color: var(--text-primary); background: rgba(139,92,246,0.14); }
+    .shop-tab.active {
+      color: #fff; border-color: transparent;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark) 50%, var(--secondary));
+      box-shadow: 0 8px 22px rgba(139,92,246,0.35);
+    }
+    body.light-theme .shop-tab.active { color: #fff; }
+    .shop-tab .count-badge {
+      background: rgba(255,255,255,0.2); border-radius: 9999px; padding: 0.1rem 0.5rem;
+      font-size: 0.75rem; font-weight: 800; line-height: 1.4;
+    }
+
+    /* ---- Бейдж категории / тиража NFT ---- */
+    .category-chip {
+      display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; font-weight: 700;
+      padding: 0.3rem 0.7rem; border-radius: 9999px; margin-bottom: 0.5rem;
+    }
+    .category-chip.frame { background: rgba(139,92,246,0.16); color: #a78bfa; }
+    .category-chip.avatar { background: rgba(34,211,238,0.16); color: #67e8f9; }
+    .category-chip.limited { background: rgba(244,63,94,0.18); color: #fb7185; }
+    .category-chip.lootbox { background: rgba(240,195,106,0.16); color: #f0c36a; }
+    .category-chip.nft { background: rgba(244,63,94,0.18); color: #fb7185; }
+    .supply-stock {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
+      font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+    }
+    .supply-stock .bar { width: 5.5rem; height: 0.4rem; border-radius: 9999px; background: rgba(255,255,255,0.12); overflow: hidden; }
+    body.light-theme .supply-stock .bar { background: rgba(0,0,0,0.1); }
+    .supply-stock .bar > span { display: block; height: 100%; border-radius: 9999px; background: linear-gradient(90deg, var(--primary), var(--secondary)); }
+    .supply-stock.sold-out { color: #f87171; }
+    .soldout-label { display: inline-flex; align-items: center; gap: 0.35rem; color: #f87171; font-size: 0.85rem; font-weight: 700; }
+    .soldout-label i { color: #f87171; }
+
+    /* ---- Лимитированные аватарки: остаток тиража и «Распродано» ---- */
+    .stock-label {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
+      color: #fb7185; font-size: 0.8rem; font-weight: 700; margin-top: 0.25rem;
+    }
+    .stock-label i { color: #fb7185; }
+    .shop-card.sold-out-card {
+      border-color: rgba(148,163,184,0.35);
+      box-shadow: none;
+    }
+    .shop-card.sold-out-card:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0,0,0,0.22); }
+    .shop-card.sold-out-card .aura-preview,
+    .shop-card.sold-out-card .aura-preview .inner,
+    .shop-card.sold-out-card .aura-preview img {
+      filter: grayscale(1) brightness(0.72);
+      opacity: 0.85;
+    }
+    .shop-card.sold-out-card .aura-preview::before { opacity: 0 !important; }
+    .shop-card.sold-out-card .card-name { color: var(--text-secondary); }
+    .nft-badge {
+      position: absolute; top: 0.9rem; right: 0.9rem; z-index: 2;
+      background: linear-gradient(135deg, #ec4899, #f43f5e); color: #fff;
+      font-size: 0.65rem; font-weight: 800; letter-spacing: 0.04em;
+      padding: 0.25rem 0.55rem; border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(244,63,94,0.4);
+    }
+    .shop-card { position: relative; }
+    /* уникальная граница для NFT-карточек */
+    .shop-card.nft-card { border-color: rgba(244,63,94,0.4); }
+    .shop-card.nft-card:hover { box-shadow: 0 18px 40px rgba(244,63,94,0.2); }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-buy { background: linear-gradient(135deg, var(--primary), var(--primary-dark) 50%, var(--secondary)); }
+    .btn-equip { background: linear-gradient(135deg, #10b981, #059669); }
+    .btn-unequip { background: rgba(255,255,255,0.12); color: var(--text-primary); }
+    .btn-disabled { background: rgba(255,255,255,0.08); color: var(--text-secondary); }
+    .btn-back { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
+
+    /* Превью NFT-товаров (уникальные стили для тиража) */
+    .aura-preview.aura-nft-flame::before {
+      opacity: 1; background: radial-gradient(circle, transparent 46%, rgba(249,115,22,0.9) 60%, rgba(239,68,68,0.6) 76%, transparent 88%);
+      box-shadow: 0 0 34px 8px rgba(249,115,22,0.6); animation: auraFire 1.6s ease-in-out infinite;
+    }
+    .aura-preview.aura-nft-golden::before {
+      opacity: 1; background: radial-gradient(circle, transparent 48%, rgba(251,191,36,0.95) 60%, rgba(245,158,11,0.7) 76%, transparent 88%);
+      box-shadow: 0 0 38px 10px rgba(251,191,36,0.7); animation: auraGold 2.6s ease-in-out infinite;
+    }
+    .aura-preview.aura-nft-nebula::before {
+      opacity: 1;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 65%, rgba(255,255,255,0.7) 0 2px, transparent 3px),
+        radial-gradient(circle at 50% 85%, rgba(255,255,255,0.6) 0 1px, transparent 2px),
+        radial-gradient(circle, transparent 50%, rgba(168,85,247,0.95) 62%, rgba(59,130,246,0.6) 76%, transparent 88%);
+      box-shadow: 0 0 34px 8px rgba(168,85,247,0.6); animation: auraCosmic 4s ease-in-out infinite;
+    }
+    .aura-preview.aura-nft-void::before {
+      opacity: 1; background: radial-gradient(circle, transparent 50%, rgba(100,116,139,0.95) 62%, rgba(30,41,59,0.8) 78%, transparent 88%);
+      box-shadow: 0 0 26px 6px rgba(100,116,139,0.6), inset 0 0 18px rgba(0,0,0,0.6); animation: auraCrystal 5s ease-in-out infinite;
+    }
+    .aura-preview.aura-nft-chroma::before {
+      opacity: 1; background: conic-gradient(from 0deg, #ec4899, #8b5cf6, #22d3ee, #f59e0b, #ec4899);
+      -webkit-mask: radial-gradient(circle, transparent 50%, #000 60%, transparent 74%);
+      mask: radial-gradient(circle, transparent 50%, #000 60%, transparent 74%);
+      animation: auraSpin 4s linear infinite;
+    }
+    .aura-preview.aura-nft-royal::before {
+      opacity: 1; background: radial-gradient(circle, transparent 48%, rgba(251,191,36,0.98) 60%, rgba(217,119,6,0.8) 76%, transparent 88%);
+      box-shadow: 0 0 46px 14px rgba(251,191,36,0.8); animation: auraRoyal 2.2s ease-in-out infinite;
+    }
+
+    /* Тост-уведомление */
+    .toast {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(120%);
+      background: rgba(18,21,43,0.95); border: 1px solid var(--glass-border); color: var(--text-primary);
+      padding: 0.85rem 1.25rem; border-radius: 0.9rem; font-weight: 600; z-index: 1000;
+      transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+      max-width: 90vw; text-align: center; opacity: 0; visibility: hidden; pointer-events: none;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1; visibility: visible; pointer-events: auto;
+    }
+    .toast-modal {
+      position: fixed; inset: 0; background: rgba(2,6,23,0.72); display: none; align-items: center; justify-content: center; z-index: 100;
+      padding: 1rem; opacity: 0; visibility: hidden; transition: opacity 0.28s ease, visibility 0.28s ease;
+    }
+    .toast-modal.show {
+      display: flex; opacity: 1; visibility: visible;
+    }
+    .toast-modal-card {
+      position: relative; width: min(28rem, 92vw); background: rgba(15,23,42,0.96); border: 1px solid rgba(139,92,246,0.38); border-radius: 1.25rem;
+      padding: 1.5rem 1.25rem 1rem; box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+      transform: translateY(18px) scale(0.96); opacity: 0; transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.28s ease, box-shadow 0.28s ease;
+      will-change: transform, opacity;
+    }
+    .toast-modal.show .toast-modal-card {
+      transform: translateY(0) scale(1); opacity: 1; box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+      animation: modalCardIn 0.38s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .toast-modal.closing {
+      opacity: 0; visibility: hidden;
+    }
+    .toast-modal.closing .toast-modal-card {
+      animation: modalCardOut 0.2s ease forwards;
+    }
+    @keyframes modalCardIn {
+      0% { transform: translateY(22px) scale(0.92); opacity: 0; }
+      60% { transform: translateY(-4px) scale(1.02); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    @keyframes modalCardOut {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(16px) scale(0.96); opacity: 0; }
+    }
+    .purchase-preview-box {
+      display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      margin: 0.5rem auto 1rem; padding: 1rem 0.8rem 0.9rem;
+      width: min(100%, 19rem); border-radius: 1.1rem; border: 1px solid rgba(139,92,246,0.22);
+      background: linear-gradient(180deg, rgba(139,92,246,0.12), rgba(15,23,42,0.2));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      text-align: center;
+    }
+    .purchase-preview-avatar {
+      width: 9rem; height: 9rem; margin: 0 auto 0.2rem; position: relative;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(139,92,246,0.14) 45%, rgba(15,23,42,0.3) 75%);
+      box-shadow: 0 0 30px rgba(139,92,246,0.22);
+    }
+    .purchase-preview-avatar::before {
+      content: ''; position: absolute; inset: -10px; border-radius: 50%;
+      background: radial-gradient(circle, transparent 58%, rgba(139,92,246,0.6) 64%, transparent 76%);
+      filter: blur(4px); opacity: 0.9;
+    }
+    .purchase-preview-avatar .aura-preview {
+      width: 100%; height: 100%; position: relative; z-index: 1;
+    }
+    .purchase-preview-avatar .aura-preview .inner {
+      border: 3px solid rgba(255,255,255,0.22);
+      background: linear-gradient(135deg, rgba(99,102,241,0.34), rgba(16,185,129,0.24));
+      box-shadow: inset 0 0 18px rgba(255,255,255,0.08), 0 0 24px rgba(99,102,241,0.2);
+    }
+    .purchase-preview-name {
+      font-size: 1.08rem; font-weight: 800; color: var(--text-primary);
+    }
+    .purchase-preview-rarity {
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.02em;
+    }
+    .toast-modal-close {
+      position: absolute; top: 0.8rem; right: 0.8rem; width: 2rem; height: 2rem; border-radius: 9999px; border: 0; background: rgba(255,255,255,0.1); color: #fff; cursor: pointer;
+    }
+    .toast-modal-title { text-align: center; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.8rem; }
+    .confirm-actions {
+      display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .btn-confirm {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark) 50%, var(--secondary));
+    }
+    .btn-cancel {
+      background: rgba(255,255,255,0.08); color: var(--text-primary);
+    }
+
+    /* ---- Подвал ---- */
+    .footer { border-top: 1px solid var(--glass-border); padding: 2rem 0; }
+    .footer-inner { display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 1.5rem; }
+    @media (min-width: 768px) { .footer-inner { flex-direction: row; } }
+    .footer-logo { display: flex; align-items: center; gap: 0.75rem; }
+    .footer-avatar { width: 2.5rem; height: 2.5rem; border-radius: 9999px; overflow: hidden; }
+    .footer-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .footer-text { text-align: center; }
+    @media (min-width: 768px) { .footer-text { text-align: right; } }
+    .footer-text p { color: var(--text-secondary); }
+    .footer-text .small { font-size: 0.875rem; margin-top: 0.25rem; }
+
+    :root { --primary:#e4572e; --primary-dark:#b9381d; --secondary:#d6a84f; --accent:#f0c36a; --text-primary:#f2eadb; --text-secondary:#b8b0a0; --card-bg:#222522; --glass-border:rgba(242,234,219,.17); }
+    body { background:#171817; color:#f2eadb; font-family:'Manrope','Segoe UI',sans-serif; }
+    body.light-theme { background:#eee8dc; color:#282a26; }
+    .header-inner { background:#202220; border:0; border-bottom:2px solid #e4572e; border-radius:0; backdrop-filter:none; }
+    .logo-avatar { border-radius:3px; background:#e4572e; }
+    .gradient-text { background:none; color:#f2eadb; -webkit-text-fill-color:currentColor; }
+    body.light-theme .gradient-text { color:#282a26; }
+    .shop-card,.notice-card,.purchase-preview-box,.toast-modal-card { background:#222522; border-color:var(--glass-border); border-radius:3px; backdrop-filter:none; box-shadow:5px 5px 0 rgba(0,0,0,.2); }
+    .shop-card:hover { transform:translate(-2px,-2px); box-shadow:8px 8px 0 rgba(0,0,0,.22); border-color:#e4572e; }
+    .shop-tab,.btn,.btn-buy,.btn-back,.btn-confirm { border-radius:3px; }
+    .shop-tab.active,.btn-buy,.btn-back,.btn-confirm { background:#e4572e; box-shadow:3px 3px 0 #b9381d; }
+    .shop-tab:hover { background:rgba(228,87,46,.12); }
+    .btn-equip { background:#d6a84f; color:#202220; }
+    .balance { border-radius:3px; background:#2a2d29; color:#f0c36a; }
+    .toast { background:#222522; border-radius:3px; }
+    .aura-preview .inner { background:#2a2d29; }
+    .footer { background:#202220; }
+    ::-webkit-scrollbar-thumb { background:#e4572e; border-radius:2px; }
+
+    /* Живое превью профиля при наведении на карточку */
+    .live-preview {
+      position: fixed; bottom: 1.25rem; right: 1.25rem; z-index: 90;
+      width: min(19rem, 92vw); background: var(--card-bg);
+      border: 1px solid var(--glass-border); border-radius: 1.25rem;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.35); padding: 1rem;
+      opacity: 0; visibility: hidden; transform: translateY(8px);
+      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+      pointer-events: none;
+    }
+    .live-preview.show { opacity: 1; visibility: visible; transform: translateY(0); }
+    .lp-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.7rem; }
+    .lp-status { width: 0.55rem; height: 0.55rem; border-radius: 9999px; background: #34d399; flex-shrink: 0; }
+    .lp-name { font-weight: 800; }
+    .lp-hint { font-size: 0.72rem; color: var(--text-secondary); }
+    .lp-body { display: flex; align-items: center; justify-content: center; }
+    .lp-body .aura-preview { margin: 0; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="wrap">
+      <div class="header-inner">
+        <a href="index.html" class="logo">
+          <div class="logo-avatar">
+            <img src="assets/photo.jpg" alt="Mortis Play" onerror="this.onerror=null;this.src='https://placehold.co/120x120/4f46e5/ffffff?text=M'">
+          </div>
+          <div>
+            <div class="logo-name gradient-text">Mortis Play</div>
+            <div class="logo-sub">Магазин товаров</div>
+          </div>
+        </a>
+        <div id="headerBalance" class="balance" style="display:none;"><i class="fas fa-coins"></i><span id="headerBalanceText">0</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="wrap">
+      <h1 class="title-main gradient-text"><i class="fas fa-store" style="margin-right:0.6rem;"></i>Магазин</h1>
+      <p class="subtitle">Рамки и другие товары. Покупай за монеты 🪙 и надевай на свой профиль!</p>
+
+      <!-- Контейнер содержимого: заполняется скриптом -->
+      <div id="shopContent"></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-inner">
+        <div class="footer-logo">
+          <div class="footer-avatar"><img src="assets/photo.jpg" alt="Mortis Play"></div>
+          <div>
+            <div class="logo-name gradient-text">Mortis Play</div>
+            <div class="logo-sub">Официальный сайт</div>
+          </div>
+        </div>
+        <div class="footer-text">
+          <p>© <span id="currentYear"></span> Mortis Play. Все права защищены.</p>
+          <p class="small">Сделано с ❤️ для сообщества</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- Живое превью профиля -->
+  <div id="livePreview" class="live-preview" aria-hidden="true">
+    <div class="lp-header">
+      <span class="lp-status"></span>
+      <div>
+        <div id="livePreviewName" class="lp-name">Ваш профиль</div>
+        <div class="lp-hint">Так будет выглядеть ваш профиль</div>
+      </div>
+    </div>
+    <div id="livePreviewBody" class="lp-body"></div>
+  </div>
+
+  <div id="purchaseConfirmModal" class="toast-modal" aria-modal="true" role="dialog">
+    <div class="toast-modal-card" onclick="event.stopPropagation()">
+      <button type="button" class="toast-modal-close" id="closePurchaseConfirmModal" aria-label="Закрыть">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="toast-modal-title gradient-text">Подтверждение покупки</div>
+
+      <div class="purchase-preview-box">
+        <div id="purchasePreviewAura" class="purchase-preview-avatar"></div>
+        <div id="purchasePreviewName" class="purchase-preview-name">Рамка</div>
+        <div id="purchasePreviewRarity" class="purchase-preview-rarity rarity-Редкая">Редкая</div>
+      </div>
+
+      <p id="purchaseConfirmText" style="text-align:center; color: var(--text-secondary); line-height:1.6; margin-bottom: 0.75rem;">
+        Подтвердите покупку.
+      </p>
+      <div class="confirm-actions">
+        <button type="button" class="btn btn-cancel" id="cancelPurchaseBtn"><i class="fas fa-xmark"></i> Отмена</button>
+        <button type="button" class="btn btn-confirm" id="confirmPurchaseBtn"><i class="fas fa-check"></i> Подтвердить</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Утилиты сессии (единая база данных на сервере — data.db) =====
+    const AUTH_TOKEN_KEY = 'auth-token';
+    const STARTING_COINS = 1000;
+    function getStoredProfile() {
+      try { return JSON.parse(localStorage.getItem('profile-user')) || null; } catch (e) { return null; }
+    }
+    function saveProfile(p) { try { localStorage.setItem('profile-user', JSON.stringify(p)); } catch (e) {} }
+    function clearStoredProfile() { try { localStorage.removeItem('profile-user'); } catch (e) {} }
+    function getAuthToken() { return localStorage.getItem(AUTH_TOKEN_KEY); }
+    function clearAuthToken() { try { localStorage.removeItem(AUTH_TOKEN_KEY); } catch (e) {} }
+    function normalizeEmail(e) { return String(e || '').trim().toLowerCase(); }
+
+    // Безопасный разбор JSON-ответа API. Статические хостинги (например, GitHub
+    // Pages) не умеют выполнять Node.js и возвращают HTML/XML-страницу 404 вместо
+    // JSON, из-за чего response.json() падает с «Unexpected token <». Здесь такой
+    // ответ превращается в null, а причина логируется в консоль.
+    async function safeJson(response) {
+      const text = await response.text();
+      try {
+        return text ? JSON.parse(text) : {};
+      } catch (e) {
+        console.error('[API] Не-JSON ответ от сервера (статус ' + response.status + '):', text.slice(0, 300));
+        return null;
+      }
+    }
+
+    async function loadServerProfile() {
+      const token = getAuthToken();
+      if (!token) return null;
+      try {
+        const response = await fetch('/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const result = await safeJson(response) || {};
+        if (!response.ok || !result.profile) {
+          clearAuthToken();
+          clearStoredProfile();
+          return null;
+        }
+        saveProfile(result.profile);
+        return result.profile;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // ===== Каталог товаров (рамки и аватарки) =====
+    const AURA_DEFINITIONS = {
+      gold:    { id:'gold',    name:'Золотое сияние',     price:500,  description:'Тёплое золотое свечение вокруг аватара', rarity:'Редкая',    category:'frame' },
+      neon:    { id:'neon',    name:'Неоновый градиент',  price:800,  description:'Вращающийся неоновый конусный градиент', rarity:'Эпическая', category:'frame' },
+      fire:    { id:'fire',    name:'Огненная аура',      price:1200, description:'Пылающее красно-оранжевое пламя', rarity:'Эпическая', category:'frame' },
+      cosmic:  { id:'cosmic',  name:'Космическая аура',   price:1500, description:'Фиолетово-синее сияние с мерцающими звёздами', rarity:'Легендарная', category:'frame' },
+      crystal: { id:'crystal', name:'Кристальная аура',   price:2000, description:'Переливающееся полупрозрачное кольцо', rarity:'Легендарная', category:'frame' },
+      royal:   { id:'royal',   name:'Королевская аура',   price:3000, description:'Пульсирующее золотое сияние высшего ранга', rarity:'Мифическая', category:'frame' },
+      avatar1:  { id:'avatar1', name:'Фишай-дуэт', price:100, description:'Сюрреалистичный дуэт в очках с эффектом фишай', category:'avatar', type:'avatar', image:'/photoSHOP/$$$$.jpg' },
+      avatar2:  { id:'avatar2', name:'Деловой режим', price:150, description:'Строгий костюм для профиля с серьёзными планами', category:'avatar', type:'avatar', image:'/photoSHOP/Man.jpg' },
+      avatar3:  { id:'avatar3', name:'Арбузный космонавт', price:200, description:'Летний космический образ на каждый день', category:'avatar', type:'avatar', image:'/photoSHOP/Арбуз.jpg' },
+      avatar4:  { id:'avatar4', name:'Кролик на мели', price:250, description:'Грустный герой, который держится из последних сил', category:'avatar', type:'avatar', image:'/photoSHOP/бедни%20кролик%F0%9F%98%AD.jpg' },
+      avatar5:  { id:'avatar5', name:'Псайдак в огне', price:300, description:'Спокойствие посреди полного хаоса', category:'avatar', type:'avatar', image:'/photoSHOP/Без%20названия%20(1).jpg' },
+      avatar6:  { id:'avatar6', name:'Утёнок с чипсами', price:350, description:'Милый перекус и абсолютное безразличие к правилам', category:'avatar', type:'avatar', image:'/photoSHOP/Без%20названия.jpg' },
+      avatar7:  { id:'avatar7', name:'Кот после взрыва', price:400, description:'Хладнокровный взгляд человека, который всё пережил', category:'avatar', type:'avatar', image:'/photoSHOP/Кот.jpg' },
+      avatar8:  { id:'avatar8', name:'Стирающийся котик', price:425, description:'Чёрно-белая классика с лёгким привкусом хаоса', category:'avatar', type:'avatar', image:'/photoSHOP/котик%20стираеться.jpg' },
+      avatar9:  { id:'avatar9', name:'Крипер в шапке', price:450, description:'Зимний заряд криперской уверенности', category:'avatar', type:'avatar', image:'/photoSHOP/крипер%20в%20шапке.jpg' },
+      avatar10: { id:'avatar10', name:'Сонный вайб', price:500, description:'Тихий, сонный и подозрительно уютный аватар', category:'avatar', type:'avatar', image:'/photoSHOP/%E2%9C%A8Free%20avatar%F0%9F%A5%B1%20%5B2_300%5D%E2%9C%A8.jpg' },
+      // Ограниченные выпуски: эксклюзивные аватарки (assets2/)
+      limitedAvatar1: { id:'limitedAvatar1', name:'Неоновый хищник', price:600, description:'Эксклюзивная аватарка ограниченного выпуска. Успевай, пока в продаже!', rarity:'Эпическая', category:'limited', type:'avatar', image:'/assets2/photo_5291782115840172013_y.jpg' },
+      limitedAvatar2: { id:'limitedAvatar2', name:'Кибер-призрак', price:650, description:'Редкий дизайн из ограниченной коллекции — только для самых быстрых.', rarity:'Эпическая', category:'limited', type:'avatar', image:'/assets2/photo_5291782115840172014_y.jpg' },
+      limitedAvatar3: { id:'limitedAvatar3', name:'Уличный свет', price:700, description:'Лимитированная аватарка с характером большого города.', rarity:'Эпическая', category:'limited', type:'avatar', image:'/assets2/photo_5291782115840172015_y.jpg' },
+      limitedAvatar4: { id:'limitedAvatar4', name:'Ночной город', price:750, description:'Эксклюзивный образ из ночной серии ограниченного выпуска.', rarity:'Эпическая', category:'limited', type:'avatar', image:'/assets2/photo_5291782115840172016_y.jpg' },
+      limitedAvatar5: { id:'limitedAvatar5', name:'Стальной взгляд', price:800, description:'Холодный и дерзкий дизайн из ограниченной коллекции.', rarity:'Эпическая', category:'limited', type:'avatar', image:'/assets2/photo_5291782115840172017_y.jpg' },
+      limitedAvatar6: { id:'limitedAvatar6', name:'Полярное сияние', price:850, description:'Северное сияние в ограниченном выпуске — редкая находка.', rarity:'Эпическая', category:'limited', type:'avatar', image:'/assets2/photo_5291782115840172018_y.jpg' },
+      limitedAvatar7: { id:'limitedAvatar7', name:'Тёмная материя', price:900, description:'Легендарная аватарка ограниченного выпуска с загадочной энергетикой.', rarity:'Легендарная', category:'limited', type:'avatar', image:'/assets2/photo_5291782115840172019_y.jpg' },
+      limitedAvatar8: { id:'limitedAvatar8', name:'Золотая эра', price:1000, description:'Мифический лимитированный дизайн для настоящих коллекционеров.', rarity:'Мифическая', category:'limited', type:'avatar', image:'/assets2/photo_5291782115840172020_y.jpg' },
+      lootbox_start: { id:'lootbox_start', name:'Стартовый кейс', price:500, description:'Откройте кейс и получите случайную рамку или аватарку. Шанс на редкие предметы!', category:'lootbox', type:'lootbox', image:'' }
+    };
+    let shopItems = Object.values(AURA_DEFINITIONS);
+
+    async function loadShopItems() {
+      try {
+        const response = await fetch('/api/shop/items');
+        if (!response.ok) throw new Error('Не удалось загрузить магазин');
+        const data = await safeJson(response) || {};
+        if (!Array.isArray(data.items)) throw new Error('Неверные данные магазина');
+
+        const fetchedItems = data.items.map((item) => {
+          const metadata = item.metadata || {};
+          const auraId = metadata.auraId || item.slug;
+          const localDef = AURA_DEFINITIONS[auraId] || {};
+          const category = localDef.category || 'frame';
+          return {
+            id: auraId,
+            slug: item.slug,
+            name: item.name || localDef.name || auraId,
+            price: item.price,
+            description: localDef.description || item.name || 'Товар из магазина',
+            rarity: localDef.rarity || 'Обычная',
+            category,
+            type: item.type || localDef.type || category,
+            image: localDef.image || metadata.image || '',
+            rarityClass: localDef.rarityClass || `rarity-${String(localDef.rarity || 'Обычная').replace(/\s+/g, '-')}`,
+            limited: Boolean(item.limited),
+            stock: Number.isFinite(Number(item.stock)) ? Number(item.stock) : null,
+            soldOut: Boolean(item.soldOut),
+            metadata
+          };
+        });
+        const devItems = Object.values(AURA_DEFINITIONS).filter((def) => def.price == null && !fetchedItems.some((item) => item.id === def.id));
+        shopItems = [...fetchedItems, ...devItems];
+      } catch (e) {
+        shopItems = Object.values(AURA_DEFINITIONS);
+      }
+    }
+
+    function getProfileCoins(profile) {
+      const n = parseInt(profile && profile.coins, 10);
+      return Number.isFinite(n) && n >= 0 ? n : STARTING_COINS;
+    }
+    function getInventory(profile) {
+      return Array.isArray(profile && profile.inventory) ? profile.inventory.slice() : [];
+    }
+    function getEquipped(profile) {
+      const e = profile && profile.equipped;
+      return e && AURA_DEFINITIONS[e] ? e : null;
+    }
+    function getEquippedAvatar(profile) {
+      const e = profile && profile.equippedAvatar;
+      return e && AURA_DEFINITIONS[e] ? e : null;
+    }
+    function isAvatarItem(def) {
+      return Boolean(def && (def.category === 'avatar' || def.type === 'avatar'));
+    }
+
+    // ===== Логика покупки / экипировки =====
+    async function purchase(auraId) {
+      const profile = getStoredProfile();
+      if (!profile) return { ok:false, msg:'Войдите в профиль' };
+      const def = shopItems.find((item) => item.id === auraId || item.slug === auraId) || AURA_DEFINITIONS[auraId];
+      if (!def) return { ok:false, msg:'Предмет не найден' };
+      if (def.price == null) return { ok:false, msg:'Этот товар ещё в разработке' };
+      if (getInventory(profile).includes(auraId)) return { ok:false, msg:'Уже в инвентаре' };
+      if (def.limited && def.soldOut) return { ok:false, msg:'Распродано' };
+      if (getProfileCoins(profile) < def.price) return { ok:false, msg:'Не хватает монет' };
+
+      const token = getAuthToken();
+      if (!token) {
+        return { ok:false, msg:'Войдите в профиль, чтобы совершить покупку' };
+      }
+
+      try {
+        const response = await fetch('/api/shop/buy', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ itemSlug: auraId })
+        });
+        const result = await safeJson(response) || {};
+        if (!response.ok) {
+          if (result.error === 'Требуется авторизация' || result.error === 'Сессия устарела') {
+            clearAuthToken();
+            clearStoredProfile();
+            render();
+          }
+          return { ok:false, msg: result.error || 'Ошибка покупки' };
+        }
+        if (result.profile) {
+          saveProfile(result.profile);
+        }
+        return { ok:true, msg:'Куплено!' };
+      } catch (error) {
+        return { ok:false, msg:'Ошибка соединения с сервером' };
+      }
+    }
+
+    async function openLootbox(auraId) {
+      const token = getAuthToken();
+      if (!token) return { ok:false, msg:'Войдите в профиль' };
+      try {
+        const response = await fetch('/api/shop/open', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ itemSlug: auraId })
+        });
+        const result = await safeJson(response) || {};
+        if (!response.ok) return { ok:false, msg: result.error || 'Ошибка открытия кейса' };
+        if (result.profile) {
+          saveProfile(result.profile);
+        }
+        return { ok:true, won: result.won, msg:'Кейс открыт!' };
+      } catch (error) {
+        return { ok:false, msg:'Ошибка соединения с сервером' };
+      }
+    }
+
+    async function saveEquippedToServer(field, value) {
+      const token = getAuthToken();
+      if (!token) return false;
+      const currentProfile = getStoredProfile() || {};
+      try {
+        const response = await fetch('/api/profile', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            name: currentProfile.name || '',
+            username: currentProfile.username || null,
+            customization: currentProfile.customization || {},
+            settings: currentProfile.settings || {},
+            equipped: currentProfile.equipped ?? null,
+            equippedAvatar: currentProfile.equippedAvatar ?? null,
+            [field]: value
+          })
+        });
+        if (!response.ok) return false;
+        const result = await safeJson(response) || {};
+        if (result.profile) {
+          saveProfile(result.profile);
+          return true;
+        }
+      } catch (error) {
+        return false;
+      }
+      return false;
+    }
+
+    async function equip(auraId) {
+      const profile = getStoredProfile();
+      if (!profile) return { ok:false, msg:'Войдите в профиль' };
+      const def = AURA_DEFINITIONS[auraId];
+      if (!def || !getInventory(profile).includes(auraId)) return { ok:false, msg:'Предмет не в инвентаре' };
+      const field = isAvatarItem(def) ? 'equippedAvatar' : 'equipped';
+      const success = await saveEquippedToServer(field, auraId);
+      if (!success) {
+        return { ok:false, msg:'Не удалось сохранить выбор на сервере' };
+      }
+      return { ok:true, msg: isAvatarItem(def) ? 'Аватарка применена!' : 'Аура надета!' };
+    }
+
+    async function unequip(auraId) {
+      const profile = getStoredProfile();
+      if (!profile) return { ok:false, msg:'Войдите в профиль' };
+      const def = AURA_DEFINITIONS[auraId];
+      const field = isAvatarItem(def) ? 'equippedAvatar' : 'equipped';
+      const success = await saveEquippedToServer(field, null);
+      if (!success) {
+        return { ok:false, msg:'Не удалось сохранить выбор на сервере' };
+      }
+      return { ok:true, msg: isAvatarItem(def) ? 'Аватарка снята' : 'Аура снята' };
+    }
+
+    // ===== UI =====
+    let toastTimer = null;
+    let pendingPurchaseAuraId = null;
+    let activeTab = 'frame';
+    const CATEGORY_LABELS = { frame: 'Рамки', avatar: 'Аватарки', limited: 'Ограниченные', lootbox: 'Кейсы' };
+    const CATEGORY_ICONS = { frame: 'fa-circle-notch', avatar: 'fa-user', limited: 'fa-badge-check', lootbox: 'fa-box-open' };
+
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      if (!el) return;
+      el.textContent = msg;
+      clearTimeout(toastTimer);
+      el.classList.remove('show');
+      void el.offsetWidth;
+      el.classList.add('show');
+      toastTimer = setTimeout(() => {
+        el.classList.remove('show');
+      }, 2200);
+    }
+
+    function safeImageUrl(url) {
+      if (!url) return '';
+      const s = String(url).trim();
+      return /^(https?:)?\/\//i.test(s) || s.startsWith('/') ? s : '';
+    }
+
+    function openPurchaseConfirm(auraId) {
+      const def = shopItems.find((item) => item.id === auraId || item.slug === auraId) || AURA_DEFINITIONS[auraId];
+      const modal = document.getElementById('purchaseConfirmModal');
+      const text = document.getElementById('purchaseConfirmText');
+      const previewAura = document.getElementById('purchasePreviewAura');
+      const previewName = document.getElementById('purchasePreviewName');
+      const previewRarity = document.getElementById('purchasePreviewRarity');
+      if (!def || !modal || !text || !previewAura || !previewName || !previewRarity) return;
+
+      if (def.limited && def.soldOut) {
+        toast('Эта аватарка уже распродана');
+        return;
+      }
+
+      pendingPurchaseAuraId = auraId;
+      modal.classList.remove('closing');
+      const image = safeImageUrl(def.image);
+      previewAura.innerHTML = `
+        <div class="aura-preview aura-${def.id} ${isAvatarItem(def) ? 'avatar-preview' : ''} ${def.category === 'nft' ? 'aura-nft' : ''} ${def.category === 'limited' && image ? 'preview-rect' : ''}" style="width:100%; height:100%;">
+          <div class="inner">${image ? `<img src="${image}" alt="${def.name}" draggable="false" loading="lazy" decoding="async">` : (def.category === 'nft' ? '<i class="fas fa-gem"></i>' : '<i class="fas fa-user"></i>')}</div>
+        </div>
+      `;
+      previewName.textContent = def.name;
+      previewRarity.textContent = def.rarity;
+      previewRarity.className = `purchase-preview-rarity rarity-${def.rarity}`;
+      text.innerHTML = `
+        <span style="display:block; margin-bottom:0.3rem; color: var(--text-primary); font-weight:700;">Как это будет выглядеть в вашем профиле</span>
+        <span style="color: var(--text-primary);">${def.description}</span><br>
+        <span style="display:inline-block; margin-top:0.4rem;">
+          <strong style="color:#fbbf24;">${def.price}</strong> монет за покупку
+        </span>
+      `;
+
+      requestAnimationFrame(() => {
+        modal.classList.add('show');
+      });
+    }
+
+    function closePurchaseConfirm() {
+      const modal = document.getElementById('purchaseConfirmModal');
+      if (!modal) return;
+      pendingPurchaseAuraId = null;
+      modal.classList.add('closing');
+      modal.classList.remove('show');
+
+      setTimeout(() => {
+        modal.classList.remove('closing');
+      }, 220);
+    }
+
+    async function confirmPendingPurchase() {
+      if (!pendingPurchaseAuraId) return;
+      const res = await purchase(pendingPurchaseAuraId);
+      closePurchaseConfirm();
+      if (res) toast(res.msg);
+      render();
+    }
+
+    // ===== Живое превью профиля =====
+    function showLivePreview(def) {
+      const panel = document.getElementById('livePreview');
+      const body = document.getElementById('livePreviewBody');
+      const nameEl = document.getElementById('livePreviewName');
+      // Для кейсов превью профиля не показываем — это не экипируемый предмет
+      if (!panel || !body || !nameEl || !def || def.category === 'lootbox') return;
+
+      const profile = getStoredProfile();
+      const equippedAura = getEquipped(profile);
+      const equippedAvatar = getEquippedAvatar(profile);
+      const avatarDef = shopItems.find((item) => item.id === equippedAvatar || item.slug === equippedAvatar) || AURA_DEFINITIONS[equippedAvatar];
+      const avatarImage = safeImageUrl(avatarDef && avatarDef.image);
+
+      let ringClass;
+      let inner;
+      if (isAvatarItem(def)) {
+        ringClass = equippedAura ? `aura-${equippedAura}` : '';
+        inner = `<div class="inner">${def.image ? `<img src="${safeImageUrl(def.image)}" alt="" draggable="false">` : '<i class="fas fa-user"></i>'}</div>`;
+      } else {
+        ringClass = `aura-${def.id}${def.category === 'nft' ? ' aura-nft' : ''}`;
+        inner = `<div class="inner">${avatarImage ? `<img src="${avatarImage}" alt="" draggable="false">` : (def.category === 'nft' ? '<i class="fas fa-gem"></i>' : '<i class="fas fa-user"></i>')}</div>`;
+      }
+      body.innerHTML = `<div class="aura-preview avatar-preview ${ringClass} ${def.category === 'limited' && def.image ? 'preview-rect' : ''}">${inner}</div>`;
+      nameEl.textContent = (profile && profile.name) || 'Ваш профиль';
+      panel.classList.add('show');
+    }
+
+    function hideLivePreview() {
+      const panel = document.getElementById('livePreview');
+      if (panel) panel.classList.remove('show');
+    }
+
+    function render() {
+      const content = document.getElementById('shopContent');
+      const headerBalance = document.getElementById('headerBalance');
+      const headerBalanceText = document.getElementById('headerBalanceText');
+
+      const profile = getStoredProfile();
+      const loggedIn = Boolean(profile);
+
+      if (loggedIn && headerBalance) {
+        headerBalanceText.textContent = getProfileCoins(profile);
+        headerBalance.style.display = 'inline-flex';
+      } else if (headerBalance) {
+        headerBalance.style.display = 'none';
+      }
+
+      if (!loggedIn) {
+        content.innerHTML = `
+          <div class="notice-card">
+            <div style="font-size:3rem; margin-bottom:0.75rem;"><i class="fas fa-user-lock gradient-text"></i></div>
+            <h2>Войдите в профиль</h2>
+            <p>Чтобы покупать и надевать рамки для аватара, необходимо войти или создать аккаунт на сайте.</p>
+            <a href="index.html" class="btn btn-back"><i class="fas fa-arrow-left"></i> На главную</a>
+          </div>`;
+        return;
+      }
+
+      const inventory = getInventory(profile);
+      const equipped = getEquipped(profile);
+      const equippedAvatar = getEquippedAvatar(profile);
+      const coins = getProfileCoins(profile);
+      const visibleDefinitions = shopItems.filter(def => def.category !== 'nft');
+      const categories = [...new Set(visibleDefinitions.map(def => def.category))];
+      const categoryCounts = categories.reduce((acc, category) => {
+        acc[category] = visibleDefinitions.filter(def => def.category === category).length;
+        return acc;
+      }, {});
+      const itemsToShow = visibleDefinitions.filter(def => def.category === activeTab);
+
+      const renderCard = (def) => {
+        const isLootbox = def.category === 'lootbox';
+        const isAvatar = isAvatarItem(def);
+        const owned = !isLootbox && inventory.includes(def.id);
+        const isEquipped = !isLootbox && (isAvatar ? equippedAvatar === def.id : equipped === def.id);
+        const isInDev = def.price == null;
+        const isSoldOut = !isLootbox && def.limited && def.soldOut;
+        const rarityClass = def.rarityClass || `rarity-${String(def.rarity || 'Обычная').replace(/\s+/g, '-')}`;
+        const image = safeImageUrl(def.image);
+
+        let buttonHtml;
+        if (isLootbox) {
+          buttonHtml = `<button class="btn btn-buy" data-action="open" data-aura="${def.id}"><i class="fas fa-box-open"></i> Открыть за ${def.price}</button>`;
+        } else if (isEquipped) {
+          buttonHtml = `<button class="btn btn-unequip" data-action="unequip" data-aura="${def.id}"><i class="fas fa-times"></i> Снять</button>`;
+        } else if (owned) {
+          buttonHtml = `<button class="btn btn-equip" data-action="equip" data-aura="${def.id}"><i class="fas fa-check"></i> Надеть</button>`;
+        } else if (isSoldOut) {
+          buttonHtml = `<button class="btn btn-disabled" disabled><i class="fas fa-ban"></i> Распродано</button>`;
+        } else if (isInDev) {
+          buttonHtml = `<button class="btn btn-disabled" disabled><i class="fas fa-hourglass-half"></i> В разработке</button>`;
+        } else if (coins < def.price) {
+          buttonHtml = `<button class="btn btn-disabled" disabled><i class="fas fa-lock"></i> Не хватает монет</button>`;
+        } else {
+          buttonHtml = `<button class="btn btn-buy" data-action="buy" data-aura="${def.id}"><i class="fas fa-coins"></i> Купить за ${def.price}</button>`;
+        }
+
+        let statusHtml;
+        if (isLootbox) {
+          statusHtml = `<div class="price-row"><i class="fas fa-coins"></i> ${def.price}</div>`;
+        } else if (isEquipped) {
+          statusHtml = `<div class="equipped-label"><i class="fas fa-circle-check"></i> Надето</div>`;
+        } else if (owned) {
+          statusHtml = `<div class="owned-label"><i class="fas fa-check-circle"></i> В инвентаре</div>`;
+        } else if (isInDev) {
+          statusHtml = `<div class="owned-label"><i class="fas fa-hourglass-half"></i> В разработке</div>`;
+        } else if (isSoldOut) {
+          statusHtml = `<div class="soldout-label"><i class="fas fa-ban"></i> Распродано</div>`;
+        } else {
+          statusHtml = `<div class="price-row"><i class="fas fa-coins"></i> ${def.price}</div>
+            ${def.limited && Number.isFinite(Number(def.stock)) ? `<div class="stock-label"><i class="fas fa-fire"></i> Осталось: ${def.stock} из 10</div>` : ''}`;
+        }
+
+        const previewMarkup = isLootbox
+          ? `<div class="lootbox-preview"><div class="inner"><i class="fas fa-box-open" aria-hidden="true"></i></div></div>`
+          : `<div class="aura-preview aura-${def.id} ${isAvatar ? 'avatar-preview' : ''} ${def.category === 'limited' && image ? 'preview-rect' : ''}"><div class="inner">${image ? `<img src="${image}" alt="${def.name}" draggable="false" loading="lazy" decoding="async">` : '<i class="fas fa-user"></i>'}</div></div>`;
+        const chipIcon = CATEGORY_ICONS[def.category] || 'fa-circle-notch';
+        const chipText = CATEGORY_LABELS[def.category] || 'Товар';
+
+        return `
+          <div class="shop-card ${isEquipped ? 'equipped-card' : ''} ${isSoldOut ? 'sold-out-card' : ''}" data-item-id="${def.id}" data-item-kind="${def.category}">
+            ${previewMarkup}
+            <div class="category-chip ${def.category}"><i class="fas ${chipIcon}"></i> ${chipText}</div>
+            <div class="card-name">${def.name}</div>
+            ${isAvatar || isLootbox ? '' : `<div class="card-rarity ${rarityClass}">${def.rarity}</div>`}
+            <div class="card-desc">${def.description}</div>
+            <div class="card-footer">
+              ${statusHtml}
+              ${buttonHtml}
+            </div>
+          </div>`;
+      };
+
+      content.innerHTML = `
+        <div class="shop-tabs">
+          ${categories.map(category => `
+            <div class="shop-tab ${category === activeTab ? 'active' : ''}" data-tab="${category}">
+              <i class="fas ${CATEGORY_ICONS[category] || 'fa-box'}"></i> ${CATEGORY_LABELS[category] || category}
+              <span class="count-badge">${categoryCounts[category] || 0}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="shop-grid">${itemsToShow.map(renderCard).join('')}</div>
+        <div style="text-align:center; margin-top:2rem; color:var(--text-secondary); font-size:0.9rem;">
+          <i class="fas fa-info-circle"></i> Выбирайте рамки и аватарки для своего профиля. Аватарки и рамки меняются независимо друг от друга. Монеты зарабатывайте просмотром видео!
+        </div>`;
+
+      content.querySelectorAll('.shop-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const selected = tab.dataset.tab;
+          if (selected && selected !== activeTab) {
+            activeTab = selected;
+            render();
+          }
+        });
+      });
+
+      content.querySelectorAll('[data-action]').forEach(btn => {
+        btn.addEventListener('click', async (event) => {
+          event.stopPropagation();
+          const action = btn.dataset.action;
+          const auraId = btn.dataset.aura;
+          let res;
+
+          if (action === 'buy') {
+            openPurchaseConfirm(auraId);
+            return;
+          }
+
+          if (action === 'open') {
+            const def = AURA_DEFINITIONS[auraId];
+            if (!def) return;
+            if (!confirm(`Открыть кейс «${def.name}» за ${def.price} монет? Внутри — случайная рамка или аватарка.`)) return;
+            res = await openLootbox(auraId);
+            if (res && res.ok && res.won) {
+              toast(`Выпало: ${res.won.name}! 🎁`, 'info');
+            } else if (res) {
+              toast(res.msg, 'error');
+            }
+            render();
+            return;
+          }
+
+          if (action === 'equip') res = await equip(auraId);
+          else if (action === 'unequip') res = await unequip(auraId);
+          if (res) toast(res.msg);
+          render();
+        });
+      });
+
+      // Живое превью профиля при наведении/фокусе на карточку
+      content.querySelectorAll('.shop-card').forEach((card) => {
+        const defId = card.dataset.itemId;
+        const def = shopItems.find((item) => item.id === defId || item.slug === defId) || AURA_DEFINITIONS[defId];
+        if (!def || def.category === 'lootbox') return;
+        card.addEventListener('mouseenter', () => showLivePreview(def));
+        card.addEventListener('mouseleave', hideLivePreview);
+        card.addEventListener('focusin', () => showLivePreview(def));
+        card.addEventListener('focusout', hideLivePreview);
+      });
+    }
+
+    // ===== Инициализация =====
+    (async function () {
+      const modal = document.getElementById('purchaseConfirmModal');
+      const closeBtn = document.getElementById('closePurchaseConfirmModal');
+      const cancelBtn = document.getElementById('cancelPurchaseBtn');
+      const confirmBtn = document.getElementById('confirmPurchaseBtn');
+
+      if (closeBtn) closeBtn.addEventListener('click', closePurchaseConfirm);
+      if (cancelBtn) cancelBtn.addEventListener('click', closePurchaseConfirm);
+      if (confirmBtn) confirmBtn.addEventListener('click', confirmPendingPurchase);
+      if (modal) {
+        modal.addEventListener('click', (event) => {
+          if (event.target === modal) closePurchaseConfirm();
+        });
+      }
+
+      // Тема
+      try { if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme'); } catch (e) {}
+      // Год
+      const y = document.getElementById('currentYear');
+      if (y) y.textContent = new Date().getFullYear();
+      await Promise.all([loadServerProfile(), loadShopItems()]);
+      render();
+    })();
+  </script>
+</body>
+</html>

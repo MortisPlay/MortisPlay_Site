@@ -504,8 +504,28 @@
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
+
+    :root { --primary:#e4572e; --secondary:#d6a84f; --accent:#f0c36a; --dark:#202220; --darker:#171817; }
+    body { background:#171817; color:#f2eadb; font-family:'Manrope','Segoe UI',sans-serif; }
+    .gradient-bg { background:linear-gradient(180deg,#171817 0%,#202220 100%); animation:none; }
+    .gradient-bg::before,.gradient-bg::after,.night-scene,.particles { display:none; }
+    .glass-card { background:#222522; border:1px solid rgba(242,234,219,.17); border-radius:4px; box-shadow:5px 5px 0 rgba(0,0,0,.2); backdrop-filter:none; }
+    .glass-card::before { display:none; }
+    .glass-card:hover { transform:translate(-2px,-2px); border-color:#e4572e; box-shadow:8px 8px 0 rgba(0,0,0,.22); }
+    .gradient-text { background:none; color:#f2eadb; -webkit-text-fill-color:currentColor; animation:none; letter-spacing:-.04em; }
+    .glow { text-shadow:none; }
+    .modern-btn,.yandex-btn { border-radius:3px; background:#e4572e; box-shadow:3px 3px 0 #b9381d; animation:none; }
+    .modern-btn:hover,.yandex-btn:hover { transform:translate(-2px,-2px); box-shadow:5px 5px 0 #8f2d18; }
+    .yandex-btn { background:#d6a84f; color:#202220; }
+    .stat-card { background:#2a2d29; border:1px solid rgba(242,234,219,.17); border-top:3px solid #e4572e; border-radius:3px; }
+    .modern-timeline::before { background:#e4572e; }
+    .timeline-dot { background:#e4572e; border:3px solid #222522; box-shadow:none; animation:none; }
+    .timeline-item:hover { transform:translateX(6px); }
+    .wave-bar { background:#e4572e !important; }
+    ::-webkit-scrollbar-track { background:#171817; }
+    ::-webkit-scrollbar-thumb { background:#e4572e; border-radius:2px; }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <!-- Animated background -->
@@ -753,10 +773,14 @@
             
             <div class="mt-6 p-3 md:p-4 bg-gradient-to-r from-purple-900/30 to-pink-900/30 rounded-xl border border-purple-500/20">
               <div class="flex items-center gap-3">
-                <i class="fas fa-headphones-alt text-purple-400 text-xl"></i>
+                <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0">
+                  <i class="fas fa-headphones-alt text-purple-300 text-lg"></i>
+                </div>
                 <div>
-                  <div class="font-semibold text-sm md:text-base">Сейчас в эфире</div>
-                  <div class="text-xs md:text-sm text-gray-300">Lo-fi beats for coding/editing</div>
+                  <div class="font-semibold text-sm md:text-base text-white">Музыка для рабочих часов</div>
+                  <a href="https://music.yandex.ru/iframe/playlist/dmitgames/3" target="_blank" class="text-xs md:text-sm text-gray-300 hover:text-pink-300 transition">
+                    Lo-fi beats for coding/editing
+                  </a>
                 </div>
               </div>
             </div>

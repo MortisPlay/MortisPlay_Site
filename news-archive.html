@@ -7,7 +7,7 @@
   <meta name="description" content="Архив новостей и обновлений Mortis Play." />
   <script src="https://cdn.tailwindcss.com" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #020617;
@@ -211,6 +211,44 @@
       color: var(--text);
       font-size: 0.9rem;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    :root { --bg:#171817; --panel:#222522; --panel-strong:#202220; --text:#f2eadb; --muted:#b8b0a0; --accent:#e4572e; --accent-2:#d6a84f; --accent-3:#b9381d; --border:rgba(242,234,219,.17); }
+    body { background:#171817; color:#f2eadb; font-family:'Manrope','Segoe UI',sans-serif; }
+    body::before,body::after { display:none; }
+    .bg-grid { background-image:linear-gradient(rgba(242,234,219,.07) 1px,transparent 1px); background-size:100% 28px; animation:none; mask-image:linear-gradient(to bottom,#000,transparent 82%); }
+    .bg-grid::before,.bg-grid::after { display:none; }
+    .glass,.hero-card,.archive-card { background:#222522; border-color:var(--border); border-radius:3px; backdrop-filter:none; box-shadow:5px 5px 0 rgba(0,0,0,.2); }
+    .hero-card { border-top:3px solid #e4572e; }
+    .hero-card::before,.hero-card::after,.archive-card::before { display:none; }
+    .archive-card:hover { transform:translate(-2px,-2px); border-color:#e4572e; box-shadow:8px 8px 0 rgba(0,0,0,.22); }
+    .pill,.stat-pill,.date-chip { border-radius:3px; background:rgba(228,87,46,.08); border-color:#e4572e; box-shadow:none; }
+    .pill { color:#e4572e; }
+    .icon-wrap { border-radius:3px !important; background:#e4572e !important; box-shadow:none !important; }
+    ::-webkit-scrollbar-thumb { background:#e4572e; border-radius:2px; }
+
+    /* Базовая раскладка не зависит от загрузки Tailwind CDN. */
+    main { max-width:72rem; margin:0 auto; padding:2.5rem 1rem 4rem; }
+    main > a { display:inline-flex; align-items:center; gap:.5rem; margin-bottom:1.5rem; }
+    .hero-card { padding:2rem; margin-bottom:1.5rem; }
+    .hero-card > div { display:flex; align-items:flex-end; justify-content:space-between; gap:1.5rem; }
+    .hero-card > div > div:first-child { max-width:42rem; }
+    .hero-card > div > div:last-child { width:100%; max-width:24rem; padding:1.25rem; }
+    main > .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; }
+    .archive-card { min-width:0; height:100%; padding:1.25rem; }
+    .archive-card > div { display:flex; align-items:center; gap:.75rem; margin-bottom:.75rem; }
+    .archive-card .icon-wrap { flex:0 0 2.9rem; }
+    .archive-card h2 { min-width:0; font-size:1rem; line-height:1.35; }
+    .archive-card p { line-height:1.7; }
+    @media (max-width: 900px) {
+      main > .grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
+    @media (max-width: 680px) {
+      main { padding:1.5rem .75rem 3rem; }
+      .hero-card { padding:1.25rem; }
+      .hero-card > div { display:block; }
+      .hero-card > div > div:last-child { max-width:none; margin-top:1.25rem; }
+      main > .grid { grid-template-columns:1fr; gap:.75rem; }
     }
   </style>
 </head>

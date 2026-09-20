@@ -327,6 +327,22 @@
       .glass-card { border-radius: 1.25rem; }
       .btn-primary, .btn-secondary { width: 100%; }
     }
+
+    :root { --primary:#e4572e; --primary-dark:#b9381d; --secondary:#d6a84f; --accent:#f0c36a; --bg-primary:#171817; --bg-secondary:#202220; --text-primary:#f2eadb; --text-secondary:#b8b0a0; --card-bg:#222522; --card-border:rgba(242,234,219,.17); --glass-bg:rgba(242,234,219,.06); }
+    body,body.light-theme { background:#171817; color:#f2eadb; font-family:'Manrope','Segoe UI',sans-serif; }
+    body::before,body::after,.orb,.particles { display:none; }
+    .glass-card { background:#222522; border:1px solid var(--card-border); border-radius:4px; box-shadow:5px 5px 0 rgba(0,0,0,.2); backdrop-filter:none; }
+    .glass-card::before { display:none; }
+    .gradient-text { background:none; color:#f2eadb; -webkit-text-fill-color:currentColor; animation:none; }
+    .status-pill,.meta-pill { border-radius:3px; background:#2a2d29; border-color:#e4572e; box-shadow:none; }
+    .status-pill { color:#e4572e; }
+    .theme-toggle { border-radius:3px; background:#e4572e; }
+    .btn-primary { background:#e4572e; border-radius:3px; box-shadow:3px 3px 0 #b9381d; }
+    .btn-secondary { border-radius:3px; background:transparent; border-color:var(--card-border); }
+    .btn-primary:hover,.btn-secondary:hover { transform:translate(-2px,-2px); box-shadow:5px 5px 0 #8f2d18; }
+    .stat-card { border-radius:3px; background:#2a2d29; border-color:var(--card-border); }
+    #loader { background:#171817; }
+    .loader-spin { border-radius:2px; border-top-color:#e4572e; }
   </style>
 </head>
 

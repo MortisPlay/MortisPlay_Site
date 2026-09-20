@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mortis Play — FAQ</title>
-  <meta name="description" content="Ответы на часто задаваемые вопросы о Mortis Play, стримах, видео, клипах Twitch и функциях сайта!">
+  <meta name="description" content="Ответы на часто задаваемые вопросы о Mortis Play, стримах, видео, клипах Twitch, профиле, аккаунте и Зале комьюнити!">
   <meta name="robots" content="index,follow">
-  <meta name="keywords" content="Mortis Play, FAQ, стримы, CS2, видео, клипы Twitch, сайт, функции">
+  <meta name="keywords" content="Mortis Play, FAQ, стримы, CS2, видео, клипы Twitch, сайт, функции, профиль, аккаунт, зал комьюнити, мемы, бейджи">
   <meta property="og:title" content="Mortis Play — FAQ">
-  <meta property="og:description" content="Часто задаваемые вопросы о Mortis Play, стримах, видео и клипах Twitch!">
+  <meta property="og:description" content="Часто задаваемые вопросы о Mortis Play, стримах, видео, профиле и Зале комьюнити!">
   <meta property="og:image" content="https://mortisplay.ru/assets/og-image-faq.jpg">
   <meta property="og:url" content="https://mortisplay.ru/faq.html">
   <meta property="og:type" content="website">
@@ -68,7 +68,7 @@
     });
   </script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
     
     :root {
       --primary: #8b5cf6;
@@ -441,6 +441,23 @@
         padding: 0 1.25rem 1.25rem;
       }
     }
+
+    :root { --primary:#e4572e; --secondary:#d6a84f; --accent:#f0c36a; --dark:#202220; --darker:#171817; }
+    body { background:#171817; color:#f2eadb; font-family:'Manrope','Segoe UI',sans-serif; }
+    .gradient-bg,.particles { background:#171817; animation:none; }
+    .gradient-bg::before,.gradient-bg::after,.particle { display:none; }
+    .glass-card { background:#222522; border:1px solid rgba(242,234,219,.17); border-radius:4px; box-shadow:5px 5px 0 rgba(0,0,0,.2); backdrop-filter:none; }
+    .glass-card::before { display:none; }
+    .glass-card:hover { transform:translate(-2px,-2px); border-color:#e4572e; box-shadow:8px 8px 0 rgba(0,0,0,.22); }
+    .gradient-text { background:none; color:#f2eadb; -webkit-text-fill-color:currentColor; animation:none; }
+    .category-badge,.modern-btn { border-radius:3px; }
+    .category-badge { background:rgba(228,87,46,.1); border-color:#e4572e; color:#e4572e; }
+    .modern-btn { background:#e4572e; box-shadow:3px 3px 0 #b9381d; }
+    .modern-btn:hover { transform:translate(-2px,-2px); box-shadow:5px 5px 0 #8f2d18; }
+    .faq-item { background:#2a2d29; border-color:rgba(242,234,219,.17); border-radius:3px; }
+    .faq-item:hover { background:#2a2d29; border-color:#e4572e; }
+    .faq-item[open] summary,.faq-item summary:hover,.faq-item summary::after { color:#e4572e; }
+    ::-webkit-scrollbar-thumb { background:#e4572e; border-radius:2px; }
   </style>
 </head>
 <body class="min-h-screen">
@@ -464,7 +481,7 @@
           FAQ
         </h1>
         <p class="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-medium">
-          Все ответы о Mortis Play, стримах, видео и функциях сайта
+          Все ответы о Mortis Play, стримах, видео, профиле и Зале комьюнити
         </p>
       </header>
 
@@ -698,6 +715,43 @@
                   </ul>
                 </div>
                 <p class="mt-2 text-sm text-gray-400">Уведомления можно отключить в настройках сайта — переключатель "Показывать уведомление об обновлениях". Если GitHub API временно недоступен, показывается стандартное уведомление со ссылкой на список коммитов.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как настроить яркость сайта?</summary>
+              <div class="answer">
+                <p>Открой настройки сайта и включи светлую тему. После этого появится ползунок <strong>«Яркость светлой темы»</strong>.</p>
+                <div class="mt-3 p-3 bg-gray-800/50 rounded-lg">
+                  <p class="font-semibold text-sm mb-1">☀️ Доступный диапазон</p>
+                  <p class="text-sm text-gray-300">Яркость можно изменить от 70% до 130%. Выбранное значение сохраняется в браузере и применяется при следующем посещении сайта.</p>
+                </div>
+                <p class="mt-2 text-sm text-gray-400">Настройка влияет только на светлую тему. В тёмной теме ползунок недоступен.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Что можно купить в магазине?</summary>
+              <div class="answer">
+                <p>В магазине доступны декоративные рамки-ауры для профиля. Их можно купить за внутренние монеты, а затем надеть или снять в любое время.</p>
+                <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div class="p-3 bg-gradient-to-br from-yellow-900/20 to-orange-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🪙 Монеты</p>
+                    <p class="text-xs text-gray-300">После регистрации на балансе доступно 1000 монет. Дополнительные монеты можно получить за просмотры видео.</p>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-purple-900/20 to-cyan-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">✨ Рамки-ауры</p>
+                    <p class="text-xs text-gray-300">В витрине есть золотая, неоновая, огненная, космическая, кристальная и королевская рамки.</p>
+                  </div>
+                </div>
+                <p class="mt-3 text-sm text-gray-400">Для покупок и экипировки рамок нужно войти в профиль. Открыть магазин можно из меню сайта.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как получить монеты за просмотр видео?</summary>
+              <div class="answer">
+                <p>Награды за просмотр видео временно отключены. Функция появится после готовности профиля и подключения необходимой инфраструктуры.</p>
               </div>
             </details>
           </div>
@@ -950,6 +1004,209 @@
             </details>
           </div>
         </div>
+
+        <!-- NEW: Profile Section -->
+        <div class="glass-card p-6 md:p-8 fade-in">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-3 h-8 bg-gradient-to-b from-indigo-500 to-cyan-500 rounded-full"></div>
+            <h2 class="text-3xl md:text-4xl font-bold flex items-center gap-3">
+              <i class="fas fa-user-circle text-indigo-400"></i>
+              Профиль и аккаунт
+            </h2>
+          </div>
+          
+          <div class="space-y-4">
+            <details class="faq-item">
+              <summary>Что такое профиль на сайте?</summary>
+              <div class="answer">
+                <div class="p-4 bg-gradient-to-br from-indigo-900/30 to-cyan-900/30 rounded-xl mb-3">
+                  <p class="font-semibold mb-2">👤 Личный кабинет</p>
+                  <p>Профиль — это твой личный аккаунт на сайте. Он позволяет управлять ником, аватаркой, цветом рамки и бейджами.</p>
+                </div>
+                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-300">
+                  <li>👤 Смена ника и email</li>
+                  <li>🖼️ Загрузка аватарки</li>
+                  <li>🎨 Выбор цвета рамки профиля</li>
+                  <li>🏅 Получение бейджей</li>
+                </ul>
+                <p class="mt-3 text-sm text-gray-400">Кнопка "Профиль" находится в мобильном меню сайта.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как зарегистрироваться или войти в профиль?</summary>
+              <div class="answer">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                  <div class="p-3 bg-gradient-to-br from-indigo-900/20 to-cyan-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">📝 Регистрация</p>
+                    <p class="text-xs text-gray-300">Открой профиль → вкладка "Регистрация", укажи имя, email и пароль. На почту придёт код подтверждения.</p>
+                  </div>
+                  <div class="p-3 bg-gradient-to-br from-green-900/20 to-emerald-900/20 rounded-lg">
+                    <p class="font-semibold text-sm mb-1">🔑 Вход</p>
+                    <p class="text-xs text-gray-300">Открой профиль → вкладка "Вход", введи email и пароль. Подтверди вход кодом из письма.</p>
+                  </div>
+                </div>
+                <div class="mt-3 p-3 bg-gray-800/50 rounded-lg">
+                  <p class="text-sm">🔔 Код подтверждения приходит на указанный email и нужен для безопасности.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как изменить ник, аватарку или цвет рамки?</summary>
+              <div class="answer">
+                <p>Все настройки профиля доступны после входа:</p>
+                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-300">
+                  <li>🖼️ <strong>Аватарка</strong> — загрузи фото через кнопку выбора файла</li>
+                  <li>🎨 <strong>Цвет рамки</strong> — выбери любой цвет через палитру</li>
+                  <li>✏️ <strong>Ник</strong> — введи новый ник (2–30 символов) и нажми "Сменить ник"</li>
+                  <li>✉️ <strong>Email</strong> — укажи новый email и подтверди смену кодом</li>
+                </ul>
+                <p class="mt-3 text-sm text-gray-400">Изменения применяются автоматически и сохраняются даже после выхода из профиля.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Что такое бейджики и как их получить?</summary>
+              <div class="answer">
+                <p>Бейджики — это специальные значки, которые отображаются в твоём профиле и комментариях в Зале комьюнити.</p>
+                <div class="flex flex-wrap gap-2 mt-3">
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: rgba(245,255,0,0.15); border: 1px solid #f5ff00; color: #f5ff00;">✔️ Официальный</span>
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: rgba(57,255,20,0.15); border: 1px solid #39ff14; color: #39ff14;">🧪 Бета-тестировщик</span>
+                </div>
+                <div class="mt-3 p-3 bg-gray-800/50 rounded-lg">
+                  <p class="text-sm">🏅 Бейджи выдаются вручную за особые заслуги — например, за тестирование новых функций сайта.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Можно ли сменить email и как это работает?</summary>
+              <div class="answer">
+                <p>Да, смена email доступна в настройках профиля:</p>
+                <ol class="list-decimal list-inside mt-2 space-y-1 text-gray-300">
+                  <li>Введи новый email в поле "Новый email"</li>
+                  <li>Нажми "Отправить код" — придёт письмо с кодом</li>
+                  <li>Введи код подтверждения</li>
+                  <li>Email будет обновлён</li>
+                </ol>
+                <p class="mt-3 text-sm text-gray-400">Код нужен, чтобы подтвердить, что новый email принадлежит тебе.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Мои данные в профиле в безопасности?</summary>
+              <div class="answer">
+                <p>Да. Данные профиля хранятся в зашифрованном виде в браузере и не передаются третьим лицам.</p>
+                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-300">
+                  <li>🔒 Пароль надёжно защищён</li>
+                  <li>📧 Email подтверждается кодом</li>
+                  <li>🛡️ Вход требует подтверждения из письма</li>
+                </ul>
+                <p class="mt-3 text-sm text-gray-400">Подробнее можно прочитать в разделе "Политика конфиденциальности" на сайте.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <!-- NEW: Community Hall Section -->
+        <div class="glass-card p-6 md:p-8 fade-in">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-3 h-8 bg-gradient-to-b from-pink-500 to-orange-500 rounded-full"></div>
+            <h2 class="text-3xl md:text-4xl font-bold flex items-center gap-3">
+              <i class="fas fa-laugh-squint text-pink-400"></i>
+              Зал комьюнити
+            </h2>
+          </div>
+          
+          <div class="space-y-4">
+            <details class="faq-item">
+              <summary>Что такое "Зал комьюнити"?</summary>
+              <div class="answer">
+                <div class="p-4 bg-gradient-to-br from-pink-900/30 to-orange-900/30 rounded-xl mb-3">
+                  <p class="font-semibold mb-2">🎉 Галерея мемов</p>
+                  <p>Зал комьюнити — это галерея мемов, гифок и забавных моментов, которые загружают участники сообщества Mortis Play.</p>
+                </div>
+                <ul class="list-disc list-inside mt-2 space-y-1 text-gray-300">
+                  <li>🖼️ Просмотр мемов в cyberpunk-стиле</li>
+                  <li>💬 Комментарии под каждым мемом</li>
+                  <li>⬆️ Загрузка своих мемов</li>
+                  <li>🏅 Отображение бейджей авторов</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Как загрузить свой мем в зал комьюнити?</summary>
+              <div class="answer">
+                <p>Загрузить мем очень просто:</p>
+                <ol class="list-decimal list-inside mt-2 space-y-1 text-gray-300">
+                  <li>Открой страницу "Зал комьюнити"</li>
+                  <li>Перетащи файл в зону загрузки или нажми на неё</li>
+                  <li>Укажи название и автора мема</li>
+                  <li>Нажми кнопку загрузки</li>
+                </ol>
+                <div class="mt-3 p-3 bg-gray-800/50 rounded-lg">
+                  <p class="text-sm">🖼️ Поддерживаются изображения и видео. Мем появится в галерее сразу после загрузки.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Можно ли оставлять комментарии под мемами?</summary>
+              <div class="answer">
+                <p>Да! Нажми на любой мем, чтобы открыть его в полноэкранном просмотре.</p>
+                <div class="mt-3 space-y-2">
+                  <div class="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
+                    <i class="fas fa-comments text-purple-400 w-6"></i>
+                    <span>Внизу появится панель с комментариями</span>
+                  </div>
+                  <div class="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
+                    <i class="fas fa-user text-purple-400 w-6"></i>
+                    <span>Укажи имя и напиши комментарий</span>
+                  </div>
+                  <div class="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
+                    <i class="fas fa-badge-check text-yellow-400 w-6"></i>
+                    <span>Авторы с бейджами получают особую отметку</span>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Что означают бейджи у авторов мемов?</summary>
+              <div class="answer">
+                <p>В комментариях и у авторов в Зале комьюнити могут отображаться те же бейджики, что и в профиле:</p>
+                <div class="flex flex-wrap gap-2 mt-3">
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: rgba(245,255,0,0.15); border: 1px solid #f5ff00; color: #f5ff00;">✔️ Официальный</span>
+                  <span class="px-3 py-1 rounded-full text-xs" style="background: rgba(57,255,20,0.15); border: 1px solid #39ff14; color: #39ff14;">🧪 Бета-тестировщик</span>
+                </div>
+                <p class="mt-3 text-sm text-gray-400">Это помогает узнать проверенных участников сообщества.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary>Можно ли удалить свой мем?</summary>
+              <div class="answer">
+                <p>Если ты загрузил мем, ты можешь его удалить:</p>
+                <div class="mt-3 space-y-2">
+                  <div class="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
+                    <i class="fas fa-trash text-pink-400 w-6"></i>
+                    <span>Наведи курсор на свой мем в галерее</span>
+                  </div>
+                  <div class="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
+                    <i class="fas fa-times text-pink-400 w-6"></i>
+                    <span>Нажми на кнопку удаления в правом верхнем углу</span>
+                  </div>
+                  <div class="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
+                    <i class="fas fa-check text-emerald-400 w-6"></i>
+                    <span>Подтверди удаление</span>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
       </div>
 
       <!-- Navigation buttons -->
@@ -964,6 +1221,12 @@
              style="background: linear-gradient(135deg, #10b981, #059669);">
             <i class="fas fa-comments text-xl"></i>
             <span class="font-semibold text-lg">К Q&A разделу</span>
+          </a>
+
+          <a href="community.html" target="_blank" rel="noopener noreferrer" class="modern-btn flex items-center justify-center gap-3 py-4"
+             style="background: linear-gradient(135deg, #ec4899, #f97316);">
+            <i class="fas fa-laugh-squint text-xl"></i>
+            <span class="font-semibold text-lg">Зал комьюнити</span>
           </a>
         </div>
       </div>

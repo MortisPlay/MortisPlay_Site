@@ -23,7 +23,7 @@
       page_location: window.location.href
     });
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #8b5cf6;
@@ -459,6 +459,21 @@
         scroll-behavior: auto !important;
       }
     }
+
+    :root { --primary:#e4572e; --secondary:#d6a84f; --accent:#f0c36a; --dark:#202220; --darker:#171817; }
+    body { background:#171817; color:#f2eadb; font-family:'Manrope','Segoe UI',sans-serif; }
+    .gradient-bg { background:#171817; animation:none; }
+    .gradient-bg::before,.gradient-bg::after,.particles { display:none; }
+    .glass-card,.year-card { background:#222522; border:1px solid rgba(242,234,219,.17); border-radius:4px; box-shadow:5px 5px 0 rgba(0,0,0,.2); backdrop-filter:none; }
+    .glass-card:hover { transform:translate(-2px,-2px); border-color:#e4572e; box-shadow:8px 8px 0 rgba(0,0,0,.22); }
+    .year-card::before { background:#e4572e; border-radius:4px; opacity:1; }
+    .gradient-text { background:none; color:#f2eadb; -webkit-text-fill-color:currentColor; animation:none; }
+    .month-card { background:#2a2d29; border-color:rgba(242,234,219,.17); border-radius:3px; }
+    .month-card::before { background:#e4572e; border-radius:0; }
+    .modern-btn { background:#e4572e; border-radius:3px; box-shadow:3px 3px 0 #b9381d; }
+    .modern-btn:hover { transform:translate(-2px,-2px); box-shadow:5px 5px 0 #8f2d18; }
+    .emoji { animation:none; }
+    ::-webkit-scrollbar-thumb { background:#e4572e; border-radius:2px; }
   </style>
 </head>
 <body class="text-white">
