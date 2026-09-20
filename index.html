@@ -102,6 +102,7 @@
     <div class="flex flex-col items-center gap-4">
       <div class="loader-spinner"></div>
       <p class="loader-text" style="color: var(--text-secondary);">Загрузка сайта...</p>
+      <p class="loader-hint hidden" style="color: var(--text-secondary);">Сайт загружается дольше обычного 🤔 Если страница висит — попробуй перезагрузить её или включи VPN.</p>
     </div>
   </div>
   <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Прокрутить наверх"><i class="fas fa-arrow-up"></i></button>
@@ -858,7 +859,7 @@
         // Лимит API на один запрос search.list — максимум 50.
         maxResults: 50,
         // Сколько видео загружаем суммарно (пагинация страницами по maxResults).
-        maxTotal: 100
+        maxTotal: 50
     };
     
     let videoData = [];
@@ -1642,7 +1643,8 @@
         limitedAvatar6: { id: 'limitedAvatar6', name: 'Полярное сияние', price: 850, description: 'Северное сияние в ограниченном выпуске — редкая находка.', rarity: 'Эпическая', category: 'limited', type: 'avatar', image: '/assets2/photo_5291782115840172018_y.jpg' },
         limitedAvatar7: { id: 'limitedAvatar7', name: 'Тёмная материя', price: 900, description: 'Легендарная аватарка ограниченного выпуска с загадочной энергетикой.', rarity: 'Легендарная', category: 'limited', type: 'avatar', image: '/assets2/photo_5291782115840172019_y.jpg' },
         limitedAvatar8: { id: 'limitedAvatar8', name: 'Золотая эра', price: 1000, description: 'Мифический лимитированный дизайн для настоящих коллекционеров.', rarity: 'Мифическая', category: 'limited', type: 'avatar', image: '/assets2/photo_5291782115840172020_y.jpg' },
-        lootbox_start: { id: 'lootbox_start', name: 'Стартовый кейс', price: 500, description: 'Откройте кейс и получите случайную рамку или аватарку. Шанс на редкие предметы!', category: 'lootbox', type: 'lootbox', image: '' }
+        lootbox_start: { id: 'lootbox_start', name: 'Стартовый кейс', price: 500, description: 'Откройте кейс и получите случайную рамку или аватарку. Шанс на редкие предметы!', category: 'lootbox', type: 'lootbox', image: '' },
+        lootbox_luck: { id: 'lootbox_luck', name: 'Кейс удачи', price: 100, description: 'Дешёвый кейс в стиле CS2 — испытывай удачу! Много обычных предметов и крошечный шанс на мифическую королевскую рамку.', category: 'lootbox', type: 'lootbox', image: '' }
     };
     const STARTING_COINS = 1000;
 
@@ -2726,7 +2728,7 @@
     function initAdminPanel() {
         document.getElementById('adminOpenBtn')?.addEventListener('click', openAdminModal);
         document.getElementById('adminPassSubmitBtn')?.addEventListener('click', submitAdminPass);
-        document.getElementById('adminCloseBtn')?.addEventListener('click', closeAdminModal);
+        document.getElementById('adminCloseBtn')?.addEventListener('click', () => closeAdminModal());
         document.getElementById('adminPassInput')?.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') submitAdminPass();
         });
@@ -4374,9 +4376,18 @@
         const loader = document.getElementById('loader');
         const content = document.getElementById('siteContent');
         let finished = false;
+
+        // Если сайт грузится дольше 5 секунд — показываем подсказку
+        // про перезагрузку страницы или VPN.
+        const hintTimer = setTimeout(() => {
+            const hint = loader.querySelector('.loader-hint');
+            if (hint) hint.classList.remove('hidden');
+        }, 5000);
+
         const hideLoader = () => {
             if (finished) return;
             finished = true;
+            clearTimeout(hintTimer);
             loader.style.opacity = '0';
             setTimeout(() => { loader.style.display = 'none'; content.classList.remove('hidden'); }, 500);
         };
@@ -4808,12 +4819,22 @@
         const modal = document.getElementById('shopModal');
         if (!modal) return;
         window.closeMobileMenu?.();
+        // Сразу показываем модалку с лоадером, чтобы пользователь видел
+        // процесс загрузки, а не пустое окно.
+        const container = document.getElementById('shopContent');
+        if (container) {
+            container.innerHTML = `
+                <div class="shop-loader">
+                    <span class="loader-spinner shop-loader-spinner"></span>
+                    <p class="mt-3 text-sm" style="color: var(--text-secondary);">Загрузка магазина...</p>
+                </div>`;
+        }
+        modal.classList.add('show');
+        setBodyScrollLocked(true);
         // Синхронизируем актуальные монеты/инвентарь с серверной базой (data.db)
         await restoreAuthSession();
         if (!shopState.loaded) await loadShopItemsFromServer();
         renderShop();
-        modal.classList.add('show');
-        setBodyScrollLocked(true);
     }
 
     function closeShopModal(event) {
