@@ -793,7 +793,11 @@ body.light-theme #menuToggle {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   padding: 3rem 1rem; gap: 0.75rem;
 }
-.shop-loader-spinner { width: 44px; height: 44px; }
+.shop-loader-spinner {
+  display: block;
+  width: 44px; height: 44px;
+  flex-shrink: 0;
+}
 
 /* Подсказка в лоадере сайта при долгой загрузке */
 .loader-hint {
