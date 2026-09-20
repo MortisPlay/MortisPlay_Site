@@ -2164,13 +2164,68 @@
         }
     }
 
+    // Элемент, находящийся сейчас в нативном полноэкранном режиме (если есть)
+    function getCurrentFullscreenElement() {
+        return document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+    }
+
+    // Проверка: обёртка плеера (или её iframe) находится в полноэкранном режиме,
+    // включая CSS-фолбэк для iOS/Telegram WebView
+    function isVideoFullscreen(wrapper) {
+        if (!wrapper) return false;
+        if (wrapper.classList.contains('css-fullscreen-active')) return true;
+        const el = getCurrentFullscreenElement();
+        return el === wrapper || (el && wrapper.contains(el));
+    }
+
+    function removeCssFullscreenExitBtn(wrapper) {
+        if (!wrapper) return;
+        const btn = wrapper.querySelector('.css-fullscreen-exit-btn');
+        if (btn) btn.remove();
+    }
+
+    // Вход в CSS-полноэкранный режим (мобильные WebView без поддержки Fullscreen API)
+    function enterCssFullscreen(wrapper) {
+        if (!wrapper) return;
+        if (!wrapper.dataset.prevBodyOverflow) {
+            wrapper.dataset.prevBodyOverflow = document.body.style.overflow || '';
+        }
+        document.body.style.overflow = 'hidden';
+        wrapper.classList.add('fullscreen', 'css-fullscreen-active');
+
+        if (!wrapper.querySelector('.css-fullscreen-exit-btn')) {
+            const exitBtn = document.createElement('button');
+            exitBtn.type = 'button';
+            exitBtn.className = 'css-fullscreen-exit-btn';
+            exitBtn.setAttribute('aria-label', 'Выйти из полноэкранного режима');
+            exitBtn.innerHTML = '<i class="fas fa-compress"></i>';
+            exitBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                exitCssFullscreen(wrapper);
+            });
+            wrapper.appendChild(exitBtn);
+        }
+        // Синхронизируем состояние кнопки/оверлея
+        try { wrapper.dispatchEvent(new Event('fullscreenchange')); } catch (e) {}
+    }
+
+    // Выход из CSS-полноэкранного режима
+    function exitCssFullscreen(wrapper) {
+        if (!wrapper) return;
+        wrapper.classList.remove('css-fullscreen-active');
+        removeCssFullscreenExitBtn(wrapper);
+        document.body.style.overflow = wrapper.dataset.prevBodyOverflow || '';
+        delete wrapper.dataset.prevBodyOverflow;
+        try { wrapper.dispatchEvent(new Event('fullscreenchange')); } catch (e) {}
+    }
+
     function attachFullscreenHandlers(videoId) {
         const wrapper = document.getElementById(`video-player-wrapper-${videoId}`);
         const fullscreenBtn = document.querySelector(`#player-${videoId} .fullscreen-player-btn`);
         if (!wrapper || !fullscreenBtn) return;
 
         const updateFullscreenState = () => {
-            const isFullscreen = document.fullscreenElement === wrapper || document.webkitFullscreenElement === wrapper || document.mozFullScreenElement === wrapper || document.msFullscreenElement === wrapper;
+            const isFullscreen = isVideoFullscreen(wrapper);
             if (isFullscreen) {
                 wrapper.classList.add('fullscreen');
                 fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i> Выйти из полноэкранного режима';
@@ -2181,7 +2236,13 @@
                     setVideoWatchOverlay(videoId, `Осталось ${formatRewardTime(remaining)}`);
                 }
             } else {
-                wrapper.classList.remove('fullscreen');
+                const hadCssFallback = wrapper.classList.contains('css-fullscreen-active');
+                wrapper.classList.remove('fullscreen', 'css-fullscreen-active');
+                removeCssFullscreenExitBtn(wrapper);
+                if (hadCssFallback) {
+                    document.body.style.overflow = wrapper.dataset.prevBodyOverflow || '';
+                    delete wrapper.dataset.prevBodyOverflow;
+                }
                 fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i> Полноэкранный режим';
             }
         };
@@ -3975,21 +4036,68 @@
                         e.stopPropagation();
                         const wrapper = document.getElementById(`video-player-wrapper-${videoId}`);
                         if (!wrapper) return;
-                        const isFullscreen = document.fullscreenElement === wrapper || document.webkitFullscreenElement === wrapper || document.mozFullScreenElement === wrapper || document.msFullscreenElement === wrapper;
-                        if (isFullscreen) {
-                            if (document.exitFullscreen) await document.exitFullscreen();
-                            else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
+                        const iframe = wrapper.querySelector('iframe');
+
+                        // Выход из полноэкранного режима (нативный или CSS-фолбэк)
+                        if (isVideoFullscreen(wrapper)) {
+                            const fsEl = getCurrentFullscreenElement();
+                            if (fsEl) {
+                                try {
+                                    if (document.exitFullscreen) await document.exitFullscreen();
+                                    else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
+                                    else if (document.mozCancelFullScreen) await document.mozCancelFullScreen();
+                                    else if (document.msExitFullscreen) await document.msExitFullscreen();
+                                } catch (err) {}
+                            }
+                            exitCssFullscreen(wrapper);
                             return;
                         }
+
+                        // Вход: 1) нативный полноэкранный режим.
+                        // Сначала пробуем на самом iframe (для YouTube работает надёжнее),
+                        // затем на обёртке — десктоп, Android Chrome и часть WebView.
+                        let nativeDone = false;
                         try {
-                            if (wrapper.requestFullscreen) await wrapper.requestFullscreen();
-                            else if (wrapper.webkitRequestFullscreen) await wrapper.webkitRequestFullscreen();
-                            else if (wrapper.mozRequestFullScreen) await wrapper.mozRequestFullScreen();
-                            else if (wrapper.msRequestFullscreen) await wrapper.msRequestFullscreen();
-                            wrapper.classList.add('fullscreen');
-                        } catch (err) {
-                            wrapper.classList.remove('fullscreen');
+                            if (iframe && iframe.requestFullscreen) { await iframe.requestFullscreen(); nativeDone = true; }
+                            else if (iframe && iframe.webkitRequestFullscreen) { iframe.webkitRequestFullscreen(); nativeDone = true; }
+                        } catch (err) { nativeDone = false; }
+                        if (!nativeDone) {
+                            try {
+                                if (wrapper.requestFullscreen) { await wrapper.requestFullscreen(); nativeDone = true; }
+                                else if (wrapper.webkitRequestFullscreen) { wrapper.webkitRequestFullscreen(); nativeDone = true; }
+                                else if (wrapper.mozRequestFullScreen) { wrapper.mozRequestFullScreen(); nativeDone = true; }
+                                else if (wrapper.msRequestFullscreen) { wrapper.msRequestFullscreen(); nativeDone = true; }
+                            } catch (err) { nativeDone = false; }
                         }
+
+                        if (nativeDone) {
+                            wrapper.classList.add('fullscreen');
+                            // Некоторые WebView «съедают» запрос без эффекта —
+                            // проверяем и в этом случае включаем CSS-фолбэк.
+                            // Любое событие fullscreenchange (в т.ч. быстрый выход
+                            // через Esc/системную кнопку) отменяет отложенную проверку.
+                            const fsCheckTimer = setTimeout(() => {
+                                if (!isVideoFullscreen(wrapper)) {
+                                    enterCssFullscreen(wrapper);
+                                }
+                            }, 400);
+                            const cancelFsCheck = () => {
+                                clearTimeout(fsCheckTimer);
+                                document.removeEventListener('fullscreenchange', cancelFsCheck);
+                                document.removeEventListener('webkitfullscreenchange', cancelFsCheck);
+                                document.removeEventListener('mozfullscreenchange', cancelFsCheck);
+                                document.removeEventListener('MSFullscreenChange', cancelFsCheck);
+                            };
+                            document.addEventListener('fullscreenchange', cancelFsCheck);
+                            document.addEventListener('webkitfullscreenchange', cancelFsCheck);
+                            document.addEventListener('mozfullscreenchange', cancelFsCheck);
+                            document.addEventListener('MSFullscreenChange', cancelFsCheck);
+                            return;
+                        }
+
+                        // 2) CSS-фолбэк: iOS Safari/WebView и Telegram WebView,
+                        // где нативный полноэкранный режим для элементов недоступен.
+                        enterCssFullscreen(wrapper);
                     });
                     setupYouTubePlayerListener(videoId);
                     attachFullscreenHandlers(videoId);
