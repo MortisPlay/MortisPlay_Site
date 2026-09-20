@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Telegram WebApp: полноэкранный режим и корректная высота окна -->
+  <!-- Telegram WebApp: корректная высота окна -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
     (function () {
@@ -19,12 +19,6 @@
       if (!tg) return;
       tg.ready();
       tg.expand();
-      function goFS() { try { if (typeof tg.requestFullscreen === 'function') { var p = tg.requestFullscreen(); if (p && typeof p.catch === 'function') p.catch(function () {}); } } catch (e) {} }
-      goFS();
-      var done = false;
-      function onGesture() { if (done) return; done = true; goFS(); sync(); document.removeEventListener('touchstart', onGesture); document.removeEventListener('click', onGesture); }
-      document.addEventListener('touchstart', onGesture);
-      document.addEventListener('click', onGesture);
       try { tg.onEvent('viewportChanged', sync); } catch (e) {}
     })();
   </script>
