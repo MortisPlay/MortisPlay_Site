@@ -44,7 +44,7 @@ body {
   font-family: 'Inter', 'Segoe UI', sans-serif;
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
-  min-height: 100vh;
+  min-height: var(--app-height, 100vh);
   position: relative;
 }
 
@@ -753,7 +753,7 @@ body.light-theme #menuToggle {
 }
 .mobile-menu-backdrop.active { opacity: 1; visibility: visible; }
 .mobile-menu-container {
-  position: fixed; top: 0; right: 0; height: 100vh; width: 320px;
+  position: fixed; top: 0; right: 0; height: var(--app-height, 100vh); width: 320px;
   background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(30, 41, 59, 0.95) 100%);
   transform: translateX(100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1030,7 +1030,6 @@ body.light-theme #menuToggle {
   .topbar-shell a:first-child .w-10 { width: 2.4rem; height: 2.4rem; }
   nav.container-padding { padding-left: 0.6rem; padding-right: 0.6rem; }
   .nav-link { padding: 0.5rem 0.6rem; font-size: 0.9rem; white-space: nowrap; }
-  .video-player-container iframe,
   .aspect-video iframe,
   .aspect-video { min-height: 280px; }
 }
@@ -1044,12 +1043,11 @@ body.light-theme #menuToggle {
   .topbar-shell { padding: 0.3rem 0.35rem; }
   .topbar-shell a:first-child .font-bold { font-size: 0.9rem; }
   .topbar-shell a:first-child .w-10 { width: 2.2rem; height: 2.2rem; }
-  .video-player-container iframe,
   .aspect-video iframe,
   .aspect-video { min-height: 320px; }
   .twitch-player-container iframe {
-    min-height: 300px;
-    height: min(62vh, 360px);
+    min-height: 0;
+    height: 100%;
   }
   .quote-banner {
     position: static;
@@ -1101,7 +1099,7 @@ body.light-theme #menuToggle {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 5rem;
+  height: calc(5rem + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(30, 41, 59, 0.95) 100%);
   border-top: 1px solid var(--glass-border);
   backdrop-filter: blur(16px);
@@ -1111,6 +1109,8 @@ body.light-theme #menuToggle {
   z-index: 999;
   gap: 0.5rem;
   padding: 0.5rem;
+  /* Отступ под «домик» и жесты iPhone/Telegram — объявляется ПОСЛЕ шортката padding */
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
 }
 @media (min-width: 769px) {
   .mobile-bottom-nav { display: none; }
@@ -1156,8 +1156,14 @@ a:hover { color: var(--secondary); }
 .video-player-container {
   position: relative; border-radius: 1rem; overflow: hidden;
   background: var(--bg-secondary); margin-bottom: 1rem;
+  width: 100%;
+  /* Стабильный 16:9 без опоры на поддержку aspect-ratio в мобильных WebView:
+     высота задаётся внутренним отступом, плеер растягивается на весь блок */
+  padding-top: 56.25%;
 }
-.video-player-container iframe { width: 100%; aspect-ratio: 16/9; border: none; }
+.video-player-container > iframe {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
+}
 .video-watch-overlay {
   position: absolute;
   top: 1rem;
@@ -1176,6 +1182,13 @@ a:hover { color: var(--secondary); }
   transition: opacity 0.2s ease, transform 0.2s ease;
   opacity: 1;
   transform: translateY(0);
+}
+.video-player-container.fullscreen,
+.video-player-container:fullscreen,
+.video-player-container:-webkit-full-screen,
+.video-player-container:-moz-full-screen,
+.video-player-container:-ms-fullscreen {
+  padding-top: 0 !important;
 }
 .video-player-container.fullscreen .video-watch-overlay,
 .video-player-container:fullscreen .video-watch-overlay,
@@ -1989,3 +2002,231 @@ body.light-theme .modal-backdrop {
 @media (hover: none) and (pointer: coarse) {
   .aura-ring::before { animation-duration: 6s; }
 }
+
+/* ================= ВСТРОЕННЫЙ МАГАЗИН (модальное окно) ================= */
+.modal-content.shop-modal-wide {
+  max-width: 1080px;
+  padding: 1.75rem;
+}
+@media (min-width: 768px) {
+  .modal-content.shop-modal-wide { padding: 2rem; }
+}
+.shop-purchase-backdrop { z-index: 2200; }
+.shop-content { text-align: left; }
+
+.shop-notice {
+  max-width: 30rem; margin: 0 auto; text-align: center;
+  background: var(--card-bg); border: 1px solid var(--glass-border);
+  border-radius: 1.25rem; padding: 2rem 1.5rem;
+}
+.shop-notice h3 { font-size: 1.35rem; font-weight: 800; margin-bottom: 0.6rem; }
+.shop-notice p { color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.6; }
+
+.shop-toolbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+  flex-wrap: wrap; margin-bottom: 1.25rem;
+}
+.shop-balance {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(245, 158, 11, 0.16); color: #fbbf24;
+  border-radius: 9999px; padding: 0.45rem 0.95rem; font-weight: 700; font-size: 0.95rem;
+}
+.shop-balance i { color: #fbbf24; }
+.shop-sync-btn { font-size: 0.85rem; }
+
+.shop-tabs { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.shop-tab {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1.1rem; border-radius: 9999px; font-weight: 700; font-size: 0.9rem;
+  cursor: pointer; border: 1px solid var(--glass-border); background: var(--glass-bg);
+  color: var(--text-secondary); transition: all 0.25s ease; user-select: none;
+}
+.shop-tab:hover { color: var(--text-primary); background: rgba(139, 92, 246, 0.14); }
+.shop-tab.active {
+  color: #fff; border-color: transparent;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark) 50%, var(--secondary));
+  box-shadow: 0 8px 22px rgba(139, 92, 246, 0.35);
+}
+.shop-tab .count-badge {
+  background: rgba(255, 255, 255, 0.2); border-radius: 9999px;
+  padding: 0.1rem 0.5rem; font-size: 0.72rem; font-weight: 800; line-height: 1.4;
+}
+
+.shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.1rem; }
+.shop-card {
+  background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 1.1rem;
+  padding: 1.25rem 1.1rem; text-align: center; display: flex; flex-direction: column;
+  position: relative; transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.shop-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35); }
+.shop-card.equipped-card { border-color: rgba(16, 185, 129, 0.7); box-shadow: 0 0 22px rgba(16, 185, 129, 0.25); }
+.shop-card.sold-out-card { border-color: rgba(148, 163, 184, 0.35); box-shadow: none; }
+.shop-card.sold-out-card .aura-preview,
+.shop-card.sold-out-card .aura-preview .inner,
+.shop-card.sold-out-card .aura-preview img { filter: grayscale(1) brightness(0.72); opacity: 0.85; }
+.shop-card.sold-out-card .aura-preview::before { opacity: 0 !important; }
+.shop-card.sold-out-card .card-name { color: var(--text-secondary); }
+
+.aura-preview {
+  width: 6rem; height: 6rem; border-radius: 9999px; position: relative;
+  margin: 0 auto 0.9rem;
+}
+.aura-preview .inner {
+  width: 100%; height: 100%; border-radius: 9999px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(16, 185, 129, 0.3));
+  border: 3px solid rgba(255, 255, 255, 0.18); position: relative; z-index: 1;
+}
+.aura-preview .inner i { font-size: 1.8rem; color: rgba(255, 255, 255, 0.75); }
+.aura-preview.avatar-preview .inner { border: 0; background: #2a2d29; }
+.aura-preview.avatar-preview .inner img { width: 100%; height: 100%; object-fit: cover; border-radius: 9999px; }
+.aura-preview.preview-rect { border-radius: 34%; }
+.aura-preview.preview-rect .inner { border-radius: 34%; }
+.aura-preview.preview-rect::before { border-radius: 31%; }
+.aura-preview::before {
+  content: ''; position: absolute; inset: -13px; border-radius: 9999px; z-index: 0; pointer-events: none;
+  opacity: 0; transition: opacity 0.3s ease;
+}
+.aura-preview.aura-gold::before {
+  opacity: 1; background: radial-gradient(circle, transparent 52%, rgba(245, 158, 11, 0.9) 58%, transparent 72%);
+  box-shadow: 0 0 24px 6px rgba(245, 158, 11, 0.55); animation: auraGold 3s ease-in-out infinite;
+}
+.aura-preview.aura-neon::before {
+  opacity: 1; background: conic-gradient(from 0deg, #22d3ee, #8b5cf6, #ec4899, #22d3ee);
+  -webkit-mask: radial-gradient(circle, transparent 52%, #000 58%, transparent 72%);
+  mask: radial-gradient(circle, transparent 52%, #000 58%, transparent 72%);
+  animation: auraSpin 3.5s linear infinite;
+}
+.aura-preview.aura-fire::before {
+  opacity: 1; background: radial-gradient(circle, transparent 48%, rgba(239, 68, 68, 0.9) 62%, rgba(245, 158, 11, 0.5) 75%, transparent 85%);
+  box-shadow: 0 0 30px 8px rgba(239, 68, 68, 0.6); animation: auraFire 1.6s ease-in-out infinite;
+}
+.aura-preview.aura-cosmic::before {
+  opacity: 1;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 65%, rgba(255, 255, 255, 0.8) 0 2px, transparent 3px),
+    radial-gradient(circle at 50% 85%, rgba(255, 255, 255, 0.6) 0 1px, transparent 2px),
+    radial-gradient(circle, transparent 50%, rgba(139, 92, 246, 0.95) 62%, rgba(59, 130, 246, 0.5) 76%, transparent 88%);
+  box-shadow: 0 0 30px 6px rgba(139, 92, 246, 0.5); animation: auraCosmic 5s ease-in-out infinite;
+}
+.aura-preview.aura-crystal::before {
+  opacity: 1; border: 4px solid rgba(45, 212, 191, 0.85);
+  box-shadow: 0 0 22px 4px rgba(45, 212, 191, 0.55), inset 0 0 14px rgba(45, 212, 191, 0.4);
+  animation: auraCrystal 4s ease-in-out infinite;
+}
+.aura-preview.aura-royal::before {
+  opacity: 1; background: radial-gradient(circle, transparent 50%, rgba(251, 191, 36, 0.95) 60%, rgba(217, 119, 6, 0.6) 74%, transparent 86%);
+  box-shadow: 0 0 40px 10px rgba(251, 191, 36, 0.65); animation: auraRoyal 2.4s ease-in-out infinite;
+}
+.aura-preview.aura-royal::after {
+  content: '👑'; position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -120%); z-index: 1; font-size: 1.2rem;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.9)); animation: crownPulse 2.2s ease-in-out infinite;
+}
+.aura-preview.aura-nft-flame::before {
+  opacity: 1; background: radial-gradient(circle, transparent 46%, rgba(249, 115, 22, 0.9) 60%, rgba(239, 68, 68, 0.6) 76%, transparent 88%);
+  box-shadow: 0 0 34px 8px rgba(249, 115, 22, 0.6); animation: auraFire 1.6s ease-in-out infinite;
+}
+.aura-preview.aura-nft-golden::before {
+  opacity: 1; background: radial-gradient(circle, transparent 48%, rgba(251, 191, 36, 0.95) 60%, rgba(245, 158, 11, 0.7) 76%, transparent 88%);
+  box-shadow: 0 0 38px 10px rgba(251, 191, 36, 0.7); animation: auraGold 2.6s ease-in-out infinite;
+}
+.aura-preview.aura-nft-nebula::before {
+  opacity: 1;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 65%, rgba(255, 255, 255, 0.7) 0 2px, transparent 3px),
+    radial-gradient(circle at 50% 85%, rgba(255, 255, 255, 0.6) 0 1px, transparent 2px),
+    radial-gradient(circle, transparent 50%, rgba(168, 85, 247, 0.95) 62%, rgba(59, 130, 246, 0.6) 76%, transparent 88%);
+  box-shadow: 0 0 34px 8px rgba(168, 85, 247, 0.6); animation: auraCosmic 4s ease-in-out infinite;
+}
+.aura-preview.aura-nft-void::before {
+  opacity: 1; background: radial-gradient(circle, transparent 50%, rgba(100, 116, 139, 0.95) 62%, rgba(30, 41, 59, 0.8) 78%, transparent 88%);
+  box-shadow: 0 0 26px 6px rgba(100, 116, 139, 0.6), inset 0 0 18px rgba(0, 0, 0, 0.6); animation: auraCrystal 5s ease-in-out infinite;
+}
+.aura-preview.aura-nft-chroma::before {
+  opacity: 1; background: conic-gradient(from 0deg, #ec4899, #8b5cf6, #22d3ee, #f59e0b, #ec4899);
+  -webkit-mask: radial-gradient(circle, transparent 50%, #000 60%, transparent 74%);
+  mask: radial-gradient(circle, transparent 50%, #000 60%, transparent 74%);
+  animation: auraSpin 4s linear infinite;
+}
+.aura-preview.aura-nft-royal::before {
+  opacity: 1; background: radial-gradient(circle, transparent 48%, rgba(251, 191, 36, 0.98) 60%, rgba(217, 119, 6, 0.8) 76%, transparent 88%);
+  box-shadow: 0 0 46px 14px rgba(251, 191, 36, 0.8); animation: auraRoyal 2.2s ease-in-out infinite;
+}
+
+.lootbox-preview {
+  width: 6rem; height: 6rem; border-radius: 1.1rem; margin: 0 auto 0.9rem;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, rgba(240, 195, 106, 0.18), rgba(228, 87, 46, 0.14));
+  border: 2px solid rgba(240, 195, 106, 0.55);
+  box-shadow: 0 0 24px rgba(240, 195, 106, 0.35), inset 0 0 18px rgba(240, 195, 106, 0.12);
+  animation: auraGold 2.8s ease-in-out infinite;
+}
+.lootbox-preview .inner i { font-size: 2.4rem; color: #f0c36a; text-shadow: 0 0 16px rgba(240, 195, 106, 0.6); }
+
+.card-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.2rem; }
+.card-rarity { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.45rem; }
+.rarity-Редкая { color: #34d399; }
+.rarity-Эпическая { color: #a78bfa; }
+.rarity-Легендарная { color: #fbbf24; }
+.rarity-Мифическая { color: #f472b6; }
+.rarity-Обычная { color: var(--text-secondary); }
+.card-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 0.9rem; flex-grow: 1; }
+
+.card-footer { display: flex; flex-direction: column; gap: 0.5rem; }
+.price-row { display: flex; align-items: center; justify-content: center; gap: 0.4rem; font-weight: 700; font-size: 0.95rem; }
+.price-row i { color: #f59e0b; }
+.owned-label, .equipped-label { display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; color: #34d399; font-size: 0.82rem; font-weight: 700; }
+.owned-label i, .equipped-label i { color: #34d399; }
+.soldout-label { display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; color: #f87171; font-size: 0.82rem; font-weight: 700; }
+.soldout-label i { color: #f87171; }
+.stock-label { display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; color: #fb7185; font-size: 0.78rem; font-weight: 700; margin-top: 0.2rem; }
+.stock-label i { color: #fb7185; }
+
+.category-chip {
+  display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; font-weight: 700;
+  padding: 0.28rem 0.65rem; border-radius: 9999px; margin-bottom: 0.5rem;
+}
+.category-chip.frame { background: rgba(139, 92, 246, 0.16); color: #a78bfa; }
+.category-chip.avatar { background: rgba(34, 211, 238, 0.16); color: #67e8f9; }
+.category-chip.limited { background: rgba(244, 63, 94, 0.18); color: #fb7185; }
+.category-chip.lootbox { background: rgba(240, 195, 106, 0.16); color: #f0c36a; }
+.category-chip.nft { background: rgba(244, 63, 94, 0.18); color: #fb7185; }
+
+.btn-shop-buy { background: linear-gradient(135deg, var(--primary), var(--primary-dark) 50%, var(--secondary)); }
+.btn-shop-equip { background: linear-gradient(135deg, #10b981, #059669); }
+.btn-shop-unequip { background: rgba(255, 255, 255, 0.12); color: var(--text-primary); }
+.btn-shop-disabled { background: rgba(255, 255, 255, 0.08); color: var(--text-secondary); cursor: not-allowed; }
+
+.shop-hint {
+  text-align: center; margin-top: 1.75rem;
+  color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6;
+}
+
+/* Панель подтверждения покупки */
+.shop-purchase-box {
+  display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+  margin: 0 auto; padding: 1rem 0.8rem 0.9rem;
+  width: min(100%, 19rem); border-radius: 1.1rem; border: 1px solid rgba(139, 92, 246, 0.22);
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.12), rgba(15, 23, 42, 0.2));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+.shop-purchase-avatar {
+  width: 8.5rem; height: 8.5rem; margin: 0 auto 0.2rem; position: relative;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), rgba(139, 92, 246, 0.14) 45%, rgba(15, 23, 42, 0.3) 75%);
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.22);
+}
+.shop-purchase-avatar::before {
+  content: ''; position: absolute; inset: -10px; border-radius: 50%;
+  background: radial-gradient(circle, transparent 58%, rgba(139, 92, 246, 0.6) 64%, transparent 76%);
+  filter: blur(4px); opacity: 0.9;
+}
+.shop-purchase-avatar > i { font-size: 2.4rem; color: rgba(255, 255, 255, 0.75); }
+.shop-purchase-name { font-size: 1.05rem; font-weight: 800; }
+.shop-purchase-rarity { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.02em; }
+.shop-purchase-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin-top: 0.2rem; }
+.shop-purchase-price { font-size: 0.95rem; font-weight: 700; margin-top: 0.3rem; }

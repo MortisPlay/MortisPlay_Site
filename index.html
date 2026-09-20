@@ -7,6 +7,62 @@
   <meta name="description" content="Эпичные видео, новости, клипы Twitch и обновления от Mortis Play. Присоединяйся к вайбу!" />
   <meta name="robots" content="index,follow" />
   <meta name="keywords" content="Mortis Play, гейминг, стримы, Twitch клипы, YouTube, Telegram" />
+  <!-- Telegram WebApp: полноэкранный режим и корректная высота окна -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    (function () {
+      // Синхронизация реальной высоты видимой области (учитывает панели браузера/Telegram).
+      // Значение пишется в CSS-переменную --app-height, которая используется вместо 100vh.
+      var lastAppHeight = 0;
+      function syncViewportHeight() {
+        var h = window.visualViewport
+          ? window.visualViewport.height
+          : (window.innerHeight || document.documentElement.clientHeight || window.screen.height || 0);
+        if (h > 0 && h !== lastAppHeight) {
+          lastAppHeight = h;
+          document.documentElement.style.setProperty('--app-height', h + 'px');
+        }
+      }
+      syncViewportHeight();
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', syncViewportHeight);
+      }
+      window.addEventListener('resize', syncViewportHeight);
+
+      var tg = window.Telegram && window.Telegram.WebApp;
+      if (!tg) return; // сайт открыт вне Telegram — ничего не делаем
+
+      tg.ready();
+      // Разворачиваем веб-приложение на всю доступную высоту
+      tg.expand();
+
+      // Полноэкранный режим (скрывает шапку Telegram), если поддерживается
+      function goFullscreen() {
+        try {
+          if (typeof tg.requestFullscreen === 'function') {
+            var p = tg.requestFullscreen();
+            if (p && typeof p.catch === 'function') p.catch(function () {});
+          }
+        } catch (e) {}
+      }
+      goFullscreen();
+      // На некоторых платформах нужен жест пользователя — пробуем ещё раз при первом тапе/клике
+      var done = false;
+      function onGesture() {
+        if (done) return;
+        done = true;
+        goFullscreen();
+        syncViewportHeight();
+        document.removeEventListener('touchstart', onGesture);
+        document.removeEventListener('click', onGesture);
+      }
+      document.addEventListener('touchstart', onGesture);
+      document.addEventListener('click', onGesture);
+
+      // Обновляем высоту при изменении viewport (клавиатура, поворот, выдвигание панелей)
+      try { tg.onEvent('viewportChanged', syncViewportHeight); } catch (e) {}
+    })();
+  </script>
   <script>
     // Применение темы до рендера (без мигания). Синхронно в <head>.
     (function () {
@@ -47,6 +103,12 @@
   <script src="https://cdn.tailwindcss.com" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Предзагрузка соединений для стабильного YouTube-плеера на мобильных -->
+  <link rel="preconnect" href="https://www.youtube-nocookie.com">
+  <link rel="preconnect" href="https://www.youtube.com">
+  <link rel="preconnect" href="https://i.ytimg.com">
+  <link rel="dns-prefetch" href="https://www.youtube-nocookie.com">
+  <link rel="dns-prefetch" href="https://i.ytimg.com">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -109,7 +171,7 @@
         <a href="news-archive.html" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-box-archive w-5"></i><span>Архив Новостей</span></a>
         <a href="#twitch-clips" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fab fa-twitch w-5"></i><span>Twitch</span></a>
         <a href="community.html" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-laugh-squint w-5"></i><span>Зал комьюнити</span></a>
-        <a href="shop.html" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-store w-5"></i><span>Магазин</span></a>
+        <a href="#" onclick="openShopModal(); return false;" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-store w-5"></i><span>Магазин</span></a>
         <a href="#contact" class="flex items-center gap-3 p-3 rounded-lg transition-colors text-lg font-medium" style="background: var(--glass-bg);"><i class="fas fa-envelope w-5"></i><span>Сотрудничество</span></a>
       </nav>
     </div>
@@ -404,7 +466,7 @@
           </div>
         </div>
         <p id="profileMode" class="text-sm" style="color: var(--text-secondary);">Ваш аккаунт готов к использованию.</p>
-        <a href="shop.html" target="_blank" rel="noopener noreferrer" class="btn-primary w-full" style="background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(245,158,11,0.3));"><i class="fas fa-store"></i> Магазин NFT</a>
+        <a href="#" onclick="openShopModal(); return false;" class="btn-primary w-full" style="background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(245,158,11,0.3));"><i class="fas fa-store"></i> Магазин NFT</a>
         <button id="adminOpenBtn" type="button" class="btn-primary w-full" style="background: rgba(255,255,255,0.1);"><i class="fas fa-user-shield"></i> Админ-панель</button>
         <button id="profileLogoutBtn" type="button" class="btn-primary w-full">Выйти из профиля</button>
       </div>
@@ -482,6 +544,41 @@
     </div>
   </div>
 
+  <!-- Модальное окно Магазина (встроенное, с синхронизацией с профилем) -->
+  <div id="shopModal" class="modal-backdrop" onclick="closeShopModal(event)" role="dialog" aria-modal="true" aria-labelledby="shopModalTitle">
+    <div class="modal-content shop-modal-wide" onclick="event.stopPropagation()">
+      <button class="modal-close" type="button" aria-label="Закрыть магазин" onclick="closeShopModal()"><i class="fas fa-times"></i></button>
+      <div class="text-center mb-6">
+        <i class="fas fa-store text-4xl mb-3 gradient-text"></i>
+        <h3 id="shopModalTitle" class="text-2xl font-bold gradient-text">Магазин</h3>
+        <p class="mt-2 text-sm" style="color: var(--text-secondary);">Покупай рамки и аватарки за монеты 🪙 — они сразу появятся в твоём профиле!</p>
+      </div>
+      <div id="shopContent" class="shop-content"></div>
+    </div>
+  </div>
+
+  <!-- Подтверждение покупки в магазине -->
+  <div id="shopPurchaseModal" class="modal-backdrop shop-purchase-backdrop" onclick="closeShopPurchaseModal(event)" role="dialog" aria-modal="true">
+    <div class="modal-content max-w-sm" onclick="event.stopPropagation()">
+      <button class="modal-close" type="button" aria-label="Закрыть подтверждение" onclick="closeShopPurchaseModal()"><i class="fas fa-times"></i></button>
+      <div class="text-center mb-5">
+        <i class="fas fa-cart-shopping text-3xl mb-2 gradient-text"></i>
+        <h3 class="text-xl font-bold gradient-text">Подтверждение покупки</h3>
+      </div>
+      <div class="shop-purchase-box">
+        <div id="shopPurchasePreview" class="shop-purchase-avatar"><i class="fas fa-user"></i></div>
+        <div id="shopPurchaseName" class="shop-purchase-name">Рамка</div>
+        <div id="shopPurchaseRarity" class="shop-purchase-rarity rarity-Редкая">Редкая</div>
+        <div id="shopPurchaseDesc" class="shop-purchase-desc"></div>
+        <div id="shopPurchasePrice" class="shop-purchase-price"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3 mt-5">
+        <button id="cancelShopPurchaseBtn" type="button" class="btn-secondary w-full"><i class="fas fa-xmark"></i> Отмена</button>
+        <button id="confirmShopPurchaseBtn" type="button" class="btn-primary w-full"><i class="fas fa-check"></i> Подтвердить</button>
+      </div>
+    </div>
+  </div>
+
   <header>
     <nav class="container-padding max-w-7xl mx-auto">
       <div class="topbar-shell flex items-center justify-between h-16">
@@ -499,7 +596,7 @@
           <a href="news-archive.html" target="_blank" rel="noopener noreferrer" class="nav-link external nav-link-archive">Архив Новостей</a>
           <a href="#twitch-clips" class="nav-link">Twitch</a>
           <a href="community.html" target="_blank" rel="noopener noreferrer" class="nav-link external nav-link-community">Зал комьюнити</a>
-          <a href="shop.html" target="_blank" rel="noopener noreferrer" class="nav-link external nav-link-shop"><i class="fas fa-store"></i> Магазин</a>
+          <a href="#" onclick="openShopModal(); return false;" class="nav-link nav-link-shop"><i class="fas fa-store"></i> Магазин</a>
           <a href="#contact" class="nav-link">Сотрудничество</a>
         </div>
         <div class="flex items-center gap-3">
@@ -523,7 +620,7 @@
               <a href="year-review.html" target="_blank" class="btn-primary btn-action-year animate-fadeInUp"><i class="fas fa-calendar-days"></i> Итоги года</a>
               <a href="news-archive.html" target="_blank" rel="noopener noreferrer" class="btn-primary btn-action-contact animate-fadeInUp"><i class="fas fa-box-archive"></i> Архив Новостей</a>
               <a href="community.html" target="_blank" rel="noopener noreferrer" class="btn-primary btn-action-community animate-fadeInUp"><i class="fas fa-laugh-squint"></i> Зал комьюнити</a>
-              <a href="shop.html" target="_blank" rel="noopener noreferrer" class="btn-primary btn-action-contact animate-fadeInUp"><i class="fas fa-store"></i> Магазин</a>
+              <a href="#" onclick="openShopModal(); return false;" class="btn-primary btn-action-contact animate-fadeInUp"><i class="fas fa-store"></i> Магазин</a>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto animate-fadeInUp" style="animation-delay: 0.5s">
@@ -1543,7 +1640,8 @@
         limitedAvatar5: { id: 'limitedAvatar5', name: 'Стальной взгляд', price: 800, description: 'Холодный и дерзкий дизайн из ограниченной коллекции.', rarity: 'Эпическая', category: 'limited', type: 'avatar', image: '/assets2/photo_5291782115840172017_y.jpg' },
         limitedAvatar6: { id: 'limitedAvatar6', name: 'Полярное сияние', price: 850, description: 'Северное сияние в ограниченном выпуске — редкая находка.', rarity: 'Эпическая', category: 'limited', type: 'avatar', image: '/assets2/photo_5291782115840172018_y.jpg' },
         limitedAvatar7: { id: 'limitedAvatar7', name: 'Тёмная материя', price: 900, description: 'Легендарная аватарка ограниченного выпуска с загадочной энергетикой.', rarity: 'Легендарная', category: 'limited', type: 'avatar', image: '/assets2/photo_5291782115840172019_y.jpg' },
-        limitedAvatar8: { id: 'limitedAvatar8', name: 'Золотая эра', price: 1000, description: 'Мифический лимитированный дизайн для настоящих коллекционеров.', rarity: 'Мифическая', category: 'limited', type: 'avatar', image: '/assets2/photo_5291782115840172020_y.jpg' }
+        limitedAvatar8: { id: 'limitedAvatar8', name: 'Золотая эра', price: 1000, description: 'Мифический лимитированный дизайн для настоящих коллекционеров.', rarity: 'Мифическая', category: 'limited', type: 'avatar', image: '/assets2/photo_5291782115840172020_y.jpg' },
+        lootbox_start: { id: 'lootbox_start', name: 'Стартовый кейс', price: 500, description: 'Откройте кейс и получите случайную рамку или аватарку. Шанс на редкие предметы!', category: 'lootbox', type: 'lootbox', image: '' }
     };
     const STARTING_COINS = 1000;
 
@@ -2024,23 +2122,48 @@
         return window._youtubeIframeApiReady;
     }
 
+    // Принудительно уничтожаем экземпляр YT.Player: на мобильных не должны
+    // копиться прослушиватели и iframe от закрытых плееров (стабильность и память).
+    function destroyYouTubePlayer(videoId) {
+        const player = VIDEO_WATCH_REWARD_PLAYER_INSTANCES.get(videoId);
+        if (player) {
+            try { player.destroy(); } catch (e) {}
+            VIDEO_WATCH_REWARD_PLAYER_INSTANCES.delete(videoId);
+        }
+    }
+
     function setupYouTubePlayerListener(videoId) {
         const iframe = document.getElementById(`youtube-player-${videoId}`);
         if (!iframe) return;
 
+        const apiFailedHint = () => {
+            setVideoWatchStatus(videoId, 'Видео играет встроенным плеером. Для наград досмотрите до конца.');
+        };
+
+        // YouTube Iframe API может долго грузиться при замедлении youtube.com (РФ).
+        // По истечении таймаута оставляем работать встроенный плеер без API.
+        const apiTimeout = setTimeout(apiFailedHint, 8000);
         loadYouTubeIframeApi().then((YT) => {
+            clearTimeout(apiTimeout);
             try {
                 const player = new YT.Player(iframe.id, {
                     events: {
-                        onStateChange: (event) => handleYouTubeStateChange(videoId, event)
+                        onStateChange: (event) => handleYouTubeStateChange(videoId, event),
+                        onError: () => {
+                            setVideoWatchStatus(videoId, 'Видео недоступно или заблокировано. Откройте его на YouTube.');
+                            setVideoWatchOverlay(videoId, 'Видео недоступно');
+                        }
                     }
                 });
                 VIDEO_WATCH_REWARD_PLAYER_INSTANCES.set(videoId, player);
             } catch (error) {
                 console.warn('Не удалось создать YouTube Player:', error);
+                apiFailedHint();
             }
         }).catch(() => {
+            clearTimeout(apiTimeout);
             console.warn('YouTube Iframe API не загрузился.');
+            apiFailedHint();
         });
     }
 
@@ -2566,7 +2689,7 @@
                 const equipped = getProfileEquipped(profile);
                 const owned = Object.keys(AURA_DEFINITIONS).filter(id => inv.includes(id) && AURA_DEFINITIONS[id].category === 'frame');
                 if (!owned.length) {
-                    profileAuraOptions.innerHTML = '<span class="text-xs" style="color: var(--text-secondary);">У вас пока нет аур. Загляните в <a href="shop.html" target="_blank" rel="noopener noreferrer" class="underline" style="color: #93c5fd;">магазин</a>!</span>';
+                    profileAuraOptions.innerHTML = '<span class="text-xs" style="color: var(--text-secondary);">У вас пока нет аур. Загляните в <a href="#" onclick="openShopModal(); return false;" class="underline" style="color: #93c5fd;">магазин</a>!</span>';
                 } else {
                     const chips = owned.map(id => {
                         const def = AURA_DEFINITIONS[id];
@@ -2608,7 +2731,7 @@
                     inv.includes(id) && isAvatarDefinition(AURA_DEFINITIONS[id])
                 );
                 if (!owned.length) {
-                    profileAvatarOptions.innerHTML = '<span class="text-xs" style="color: var(--text-secondary);">У вас пока нет аватарок из магазина. Загляните в <a href="shop.html" target="_blank" rel="noopener noreferrer" class="underline" style="color: #93c5fd;">магазин</a>!</span>';
+                    profileAvatarOptions.innerHTML = '<span class="text-xs" style="color: var(--text-secondary);">У вас пока нет аватарок из магазина. Загляните в <a href="#" onclick="openShopModal(); return false;" class="underline" style="color: #93c5fd;">магазин</a>!</span>';
                 } else {
                     const chips = owned.map(id => {
                         const def = AURA_DEFINITIONS[id];
@@ -3834,11 +3957,14 @@
                     if (!video) return;
                     document.querySelectorAll('[id^="player-"]').forEach(c => {
                         if (c.id !== `player-${videoId}`) {
+                            const prevVideoId = c.id.replace(/^player-/, '');
+                            destroyYouTubePlayer(prevVideoId);
                             c.innerHTML = '';
-                            stopVideoWatchReward(c.id.replace(/^player-/, ''));
+                            stopVideoWatchReward(prevVideoId);
                         }
                     });
                     if (container.innerHTML) {
+                        destroyYouTubePlayer(videoId);
                         container.innerHTML = '';
                         stopVideoWatchReward(videoId);
                         return;
@@ -3863,6 +3989,7 @@
                     `;
                     container.querySelector('.close-player-btn').addEventListener('click', (e) => {
                         e.stopPropagation();
+                        destroyYouTubePlayer(videoId);
                         container.innerHTML = '';
                         stopVideoWatchReward(videoId, 'closed');
                     });
@@ -4058,7 +4185,7 @@
         { icon: 'fas fa-compass', label: 'ШАГ 1 ИЗ 5', title: 'Добро пожаловать в Mortis Play', text: 'Здесь собраны видео, стримы, новости и всё, что связано с комьюнити. Гид займёт меньше минуты.', features: ['Листайте шаги кнопками или клавишами стрелок', 'Гид можно открыть повторно из меню'], links: [{ label: 'Главная', href: '#welcome' }] },
         { icon: 'fas fa-play-circle', label: 'ШАГ 2 ИЗ 5', title: 'Видео с YouTube', text: 'В разделе «Видео» новые ролики подгружаются автоматически. Ищите выпуск, меняйте сортировку и фильтруйте по дате.', features: ['Нажмите на превью, чтобы открыть плеер', 'Авторизованные пользователи получают монеты за полный просмотр'], links: [{ label: 'Перейти к видео', href: '#video' }, { label: 'Открыть FAQ о видео', href: 'faq.html' }] },
         { icon: 'fab fa-twitch', label: 'ШАГ 3 ИЗ 5', title: 'Twitch и живые моменты', text: 'В разделе Twitch можно смотреть прямой эфир и клипы, не покидая сайт. Для новых трансляций всегда есть ссылка на канал.', features: ['Открывайте клипы прямо в карточках', 'Поддерживается полноэкранный просмотр'], links: [{ label: 'Перейти к Twitch', href: '#twitch-clips' }, { label: 'Открыть канал Twitch', href: 'https://www.twitch.tv/mortisplay32' }] },
-        { icon: 'fas fa-user-circle', label: 'ШАГ 4 ИЗ 5', title: 'Профиль и награды', text: 'В меню доступны регистрация, настройки профиля, аватар, рамка и ауры. Монеты можно тратить в магазине на оформление профиля.', features: ['Профиль хранит ваши награды и персонализацию', 'Настройки применяются автоматически'], links: [{ label: 'Открыть меню профиля', action: 'profile' }, { label: 'Перейти в магазин', href: 'shop.html' }] },
+        { icon: 'fas fa-user-circle', label: 'ШАГ 4 ИЗ 5', title: 'Профиль и награды', text: 'В меню доступны регистрация, настройки профиля, аватар, рамка и ауры. Монеты можно тратить в магазине на оформление профиля.', features: ['Профиль хранит ваши награды и персонализацию', 'Настройки применяются автоматически'], links: [{ label: 'Открыть меню профиля', action: 'profile' }, { label: 'Открыть магазин', action: 'shop' }] },
         { icon: 'fas fa-layer-group', label: 'ШАГ 5 ИЗ 5', title: 'Исследуйте сайт', text: 'Загляните в архив новостей, зал комьюнити, Q&A, FAQ и магазин. В нижней навигации на телефоне основные разделы всегда под рукой.', features: ['Связаться с Mortis Play можно в разделе «Сотрудничество»', 'Приятного просмотра и добро пожаловать в комьюнити!'], links: [{ label: 'Архив новостей', href: 'news-archive.html' }, { label: 'Зал комьюнити', href: 'community.html' }, { label: 'Сотрудничество', href: '#contact' }] }
     ];
     let currentGuideStep = 0;
@@ -4119,6 +4246,12 @@
             event.preventDefault();
             minimizeSiteGuide();
             openProfileModal();
+            return;
+        }
+        if (action === 'shop') {
+            event.preventDefault();
+            minimizeSiteGuide();
+            openShopModal();
             return;
         }
         if (link.getAttribute('href')?.startsWith('#')) {
@@ -4251,7 +4384,395 @@
             window.removeEventListener('resize', resize);
         };
     }
-    
+
+    // === ВСТРОЕННЫЙ МАГАЗИН (модальное окно на главной странице, синхронизация с профилем) ===
+    let shopState = {
+        items: [],
+        activeTab: 'frame',
+        loaded: false,
+        pendingBuyId: null
+    };
+    const SHOP_CATEGORY_LABELS = { frame: 'Рамки', avatar: 'Аватарки', limited: 'Ограниченные', lootbox: 'Кейсы' };
+    const SHOP_CATEGORY_ICONS = { frame: 'fa-circle-notch', avatar: 'fa-user', limited: 'fa-badge-check', lootbox: 'fa-box-open' };
+
+    function getShopCoins(profile) {
+        const n = parseInt(profile && profile.coins, 10);
+        return Number.isFinite(n) && n >= 0 ? n : STARTING_COINS;
+    }
+    function getShopInventory(profile) {
+        return Array.isArray(profile && profile.inventory) ? profile.inventory.slice() : [];
+    }
+    function isShopAvatarItem(def) {
+        return Boolean(def && (def.category === 'avatar' || def.type === 'avatar'));
+    }
+    function safeShopImageUrl(url) {
+        if (!url) return '';
+        const s = String(url).trim();
+        return /^(https?:)?\/\//i.test(s) || s.startsWith('/') ? s : '';
+    }
+    function findShopItem(id) {
+        return shopState.items.find(item => item.id === id || item.slug === id) || AURA_DEFINITIONS[id] || null;
+    }
+
+    // Загрузка каталога товаров с сервера (единая база data.db)
+    async function loadShopItemsFromServer() {
+        try {
+            const response = await fetch('/api/shop/items');
+            if (!response.ok) throw new Error('Не удалось загрузить магазин');
+            const data = await response.json();
+            if (!Array.isArray(data.items)) throw new Error('Неверные данные магазина');
+
+            shopState.items = data.items.map(item => {
+                const metadata = item.metadata || {};
+                const auraId = metadata.auraId || item.slug;
+                const localDef = AURA_DEFINITIONS[auraId] || {};
+                const category = localDef.category || 'frame';
+                return {
+                    id: auraId,
+                    slug: item.slug,
+                    name: item.name || localDef.name || auraId,
+                    price: item.price,
+                    description: localDef.description || item.name || 'Товар из магазина',
+                    rarity: localDef.rarity || 'Обычная',
+                    category,
+                    type: item.type || localDef.type || category,
+                    image: localDef.image || metadata.image || '',
+                    rarityClass: localDef.rarityClass || `rarity-${String(localDef.rarity || 'Обычная').replace(/\s+/g, '-')}`,
+                    limited: Boolean(item.limited),
+                    stock: Number.isFinite(Number(item.stock)) ? Number(item.stock) : null,
+                    soldOut: Boolean(item.soldOut),
+                    metadata
+                };
+            });
+            // Дополняем локальными товарами, которых нет на сервере (например, кейсы)
+            Object.keys(AURA_DEFINITIONS).forEach(key => {
+                const def = AURA_DEFINITIONS[key];
+                if (def.price != null && !shopState.items.some(item => item.id === key)) {
+                    shopState.items.push({ ...def, slug: key });
+                }
+            });
+            shopState.loaded = true;
+        } catch (error) {
+            console.error('Ошибка загрузки товаров магазина:', error);
+            shopState.items = Object.keys(AURA_DEFINITIONS)
+                .filter(key => AURA_DEFINITIONS[key].price != null)
+                .map(key => ({ ...AURA_DEFINITIONS[key], slug: key }));
+            shopState.loaded = true;
+        }
+    }
+
+    // Покупка через серверную базу (data.db) — защита от повторных покупок
+    async function shopPurchaseRequest(id) {
+        const token = getAuthToken();
+        if (!token) return { ok: false, msg: 'Войдите в профиль' };
+        try {
+            const response = await fetch('/api/shop/buy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ itemSlug: id })
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                if (result.error === 'Требуется авторизация' || result.error === 'Сессия устарела') {
+                    clearAuthToken();
+                    clearStoredProfile();
+                    renderShop();
+                    renderProfileState();
+                }
+                return { ok: false, msg: result.error || 'Ошибка покупки' };
+            }
+            if (result.profile) saveProfile(result.profile);
+            return { ok: true, msg: 'Куплено!' };
+        } catch (error) {
+            return { ok: false, msg: 'Ошибка соединения с сервером' };
+        }
+    }
+
+    // Открытие кейса через серверную базу
+    async function shopOpenLootbox(id) {
+        const token = getAuthToken();
+        if (!token) return { ok: false, msg: 'Войдите в профиль' };
+        try {
+            const response = await fetch('/api/shop/open', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ itemSlug: id })
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) return { ok: false, msg: result.error || 'Ошибка открытия кейса' };
+            if (result.profile) saveProfile(result.profile);
+            return { ok: true, won: result.won, msg: 'Кейс открыт!' };
+        } catch (error) {
+            return { ok: false, msg: 'Ошибка соединения с сервером' };
+        }
+    }
+
+    // Надевание/снятие сохраняется на сервер (PUT /api/profile) и сразу обновляет профиль
+    async function shopEquip(id) {
+        const profile = getStoredProfile();
+        if (!profile) return { ok: false, msg: 'Войдите в профиль' };
+        const def = findShopItem(id);
+        if (!def || !getShopInventory(profile).includes(id)) return { ok: false, msg: 'Предмет не в инвентаре' };
+        const isAvatar = isShopAvatarItem(def);
+        const nextProfile = { ...profile, ...(isAvatar ? { equippedAvatar: id } : { equipped: id }) };
+        saveProfile(nextProfile);
+        const saved = await saveProfileToServer(nextProfile);
+        if (!saved) { saveProfile(profile); return { ok: false, msg: 'Не удалось сохранить выбор на сервере' }; }
+        return { ok: true, msg: isAvatar ? 'Аватарка применена!' : 'Аура надета!' };
+    }
+
+    async function shopUnequip(id) {
+        const profile = getStoredProfile();
+        if (!profile) return { ok: false, msg: 'Войдите в профиль' };
+        const def = findShopItem(id);
+        const isAvatar = isShopAvatarItem(def);
+        const nextProfile = { ...profile, ...(isAvatar ? { equippedAvatar: null } : { equipped: null }) };
+        saveProfile(nextProfile);
+        const saved = await saveProfileToServer(nextProfile);
+        if (!saved) { saveProfile(profile); return { ok: false, msg: 'Не удалось сохранить выбор на сервере' }; }
+        return { ok: true, msg: isAvatar ? 'Аватарка снята' : 'Аура снята' };
+    }
+
+    // После любого изменения на сервере синхронизируем магазин и профиль
+    async function refreshShopAfterServerChange() {
+        renderProfileState();
+        const modal = document.getElementById('shopModal');
+        if (modal && modal.classList.contains('show')) renderShop();
+    }
+
+    // Открытие / закрытие магазина
+    async function openShopModal() {
+        const modal = document.getElementById('shopModal');
+        if (!modal) return;
+        window.closeMobileMenu?.();
+        // Синхронизируем актуальные монеты/инвентарь с серверной базой (data.db)
+        await restoreAuthSession();
+        if (!shopState.loaded) await loadShopItemsFromServer();
+        renderShop();
+        modal.classList.add('show');
+        setBodyScrollLocked(true);
+    }
+
+    function closeShopModal(event) {
+        if (event && event.target.id !== 'shopModal') return;
+        const modal = document.getElementById('shopModal');
+        if (!modal) return;
+        modal.classList.remove('show');
+        setBodyScrollLocked(false);
+    }
+
+    // Подтверждение покупки
+    function openShopPurchaseConfirm(id) {
+        const def = findShopItem(id);
+        const modal = document.getElementById('shopPurchaseModal');
+        if (!def || !modal) return;
+        const profile = getStoredProfile();
+        if (!profile || !getAuthToken()) {
+            closeShopModal();
+            openProfileModal();
+            return;
+        }
+        if (def.limited && def.soldOut) {
+            showNotification('Эта аватарка уже распродана', { type: 'warning', duration: 2500, force: true });
+            return;
+        }
+        shopState.pendingBuyId = id;
+        const image = safeShopImageUrl(def.image);
+        document.getElementById('shopPurchasePreview').innerHTML = `
+            <div class="aura-preview aura-${def.id} ${isShopAvatarItem(def) ? 'avatar-preview' : ''} ${def.category === 'limited' && image ? 'preview-rect' : ''}" style="width:100%; height:100%;">
+              <div class="inner">${image ? `<img src="${image}" alt="${def.name}" draggable="false">` : '<i class="fas fa-user"></i>'}</div>
+            </div>`;
+        document.getElementById('shopPurchaseName').textContent = def.name;
+        document.getElementById('shopPurchaseRarity').textContent = def.rarity || 'Обычная';
+        document.getElementById('shopPurchaseRarity').className = `shop-purchase-rarity rarity-${String(def.rarity || 'Обычная').replace(/\s+/g, '-')}`;
+        document.getElementById('shopPurchaseDesc').textContent = def.description || '';
+        document.getElementById('shopPurchasePrice').innerHTML = `<strong style="color:#fbbf24;">${def.price}</strong> монет за покупку`;
+        modal.classList.add('show');
+        setBodyScrollLocked(true);
+    }
+
+    function closeShopPurchaseModal(event) {
+        if (event && event.target.id !== 'shopPurchaseModal') return;
+        const modal = document.getElementById('shopPurchaseModal');
+        if (!modal) return;
+        shopState.pendingBuyId = null;
+        modal.classList.remove('show');
+        const shopOpen = document.getElementById('shopModal') && document.getElementById('shopModal').classList.contains('show');
+        setBodyScrollLocked(Boolean(shopOpen));
+    }
+
+    async function confirmShopPurchase() {
+        if (!shopState.pendingBuyId) return;
+        const id = shopState.pendingBuyId;
+        closeShopPurchaseModal();
+        const res = await shopPurchaseRequest(id);
+        if (res && res.msg) showNotification(res.msg, { type: res.ok ? 'success' : 'warning', duration: 3000, force: true });
+        await refreshShopAfterServerChange();
+    }
+
+    // Рендер содержимого магазина
+    function renderShop() {
+        const container = document.getElementById('shopContent');
+        if (!container) return;
+        const profile = getStoredProfile();
+        const loggedIn = Boolean(profile && getAuthToken());
+
+        if (!loggedIn) {
+            container.innerHTML = `
+                <div class="shop-notice">
+                    <div style="font-size:3rem; margin-bottom:0.75rem;"><i class="fas fa-user-lock gradient-text"></i></div>
+                    <h3>Войдите в профиль</h3>
+                    <p>Чтобы покупать и надевать рамки и аватарки, необходимо войти или создать аккаунт на сайте.</p>
+                    <button type="button" class="btn-primary" onclick="closeShopModal(); openProfileModal();"><i class="fas fa-user-circle"></i> Войти / Регистрация</button>
+                </div>`;
+            return;
+        }
+
+        const coins = getShopCoins(profile);
+        const inventory = getShopInventory(profile);
+        const equipped = profile.equipped && AURA_DEFINITIONS[profile.equipped] ? profile.equipped : null;
+        const equippedAvatar = profile.equippedAvatar && AURA_DEFINITIONS[profile.equippedAvatar] ? profile.equippedAvatar : null;
+
+        const visible = shopState.items.filter(def => def.category !== 'nft' && def.price != null);
+        const categories = [...new Set(visible.map(def => def.category))];
+        const counts = {};
+        categories.forEach(category => { counts[category] = visible.filter(def => def.category === category).length; });
+        const itemsToShow = visible.filter(def => def.category === shopState.activeTab);
+
+        const renderCard = (def) => {
+            const isLootbox = def.category === 'lootbox';
+            const isAvatar = isShopAvatarItem(def);
+            const owned = !isLootbox && inventory.includes(def.id);
+            const isEquipped = !isLootbox && (isAvatar ? equippedAvatar === def.id : equipped === def.id);
+            const isSoldOut = !isLootbox && def.limited && def.soldOut;
+            const image = safeShopImageUrl(def.image);
+            const rarityClass = def.rarityClass || `rarity-${String(def.rarity || 'Обычная').replace(/\s+/g, '-')}`;
+
+            let buttonHtml;
+            if (isLootbox) {
+                buttonHtml = `<button type="button" class="btn btn-shop-buy" data-action="open" data-aura="${def.id}"><i class="fas fa-box-open"></i> Открыть за ${def.price}</button>`;
+            } else if (isEquipped) {
+                buttonHtml = `<button type="button" class="btn btn-shop-unequip" data-action="unequip" data-aura="${def.id}"><i class="fas fa-times"></i> Снять</button>`;
+            } else if (owned) {
+                buttonHtml = `<button type="button" class="btn btn-shop-equip" data-action="equip" data-aura="${def.id}"><i class="fas fa-check"></i> Надеть</button>`;
+            } else if (isSoldOut) {
+                buttonHtml = `<button type="button" class="btn btn-shop-disabled" disabled><i class="fas fa-ban"></i> Распродано</button>`;
+            } else if (coins < def.price) {
+                buttonHtml = `<button type="button" class="btn btn-shop-disabled" disabled><i class="fas fa-lock"></i> Не хватает монет</button>`;
+            } else {
+                buttonHtml = `<button type="button" class="btn btn-shop-buy" data-action="buy" data-aura="${def.id}"><i class="fas fa-coins"></i> Купить за ${def.price}</button>`;
+            }
+
+            let statusHtml;
+            if (isLootbox) {
+                statusHtml = `<div class="price-row"><i class="fas fa-coins"></i> ${def.price}</div>`;
+            } else if (isEquipped) {
+                statusHtml = `<div class="equipped-label"><i class="fas fa-circle-check"></i> Надето</div>`;
+            } else if (owned) {
+                statusHtml = `<div class="owned-label"><i class="fas fa-check-circle"></i> В инвентаре</div>`;
+            } else if (isSoldOut) {
+                statusHtml = `<div class="soldout-label"><i class="fas fa-ban"></i> Распродано</div>`;
+            } else {
+                statusHtml = `<div class="price-row"><i class="fas fa-coins"></i> ${def.price}</div>
+                    ${def.limited && Number.isFinite(Number(def.stock)) ? `<div class="stock-label"><i class="fas fa-fire"></i> Осталось: ${def.stock} из 10</div>` : ''}`;
+            }
+
+            const previewMarkup = isLootbox
+                ? `<div class="lootbox-preview"><div class="inner"><i class="fas fa-box-open" aria-hidden="true"></i></div></div>`
+                : `<div class="aura-preview aura-${def.id} ${isAvatar ? 'avatar-preview' : ''} ${def.category === 'limited' && image ? 'preview-rect' : ''}"><div class="inner">${image ? `<img src="${image}" alt="${def.name}" draggable="false" loading="lazy" decoding="async">` : '<i class="fas fa-user"></i>'}</div></div>`;
+            const chipIcon = SHOP_CATEGORY_ICONS[def.category] || 'fa-circle-notch';
+            const chipText = SHOP_CATEGORY_LABELS[def.category] || 'Товар';
+
+            return `
+                <div class="shop-card ${isEquipped ? 'equipped-card' : ''} ${isSoldOut ? 'sold-out-card' : ''}" data-item-id="${def.id}" data-item-kind="${def.category}">
+                    ${previewMarkup}
+                    <div class="category-chip ${def.category}"><i class="fas ${chipIcon}"></i> ${chipText}</div>
+                    <div class="card-name">${def.name}</div>
+                    ${isAvatar || isLootbox ? '' : `<div class="card-rarity ${rarityClass}">${def.rarity}</div>`}
+                    <div class="card-desc">${def.description}</div>
+                    <div class="card-footer">
+                        ${statusHtml}
+                        ${buttonHtml}
+                    </div>
+                </div>`;
+        };
+
+        container.innerHTML = `
+            <div class="shop-toolbar">
+                <div class="shop-balance"><i class="fas fa-coins"></i> <span id="shopBalanceText">${coins}</span> монет</div>
+                <button type="button" class="btn-secondary shop-sync-btn" onclick="refreshShopAndProfile()"><i class="fas fa-rotate"></i> Обновить</button>
+            </div>
+            <div class="shop-tabs">
+                ${categories.map(category => `
+                    <button type="button" class="shop-tab ${category === shopState.activeTab ? 'active' : ''}" data-tab="${category}">
+                        <i class="fas ${SHOP_CATEGORY_ICONS[category] || 'fa-box'}"></i> ${SHOP_CATEGORY_LABELS[category] || category}
+                        <span class="count-badge">${counts[category] || 0}</span>
+                    </button>`).join('')}
+            </div>
+            <div class="shop-grid">${itemsToShow.map(renderCard).join('')}</div>
+            <p class="shop-hint"><i class="fas fa-info-circle"></i> Аватарки и рамки меняются независимо. Купленные товары мгновенно появляются в профиле. Монеты можно заработать просмотром видео!</p>
+        `;
+
+        container.querySelectorAll('.shop-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const selected = tab.dataset.tab;
+                if (selected && selected !== shopState.activeTab) {
+                    shopState.activeTab = selected;
+                    renderShop();
+                }
+            });
+        });
+
+        container.querySelectorAll('[data-action]').forEach(btn => {
+            btn.addEventListener('click', async (event) => {
+                event.stopPropagation();
+                const action = btn.dataset.action;
+                const id = btn.dataset.aura;
+                if (action === 'buy') { openShopPurchaseConfirm(id); return; }
+                if (action === 'open') {
+                    const def = findShopItem(id);
+                    if (!def) return;
+                    if (!confirm(`Открыть кейс «${def.name}» за ${def.price} монет? Внутри — случайная рамка или аватарка.`)) return;
+                    const res = await shopOpenLootbox(id);
+                    if (res && res.ok && res.won) {
+                        showNotification(`Выпало: ${res.won.name}! 🎁`, { type: 'success', duration: 3500, force: true });
+                    } else if (res) {
+                        showNotification(res.msg, { type: 'warning', duration: 3000, force: true });
+                    }
+                    await refreshShopAfterServerChange();
+                    return;
+                }
+                let res;
+                if (action === 'equip') res = await shopEquip(id);
+                else if (action === 'unequip') res = await shopUnequip(id);
+                if (res && res.msg) showNotification(res.msg, { type: res.ok ? 'success' : 'warning', duration: 2500, force: true });
+                await refreshShopAfterServerChange();
+            });
+        });
+    }
+
+    // Принудительная синхронизация магазина и профиля с сервером
+    async function refreshShopAndProfile() {
+        await restoreAuthSession();
+        await loadShopItemsFromServer();
+        renderShop();
+        renderProfileState();
+        showNotification('Магазин и профиль синхронизированы', { type: 'success', duration: 2200, force: true });
+    }
+
+    function initShop() {
+        // Кнопки закрытия вызывают функцию БЕЗ объекта события, иначе охранный
+        // блок для кликов по фону (event.target.id !== 'shopPurchaseModal')
+        // принимал бы клик по кнопке за клик не по фону и не закрывал окно.
+        document.getElementById('closeShopPurchaseModal')?.addEventListener('click', () => closeShopPurchaseModal());
+        document.getElementById('cancelShopPurchaseBtn')?.addEventListener('click', () => closeShopPurchaseModal());
+        document.getElementById('confirmShopPurchaseBtn')?.addEventListener('click', confirmShopPurchase);
+        const purchaseModal = document.getElementById('shopPurchaseModal');
+        purchaseModal?.addEventListener('click', (event) => {
+            if (event.target === purchaseModal) closeShopPurchaseModal();
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
         // Устанавливаем динамический год в футере
         document.getElementById('currentYear').textContent = new Date().getFullYear();
@@ -4280,6 +4801,7 @@
         await restoreAuthSession();
         initProfileAuth();
         initAdminPanel();
+        initShop();
         await showSiteUpdateNotice();
         initNavigation();
         initLegalModal();

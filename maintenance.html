@@ -3,6 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <!-- Telegram WebApp: полноэкранный режим и корректная высота окна -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    (function () {
+      var lastH = 0;
+      function sync() {
+        var h = window.visualViewport ? window.visualViewport.height : (window.innerHeight || document.documentElement.clientHeight || window.screen.height || 0);
+        if (h > 0 && h !== lastH) { lastH = h; document.documentElement.style.setProperty('--app-height', h + 'px'); }
+      }
+      sync();
+      if (window.visualViewport) window.visualViewport.addEventListener('resize', sync);
+      window.addEventListener('resize', sync);
+      var tg = window.Telegram && window.Telegram.WebApp;
+      if (!tg) return;
+      tg.ready();
+      tg.expand();
+      function goFS() { try { if (typeof tg.requestFullscreen === 'function') { var p = tg.requestFullscreen(); if (p && typeof p.catch === 'function') p.catch(function () {}); } } catch (e) {} }
+      goFS();
+      var done = false;
+      function onGesture() { if (done) return; done = true; goFS(); sync(); document.removeEventListener('touchstart', onGesture); document.removeEventListener('click', onGesture); }
+      document.addEventListener('touchstart', onGesture);
+      document.addEventListener('click', onGesture);
+      try { tg.onEvent('viewportChanged', sync); } catch (e) {}
+    })();
+  </script>
+
   <title>Mortis Play — Технический перерыв</title>
   <meta name="description" content="Сайт Mortis Play на техперерыве. Скоро вернёмся с новым контентом!" />
   <meta name="robots" content="noindex" />
@@ -83,7 +109,7 @@
         radial-gradient(circle at 85% 20%, rgba(14, 165, 233, 0.16), transparent 22%),
         radial-gradient(circle at 50% 90%, rgba(245, 158, 11, 0.14), transparent 24%),
         linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-      min-height: 100vh;
+      min-height: var(--app-height, 100vh);
       overflow-x: hidden;
       transition: background 0.4s ease, color 0.4s ease;
       position: relative;

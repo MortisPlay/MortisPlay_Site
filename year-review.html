@@ -3,6 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <!-- Telegram WebApp: полноэкранный режим и корректная высота окна -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    (function () {
+      var lastH = 0;
+      function sync() {
+        var h = window.visualViewport ? window.visualViewport.height : (window.innerHeight || document.documentElement.clientHeight || window.screen.height || 0);
+        if (h > 0 && h !== lastH) { lastH = h; document.documentElement.style.setProperty('--app-height', h + 'px'); }
+      }
+      sync();
+      if (window.visualViewport) window.visualViewport.addEventListener('resize', sync);
+      window.addEventListener('resize', sync);
+      var tg = window.Telegram && window.Telegram.WebApp;
+      if (!tg) return;
+      tg.ready();
+      tg.expand();
+      function goFS() { try { if (typeof tg.requestFullscreen === 'function') { var p = tg.requestFullscreen(); if (p && typeof p.catch === 'function') p.catch(function () {}); } } catch (e) {} }
+      goFS();
+      var done = false;
+      function onGesture() { if (done) return; done = true; goFS(); sync(); document.removeEventListener('touchstart', onGesture); document.removeEventListener('click', onGesture); }
+      document.addEventListener('touchstart', onGesture);
+      document.addEventListener('click', onGesture);
+      try { tg.onEvent('viewportChanged', sync); } catch (e) {}
+    })();
+  </script>
+
   <title>Итоги года — 2023-2025 | Mortis Play</title>
   <meta name="description" content="Итоги 2023, 2024, 2025: реальный путь роста, достижения и ключевые события" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -43,7 +69,7 @@
         radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.12), transparent 30%),
         linear-gradient(135deg, #040816 0%, #0b1b34 45%, #16213b 100%);
       color: #f8fafc;
-      min-height: 100vh;
+      min-height: var(--app-height, 100vh);
       overflow-x: hidden;
     }
 
