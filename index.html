@@ -512,9 +512,10 @@
       <div id="adminPanel" class="hidden">
         <div class="text-center mb-5">
           <i class="fas fa-shield-halved text-3xl mb-3 gradient-text"></i>
-          <h3 class="text-xl font-bold gradient-text">Управление бейджами</h3>
-          <p class="mt-1 text-sm" style="color: var(--text-secondary);">Выберите аккаунт и выдайте/снимите бейджики</p>
+          <h3 class="text-xl font-bold gradient-text">Админ-панель</h3>
+          <p class="mt-1 text-sm" style="color: var(--text-secondary);">Статистика, бейджи, монеты, предметы и история покупок</p>
         </div>
+        <div id="adminStats" class="mb-4 grid grid-cols-2 gap-2 text-center"></div>
         <div id="adminAccountList" class="space-y-3"></div>
         <button id="adminCloseBtn" type="button" class="btn-primary mt-5 w-full" style="background: rgba(255,255,255,0.1);">Закрыть</button>
       </div>
@@ -728,7 +729,6 @@
               <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center"><i class="fas fa-envelope text-purple-500"></i></div><div><div class="font-semibold">Email</div><a href="mailto:mortisplay@mail.ru" target="_blank" style="color: var(--text-secondary);">mortisplay@mail.ru</a></div></div>
               <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center"><i class="fab fa-telegram text-blue-500"></i></div><div><div class="font-semibold">Telegram</div><a href="https://t.me/MortisPlay32" target="_blank" style="color: var(--text-secondary);">@dimap7221</a></div></div>
               <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center"><i class="fab fa-youtube text-red-500"></i></div><div><div class="font-semibold">YouTube</div><a href="https://www.youtube.com/@MortisPlay" target="_blank" style="color: var(--text-secondary);">@MortisPlay</a></div></div>
-              <div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-slate-500/10 flex items-center justify-center"><i class="fab fa-github text-slate-400"></i></div><div><div class="font-semibold">GitHub</div><a href="https://github.com/MortisPlay/MortisPlay_Site" target="_blank" style="color: var(--text-secondary);">MortisPlay_Site</a></div></div>
             </div>
             <div class="mt-8 pt-8 border-t" style="border-color: var(--glass-border);"><h4 class="font-semibold mb-4">Telegram каналы:</h4><ul class="space-y-2"><li><a href="https://t.me/MortisPlayTG" target="_blank" style="color: var(--text-secondary);"><i class="fab fa-telegram mr-2"></i> Основной канал</a></li><li><a href="https://t.me/+GqoVoVYJR185ZmYy" target="_blank" style="color: var(--text-secondary);"><i class="fab fa-telegram mr-2"></i> Частный канал</a></li></ul></div>
           </div>
@@ -855,7 +855,10 @@
     const YOUTUBE_CONFIG = {
         apiKey: 'AIzaSyCHwEhu5s69hx9RgMyYsOrkmBkBW2TZ7fA',
         channelId: 'UC2VwlrbzSa8UGLHAYmbuEZA',
-        maxResults: 50
+        // Лимит API на один запрос search.list — максимум 50.
+        maxResults: 50,
+        // Сколько видео загружаем суммарно (пагинация страницами по maxResults).
+        maxTotal: 100
     };
     
     let videoData = [];
@@ -902,19 +905,40 @@
             isLoadingVideos = true;
             if (currentVideoSystem) currentVideoSystem.showSkeleton();
             showNotification('Загрузка видео с YouTube... 📡', { silent: true });
-            
-            const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CONFIG.channelId}&maxResults=${YOUTUBE_CONFIG.maxResults}&order=date&type=video&key=${YOUTUBE_CONFIG.apiKey}`;
-            const searchResponse = await fetch(url);
-            
-            if (!searchResponse.ok) throw new Error(`HTTP ${searchResponse.status}`);
-            
-            const searchData = await searchResponse.json();
-            if (!searchData.items?.length) throw new Error('Нет видео');
-            
-            const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+
+            // YouTube отдаёт максимум 50 роликов за один запрос — подгружаем
+            // страницы через nextPageToken, пока не наберём maxTotal (100).
+            const maxTotal = Number(YOUTUBE_CONFIG.maxTotal) || 100;
+            const perPage = Math.min(Number(YOUTUBE_CONFIG.maxResults) || 50, 50);
+            const seenIds = new Set();
+            const collected = [];
+            let nextPageToken = '';
+
+            do {
+                const pageUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CONFIG.channelId}&maxResults=${perPage}&order=date&type=video${nextPageToken ? `&pageToken=${encodeURIComponent(nextPageToken)}` : ''}&key=${YOUTUBE_CONFIG.apiKey}`;
+                const searchResponse = await fetch(pageUrl);
+                if (!searchResponse.ok) throw new Error(`HTTP ${searchResponse.status}`);
+
+                const searchData = await searchResponse.json();
+                if (!searchData.items?.length) break;
+
+                for (const item of searchData.items) {
+                    const videoId = item.id.videoId;
+                    if (videoId && !seenIds.has(videoId)) {
+                        seenIds.add(videoId);
+                        collected.push({ videoId, snippet: item.snippet });
+                    }
+                }
+
+                nextPageToken = searchData.nextPageToken || '';
+            } while (nextPageToken && collected.length < maxTotal);
+
+            if (!collected.length) throw new Error('Нет видео');
+
+            const videoIds = collected.map(v => v.videoId).join(',');
             const videosResponse = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics&id=${videoIds}&key=${YOUTUBE_CONFIG.apiKey}`);
             const videosData = await videosResponse.json();
-            
+
             const videoDetailsMap = {};
             videosData.items.forEach(video => {
                 videoDetailsMap[video.id] = {
@@ -922,21 +946,21 @@
                     views: formatViews(video.statistics.viewCount)
                 };
             });
-            
-            const youtubeVideos = searchData.items.map((item, index) => {
+
+            const youtubeVideos = collected.map((v, index) => {
                 return {
                     id: index + 1,
-                    title: item.snippet.title,
-                    views: videoDetailsMap[item.id.videoId]?.views || '0',
-                    duration: videoDetailsMap[item.id.videoId]?.duration || '0:00',
-                    thumbnail: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.default?.url,
+                    title: v.snippet.title,
+                    views: videoDetailsMap[v.videoId]?.views || '0',
+                    duration: videoDetailsMap[v.videoId]?.duration || '0:00',
+                    thumbnail: v.snippet.thumbnails.high?.url || v.snippet.thumbnails.default?.url,
                     platform: 'youtube',
-                    videoId: item.id.videoId,
-                    publishedAt: item.snippet.publishedAt
+                    videoId: v.videoId,
+                    publishedAt: v.snippet.publishedAt
                 };
             });
-            
-            const hasNewVideos = youtubeVideos.length > 0 && (!videoData.length || youtubeVideos.some(video => !videoData.some(existing => existing.id === video.id)));
+
+            const hasNewVideos = youtubeVideos.length > 0 && (!videoData.length || youtubeVideos.some(video => !videoData.some(existing => existing.videoId === video.videoId)));
             if (hasNewVideos) {
                 showNotification('Появилось новое видео на канале! 🎬', { type: 'success', duration: 5000, category: 'channel-video' });
             }
@@ -2481,6 +2505,7 @@
                 if (err) err.classList.add('hidden');
                 document.getElementById('adminAuth')?.classList.add('hidden');
                 document.getElementById('adminPanel')?.classList.remove('hidden');
+                renderAdminStats();
                 renderAdminAccounts();
             } else {
                 if (err) { err.textContent = 'Неверный секретный код'; err.classList.remove('hidden'); }
@@ -2500,6 +2525,33 @@
             return await response.json();
         } catch (e) {
             return { error: 'Ошибка соединения с сервером' };
+        }
+    }
+
+    // Статистика сайта для админ-панели
+    async function renderAdminStats() {
+        const box = document.getElementById('adminStats');
+        if (!box) return;
+        try {
+            const response = await fetch('/api/admin/stats', { headers: { 'x-admin-code': adminDigest } });
+            const data = await response.json();
+            if (!response.ok) {
+                box.innerHTML = `<p class="text-sm col-span-2" style="color: var(--text-secondary);">${data.error || 'Не удалось загрузить статистику'}</p>`;
+                return;
+            }
+            const cards = [
+                { icon: 'fa-users', label: 'Пользователи', value: data.users },
+                { icon: 'fa-coins', label: 'Всего монет', value: data.totalCoins },
+                { icon: 'fa-cart-shopping', label: 'Покупок', value: data.purchases },
+                { icon: 'fa-box-open', label: 'Кейсов открыто', value: data.casesOpened }
+            ];
+            box.innerHTML = cards.map(c => `
+                <div class="rounded-xl border px-3 py-2" style="border-color: var(--glass-border); background: rgba(255,255,255,0.06);">
+                    <div class="text-sm" style="color: var(--text-secondary);"><i class="fas ${c.icon} mr-1"></i>${c.label}</div>
+                    <div class="text-lg font-bold mt-0.5">${c.value ?? '—'}</div>
+                </div>`).join('');
+        } catch (e) {
+            box.innerHTML = '<p class="text-sm col-span-2" style="color: var(--text-secondary);">Ошибка соединения с сервером.</p>';
         }
     }
 
@@ -2545,6 +2597,13 @@
                             <button type="button" data-email="${acc.email}" class="admin-grant-coins-btn rounded-lg px-3 py-1 text-sm font-semibold" style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white;">Выдать</button>
                         </div>
                         <div class="flex flex-wrap gap-4">${toggles}</div>
+                        <div class="mt-3 pt-3 border-t flex flex-wrap items-center gap-2" style="border-color: var(--glass-border);">
+                            <input type="text" list="adminItemsList" placeholder="slug предмета" data-email="${acc.email}" class="admin-item-slug w-40 rounded-lg border px-2 py-1 text-sm" style="background: rgba(255,255,255,0.08); border-color: var(--glass-border); color: var(--text-primary);">
+                            <button type="button" data-email="${acc.email}" class="admin-item-grant rounded-lg px-3 py-1 text-sm font-semibold" style="background: rgba(16,185,129,0.25); color: #34d399; border: 1px solid rgba(16,185,129,0.4);">Выдать</button>
+                            <button type="button" data-email="${acc.email}" class="admin-item-remove rounded-lg px-3 py-1 text-sm font-semibold" style="background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4);">Забрать</button>
+                            <button type="button" data-email="${acc.email}" class="admin-purchases-btn rounded-lg px-3 py-1 text-sm font-semibold" style="background: rgba(99,102,241,0.25); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.4);">История покупок</button>
+                        </div>
+                        <div data-email="${acc.email}" class="admin-purchases-box hidden mt-2"></div>
                     </div>`;
         }).join('');
         list.querySelectorAll('.admin-badge-toggle').forEach(cb => {
@@ -2586,6 +2645,80 @@
                 } else {
                     showNotification((result && result.error) || 'Не удалось выдать монеты', { type: 'error', duration: 2200, force: true });
                 }
+            });
+        });
+
+        // Подсказки по slug'ам предметов для выдачи/изъятия (datalist из витрины)
+        if (!document.getElementById('adminItemsList')) {
+            const dl = document.createElement('datalist');
+            dl.id = 'adminItemsList';
+            document.body.appendChild(dl);
+            try {
+                const res = await fetch('/api/shop/items');
+                const data = await res.json();
+                if (Array.isArray(data.items)) {
+                    dl.innerHTML = data.items.map(i => `<option value="${i.slug}">${i.name}</option>`).join('');
+                }
+            } catch (e) { /* даталист останется пустым — slug можно ввести вручную */ }
+        }
+
+        // Выдача / изъятие предмета из инвентаря
+        list.querySelectorAll('.admin-item-grant, .admin-item-remove').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const email = btn.dataset.email;
+                const input = list.querySelector(`.admin-item-slug[data-email="${email}"]`);
+                const itemSlug = input ? input.value.trim() : '';
+                if (!itemSlug) {
+                    showNotification('Введите slug предмета', { type: 'warning', duration: 2200, force: true });
+                    return;
+                }
+                const action = btn.classList.contains('admin-item-grant') ? 'grant' : 'remove';
+                const result = await adminPost('/api/admin/inventory', { email, action, itemSlug });
+                if (result && result.ok) {
+                    showNotification(`${action === 'grant' ? 'Выдан' : 'Забран'} предмет: ${itemSlug}`, { type: 'success', duration: 2200, force: true });
+                    const profile = getStoredProfile();
+                    if (profile && String(profile.email || '').trim().toLowerCase() === String(email).trim().toLowerCase()) {
+                        const refreshed = await fetch('/api/profile', { headers: { Authorization: `Bearer ${getAuthToken()}` } }).then(r => r.json()).catch(() => null);
+                        if (refreshed && refreshed.profile) {
+                            saveProfile(refreshed.profile);
+                            renderProfileState();
+                        }
+                    }
+                } else {
+                    showNotification((result && result.error) || 'Не удалось обновить инвентарь', { type: 'error', duration: 2200, force: true });
+                }
+            });
+        });
+
+        // История покупок пользователя
+        list.querySelectorAll('.admin-purchases-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const email = btn.dataset.email;
+                const box = list.querySelector(`.admin-purchases-box[data-email="${email}"]`);
+                if (!box) return;
+                if (!box.classList.contains('hidden')) {
+                    box.classList.add('hidden');
+                    return;
+                }
+                try {
+                    const response = await fetch(`/api/admin/purchases?email=${encodeURIComponent(email)}`, { headers: { 'x-admin-code': adminDigest } });
+                    const data = await response.json();
+                    if (!response.ok) {
+                        box.innerHTML = `<p class="text-xs" style="color: #f87171;">${data.error || 'Ошибка загрузки'}</p>`;
+                    } else if (!data.purchases || !data.purchases.length) {
+                        box.innerHTML = '<p class="text-xs" style="color: var(--text-secondary);">Покупок пока нет</p>';
+                    } else {
+                        box.innerHTML = `<div class="rounded-lg border p-2 text-xs space-y-1" style="border-color: var(--glass-border); background: rgba(0,0,0,0.2); max-height: 180px; overflow-y: auto;">
+                            ${data.purchases.map(p => `<div class="flex justify-between gap-2">
+                                <span>${p.name} <span style="color: var(--text-secondary);">(${p.type})</span></span>
+                                <span style="color:#fbbf24; white-space:nowrap;">−${p.amount} 🪙 <span style="color: var(--text-secondary);">${new Date(p.createdAt).toLocaleDateString('ru-RU')}</span></span>
+                            </div>`).join('')}
+                        </div>`;
+                    }
+                } catch (e) {
+                    box.innerHTML = '<p class="text-xs" style="color: #f87171;">Ошибка соединения с сервером</p>';
+                }
+                box.classList.remove('hidden');
             });
         });
     }

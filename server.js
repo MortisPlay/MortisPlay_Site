@@ -287,6 +287,28 @@ async function seedShopItems() {
         { slug: 'crystal_frame', weight: 2 },
         { slug: 'royal_frame', weight: 1 }
       ]
+    } },
+    { slug: 'lootbox_luck', name: 'Кейс удачи', price: 100, type: 'lootbox', metadata: {
+      category: 'lootbox',
+      description: 'Дешёвый кейс в стиле CS2 — испытывай удачу! Много обычных предметов и крошечный шанс на мифическую королевскую рамку.',
+      prizes: [
+        { slug: 'avatar_fisheye_duo', weight: 30 },
+        { slug: 'avatar_business_mode', weight: 28 },
+        { slug: 'avatar_watermelon', weight: 25 },
+        { slug: 'avatar_broke_rabbit', weight: 22 },
+        { slug: 'avatar_psydak', weight: 20 },
+        { slug: 'avatar_duck_snack', weight: 18 },
+        { slug: 'avatar_catastrophe', weight: 15 },
+        { slug: 'avatar_fading_cat', weight: 12 },
+        { slug: 'avatar_creeper_hat', weight: 10 },
+        { slug: 'avatar_sleepy_vibe', weight: 8 },
+        { slug: 'gold_frame', weight: 8 },
+        { slug: 'neon_frame', weight: 6 },
+        { slug: 'fire_frame', weight: 4 },
+        { slug: 'cosmic_frame', weight: 3 },
+        { slug: 'crystal_frame', weight: 2 },
+        { slug: 'royal_frame', weight: 1 }
+      ]
     } }
   ];
 
@@ -348,8 +370,10 @@ const createStatements = [
     user_id INTEGER NOT NULL REFERENCES users(id),
     item_id INTEGER NOT NULL REFERENCES items(id),
     amount INTEGER NOT NULL,
+    source TEXT NOT NULL DEFAULT 'buy',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   )`,
+  `ALTER TABLE purchases ADD COLUMN IF NOT EXISTS source TEXT NOT NULL DEFAULT 'buy'`,
   `CREATE TABLE IF NOT EXISTS video_rewards (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id),
@@ -648,8 +672,8 @@ app.post('/api/shop/buy', authenticate, async (req, res, next) => {
         );
         if (upd.rowCount === 1) {
           await client.query(
-            'INSERT INTO purchases (user_id, item_id, amount) VALUES ($1, $2, $3)',
-            [req.user.id, item.id, Number(item.price)]
+            'INSERT INTO purchases (user_id, item_id, amount, source) VALUES ($1, $2, $3, $4)',
+            [req.user.id, item.id, Number(item.price), 'buy']
           );
           return { ok: true };
         }
@@ -727,8 +751,8 @@ app.post('/api/shop/open', authenticate, async (req, res, next) => {
         );
         if (upd.rowCount === 1) {
           await client.query(
-            'INSERT INTO purchases (user_id, item_id, amount) VALUES ($1, $2, $3)',
-            [req.user.id, wonItem.id, Number(item.price)]
+            'INSERT INTO purchases (user_id, item_id, amount, source) VALUES ($1, $2, $3, $4)',
+            [req.user.id, wonItem.id, Number(item.price), 'case']
           );
           return { ok: true };
         }
@@ -887,6 +911,80 @@ app.post('/api/admin/badge', async (req, res, next) => {
       : badges.filter((b) => b !== badgeId);
     await qr('UPDATE users SET badges = $1 WHERE id = $2', [JSON.stringify(next), user.id]);
     res.json({ ok: true, badges: next });
+  } catch (err) { next(err); }
+});
+
+// Статистика сайта для админ-панели
+app.get('/api/admin/stats', async (req, res, next) => {
+  if (!isAdminRequest(req)) return res.status(403).json({ error: 'Доступ запрещён' });
+  try {
+    const usersRow = await q1('SELECT COUNT(*)::int AS count FROM users');
+    const coinsRow = await q1('SELECT COALESCE(SUM(coins), 0)::int AS total FROM users');
+    const purchasesRow = await q1('SELECT COUNT(*)::int AS count FROM purchases');
+    const casesRow = await q1(`SELECT COUNT(*)::int AS count FROM purchases WHERE source = 'case'`);
+    const rewardsRow = await q1('SELECT COALESCE(SUM(coins), 0)::int AS total FROM video_rewards');
+    res.json({
+      users: Number(usersRow && usersRow.count) || 0,
+      totalCoins: Number(coinsRow && coinsRow.total) || 0,
+      purchases: Number(purchasesRow && purchasesRow.count) || 0,
+      casesOpened: Number(casesRow && casesRow.count) || 0,
+      rewardedCoins: Number(rewardsRow && rewardsRow.total) || 0
+    });
+  } catch (err) { next(err); }
+});
+
+// История покупок пользователя
+app.get('/api/admin/purchases', async (req, res, next) => {
+  if (!isAdminRequest(req)) return res.status(403).json({ error: 'Доступ запрещён' });
+  try {
+    const email = normalizeEmail(req.query.email);
+    if (!email) return res.status(400).json({ error: 'Укажите email пользователя' });
+    const user = await q1('SELECT id FROM users WHERE email = $1', [email]);
+    if (!user) return res.status(404).json({ error: 'Пользователь не найден' });
+    const rows = await q(`
+      SELECT p.id, p.amount, p.created_at, i.slug, i.name, i.type, i.metadata
+      FROM purchases p
+      JOIN items i ON i.id = p.item_id
+      WHERE p.user_id = $1
+      ORDER BY p.created_at DESC
+      LIMIT 200`, [user.id]);
+    res.json({
+      purchases: rows.map((r) => ({
+        id: r.id,
+        slug: r.slug,
+        name: r.name,
+        type: r.type,
+        amount: Number(r.amount),
+        createdAt: r.created_at,
+        metadata: parseStoredJson(r.metadata, {})
+      }))
+    });
+  } catch (err) { next(err); }
+});
+
+// Выдача / изъятие предмета из инвентаря пользователя
+app.post('/api/admin/inventory', async (req, res, next) => {
+  if (!isAdminRequest(req)) return res.status(403).json({ error: 'Доступ запрещён' });
+  try {
+    const email = normalizeEmail(req.body.email);
+    const action = String(req.body.action || '').trim(); // 'grant' | 'remove'
+    const itemSlug = String(req.body.itemSlug || '').trim();
+    if (!email || !['grant', 'remove'].includes(action) || !itemSlug) {
+      return res.status(400).json({ error: 'Укажите email, действие (grant/remove) и itemSlug' });
+    }
+    const item = findItemCached(null, itemSlug);
+    if (!item) return res.status(404).json({ error: 'Предмет не найден' });
+    const user = await q1('SELECT * FROM users WHERE email = $1', [email]);
+    if (!user) return res.status(404).json({ error: 'Пользователь не найден' });
+
+    const inventory = parseStoredJson(user.inventory, []);
+    const key = auraIdOf(item) || item.slug;
+    const nextInventory = action === 'grant'
+      ? (inventory.includes(key) ? inventory : [...inventory, key])
+      : inventory.filter((k) => k !== key);
+
+    await qr('UPDATE users SET inventory = $1 WHERE id = $2', [JSON.stringify(nextInventory), user.id]);
+    res.json({ ok: true, inventory: nextInventory });
   } catch (err) { next(err); }
 });
 

@@ -1270,6 +1270,11 @@ a:hover { color: var(--secondary); }
 .video-player-container.css-fullscreen-active .css-fullscreen-expand-btn {
   display: inline-flex;
 }
+/* Полноэкранный режим скрыт на мобильных: у YouTube/Twitch есть собственный
+   нативный фуллскрин. На ПК кнопка остаётся — удобно смотреть с таймером. */
+@media (max-width: 768px) {
+  .fullscreen-player-btn { display: none !important; }
+}
 .video-watch-overlay-hidden {
   opacity: 0;
   transform: translateY(-6px);
