@@ -2169,6 +2169,14 @@
         return document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
     }
 
+    // Мобильные устройства и WebView (в т.ч. Telegram): нативный Fullscreen API для
+    // элементов/iframe здесь ненадёжен (iOS не поддерживает его для div, в Android
+    // WebView YouTube-плеер в таком режиме теряет контролы) — используем CSS-режим.
+    function isTouchOrMobile() {
+        return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent)
+            || (navigator.maxTouchPoints > 0 && window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    }
+
     // Проверка: обёртка плеера (или её iframe) находится в полноэкранном режиме,
     // включая CSS-фолбэк для iOS/Telegram WebView
     function isVideoFullscreen(wrapper) {
@@ -2182,6 +2190,8 @@
         if (!wrapper) return;
         const btn = wrapper.querySelector('.css-fullscreen-exit-btn');
         if (btn) btn.remove();
+        const expandBtn = wrapper.querySelector('.css-fullscreen-expand-btn');
+        if (expandBtn) expandBtn.remove();
     }
 
     // Вход в CSS-полноэкранный режим (мобильные WebView без поддержки Fullscreen API)
@@ -2189,8 +2199,10 @@
         if (!wrapper) return;
         if (!wrapper.dataset.prevBodyOverflow) {
             wrapper.dataset.prevBodyOverflow = document.body.style.overflow || '';
+            wrapper.dataset.prevHtmlOverflow = document.documentElement.style.overflow || '';
         }
         document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
         wrapper.classList.add('fullscreen', 'css-fullscreen-active');
 
         if (!wrapper.querySelector('.css-fullscreen-exit-btn')) {
@@ -2205,6 +2217,26 @@
             });
             wrapper.appendChild(exitBtn);
         }
+        // Кнопка «настоящего» полного экрана: просим сам YouTube-плеер открыть
+        // его собственный полноэкранный режим — он работает корректно даже
+        // в мобильных WebView/Telegram и на iOS.
+        if (!wrapper.querySelector('.css-fullscreen-expand-btn')) {
+            const expandBtn = document.createElement('button');
+            expandBtn.type = 'button';
+            expandBtn.className = 'css-fullscreen-expand-btn';
+            expandBtn.setAttribute('aria-label', 'Открыть в полноэкранном режиме YouTube');
+            expandBtn.innerHTML = '<i class="fas fa-expand"></i>';
+            expandBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                try {
+                    const iframe = wrapper.querySelector('iframe');
+                    if (iframe && iframe.contentWindow) {
+                        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'requestFullscreen' }), '*');
+                    }
+                } catch (err) {}
+            });
+            wrapper.appendChild(expandBtn);
+        }
         // Синхронизируем состояние кнопки/оверлея
         try { wrapper.dispatchEvent(new Event('fullscreenchange')); } catch (e) {}
     }
@@ -2215,7 +2247,9 @@
         wrapper.classList.remove('css-fullscreen-active');
         removeCssFullscreenExitBtn(wrapper);
         document.body.style.overflow = wrapper.dataset.prevBodyOverflow || '';
+        document.documentElement.style.overflow = wrapper.dataset.prevHtmlOverflow || '';
         delete wrapper.dataset.prevBodyOverflow;
+        delete wrapper.dataset.prevHtmlOverflow;
         try { wrapper.dispatchEvent(new Event('fullscreenchange')); } catch (e) {}
     }
 
@@ -2241,7 +2275,9 @@
                 removeCssFullscreenExitBtn(wrapper);
                 if (hadCssFallback) {
                     document.body.style.overflow = wrapper.dataset.prevBodyOverflow || '';
+                    document.documentElement.style.overflow = wrapper.dataset.prevHtmlOverflow || '';
                     delete wrapper.dataset.prevBodyOverflow;
+                    delete wrapper.dataset.prevHtmlOverflow;
                 }
                 fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i> Полноэкранный режим';
             }
@@ -4053,9 +4089,18 @@
                             return;
                         }
 
-                        // Вход: 1) нативный полноэкранный режим.
+                        // Мобильные устройства и WebView (в т.ч. Telegram): нативный
+                        // полноэкранный режим для iframe/элементов здесь ненадёжен —
+                        // iOS не поддерживает его, а в Android WebView YouTube-плеер
+                        // теряет контролы. Используем CSS-полноэкранный режим напрямую.
+                        if (isTouchOrMobile()) {
+                            enterCssFullscreen(wrapper);
+                            return;
+                        }
+
+                        // Вход: 1) нативный полноэкранный режим (десктоп).
                         // Сначала пробуем на самом iframe (для YouTube работает надёжнее),
-                        // затем на обёртке — десктоп, Android Chrome и часть WebView.
+                        // затем на обёртке.
                         let nativeDone = false;
                         try {
                             if (iframe && iframe.requestFullscreen) { await iframe.requestFullscreen(); nativeDone = true; }

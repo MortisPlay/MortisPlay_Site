@@ -1224,7 +1224,9 @@ a:hover { color: var(--secondary); }
   width: 100vw !important;
   max-width: 100vw !important;
   height: 100vh !important;
-  height: 100dvh !important;
+  /* Видимая высота с учётом панелей Telegram/браузера: контролы плеера
+     не уходят под системные панели и остаются доступными */
+  height: var(--app-height, 100dvh) !important;
   margin: 0 !important;
   padding-top: 0 !important;
   border-radius: 0 !important;
@@ -1243,10 +1245,9 @@ a:hover { color: var(--secondary); }
   left: auto;
   z-index: 2147483002;
 }
-.video-player-container .css-fullscreen-exit-btn {
+.video-player-container .css-fullscreen-exit-btn,
+.video-player-container .css-fullscreen-expand-btn {
   position: fixed;
-  top: 0.75rem;
-  left: 0.75rem;
   z-index: 2147483003;
   display: none;
   width: 2.75rem;
@@ -1263,7 +1264,10 @@ a:hover { color: var(--secondary); }
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.video-player-container.css-fullscreen-active .css-fullscreen-exit-btn {
+.video-player-container .css-fullscreen-exit-btn { top: 0.75rem; left: 0.75rem; }
+.video-player-container .css-fullscreen-expand-btn { top: 0.75rem; right: 0.75rem; }
+.video-player-container.css-fullscreen-active .css-fullscreen-exit-btn,
+.video-player-container.css-fullscreen-active .css-fullscreen-expand-btn {
   display: inline-flex;
 }
 .video-watch-overlay-hidden {
