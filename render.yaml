@@ -1,0 +1,14 @@
+# Render Blueprint — опционально, для автоматического деплоя с нуля.
+# Если сервис уже создан через дашборд, достаточно задать в нём DATABASE_URL.
+services:
+  - type: web
+    name: mortis-play
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        sync: false # задаётся вручную: connection string Neon/Supabase
+      - key: PGSSL
+        value: require
