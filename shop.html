@@ -460,6 +460,29 @@
       background: rgba(255,255,255,0.08); color: var(--text-primary);
     }
 
+    /* ---- Окно результата открытия кейса ---- */
+    .loot-result-stage {
+      display: flex; flex-direction: column; align-items: center; gap: 0.45rem;
+      margin: 0.75rem auto 0.25rem; text-align: center;
+    }
+    .loot-result-glow {
+      width: 8.5rem; height: 8.5rem; border-radius: 9999px; position: relative;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 0.4rem;
+    }
+    .loot-result-glow::before {
+      content: ''; position: absolute; inset: -15px; border-radius: 9999px;
+      background: radial-gradient(circle, transparent 55%, rgba(139,92,246,0.65) 63%, transparent 78%);
+      animation: lootResultPulse 1.6s ease-in-out infinite;
+    }
+    @keyframes lootResultPulse {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.07); }
+    }
+    .loot-result-glow .aura-preview { width: 100%; height: 100%; position: relative; z-index: 1; }
+    .loot-result-name { font-size: 1.15rem; font-weight: 800; color: var(--text-primary); }
+    .loot-result-rarity { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.02em; }
+    .loot-result-note { font-size: 0.85rem; color: #34d399; font-weight: 700; }
+
     /* ---- Подвал ---- */
     .footer { border-top: 1px solid var(--glass-border); padding: 2rem 0; }
     .footer-inner { display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 1.5rem; }
@@ -589,6 +612,29 @@
       <div class="confirm-actions">
         <button type="button" class="btn btn-cancel" id="cancelPurchaseBtn"><i class="fas fa-xmark"></i> Отмена</button>
         <button type="button" class="btn btn-confirm" id="confirmPurchaseBtn"><i class="fas fa-check"></i> Подтвердить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Окно результата открытия кейса -->
+  <div id="lootResultModal" class="toast-modal" aria-modal="true" role="dialog" aria-labelledby="lootResultTitle">
+    <div class="toast-modal-card" onclick="event.stopPropagation()">
+      <button type="button" class="toast-modal-close" id="closeLootResultModal" aria-label="Закрыть">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="toast-modal-title gradient-text" id="lootResultTitle">🎁 Из кейса выпало!</div>
+
+      <div class="loot-result-stage">
+        <div class="loot-result-glow">
+          <div id="lootResultAura" class="aura-preview"><div class="inner"><i class="fas fa-user"></i></div></div>
+        </div>
+        <div id="lootResultName" class="loot-result-name">Предмет</div>
+        <div id="lootResultRarity" class="loot-result-rarity rarity-Обычная">Обычная</div>
+        <div class="loot-result-note"><i class="fas fa-gift"></i> Предмет добавлен в инвентарь!</div>
+      </div>
+
+      <div class="confirm-actions">
+        <button type="button" class="btn btn-confirm" id="lootResultDoneBtn"><i class="fas fa-check"></i> Забрать</button>
       </div>
     </div>
   </div>
@@ -935,6 +981,41 @@
       render();
     }
 
+    // ===== Окно результата открытия кейса =====
+    function showLootResult(won) {
+      const modal = document.getElementById('lootResultModal');
+      if (!modal || !won) return;
+      const def = AURA_DEFINITIONS[won.id] || {};
+      const isAvatar = isAvatarItem(def);
+      const image = safeImageUrl(won.image || def.image);
+      const rarity = def.rarity || (isAvatar ? 'Аватарка' : 'Обычная');
+      const rarityClass = `rarity-${String(rarity || 'Обычная').replace(/\s+/g, '-')}`;
+      const aura = document.getElementById('lootResultAura');
+      const nameEl = document.getElementById('lootResultName');
+      const rarityEl = document.getElementById('lootResultRarity');
+      if (aura) {
+        aura.className = `aura-preview aura-${def.id || won.id} ${isAvatar ? 'avatar-preview' : ''} ${def.category === 'limited' && image ? 'preview-rect' : ''}`;
+        aura.style.width = '100%';
+        aura.style.height = '100%';
+        aura.innerHTML = `<div class="inner">${image ? `<img src="${image}" alt="${won.name}" draggable="false">` : '<i class="fas fa-user"></i>'}</div>`;
+      }
+      if (nameEl) nameEl.textContent = won.name;
+      if (rarityEl) {
+        rarityEl.textContent = rarity;
+        rarityEl.className = `loot-result-rarity ${rarityClass}`;
+      }
+      modal.classList.remove('closing');
+      requestAnimationFrame(() => modal.classList.add('show'));
+    }
+
+    function closeLootResult() {
+      const modal = document.getElementById('lootResultModal');
+      if (!modal) return;
+      modal.classList.add('closing');
+      modal.classList.remove('show');
+      setTimeout(() => modal.classList.remove('closing'), 220);
+    }
+
     // ===== Живое превью профиля =====
     function showLivePreview(def) {
       const panel = document.getElementById('livePreview');
@@ -1111,7 +1192,7 @@
             if (!confirm(`Открыть кейс «${def.name}» за ${def.price} монет? Внутри — случайная рамка или аватарка.`)) return;
             res = await openLootbox(auraId);
             if (res && res.ok && res.won) {
-              toast(`Выпало: ${res.won.name}! 🎁`, 'info');
+              showLootResult(res.won);
             } else if (res) {
               toast(res.msg, 'error');
             }
@@ -1153,6 +1234,21 @@
           if (event.target === modal) closePurchaseConfirm();
         });
       }
+
+      // Окно результата кейса
+      const lootResultModal = document.getElementById('lootResultModal');
+      const lootResultClose = document.getElementById('closeLootResultModal');
+      const lootResultDone = document.getElementById('lootResultDoneBtn');
+      if (lootResultClose) lootResultClose.addEventListener('click', closeLootResult);
+      if (lootResultDone) lootResultDone.addEventListener('click', closeLootResult);
+      if (lootResultModal) {
+        lootResultModal.addEventListener('click', (event) => {
+          if (event.target === lootResultModal) closeLootResult();
+        });
+      }
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && lootResultModal && lootResultModal.classList.contains('show')) closeLootResult();
+      });
 
       // Тема
       try { if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme'); } catch (e) {}
