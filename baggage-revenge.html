@@ -90,9 +90,6 @@
       <nav class="br-nav">
         <a href="index.html" class="br-nav-link"><i class="fas fa-home"></i> Главная</a>
       </nav>
-      <div id="brBalance" class="br-balance" style="display:none;">
-        <i class="fas fa-coins"></i><span id="brBalanceText">0</span>
-      </div>
     </div>
   </header>
 
@@ -134,11 +131,6 @@
             <h3>Формат</h3>
             <p>Короткие серии в фирменном стиле Mortis Play: динамичный монтаж, отсылки к стримам и мемам комьюнити.</p>
           </article>
-          <article class="br-card-info">
-            <div class="br-card-info-icon"><i class="fas fa-gift"></i></div>
-            <h3>Награды</h3>
-            <p>Досмотри серию до конца — получишь монеты, а в будущих сериях — ещё и случайный подарок в коллекцию.</p>
-          </article>
         </div>
       </div>
     </section>
@@ -160,11 +152,8 @@
               <span class="br-meta-season" id="brTrailerDuration">—</span>
             </div>
             <h3 class="br-featured-title" id="brTrailerTitle">Трейлер «Багажного возмездия»</h3>
-            <p class="br-featured-desc" id="brTrailerDesc">Это будет Absolute cinema. Досмотри трейлер до конца и забери свою награду.</p>
+            <p class="br-featured-desc" id="brTrailerDesc">Это будет Absolute cinema.</p>
             <button class="br-btn br-btn--red" id="brTrailerWatchBtn"><i class="fas fa-play"></i> Смотреть трейлер</button>
-            <div class="br-reward-line" id="brTrailerRewardLine">
-              <i class="fas fa-coins"></i> <span id="brTrailerRewardText">За полный просмотр: +1000 монет</span>
-            </div>
           </div>
         </article>
       </div>
@@ -187,29 +176,6 @@
       </div>
     </section>
 
-    <!-- ===== НАГРАДЫ ===== -->
-    <section class="br-section br-reveal" id="rewards">
-      <div class="br-container">
-        <h2 class="br-h2">Как получить награду</h2>
-        <div class="br-steps">
-          <div class="br-step">
-            <div class="br-step-num">1</div>
-            <h3>Нажми «Смотреть»</h3>
-            <p>Открой трейлер или серию во встроенном плеере.</p>
-          </div>
-          <div class="br-step">
-            <div class="br-step-num">2</div>
-            <h3>Досмотри до конца</h3>
-            <p>Просмотр засчитывается по времени воспроизведения: паузы останавливают прогресс.</p>
-          </div>
-          <div class="br-step">
-            <div class="br-step-num">3</div>
-            <h3>Забери +1000 монет</h3>
-            <p>Награда начисляется один раз за каждый ролик. В новых сериях добавятся случайные подарки.</p>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <footer class="br-footer">
@@ -227,7 +193,6 @@
 Главный герой, на которого команда взвалила всю вину за провал, сталкивается с жестокостью как со стороны бывших соратников, так и со стороны безжалостной охраны местной верхушки. Пережив унижение, экстрим и предательство (его буквально выбрасывают за борт как ненужный багаж), он доходит до грани отчаяния.
 
 Однако вместо того чтобы сдаться, герой решает совершить радикальный поворот. Поняв, что терять ему больше нечего, он находит неожиданный и коварный выход из ситуации. Собирая новую команду и объединяя силы с теми, кого раньше не брали в расчет, он готовится вернуть себе город и переписать правила игры.</p>
-      <p class="br-details-note">Просмотр каждой серии до конца приносит монеты и подарки. Вход в аккаунт обязателен для получения наград.</p>
       <button class="br-btn br-btn--white" data-br-close="details">Понятно</button>
     </div>
   </div>
@@ -237,14 +202,12 @@
     <div class="br-player-letterbox" id="brPlayerLetterbox">
       <div class="br-player-frame">
         <iframe id="brPlayerIframe" src="" title="Плеер Багажного возмездия" frameborder="0" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        <div class="br-watch-overlay br-watch-overlay--hidden" id="brWatchOverlay">00:00</div>
       </div>
       <div class="br-player-bar">
         <div class="br-player-info">
           <span class="br-player-title" id="brPlayerTitle">Сериал</span>
-          <span class="br-player-status" id="brPlayerStatus">Досмотрите до конца, чтобы получить награду</span>
+          <span class="br-player-status" id="brPlayerStatus">Нажмите Play, чтобы начать просмотр</span>
         </div>
-        <div class="br-player-progress"><div class="br-player-progress-fill" id="brPlayerProgress"></div></div>
       </div>
       <button class="br-player-close" id="brPlayerClose" aria-label="Закрыть плеер"><i class="fas fa-times"></i></button>
     </div>
