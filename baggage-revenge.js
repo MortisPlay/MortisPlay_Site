@@ -21,13 +21,20 @@
         id: 'br-trailer',
         type: 'trailer',
         title: 'Трейлер',
-        videoId: 'Y3Meb8Z-nyU', // ← ВСТАВЬТЕ ID трейлера с YouTube
+        videoId: 'Y3Meb8Z-nyU', // ID трейлера с YouTube
         duration: '1:02',
         date: '25 сентября 2026',
         desc: 'Это будет Absolute cinema.'
-      }
-      // Пример добавления серии:
-      // { id: 'br-ep1', type: 'episode', title: 'Серия 1 · Пропажа', videoId: '...', duration: '6:40', date: '...', desc: '...' }
+      },
+      // Серии 1–8: ещё не вышли — без videoId карточки показывают статус «Скоро».
+      { id: 'br-ep1', type: 'episode', title: 'Серия 1 · Скоро', date: 'Скоро' },
+      { id: 'br-ep2', type: 'episode', title: 'Серия 2 · Скоро', date: 'Скоро' },
+      { id: 'br-ep3', type: 'episode', title: 'Серия 3 · Скоро', date: 'Скоро' },
+      { id: 'br-ep4', type: 'episode', title: 'Серия 4 · Скоро', date: 'Скоро' },
+      { id: 'br-ep5', type: 'episode', title: 'Серия 5 · Скоро', date: 'Скоро' },
+      { id: 'br-ep6', type: 'episode', title: 'Серия 6 · Скоро', date: 'Скоро' },
+      { id: 'br-ep7', type: 'episode', title: 'Серия 7 · Скоро', date: 'Скоро' },
+      { id: 'br-ep8', type: 'episode', title: 'Серия 8 · Скоро', date: 'Скоро' }
     ]
   };
 
@@ -37,11 +44,23 @@
   function isEpisodeLive(episode) {
     return VIDEO_ID_RE.test(String(episode.videoId || ''));
   }
+  function findEpisodeByType(type) {
+    for (var i = 0; i < SERIES.episodes.length; i++) {
+      if (SERIES.episodes[i].type === type) return SERIES.episodes[i];
+    }
+    return null;
+  }
   function $(id) { return document.getElementById(id); }
   function escapeHtml(str) {
+    // Сущности собираются через fromCharCode(38) (&), чтобы они не
+    // терялись при записи/передаче файла как HTML-код.
+    var amp = String.fromCharCode(38);
     return String(str == null ? '' : str)
-      .replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>')
-      .replace(/"/g, '"').replace(/'/g, '&#039;');
+      .replace(/&/g, amp + 'amp;')
+      .replace(/</g, amp + 'lt;')
+      .replace(/>/g, amp + 'gt;')
+      .replace(/"/g, amp + 'quot;')
+      .replace(/'/g, amp + '#039;');
   }
 
   /* ===================== ЛОАДЕР ===================== */
@@ -102,6 +121,14 @@
       : '<i class="fas fa-hourglass-half"></i> Трейлер скоро';
     watchBtn.disabled = !live;
     watchBtn.classList.toggle('br-btn--disabled', !live);
+
+    // Клик по оверлею на постере тоже открывает трейлер
+    var playOverlay = $('brTrailerPlay');
+    if (playOverlay) {
+      playOverlay.addEventListener('click', function () {
+        openPlayer(trailer);
+      });
+    }
   }
 
   /* ===================== ОТРИСОВКА ЛЕНТЫ РОЛИКОВ ===================== */
@@ -132,7 +159,7 @@
 
       card.addEventListener('click', function () {
         if (!live) {
-          showToast('Этот ролик появится совсем скоро 🧳', 'info');
+          showToast('Этот ролик появится совсем скоро', 'info');
           return;
         }
         openPlayer(episode);
@@ -177,13 +204,9 @@
       '<span class="br-meta-hd">HD</span>';
     $('brHeroLogline').textContent = SERIES.logline;
 
-    var trailer = SERIES.episodes.find(function (e) { return e.type === 'trailer'; });
+    var trailer = findEpisodeByType('trailer');
     $('brWatchTrailerBtn').addEventListener('click', function () {
-      if (trailer && isEpisodeLive(trailer)) {
-        openPlayer(trailer);
-      } else {
-        showToast('Трейлер выйдет совсем скоро 🎬', 'info');
-      }
+      openPlayer(trailer);
     });
     $('brMoreInfoBtn').addEventListener('click', function () {
       openModal('brDetailsModal');
@@ -215,25 +238,17 @@
   }
 
   /* ===================== КИНОПЛЕЕР ===================== */
+  // Плеер на встроенном YouTube-iframe (без IFrame API).
+  // Важно: IFrame API (new YT.Player) ЗАМЕНЯЕТ iframe на свой и теряет
+  // id="brPlayerIframe" — после первого закрытия кнопка переставала работать.
+  // Здесь элемент с id никогда не заменяется, поэтому повторные открытия надёжны.
   var currentEpisode = null;
-  var currentPlayer = null;
-  var ytApiPromise = null;
-  var apiFailedTimer = null;
-
-  function loadYouTubeIframeApi() {
-    if (window.YT && window.YT.Player) return Promise.resolve(window.YT);
-    if (ytApiPromise) return ytApiPromise;
-    ytApiPromise = new Promise(function (resolve) {
-      window.onYouTubeIframeAPIReady = function () { resolve(window.YT); };
-      var tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      tag.async = true;
-      document.head.appendChild(tag);
-    });
-    return ytApiPromise;
-  }
 
   function openPlayer(episode) {
+    if (!episode || !isEpisodeLive(episode)) {
+      showToast('Этот ролик появится совсем скоро 🎬', 'info');
+      return;
+    }
     if (currentEpisode && currentEpisode.id === episode.id && $('brPlayerModal').classList.contains('open')) {
       return; // уже открыт этот ролик
     }
@@ -242,65 +257,37 @@
     currentEpisode = episode;
     var modal = $('brPlayerModal');
     var frame = $('brPlayerIframe');
+    if (!modal || !frame) return;
 
     $('brPlayerTitle').textContent = episode.title + ' · ' + SERIES.title;
-    $('brPlayerStatus').textContent = 'Нажмите Play, чтобы начать просмотр.';
+    $('brPlayerStatus').textContent = 'Загрузка…';
 
     frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(episode.videoId) +
-      '?enablejsapi=1&autoplay=1&playsinline=1&modestbranding=1&rel=0&origin=' + encodeURIComponent(window.location.origin);
+      '?autoplay=1&playsinline=1&modestbranding=1&rel=0&origin=' + encodeURIComponent(window.location.origin);
 
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
 
-    // API может долго грузиться (блокировки в РФ) — таймер-подсказка
-    apiFailedTimer = setTimeout(function () {
-      $('brPlayerStatus').textContent = 'Видео играет встроенным плеером.';
-    }, 8000);
-
-    loadYouTubeIframeApi().then(function (YT) {
-      clearTimeout(apiFailedTimer);
-      try {
-        currentPlayer = new YT.Player(frame.id, {
-          events: {
-            onStateChange: function (event) { handlePlayerState(episode, event); },
-            onError: function () {
-              $('brPlayerStatus').textContent = 'Видео недоступно или заблокировано.';
-            }
-          }
-        });
-      } catch (err) {
-        console.warn('Не удалось создать YT.Player:', err);
+    // Если видео долго грузится (медленная сеть, блокировки) — подсказка
+    setTimeout(function () {
+      if (currentEpisode && currentEpisode.id === episode.id && modal.classList.contains('open')) {
+        $('brPlayerStatus').textContent = 'Видео играет встроенным плеером.';
       }
-    }).catch(function () {
-      clearTimeout(apiFailedTimer);
-      $('brPlayerStatus').textContent = 'Видео играет встроенным плеером.';
-    });
+    }, 6000);
   }
 
   function closePlayer(resetFrame) {
-    clearTimeout(apiFailedTimer);
-    if (currentPlayer) {
-      try { currentPlayer.destroy(); } catch (e) {}
-      currentPlayer = null;
-    }
     currentEpisode = null;
     var modal = $('brPlayerModal');
-    modal.classList.remove('open');
-    modal.setAttribute('aria-hidden', 'true');
+    if (modal) {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
     document.body.style.overflow = '';
-    if (resetFrame) $('brPlayerIframe').src = '';
-  }
-
-  function handlePlayerState(episode, event) {
-    if (event.data === YT.PlayerState.PLAYING) {
-      $('brPlayerStatus').textContent = 'Просмотр идёт…';
-    } else if (event.data === YT.PlayerState.PAUSED) {
-      $('brPlayerStatus').textContent = 'Пауза.';
-    } else if (event.data === YT.PlayerState.BUFFERING) {
-      $('brPlayerStatus').textContent = 'Загрузка…';
-    } else if (event.data === YT.PlayerState.ENDED) {
-      $('brPlayerStatus').textContent = 'Видео завершено.';
+    if (resetFrame) {
+      var frame = $('brPlayerIframe');
+      if (frame) frame.src = '';
     }
   }
 
@@ -331,8 +318,7 @@
       if (e.target === this || e.target.classList.contains('br-player-letterbox')) closePlayer(false);
     });
     $('brTrailerWatchBtn').addEventListener('click', function () {
-      var trailer = SERIES.episodes.find(function (e) { return e.type === 'trailer'; });
-      if (trailer && isEpisodeLive(trailer)) openPlayer(trailer);
+      openPlayer(findEpisodeByType('trailer'));
     });
 
     renderTrailer();
