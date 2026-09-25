@@ -29,6 +29,11 @@
   var STARTING_COINS = 1000;
   var LIMITED_STOCK = 10; // тираж «Ограниченного выпуска»
 
+  // ===== Конфиг сериалов: награды за полный просмотр =====
+  var SERIES_REWARDS = {
+    'baggage-revenge': { coins: 1000, giftEnabled: false }
+  };
+
   // ===== Каталог товаров (копия витрины из server.js / seedShopItems) =====
   var ITEMS = [
     { slug: 'gold_frame', name: 'Золотая рамка', price: 500, type: 'aura', metadata: { auraId: 'gold' } },
@@ -212,7 +217,8 @@
       inventory: Array.isArray(account.inventory) ? account.inventory.slice() : [],
       equipped: account.equipped || null,
       equippedAvatar: account.equippedAvatar || null,
-      rewardedVideos: Array.isArray(account.rewardedVideos) ? account.rewardedVideos.slice() : []
+      rewardedVideos: Array.isArray(account.rewardedVideos) ? account.rewardedVideos.slice() : [],
+      seriesRewardVideos: Array.isArray(account.seriesRewardVideos) ? account.seriesRewardVideos.slice() : []
     };
   }
 
@@ -324,8 +330,10 @@
       equipped: null,
       equippedAvatar: null,
       rewardedVideos: [],
+      seriesRewardVideos: [],
       purchases: [],
-      videoHistory: []
+      videoHistory: [],
+      seriesRewards: []
     };
     accounts[email] = account;
     saveAccounts(accounts);
@@ -684,6 +692,51 @@
     return makeResponse(200, { history: history });
   }
 
+  // POST /api/series/reward — награда за полный просмотр серии
+  function handleSeriesReward(body) {
+    var account = requireAccount();
+    var seriesSlug = String(body.seriesSlug || '').trim();
+    var episodeId = String(body.episodeId || '').trim();
+    var videoId = String(body.videoId || '').trim();
+    if (!seriesSlug || !episodeId || !videoId) {
+      return errorResponse(400, 'Параметры серии обязательны');
+    }
+    var series = SERIES_REWARDS[seriesSlug];
+    if (!series) {
+      return errorResponse(400, 'Неизвестная серия');
+    }
+    var coins = Number(series.coins) || 0;
+
+    var history = account.seriesRewards || [];
+    if (history.some(function (r) { return String(r.video_id) === String(videoId); })) {
+      return errorResponse(409, 'Награда за этот ролик уже получена');
+    }
+
+    // Начисление: +монеты, пометка ролика как «награждённого»
+    account.coins = Number(account.coins) + coins;
+    account.seriesRewardVideos = account.seriesRewardVideos || [];
+    if (account.seriesRewardVideos.indexOf(String(videoId)) < 0) {
+      account.seriesRewardVideos.push(String(videoId));
+    }
+    history.push({
+      series_slug: seriesSlug,
+      episode_id: episodeId,
+      video_id: String(videoId),
+      coins: coins,
+      gift_slug: null,
+      rewarded_at: new Date().toISOString()
+    });
+    account.seriesRewards = history;
+
+    var accounts = getAccounts();
+    accounts[account.email] = account;
+    saveAccounts(accounts);
+
+    var profile = publicProfile(account);
+    saveActiveProfile(profile);
+    return makeResponse(200, { coins: coins, gift: null, profile: profile });
+  }
+
   // Админ-панель временно отключена (нужна общая БД всех пользователей)
   function handleAdmin() {
     return errorResponse(403, 'Админ-панель временно недоступна в статическом режиме');
@@ -717,6 +770,7 @@
       if (method === 'POST' && pathname === '/api/shop/open') return handleOpen(body);
       if (method === 'POST' && pathname === '/api/videos/reward') return handleVideoReward(body);
       if (method === 'GET' && pathname === '/api/videos/history') return handleVideoHistory();
+      if (method === 'POST' && pathname === '/api/series/reward') return handleSeriesReward(body);
       if (pathname.indexOf('/api/admin') === 0) return handleAdmin();
       if (pathname === '/api/notes') return makeResponse(200, []);
       return makeResponse(404, { error: 'Не найдено' });

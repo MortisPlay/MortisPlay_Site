@@ -182,7 +182,8 @@ function safeUserProfile(user) {
     inventory: normalizeInventoryItems(parseStoredJson(user.inventory, [])),
     equipped: normalizeEquippedValue(user.equipped),
     equippedAvatar: normalizeEquippedAvatarValue(user.equipped_avatar),
-    rewardedVideos: parseStoredJson(user.rewarded_videos, [])
+    rewardedVideos: parseStoredJson(user.rewarded_videos, []),
+    seriesRewardVideos: parseStoredJson(user.series_rewarded, [])
   };
 }
 
@@ -347,8 +348,10 @@ const createStatements = [
     inventory TEXT NOT NULL DEFAULT '[]',
     equipped TEXT,
     equipped_avatar TEXT,
-    rewarded_videos TEXT NOT NULL DEFAULT '[]'
+    rewarded_videos TEXT NOT NULL DEFAULT '[]',
+    series_rewarded TEXT NOT NULL DEFAULT '[]'
   )`,
+  `ALTER TABLE users ADD COLUMN IF NOT EXISTS series_rewarded TEXT NOT NULL DEFAULT '[]'`,
   `CREATE TABLE IF NOT EXISTS sessions (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id),
@@ -382,6 +385,18 @@ const createStatements = [
     coins INTEGER NOT NULL,
     source TEXT NOT NULL
   )`,
+  `CREATE TABLE IF NOT EXISTS series_rewards (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id),
+    series_slug TEXT NOT NULL,
+    episode_id TEXT NOT NULL,
+    video_id TEXT NOT NULL,
+    coins INTEGER NOT NULL,
+    gift_slug TEXT,
+    rewarded_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_series_rewards_user ON series_rewards(user_id, video_id)`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_series_rewards_unique ON series_rewards(user_id, video_id)`,
   `CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(token)`,
   `CREATE INDEX IF NOT EXISTS idx_purchases_item ON purchases(item_id)`,
   `CREATE INDEX IF NOT EXISTS idx_video_rewards_user ON video_rewards(user_id, video_id)`,
@@ -445,8 +460,8 @@ app.post('/api/auth/register', async (req, res, next) => {
     const password_hash = hashPassword(password, salt);
     // ON CONFLICT — защита от гонок при параллельных регистрациях одного email
     const result = await qr(
-      `INSERT INTO users (email, name, password_hash, password_salt, customization, badges, settings, coins, inventory, equipped, rewarded_videos)
-       VALUES ($1, $2, $3, $4, '{}', '[]', '{}', $5, '[]', NULL, '[]')
+      `INSERT INTO users (email, name, password_hash, password_salt, customization, badges, settings, coins, inventory, equipped, rewarded_videos, series_rewarded)
+       VALUES ($1, $2, $3, $4, '{}', '[]', '{}', $5, '[]', NULL, '[]', '[]')
        ON CONFLICT (email) DO NOTHING
        RETURNING id`,
       [email, name, password_hash, salt, STARTING_COINS]
@@ -856,6 +871,103 @@ app.get('/api/videos/history', authenticate, async (req, res, next) => {
     );
     res.json({ history: rows });
   } catch (err) { next(err); }
+});
+
+// --- Награды за просмотр серий «Багажное возмездие» ---
+const SERIES_REWARDS = {
+  'baggage-revenge': {
+    coins: 1000,
+    // giftEnabled включает случайный подарок за полный просмотр.
+    // Пока вышли только трейлеры — подарки отключены (только монеты).
+    giftEnabled: false,
+    gifts: [
+      { slug: 'gold_frame', weight: 40 },
+      { slug: 'neon_frame', weight: 30 },
+      { slug: 'fire_frame', weight: 15 },
+      { slug: 'cosmic_frame', weight: 10 },
+      { slug: 'royal_frame', weight: 5 }
+    ]
+  }
+};
+
+app.post('/api/series/reward', authenticate, async (req, res, next) => {
+  try {
+    const seriesSlug = String(req.body.seriesSlug || '').trim();
+    const episodeId = String(req.body.episodeId || '').trim();
+    const videoId = String(req.body.videoId || '').trim();
+    if (!seriesSlug || !episodeId || !videoId) {
+      return res.status(400).json({ error: 'Параметры серии обязательны' });
+    }
+    const series = SERIES_REWARDS[seriesSlug];
+    if (!series) {
+      return res.status(400).json({ error: 'Неизвестная серия' });
+    }
+    const coins = Number(series.coins) || 0;
+
+    const result = await withTransaction(async (client) => {
+      const existing = await client.query(
+        'SELECT 1 FROM series_rewards WHERE user_id = $1 AND video_id = $2 LIMIT 1',
+        [req.user.id, videoId]
+      ).then((r) => r.rows[0]);
+      if (existing) {
+        return { error: 'Награда за этот ролик уже получена', status: 409 };
+      }
+
+      // Случайный подарок (включается флагом giftEnabled в конфиге сериала)
+      let gift = null;
+      if (series.giftEnabled && Array.isArray(series.gifts) && series.gifts.length) {
+        const totalWeight = series.gifts.reduce((sum, g) => sum + (Number(g.weight) || 0), 0);
+        let roll = Math.random() * Math.max(1, totalWeight);
+        let chosen = series.gifts[0];
+        for (const g of series.gifts) {
+          roll -= Number(g.weight) || 0;
+          if (roll <= 0) { chosen = g; break; }
+        }
+        const giftItem = findItemCached(null, chosen.slug);
+        if (giftItem) {
+          const invRow = await client.query('SELECT inventory FROM users WHERE id = $1', [req.user.id]).then((r) => r.rows[0]);
+          const inventory = normalizeInventoryItems(parseStoredJson(invRow.inventory, []));
+          const key = auraIdOf(giftItem) || giftItem.slug;
+          if (!inventory.includes(key)) inventory.push(key);
+          await client.query('UPDATE users SET inventory = $1 WHERE id = $2', [JSON.stringify(inventory), req.user.id]);
+          const meta = parseStoredJson(giftItem.metadata, {});
+          gift = { slug: giftItem.slug, name: giftItem.name, image: meta.image || '' };
+        }
+      }
+
+      await client.query(
+        'INSERT INTO series_rewards (user_id, series_slug, episode_id, video_id, coins, gift_slug) VALUES ($1, $2, $3, $4, $5, $6)',
+        [req.user.id, seriesSlug, episodeId, videoId, coins, gift ? gift.slug : null]
+      );
+
+      const userRow = await client.query('SELECT series_rewarded, coins FROM users WHERE id = $1', [req.user.id]).then((r) => r.rows[0]);
+      const rewarded = parseStoredJson(userRow.series_rewarded, []).map(String);
+      if (!rewarded.includes(String(videoId))) rewarded.push(String(videoId));
+
+      // Оптимистичное начисление монет (защита от гонок запросов)
+      const currentCoins = Number(userRow.coins);
+      const upd = await client.query(
+        'UPDATE users SET coins = $1, series_rewarded = $2 WHERE id = $3 AND coins = $4',
+        [currentCoins + coins, JSON.stringify(rewarded), req.user.id, currentCoins]
+      );
+      if (upd.rowCount === 0) {
+        return { error: 'Пользователь не найден', status: 401 };
+      }
+      return { ok: true, gift: gift };
+    });
+
+    if (result.error) {
+      return res.status(result.status).json({ error: result.error });
+    }
+
+    const updated = await q1('SELECT * FROM users WHERE id = $1', [req.user.id]);
+    res.json({ coins, gift: result.gift, profile: safeUserProfile(updated) });
+  } catch (err) {
+    if (isUniqueViolation(err)) {
+      return res.status(409).json({ error: 'Награда за этот ролик уже получена' });
+    }
+    next(err);
+  }
 });
 
 // --- Админ-панель ---
