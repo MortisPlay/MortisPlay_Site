@@ -149,6 +149,12 @@ body {
   color: var(--br-gray); margin-bottom: 1.1rem;
 }
 .br-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--br-red); box-shadow: 0 0 12px var(--br-red); }
+/* Мигающий индикатор (live/в разработке) */
+.br-dot--blink { animation: brDotBlink 1.6s ease-in-out infinite; }
+@keyframes brDotBlink {
+  0%, 100% { opacity: 1; box-shadow: 0 0 12px var(--br-red); }
+  50% { opacity: 0.35; box-shadow: 0 0 4px var(--br-red); }
+}
 .br-hero-title {
   font-size: clamp(2.8rem, 9vw, 5.5rem);
   font-weight: 800; line-height: 0.95; letter-spacing: 0.02em;
@@ -338,6 +344,68 @@ body {
 .br-step h3 { font-size: 1rem; font-weight: 800; margin-bottom: 0.45rem; }
 .br-step p { color: var(--br-gray); font-size: 0.88rem; line-height: 1.55; }
 
+/* ===== Вкладки сериалов платформы ===== */
+.br-tabs {
+  display: flex; flex-wrap: wrap; gap: 0.55rem;
+  margin-bottom: 1.6rem;
+}
+.br-tab {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  border: 1px solid var(--br-border);
+  background: rgba(20,20,20,0.55);
+  color: var(--br-gray);
+  font-family: inherit; font-weight: 700; font-size: 0.9rem;
+  padding: 0.55rem 1rem; border-radius: 9999px;
+  cursor: pointer; transition: all 0.22s ease;
+  backdrop-filter: blur(6px);
+}
+.br-tab:hover { color: var(--br-white); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.07); }
+.br-tab.is-active {
+  color: #fff; background: var(--br-red);
+  border-color: var(--br-red); box-shadow: 0 6px 22px rgba(229,9,20,0.4);
+}
+.br-tab-name { white-space: nowrap; }
+.br-tab-badge {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.62rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+  color: #fbbf24; background: rgba(0,0,0,0.45);
+  padding: 0.18rem 0.5rem; border-radius: 9999px;
+}
+.br-tab.is-active .br-tab-badge { color: #fff; background: rgba(0,0,0,0.3); }
+
+/* Скрытие секций без данных (нет трейлера/серий) */
+.br-hidden { display: none !important; }
+
+/* ===== За кадром ===== */
+.br-behind {
+  margin-top: 2.6rem;
+  border: 1px solid var(--br-border);
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(229,9,20,0.08), rgba(20,20,20,0.65));
+  padding: 1.6rem 1.5rem;
+}
+.br-behind-title {
+  display: flex; align-items: center; gap: 0.55rem;
+  font-size: 1.15rem; font-weight: 800; margin-bottom: 0.6rem;
+}
+.br-behind-lead { color: var(--br-gray); font-size: 0.95rem; line-height: 1.6; max-width: 52rem; margin-bottom: 1.4rem; }
+.br-gallery {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem;
+}
+@media (min-width: 768px) { .br-gallery { grid-template-columns: repeat(4, 1fr); } }
+.br-gallery-item {
+  position: relative; border-radius: 0.7rem; overflow: hidden;
+  aspect-ratio: 16/10; background: #141414; border: 1px solid var(--br-border);
+}
+.br-gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+.br-gallery-item:hover img { transform: scale(1.06); }
+.br-gallery-item figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+  color: #fff; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+  padding: 1.2rem 0.6rem 0.45rem;
+}
+
 /* ===== Футер ===== */
 .br-footer {
   position: relative; z-index: 2; text-align: center;
@@ -437,6 +505,9 @@ body {
   .br-hero-title { font-size: clamp(2.4rem, 13vw, 3.4rem); }
   .br-hero-actions .br-btn { flex: 1; }
   .br-player-bar { flex-direction: column; align-items: stretch; gap: 0.5rem; }
+  .br-tabs { gap: 0.45rem; }
+  .br-tab { font-size: 0.82rem; padding: 0.45rem 0.85rem; }
+  .br-gallery { grid-template-columns: 1fr 1fr; }
 }
 
 /* Доступность: без анимаций при выборе пользователя */
