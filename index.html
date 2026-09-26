@@ -2985,7 +2985,8 @@
         if (profileAvatarPreview) {
             const equippedAvatarId = getProfileEquippedAvatar(profile);
             const equippedAvatarDef = equippedAvatarId ? AURA_DEFINITIONS[equippedAvatarId] : null;
-            const avatarSrc = profile?.customization?.avatar || (equippedAvatarDef ? equippedAvatarDef.image : '') || '';
+            // Надетая аватарка из магазина имеет приоритет над своей загруженной фотографией
+            const avatarSrc = (equippedAvatarDef ? equippedAvatarDef.image : '') || profile?.customization?.avatar || '';
             if (avatarSrc) {
                 profileAvatarPreview.src = avatarSrc;
                 profileAvatarPreview.classList.remove('hidden');
@@ -3012,7 +3013,7 @@
             if (menuProfileAvatarImg && menuProfileAvatarFallback) {
                 const equippedAvatarId = isLoggedIn ? getProfileEquippedAvatar(profile) : null;
                 const equippedAvatarDef = equippedAvatarId ? AURA_DEFINITIONS[equippedAvatarId] : null;
-                const avatarSrc = (isLoggedIn && profile?.customization?.avatar) || (equippedAvatarDef ? equippedAvatarDef.image : '') || '';
+                const avatarSrc = (equippedAvatarDef ? equippedAvatarDef.image : '') || (isLoggedIn && profile?.customization?.avatar) || '';
                 if (avatarSrc) {
                     menuProfileAvatarImg.src = avatarSrc;
                     menuProfileAvatarImg.classList.remove('hidden');
@@ -3488,6 +3489,7 @@
                         coins: loadCoinsFromAccount(pendingVerification.email),
                         inventory: loadInventoryFromAccount(pendingVerification.email),
                         equipped: loadEquippedFromAccount(pendingVerification.email),
+                        equippedAvatar: loadEquippedAvatarFromAccount(pendingVerification.email),
                         rewardedVideos: loadRewardedVideosFromAccount(pendingVerification.email)
                     };
                     saveProfile(profile);
@@ -3507,6 +3509,7 @@
                         coins: STARTING_COINS,
                         inventory: [],
                         equipped: null,
+                        equippedAvatar: null,
                         rewardedVideos: []
                     };
                     saveProfile(profile);
@@ -3521,6 +3524,7 @@
                         coins: STARTING_COINS,
                         inventory: [],
                         equipped: null,
+                        equippedAvatar: null,
                         rewardedVideos: []
                     };
                     saveAccounts(accounts);
@@ -3578,6 +3582,8 @@
                 if (!profile) return;
                 const nextProfile = {
                     ...profile,
+                    // Своя фотография заменяет надетую аватарку из магазина
+                    equippedAvatar: null,
                     customization: {
                         ...(profile.customization || {}),
                         avatar: reader.result
@@ -3916,6 +3922,7 @@
                         accounts[email].coins = getProfileCoins(profile);
                         accounts[email].inventory = getProfileInventory(profile);
                         accounts[email].equipped = profile.equipped && AURA_DEFINITIONS[profile.equipped] ? profile.equipped : null;
+                        accounts[email].equippedAvatar = profile.equippedAvatar && AURA_DEFINITIONS[profile.equippedAvatar] ? profile.equippedAvatar : null;
                         saveAccounts(accounts);
                     }
                 } catch (e) {}
@@ -4899,6 +4906,14 @@
         const id = shopState.pendingBuyId;
         closeShopPurchaseModal();
         const res = await shopPurchaseRequest(id);
+        // Купленная аватарка надевается на профиль автоматически
+        if (res && res.ok) {
+            const def = findShopItem(id);
+            if (def && isShopAvatarItem(def)) {
+                const equipRes = await shopEquip(id);
+                if (equipRes && equipRes.ok) res.msg = 'Куплено! ' + equipRes.msg;
+            }
+        }
         if (res && res.msg) showNotification(res.msg, { type: res.ok ? 'success' : 'warning', duration: 3000, force: true });
         await refreshShopAfterServerChange();
     }

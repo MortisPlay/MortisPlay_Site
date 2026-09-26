@@ -812,7 +812,19 @@
         if (result.profile) {
           saveProfile(result.profile);
         }
-        return { ok:true, msg:'Куплено!' };
+        // Купленная аватарка надевается на профиль автоматически и сразу
+        // сохраняется на сервере — иначе после перезагрузки страницы она
+        // так и не появится в профиле.
+        let equipMsg = '';
+        if (isAvatarItem(def)) {
+          const equippedRes = await equip(auraId);
+          if (equippedRes && equippedRes.ok) {
+            equipMsg = ' Аватарка применена!';
+          } else if (equippedRes && equippedRes.msg && equippedRes.msg !== 'Предмет не в инвентаре') {
+            equipMsg = ' ' + equippedRes.msg;
+          }
+        }
+        return { ok:true, msg:'Куплено!' + equipMsg };
       } catch (error) {
         return { ok:false, msg:'Ошибка соединения с сервером' };
       }
