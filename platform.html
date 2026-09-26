@@ -27,11 +27,11 @@
   </script>
 
   <title>Платформа</title>
-  <meta name="description" content="Багажное возмездие — новый анимационный мини-сериал Mortis Play. Смотри серии, получай монеты за полный просмотр!" />
+  <meta name="description" content="Платформа Mortis Play — анимационные сериалы: «Багажное возмездие», «Бароны», «Типичные случаи и ситуации». Смотри серии и следи за новыми проектами!" />
   <meta name="robots" content="index,follow" />
   <link rel="icon" href="images/favicon.ico" />
-  <meta property="og:title" content="Багажное возмездие — сериал Mortis Play" />
-  <meta property="og:description" content="Новый анимационный мини-сериал Mortis Play. Смотри до конца — получай монеты и подарки!" />
+  <meta property="og:title" content="Платформа Mortis Play — анимационные сериалы" />
+  <meta property="og:description" content="Анимационные сериалы Mortis Play: «Багажное возмездие» и новые проекты в разработке — «Бароны», «Типичные случаи и ситуации»." />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="ru_RU" />
   <!-- Неблокирующая загрузка шрифтов и иконок (ускоряет первую отрисовку) -->
@@ -55,15 +55,15 @@
     .br-loader-title { font-family: 'Manrope', 'Segoe UI', sans-serif; font-weight: 800; letter-spacing: .12em; font-size: .95rem; color: #fff; text-transform: uppercase; }
     .br-loader-sub { font-family: 'DM Mono', monospace; font-size: .72rem; color: #6d6d6d; letter-spacing: .08em; }
   </style>
-  <link rel="stylesheet" href="baggage-revenge.css">
+  <link rel="stylesheet" href="platform.css">
 </head>
 <body>
   <!-- Экран загрузки -->
   <div id="brLoader" aria-hidden="true">
     <div class="br-loader-inner">
       <div class="br-loader-ring"></div>
-      <div class="br-loader-title">Багажное возмездие</div>
-      <div class="br-loader-sub">Скоро начнётся…</div>
+      <div class="br-loader-title">Платформа</div>
+      <div class="br-loader-sub">Загрузка…</div>
     </div>
   </div>
 
@@ -99,15 +99,12 @@
       <div class="br-hero-bg" id="brHeroBg"></div>
       <div class="br-hero-shade"></div>
       <div class="br-hero-content">
-        <div class="br-hero-kicker"><span class="br-dot"></span> Эксклюзивный сериал Mortis Play</div>
-        <h1 class="br-hero-title" id="brHeroTitle">БАГАЖНОЕ<br>ВОЗМЕЗДИЕ</h1>
-        <div class="br-meta" id="brHeroMeta">
-          <span class="br-meta-year">2026</span>
-          <span class="br-meta-age">16+</span>
-          <span class="br-meta-season">Трейлер</span>
-          <span class="br-meta-hd">HD</span>
-        </div>
-        <p class="br-hero-logline" id="brHeroLogline">Его гнобили, изгнали - он теперь готов отомстить всем, кто мешал его пути.</p>
+        <!-- Переключатель сериалов платформы -->
+        <div class="br-tabs" id="brTabs" role="tablist" aria-label="Сериалы платформы"></div>
+        <div class="br-hero-kicker" id="brHeroKicker"><span class="br-dot br-dot--blink"></span></div>
+        <h1 class="br-hero-title" id="brHeroTitle"></h1>
+        <div class="br-meta" id="brHeroMeta"></div>
+        <p class="br-hero-logline" id="brHeroLogline"></p>
         <div class="br-hero-actions">
           <button class="br-btn br-btn--white" id="brWatchTrailerBtn"><i class="fas fa-play"></i> Смотреть трейлер</button>
           <button class="br-btn br-btn--glass" id="brMoreInfoBtn"><i class="fas fa-circle-info"></i> Подробнее</button>
@@ -119,18 +116,14 @@
     <section class="br-section br-reveal" id="about">
       <div class="br-container">
         <h2 class="br-h2">О проекте</h2>
-        <p class="br-lead" id="brAboutLead">«Багажное возмездие» — анимационный мини-сериал Mortis Play о том, что каждый обдуманный вариант имеет выгоду. И память. И план.</p>
-        <div class="br-cards">
-          <article class="br-card-info">
-            <div class="br-card-info-icon"><i class="fas fa-suitcase-rolling"></i></div>
-            <h3>Сюжет</h3>
-            <p>Сюжет разворачивается вокруг группы криминальных дельцов и изгоев, которые были в шаге от полного контроля над мегаполисом.</p>
-          </article>
-          <article class="br-card-info">
-            <div class="br-card-info-icon"><i class="fas fa-clapperboard"></i></div>
-            <h3>Формат</h3>
-            <p>Короткие серии в фирменном стиле Mortis Play: динамичный монтаж, отсылки к стримам и мемам комьюнити.</p>
-          </article>
+        <p class="br-lead" id="brAboutLead"></p>
+        <div class="br-cards" id="brAboutCards"></div>
+
+        <!-- За кадром: рабочие материалы и проекты в разработке -->
+        <div class="br-behind" id="brBehind">
+          <h3 class="br-behind-title" id="brBehindTitle"></h3>
+          <p class="br-behind-lead" id="brBehindLead"></p>
+          <div class="br-gallery" id="brBehindGallery"></div>
         </div>
       </div>
     </section>
@@ -141,7 +134,7 @@
         <h2 class="br-h2">Трейлер</h2>
         <article class="br-featured" id="brTrailerCard">
           <div class="br-featured-poster">
-            <img id="brTrailerThumb" src="" alt="Трейлер Багажного возмездия">
+            <img id="brTrailerThumb" src="" alt="Трейлер сериала">
             <div class="br-featured-play" id="brTrailerPlay"><i class="fas fa-play"></i></div>
             <div class="br-featured-label" id="brTrailerBadge">Трейлер</div>
           </div>
@@ -151,8 +144,8 @@
               <span class="br-meta-age">16+</span>
               <span class="br-meta-season" id="brTrailerDuration">—</span>
             </div>
-            <h3 class="br-featured-title" id="brTrailerTitle">Трейлер «Багажного возмездия»</h3>
-            <p class="br-featured-desc" id="brTrailerDesc">Это будет Absolute cinema.</p>
+            <h3 class="br-featured-title" id="brTrailerTitle"></h3>
+            <p class="br-featured-desc" id="brTrailerDesc"></p>
             <button class="br-btn br-btn--red" id="brTrailerWatchBtn"><i class="fas fa-play"></i> Смотреть трейлер</button>
           </div>
         </article>
@@ -187,12 +180,8 @@
     <div class="br-modal-backdrop" data-br-close="details"></div>
     <div class="br-modal-panel">
       <button class="br-modal-close" data-br-close="details" aria-label="Закрыть"><i class="fas fa-times"></i></button>
-      <h2>Багажное возмездие</h2>
-      <p id="brDetailsText">«Багажное возмездие» — анимационный мини-сериал от Mortis Play. Сюжет разворачивается вокруг группы криминальных дельцов и изгоев, которые были в шаге от полного контроля над мегаполисом. Однако из-за глупой ошибки и проваленной операции все планы рушатся, а главные герои оказываются на самом дне.
-
-Главный герой, на которого команда взвалила всю вину за провал, сталкивается с жестокостью как со стороны бывших соратников, так и со стороны безжалостной охраны местной верхушки. Пережив унижение, экстрим и предательство (его буквально выбрасывают за борт как ненужный багаж), он доходит до грани отчаяния.
-
-Однако вместо того чтобы сдаться, герой решает совершить радикальный поворот. Поняв, что терять ему больше нечего, он находит неожиданный и коварный выход из ситуации. Собирая новую команду и объединяя силы с теми, кого раньше не брали в расчет, он готовится вернуть себе город и переписать правила игры.</p>
+      <h2 id="brDetailsTitle"></h2>
+      <p id="brDetailsText"></p>
       <button class="br-btn br-btn--white" data-br-close="details">Понятно</button>
     </div>
   </div>
@@ -201,12 +190,12 @@
   <div class="br-player-modal" id="brPlayerModal" aria-hidden="true">
     <div class="br-player-letterbox" id="brPlayerLetterbox">
       <div class="br-player-frame">
-        <iframe id="brPlayerIframe" src="" title="Плеер Багажного возмездия" frameborder="0" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <iframe id="brPlayerIframe" src="" title="Плеер платформы Mortis Play" frameborder="0" allow="fullscreen; accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
       </div>
       <div class="br-player-bar">
         <div class="br-player-info">
           <span class="br-player-title" id="brPlayerTitle">Сериал</span>
-          <span class="br-player-status" id="brPlayerStatus">Нажмите Play, чтобы начать просмотр</span>
+          <span class="br-player-status" id="brPlayerStatus">Сейчас запустится видео…</span>
         </div>
       </div>
       <button class="br-player-close" id="brPlayerClose" aria-label="Закрыть плеер"><i class="fas fa-times"></i></button>
@@ -216,6 +205,6 @@
   <!-- Уведомления -->
   <div class="br-toasts" id="brToasts"></div>
 
-  <script src="baggage-revenge.js" defer></script>
+  <script src="platform.js" defer></script>
 </body>
 </html>
