@@ -12,6 +12,16 @@
   // status: 'live' — проект доступен, 'dev' — в разработке.
   // videoId — YouTube ID ролика (11 символов). Пока ролик не вышел,
   // оставьте плейсхолдер — карточки будут показывать статус «Скоро».
+
+  // Генератор серий сезона (пока ролики не вышли — карточки «Скоро»)
+  function buildSeasonEpisodes(prefix, count) {
+    var list = [];
+    for (var i = 1; i <= count; i++) {
+      list.push({ id: prefix + '-ep' + i, type: 'episode', title: 'Серия ' + i, date: 'Скоро' });
+    }
+    return list;
+  }
+
   var SHOWS = [
     {
       slug: 'baggage-revenge',
@@ -38,6 +48,16 @@
       ],
       detailsTitle: 'Багажное возмездие',
       detailsText: '«Багажное возмездие» — анимационный мини-сериал от Mortis Play. Сюжет разворачивается вокруг группы криминальных дельцов и изгоев, которые были в шаге от полного контроля над мегаполисом. Однако из-за глупой ошибки и проваленной операции все планы рушатся, а главные герои оказываются на самом дне.\n\nГлавный герой, на которого команда взвалила всю вину за провал, сталкивается с жестокостью как со стороны бывших соратников, так и со стороны безжалостной охраны местной верхушки. Пережив унижение, экстрим и предательство (его буквально выбрасывают за борт как ненужный багаж), он доходит до грани отчаяния.\n\nОднако вместо того чтобы сдаться, герой решает совершить радикальный поворот. Поняв, что терять ему больше нечего, он находит неожиданный и коварный выход из ситуации. Собирая новую команду и объединяя силы с теми, кого раньше не брали в расчет, он готовится вернуть себе город и переписать правила игры.',
+      behindScenes: {
+        title: 'За кадром · В разработке',
+        lead: 'То, что обычно остаётся за кадром: рабочие материалы, раскадровки, скриншоты производства и черновики будущих сериалов. Проекты в разработке уже видны на платформе — следи за обновлениями!',
+        photos: [
+          'assets2/Снимок экрана 2026-09-25 204004.png',
+          'assets2/Снимок экрана 2026-09-25 204004.png',
+          'assets2/Снимок экрана 2026-09-25 204004.png',
+          'assets2/Снимок экрана 2026-09-25 204004.png'
+        ]
+      },
       episodes: [
         {
           id: 'br-trailer',
@@ -84,6 +104,17 @@
       ],
       detailsTitle: 'Бароны',
       detailsText: '«Бароны» — новый анимационный сериал Mortis Play, который сейчас находится в разработке. Следите за новостями — подробности совсем скоро.',
+      behindScenes: null,
+      seasons: [
+        {
+          title: 'Сезон 1',
+          episodes: buildSeasonEpisodes('barons-s1', 12)
+        },
+        {
+          title: 'Сезон 2',
+          episodes: buildSeasonEpisodes('barons-s2', 8)
+        }
+      ],
       episodes: []
     },
     {
@@ -111,21 +142,13 @@
       ],
       detailsTitle: 'Типичные случаи и ситуации',
       detailsText: 'Новый анимационный сериал Mortis Play в жанре комедийных зарисовок. Сейчас проект в разработке — подробности появятся позже.',
+      behindScenes: null,
       episodes: []
     }
   ];
 
-  // Общее закулисье платформы (раздел «О проекте» → «За кадром»)
-  var BEHIND_SCENES = {
-    title: 'За кадром · В разработке',
-    lead: 'То, что обычно остаётся за кадром: рабочие материалы, раскадровки, скриншоты производства и черновики будущих сериалов. Проекты в разработке уже видны на платформе — следи за обновлениями!',
-    photos: [
-      'assets2/Снимок экрана 2026-09-25 204004.png',
-      'assets2/Снимок экрана 2026-09-25 204004.png',
-      'assets2/Снимок экрана 2026-09-25 204004.png',
-      'assets2/Снимок экрана 2026-09-25 204004.png'
-    ]
-  };
+  // Закулисье задаётся у каждого сериала в поле behindScenes (у «Баронов»
+  // и «Типичных случаев и ситуаций» — null, блок «За кадром» скрывается).
 
   var VIDEO_ID_RE = /^[A-Za-z0-9_-]{11}$/;
 
@@ -281,14 +304,22 @@
   function renderBehindScenes() {
     var block = $('brBehind');
     if (!block) return;
+
+    var data = currentShow.behindScenes;
+    if (!data || !data.photos || !data.photos.length) {
+      block.classList.add('br-hidden');
+      return;
+    }
+    block.classList.remove('br-hidden');
+
     $('brBehindTitle').innerHTML =
-      '<span class="br-dot br-dot--blink"></span> ' + escapeHtml(BEHIND_SCENES.title);
-    $('brBehindLead').textContent = BEHIND_SCENES.lead;
+      '<span class="br-dot br-dot--blink"></span> ' + escapeHtml(data.title);
+    $('brBehindLead').textContent = data.lead;
 
     var gallery = $('brBehindGallery');
     if (!gallery) return;
     gallery.innerHTML = '';
-    BEHIND_SCENES.photos.forEach(function (src, i) {
+    data.photos.forEach(function (src, i) {
       var fig = document.createElement('figure');
       fig.className = 'br-gallery-item';
       fig.innerHTML =
@@ -340,18 +371,37 @@
     var track = $('brTrack');
 
     // В ленте «Серии» — только серии, без трейлера
-    var episodes = (show.episodes || []).filter(function (ep) { return ep.type !== 'trailer'; });
+    var isEpisode = function (ep) { return ep && ep.type !== 'trailer'; };
+
+    // Группы серий: либо по сезонам (show.seasons), либо один общий список
+    var groups = [];
+    if (show.seasons && show.seasons.length) {
+      show.seasons.forEach(function (season) {
+        var eps = (season.episodes || []).filter(isEpisode);
+        if (eps.length) groups.push({ head: season.title, episodes: eps });
+      });
+    } else {
+      var eps = (show.episodes || []).filter(isEpisode);
+      if (eps.length) groups.push({ head: null, episodes: eps });
+    }
 
     if (!track) return;
     track.innerHTML = '';
 
-    if (!episodes.length) {
+    if (!groups.length) {
       if (section) section.classList.add('br-hidden');
       return;
     }
     if (section) section.classList.remove('br-hidden');
 
-    episodes.forEach(function (episode) {
+    groups.forEach(function (group) {
+      if (group.head) {
+        var head = document.createElement('div');
+        head.className = 'br-season-head';
+        head.textContent = group.head;
+        track.appendChild(head);
+      }
+      group.episodes.forEach(function (episode) {
       var live = isEpisodeLive(episode);
       var card = document.createElement('article');
       card.className = 'br-card';
@@ -378,6 +428,7 @@
           return;
         }
         openPlayer(episode);
+      });
       });
     });
 

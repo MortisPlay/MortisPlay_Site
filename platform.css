@@ -344,6 +344,16 @@ body {
 .br-step h3 { font-size: 1rem; font-weight: 800; margin-bottom: 0.45rem; }
 .br-step p { color: var(--br-gray); font-size: 0.88rem; line-height: 1.55; }
 
+/* ===== Заголовок сезона в ленте серий ===== */
+.br-season-head {
+  flex: 0 0 auto; align-self: center;
+  font-size: 0.85rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--br-white); background: var(--br-bg-soft);
+  border: 1px solid rgba(229,9,20,0.45); border-left: 4px solid var(--br-red);
+  padding: 0.55rem 1rem; border-radius: 0.55rem;
+  white-space: nowrap;
+}
+
 /* ===== Вкладки сериалов платформы ===== */
 .br-tabs {
   display: flex; flex-wrap: wrap; gap: 0.55rem;
